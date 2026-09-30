@@ -63,12 +63,15 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 .legend-swatch.frontier { background: var(--frontier); }
 .legend-swatch.fog { background: #2a363d; }
 
-.map-stage { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; overflow: hidden; background-color: #0a1115; background-image: linear-gradient(rgba(31,44,52,.35) 1px, transparent 1px), linear-gradient(90deg, rgba(31,44,52,.35) 1px, transparent 1px); background-size: 72px 72px; }
+.map-stage { position: relative; flex: 1; min-height: 0; overflow: hidden; background-color: #0a1115; cursor: grab; touch-action: none; user-select: none; background-image: linear-gradient(rgba(31,44,52,.35) 1px, transparent 1px), linear-gradient(90deg, rgba(31,44,52,.35) 1px, transparent 1px); background-size: 74px 74px; }
 .map-stage::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(29,45,50,.15) 0, rgba(8,13,17,.50) 72%, rgba(4,8,10,.78) 100%); pointer-events: none; }
+.map-stage:focus-visible { outline: 1px solid rgba(213,170,99,.36); outline-offset: -1px; }
+.map-stage.is-dragging { cursor: grabbing; }
 .map-stage::after { content: ''; position: absolute; left: 18%; right: 18%; top: 13%; bottom: 13%; border: 1px dashed rgba(115,140,150,.07); border-radius: 10px; pointer-events: none; }
-.map-grid { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(11, 76px); grid-template-rows: repeat(11, 76px); gap: 2px; padding: 7px; background: rgba(7,12,15,.76); border: 1px solid #26333b; box-shadow: 0 25px 90px rgba(0,0,0,.38); }
-.map-tile { position: relative; width: 76px; height: 76px; border: 1px solid #23313a; background: #0d151a; color: #56656e; display: grid; place-items: center; padding: 5px; cursor: pointer; transition: transform .13s ease, border-color .13s ease, box-shadow .13s ease, background .13s ease; overflow: hidden; }
+.map-grid { position: absolute; z-index: 2; display: grid; gap: 2px; pointer-events: auto; will-change: left, top; }
+.map-tile { position: relative; width: 72px; height: 72px; border: 1px solid #23313a; background: #0d151a; color: #56656e; display: grid; place-items: center; padding: 5px; cursor: pointer; transition: transform .13s ease, border-color .13s ease, box-shadow .13s ease, background .13s ease; overflow: hidden; }
 .map-tile:hover { transform: translateY(-1px); z-index: 3; }
+.map-tile:focus-visible { outline: 2px solid rgba(238,225,198,.85); outline-offset: -2px; z-index: 4; }
 .map-tile-explored { background: var(--explored-bg); border-color: #385146; }
 .map-tile-explored:hover { border-color: #5b7e6b; box-shadow: 0 0 0 2px rgba(112,151,131,.08); }
 .map-tile-frontier { background: var(--frontier-bg); border-color: #765b32; box-shadow: inset 0 0 0 1px rgba(213,170,99,.04); }
@@ -86,6 +89,10 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 .map-axis { position: absolute; z-index: 3; font: 9px 'Space Mono', monospace; color: #39474e; }
 .map-axis-x { bottom: 11px; right: 14px; }
 .map-axis-y { left: 14px; bottom: 11px; }
+.map-control-hint { position: absolute; z-index: 4; top: 14px; left: 16px; display: grid; gap: 5px; padding: 9px 10px; border: 1px solid rgba(53,69,78,.62); border-radius: 9px; background: rgba(8,14,18,.78); color: #73828a; font-size: 9px; line-height: 1.2; backdrop-filter: blur(8px); pointer-events: none; }
+.map-control-hint div { display: flex; align-items: center; gap: 6px; }
+.map-control-hint div + div { color: #5e6d75; }
+.map-control-hint span { color: #7c8b93; }
 .map-key { position: absolute; z-index: 3; left: 17px; bottom: 16px; color: #53616a; font-size: 9px; display: grid; gap: 5px; }
 .map-key div { display: flex; align-items: center; gap: 6px; }
 .key-dot { width: 7px; height: 7px; border-radius: 2px; display: inline-block; }
@@ -146,9 +153,10 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 }
 @media (max-width: 760px) {
   .topbar { display: flex; flex-wrap: wrap; gap: 8px 12px; padding: 10px 14px; }.brand-block { flex: 1; }.header-actions { margin-left: auto; }.header-progress { display: none; }.top-tabs { order: 3; width: 100%; height: 42px; justify-content: space-between; }.top-tabs button { flex: 1; justify-content: center; padding: 0 7px; }.account-button { padding: 8px 10px; }.account-button svg { display: none; }
-  .app-main, .footer { width: calc(100% - 18px); }.map-toolbar { align-items: flex-start; flex-direction: column; }.map-legend { white-space: normal; flex-wrap: wrap; }.map-stage { min-height: 620px; }.map-grid { grid-template-columns: repeat(11, 58px); grid-template-rows: repeat(11, 58px); gap: 2px; }.map-tile { width: 58px; height: 58px; }.creature-glyph-tile { width: 28px; height: 28px; font-size: 24px; }.tile-name { font-size: 7px; }.map-key { left: 11px; bottom: 12px; }.map-position { right: 11px; bottom: 12px; }.map-stage { overflow: auto; justify-content: center; }.skills-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }.footer { flex-direction: column; }
+  .app-main, .footer { width: calc(100% - 18px); }.map-toolbar { align-items: flex-start; flex-direction: column; }.map-legend { white-space: normal; flex-wrap: wrap; }.map-stage { min-height: 620px; }.map-tile { width: 72px; height: 72px; }.creature-glyph-tile { width: 28px; height: 28px; font-size: 24px; }.tile-name { font-size: 7px; }.map-key { left: 11px; bottom: 12px; }.map-position { right: 11px; bottom: 12px; }.map-stage { overflow: hidden; }.skills-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }.footer { flex-direction: column; }
 }
 @media (max-width: 500px) {
   .brand-subtitle { display: none; }.brand-name { font-size: 14px; }.top-tabs button { font-size: 10px; }.top-tabs svg { width: 14px; }
-  .map-panel { min-height: 585px; }.map-grid { transform: scale(.84); }.map-stage { min-height: 560px; }.map-footer-bar { gap: 12px; flex-wrap: wrap; padding: 9px 12px; }.map-footer-bar .footer-note { display: none; }.full-tab-page { padding: 19px; }.skills-grid { grid-template-columns: 1fr; }
+  .map-panel { min-height: 585px; }.map-control-hint { font-size: 8px; padding: 8px 9px; }
+  .map-grid { transform: translateZ(0); }.map-stage { min-height: 560px; }.map-footer-bar { gap: 12px; flex-wrap: wrap; padding: 9px 12px; }.map-footer-bar .footer-note { display: none; }.full-tab-page { padding: 19px; }.skills-grid { grid-template-columns: 1fr; }
 }

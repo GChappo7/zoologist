@@ -21,8 +21,8 @@ import {
 import './styles.css'
 
 const MASTER_CREATURE_COUNT = 440
-const TILE_SIZE = 72
-const TILE_GAP = 2
+const TILE_SIZE = 128
+const TILE_GAP = 3
 const TILE_STEP = TILE_SIZE + TILE_GAP
 const GRID_RADIUS = 12
 const GRID_DIAMETER = GRID_RADIUS * 2 + 1
@@ -251,10 +251,12 @@ function MapView() {
   const [panelOpen, setPanelOpen] = useState(true)
   const [selectedTile, setSelectedTile] = useState(null)
   const [pan, setPan] = useState({ x: 0, y: 0 })
+  const [zoom, setZoom] = useState(1)
   const [dragging, setDragging] = useState(false)
 
   const stageRef = useRef(null)
   const panRef = useRef(pan)
+  const zoomRef = useRef(zoom)
   const pointerRef = useRef({ x: 0, y: 0, inside: false })
   const dragRef = useRef({ active: false, x: 0, y: 0 })
   const edgeFrameRef = useRef(null)
@@ -262,6 +264,10 @@ function MapView() {
   useEffect(() => {
     panRef.current = pan
   }, [pan])
+
+  useEffect(() => {
+    zoomRef.current = zoom
+  }, [zoom])
 
   const updatePan = (dx, dy) => {
     setPan((current) => ({ x: current.x + dx, y: current.y + dy }))
@@ -275,6 +281,19 @@ function MapView() {
       if (event.key === 'ArrowDown') { event.preventDefault(); updatePan(0, -amount) }
       if (event.key === 'ArrowLeft') { event.preventDefault(); updatePan(amount, 0) }
       if (event.key === 'ArrowRight') { event.preventDefault(); updatePan(-amount, 0) }
+
+      if (event.key === '+' || event.key === '=') {
+        event.preventDefault()
+        setZoom((current) => Math.min(1.8, Number((current + 0.12).toFixed(2))))
+      }
+      if (event.key === '-' || event.key === '_') {
+        event.preventDefault()
+        setZoom((current) => Math.max(0.5, Number((current - 0.12).toFixed(2))))
+      }
+      if (event.key === '0') {
+        event.preventDefault()
+        setZoom(1)
+      }
     }
 
     window.addEventListener('keydown', handleKeyDown)
@@ -308,6 +327,34 @@ function MapView() {
     edgeFrameRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(edgeFrameRef.current)
   }, [])
+
+  const clampZoom = (value) => Math.min(1.8, Math.max(0.5, value))
+
+  const zoomAtPoint = (nextZoom, clientX, clientY) => {
+    const stage = stageRef.current
+    if (!stage) return
+
+    const rect = stage.getBoundingClientRect()
+    const offsetX = clientX - (rect.left + rect.width / 2)
+    const offsetY = clientY - (rect.top + rect.height / 2)
+    const currentZoom = zoomRef.current
+    const targetZoom = clampZoom(nextZoom)
+
+    if (Math.abs(targetZoom - currentZoom) < 0.001) return
+
+    setPan((currentPan) => ({
+      x: offsetX - (offsetX - currentPan.x) * (targetZoom / currentZoom),
+      y: offsetY - (offsetY - currentPan.y) * (targetZoom / currentZoom),
+    }))
+    setZoom(targetZoom)
+  }
+
+  const handleWheel = (event) => {
+    event.preventDefault()
+    const direction = event.deltaY > 0 ? -1 : 1
+    const amount = event.ctrlKey ? 0.06 : 0.11
+    zoomAtPoint(zoomRef.current + direction * amount, event.clientX, event.clientY)
+  }
 
   const handlePointerMove = (event) => {
     pointerRef.current = { x: event.clientX, y: event.clientY, inside: true }
@@ -384,35 +431,51 @@ function MapView() {
           onPointerUp={stopDrag}
           onPointerCancel={stopDrag}
           onPointerLeave={handlePointerLeave}
+          onWheel={handleWheel}
           onContextMenu={(event) => event.preventDefault()}
           tabIndex={0}
           aria-label="Zoologist map. Pan with arrow keys, screen edges, or middle mouse drag."
         >
           <div
-            className="map-grid"
-            style={{
-              width: GRID_DIAMETER * TILE_SIZE + (GRID_DIAMETER - 1) * TILE_GAP,
-              height: GRID_DIAMETER * TILE_SIZE + (GRID_DIAMETER - 1) * TILE_GAP,
-              gridTemplateColumns: `repeat(${GRID_DIAMETER}, ${TILE_SIZE}px)`,
-              gridTemplateRows: `repeat(${GRID_DIAMETER}, ${TILE_SIZE}px)`,
-              left: `calc(50% + ${mapCells.left}px)`,
-              top: `calc(50% + ${mapCells.top}px)`,
-            }}
+            className="map-grid-pan"
+            style={{ transform: `translate3d(calc(-50% + ${mapCells.left}px), calc(-50% + ${mapCells.top}px), 0)` }}
           >
-            {mapCells.cells.map((tile) => (
-              <MapTile
-                key={`${tile.x}:${tile.y}`}
-                tile={tile}
-                selected={selectedTile && selectedTile.x === tile.x && selectedTile.y === tile.y}
-                onSelect={setSelectedTile}
-              />
-            ))}
+            <div
+              className="map-grid"
+              style={{
+                width: GRID_DIAMETER * TILE_SIZE + (GRID_DIAMETER - 1) * TILE_GAP,
+                height: GRID_DIAMETER * TILE_SIZE + (GRID_DIAMETER - 1) * TILE_GAP,
+                gridTemplateColumns: `repeat(${GRID_DIAMETER}, ${TILE_SIZE}px)`,
+                gridTemplateRows: `repeat(${GRID_DIAMETER}, ${TILE_SIZE}px)`,
+                transform: `scale(${zoom})`,
+              }}
+            >
+              {mapCells.cells.map((tile) => (
+                <MapTile
+                  key={`${tile.x}:${tile.y}`}
+                  tile={tile}
+                  selected={selectedTile && selectedTile.x === tile.x && selectedTile.y === tile.y}
+                  onSelect={setSelectedTile}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div
+            className="map-zoom-controls"
+            onPointerDown={(event) => event.stopPropagation()}
+            onWheel={(event) => event.stopPropagation()}
+          >
+            <button type="button" onClick={() => zoomAtPoint(zoom - 0.12, window.innerWidth / 2, window.innerHeight / 2)} aria-label="Zoom out">−</button>
+            <button type="button" className="zoom-readout" onClick={() => zoomAtPoint(1, window.innerWidth / 2, window.innerHeight / 2)} aria-label="Reset zoom">{Math.round(zoom * 100)}%</button>
+            <button type="button" onClick={() => zoomAtPoint(zoom + 0.12, window.innerWidth / 2, window.innerHeight / 2)} aria-label="Zoom in">+</button>
           </div>
 
           <div className="map-control-hint">
             <div><MousePointer2 size={13} /> Move to map edge to pan</div>
             <div>↑ ↓ ← → <span>Arrow keys</span></div>
             <div>MMB <span>Drag to pan</span></div>
+            <div>Wheel <span>Zoom in / out</span></div>
           </div>
 
           <div className="map-key">
@@ -477,7 +540,7 @@ function App() {
 
       <footer className="footer">
         <span>ZOOLOGIST • FRONTEND PROTOTYPE</span>
-        <span>Square grid • Fog of war • Edge pan • Arrow keys • Middle mouse</span>
+        <span>Square grid • Fog of war • Edge pan • Arrow keys • Middle mouse • Wheel zoom</span>
       </footer>
     </div>
   )

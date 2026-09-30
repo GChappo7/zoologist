@@ -19,59 +19,228 @@ import {
   Users,
 } from 'lucide-react'
 import './styles.css'
+import creatureCsv from '../data/creatures.csv?raw'
 
-const MASTER_CREATURE_COUNT = 440
 const TILE_SIZE = 128
 const TILE_GAP = 3
 const TILE_STEP = TILE_SIZE + TILE_GAP
-const GRID_RADIUS = 12
-const GRID_DIAMETER = GRID_RADIUS * 2 + 1
-const EDGE_ZONE = 56
+const RENDER_RADIUS = 20
+const RENDER_DIAMETER = RENDER_RADIUS * 2 + 1
+const EDGE_ZONE = 70
+const MIN_ZOOM = 0.5
+const MAX_ZOOM = 2.25
+const ZOOM_STEP = 0.12
 
-// Small UI catalogue for the visual prototype. The full master dataset will replace this.
-const creatureCatalog = [
-  { id: 1, name: 'Chicken', score: 1, glyph: '🐔', description: 'Your starting creature. The expedition begins here.' },
-  { id: 2, name: 'Cow', score: 1, glyph: '🐄', description: 'A nearby creature waiting to be completed.' },
-  { id: 12, name: 'Dog', score: 1, glyph: '🐕', description: 'An accessible early discovery.' },
-  { id: 13, name: 'Cat', score: 1, glyph: '🐈', description: 'Another early expedition target.' },
-  { id: 17, name: 'Rabbit', score: 1, glyph: '🐇', description: 'A score 1 creature close to the beginning.' },
+const CARDINAL_DIRECTIONS = [
+  [0, -1],
+  [1, 0],
+  [0, 1],
+  [-1, 0],
 ]
 
-const creatureByName = Object.fromEntries(creatureCatalog.map((creature) => [creature.name, creature]))
-
-// For the initial UI prototype there is exactly one explored/completed tile.
-// The four cardinal neighbours form the visible frontier. Everything else is fog.
-const knownTiles = {
-  '0:0': { state: 'explored', creature: 'Chicken', completed: true },
-  '0:-1': { state: 'frontier', creature: 'Rabbit', completed: false },
-  '1:0': { state: 'frontier', creature: 'Cow', completed: false },
-  '0:1': { state: 'frontier', creature: 'Dog', completed: false },
-  '-1:0': { state: 'frontier', creature: 'Cat', completed: false },
+function keyFor(x, y) {
+  return `${x}:${y}`
 }
 
-const topTabs = [
-  { id: 'map', label: 'Map', icon: LayoutGrid },
-  { id: 'skills', label: 'Skills', icon: Gem },
-  { id: 'quests', label: 'Quests', icon: ScrollText },
-  { id: 'diaries', label: 'Diaries', icon: BookOpen },
-]
+function parseCsv(text) {
+  const rows = []
+  let row = []
+  let field = ''
+  let quoted = false
 
-function getKnownTile(x, y) {
-  return knownTiles[`${x}:${y}`]
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i]
+    const next = text[i + 1]
+    if (char === '"' && quoted && next === '"') { field += '"'; i += 1; continue }
+    if (char === '"') { quoted = !quoted; continue }
+    if (char === ',' && !quoted) { row.push(field); field = ''; continue }
+    if ((char === '\n' || char === '\r') && !quoted) {
+      if (char === '\r' && next === '\n') i += 1
+      row.push(field)
+      field = ''
+      if (row.some((value) => value.trim() !== '')) rows.push(row)
+      row = []
+      continue
+    }
+    field += char
+  }
+  row.push(field)
+  if (row.some((value) => value.trim() !== '')) rows.push(row)
+  if (rows.length === 0) return []
+  const headers = rows[0].map((value) => value.trim().toLowerCase())
+  return rows.slice(1).map((values) => Object.fromEntries(
+    headers.map((header, index) => [header, (values[index] ?? '').trim()]),
+  ))
+}
+
+function firstValue(row, ...keys) {
+  for (const key of keys) {
+    const value = row[key.toLowerCase()]
+    if (value != null && value !== '') return value
+  }
+  return ''
+}
+
+function slugifyCreatureName(name) {
+  return (name ?? '')
+    .toLowerCase()
+    .replace(/’/g, '')
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+}
+
+function rowToCreature(row) {
+  const id = Number(firstValue(row, 'id'))
+  const name = firstValue(row, 'candidate')
+  const score = Number(firstValue(row, 'accessibility score', 'accessibility_score', 'accessibility'))
+  const status = firstValue(row, 'master_status', 'master status', 'status') || 'Active'
+  return {
+    id,
+    name,
+    score: Number.isFinite(score) && score > 0 ? score : 1,
+    status,
+    description: 'A creature in the Zoologist expedition pool.',
+  }
+}
+
+function loadCreatureCatalog() {
+  const rows = parseCsv(creatureCsv)
+  const creatures = rows
+    .map(rowToCreature)
+    .filter((creature) => creature.id && creature.name && creature.status.toLowerCase() === 'active')
+  if (creatures.length === 0) throw new Error('The creature CSV loaded, but no Active creatures were found.')
+  return creatures
+}
+
+function getCreatureImageCandidates(creature) {
+  const slug = slugifyCreatureName(creature?.name ?? '')
+  return [
+    `${import.meta.env.BASE_URL}assets/creatures/${slug}.png`,
+    `${import.meta.env.BASE_URL}assets/creatures/${slug}.webp`,
+    `${import.meta.env.BASE_URL}assets/creatures/${slug}.jpg`,
+  ]
+}
+
+function pickStartingCreature(creatures) {
+  const scoreOne = creatures.filter((creature) => creature.score === 1)
+  return scoreOne[Math.floor(Math.random() * scoreOne.length)] ?? creatures[0] ?? null
+}
+
+function weightedCreaturePick(available, preferredScore = null) {
+  if (available.length === 0) return null
+  if (preferredScore == null) return available[Math.floor(Math.random() * available.length)]
+  const weighted = available.map((creature) => ({
+    creature,
+    weight: 1 / (1 + Math.abs(creature.score - preferredScore) * 2),
+  }))
+  const total = weighted.reduce((sum, item) => sum + item.weight, 0)
+  let roll = Math.random() * total
+  for (const item of weighted) {
+    roll -= item.weight
+    if (roll <= 0) return item.creature
+  }
+  return weighted[weighted.length - 1].creature
+}
+
+function pickUnusedCreature(creatures, usedIds, preferredScore = null) {
+  return weightedCreaturePick(creatures.filter((creature) => !usedIds.has(creature.id)), preferredScore)
+}
+
+function preferredScoreForDistance(x, y) {
+  const distance = Math.abs(x) + Math.abs(y)
+  return Math.min(8, Math.max(1, 1 + Math.floor(distance / 4)))
+}
+
+function createInitialTiles(creatures, startCreature) {
+  const tiles = {
+    [keyFor(0, 0)]: { x: 0, y: 0, state: 'explored', creatureId: startCreature.id, completed: true },
+  }
+  const usedIds = new Set([startCreature.id])
+  CARDINAL_DIRECTIONS.forEach(([dx, dy]) => {
+    const creature = pickUnusedCreature(creatures, usedIds, preferredScoreForDistance(dx, dy))
+    if (!creature) return
+    usedIds.add(creature.id)
+    tiles[keyFor(dx, dy)] = { x: dx, y: dy, state: 'frontier', creatureId: creature.id, completed: false }
+  })
+  return tiles
+}
+
+function getAdjacentPositions(tiles) {
+  const explored = Object.values(tiles).filter((tile) => tile.state === 'explored')
+  const positions = new Map()
+  explored.forEach((tile) => {
+    CARDINAL_DIRECTIONS.forEach(([dx, dy]) => {
+      const x = tile.x + dx
+      const y = tile.y + dy
+      const key = keyFor(x, y)
+      if (!tiles[key]) positions.set(key, { x, y })
+    })
+  })
+  return [...positions.values()]
+}
+
+function recomputeFrontier(tiles, creatures) {
+  const next = { ...tiles }
+  const frontierPositions = getAdjacentPositions(tiles)
+  const usedIds = new Set(Object.values(next).map((tile) => tile.creatureId).filter(Boolean))
+  frontierPositions.forEach(({ x, y }) => {
+    const creature = pickUnusedCreature(creatures, usedIds, preferredScoreForDistance(x, y))
+    if (!creature) return
+    usedIds.add(creature.id)
+    next[keyFor(x, y)] = { x, y, state: 'frontier', creatureId: creature.id, completed: false }
+  })
+  return next
 }
 
 function CreatureGlyph({ creature, size = 'medium' }) {
+  const [imageIndex, setImageIndex] = useState(0)
+  const [imageFailed, setImageFailed] = useState(false)
+  const creatureName = creature?.name ?? ''
+
+  useEffect(() => {
+    setImageIndex(0)
+    setImageFailed(false)
+  }, [creatureName])
+
   if (!creature) return null
-  return <div className={`creature-glyph creature-glyph-${size}`}>{creature.glyph}</div>
+
+  const candidates = getCreatureImageCandidates(creature)
+  const image = candidates[imageIndex]
+
+  const handleImageError = () => {
+    if (imageIndex + 1 < candidates.length) {
+      setImageIndex((current) => current + 1)
+    } else {
+      setImageFailed(true)
+    }
+  }
+
+  return (
+    <div className={`creature-glyph creature-glyph-${size}`}>
+      {!imageFailed && image ? (
+        <img
+          src={image}
+          alt=""
+          className="creature-image"
+          draggable="false"
+          onError={handleImageError}
+        />
+      ) : (
+        <span className="creature-fallback-glyph">🐾</span>
+      )}
+    </div>
+  )
 }
 
-function MapTile({ tile, selected, onSelect }) {
-  const creature = tile.creature ? creatureByName[tile.creature] : null
+function MapTile({ tile, selected, onSelect, creatureById }) {
+  const creature = tile.creatureId ? creatureById[tile.creatureId] : null
   const isFrontier = tile.state === 'frontier'
   const isExplored = tile.state === 'explored'
 
   return (
     <button
+      type="button"
       className={`map-tile map-tile-${tile.state} ${selected ? 'is-selected' : ''}`}
       onClick={() => creature && onSelect(tile)}
       aria-label={creature ? `${creature.name}${tile.completed ? ', completed' : ', newly revealed'}` : 'Fog of war'}
@@ -178,8 +347,8 @@ function DiariesView() {
   )
 }
 
-function SidePanel({ open, setOpen, selectedTile, onClear }) {
-  const creature = selectedTile?.creature ? creatureByName[selectedTile.creature] : null
+function SidePanel({ open, setOpen, selectedTile, onClear, onComplete, exploredCount, frontierCount, creatureById, creatureCount }) {
+  const creature = selectedTile?.creatureId ? creatureById[selectedTile.creatureId] : null
 
   return (
     <aside className={`side-panel ${open ? 'side-panel-open' : 'side-panel-collapsed'}`}>
@@ -190,7 +359,7 @@ function SidePanel({ open, setOpen, selectedTile, onClear }) {
               <div className="eyebrow"><Compass size={13} /> EXPEDITION LOG</div>
               <strong>Discovery details</strong>
             </div>
-            <button className="icon-button" onClick={() => setOpen(false)} aria-label="Collapse panel">
+            <button className="icon-button" type="button" onClick={() => setOpen(false)} aria-label="Collapse panel">
               <ChevronRight size={17} />
             </button>
           </div>
@@ -201,15 +370,15 @@ function SidePanel({ open, setOpen, selectedTile, onClear }) {
               <h2>Select a tile</h2>
               <p>Click an explored or newly revealed tile to inspect the creature, accessibility and completion reward.</p>
               <div className="side-stat-grid">
-                <div><span>Explored</span><strong>1</strong></div>
-                <div><span>Revealed</span><strong>4</strong></div>
+                <div><span>Explored</span><strong>{exploredCount}</strong></div>
+                <div><span>Revealed</span><strong>{frontierCount}</strong></div>
                 <div><span>Fog</span><strong>∞</strong></div>
-                <div><span>Pool</span><strong>{MASTER_CREATURE_COUNT}</strong></div>
+                <div><span>Pool</span><strong>{creatureCount}</strong></div>
               </div>
             </div>
           ) : (
             <div className="side-detail">
-              <button className="back-link" onClick={onClear}><ChevronLeft size={14} /> Back to expedition</button>
+              <button className="back-link" type="button" onClick={onClear}><ChevronLeft size={14} /> Back to expedition</button>
               <div className={`detail-banner ${selectedTile.completed ? 'complete' : 'frontier'}`}>
                 <span>{selectedTile.completed ? 'COMPLETED TILE' : 'NEWLY REVEALED'}</span>
                 {selectedTile.completed ? <ShieldCheck size={15} /> : <Eye size={15} />}
@@ -232,13 +401,15 @@ function SidePanel({ open, setOpen, selectedTile, onClear }) {
                 <p>The reward will be shown here once the master creature data includes it.</p>
               </div>
               {!selectedTile.completed && (
-                <button className="complete-button"><Flag size={15} /> Mark complete</button>
+                <button className="complete-button" type="button" onClick={() => onComplete(selectedTile)}>
+                  <Flag size={15} /> Mark complete
+                </button>
               )}
             </div>
           )}
         </>
       ) : (
-        <button className="collapsed-rail" onClick={() => setOpen(true)} aria-label="Open expedition panel">
+        <button className="collapsed-rail" type="button" onClick={() => setOpen(true)} aria-label="Open expedition panel">
           <ChevronLeft size={18} />
           <span>EXPEDITION</span>
         </button>
@@ -247,9 +418,13 @@ function SidePanel({ open, setOpen, selectedTile, onClear }) {
   )
 }
 
-function MapView() {
+function MapView({ creatures, onCompletedCountChange }) {
+  const creatureById = useMemo(() => Object.fromEntries(creatures.map((creature) => [creature.id, creature])), [creatures])
+  const creatureCount = creatures.length
   const [panelOpen, setPanelOpen] = useState(true)
   const [selectedTile, setSelectedTile] = useState(null)
+  const [startCreature] = useState(() => pickStartingCreature(creatures))
+  const [tiles, setTiles] = useState(() => createInitialTiles(creatures, startCreature))
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
   const [dragging, setDragging] = useState(false)
@@ -261,13 +436,8 @@ function MapView() {
   const dragRef = useRef({ active: false, x: 0, y: 0 })
   const edgeFrameRef = useRef(null)
 
-  useEffect(() => {
-    panRef.current = pan
-  }, [pan])
-
-  useEffect(() => {
-    zoomRef.current = zoom
-  }, [zoom])
+  useEffect(() => { panRef.current = pan }, [pan])
+  useEffect(() => { zoomRef.current = zoom }, [zoom])
 
   const updatePan = (dx, dy) => {
     setPan((current) => ({ x: current.x + dx, y: current.y + dy }))
@@ -276,7 +446,8 @@ function MapView() {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.target instanceof HTMLElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName)) return
-      const amount = event.shiftKey ? 34 : 20
+
+      const amount = event.shiftKey ? 48 : 28
       if (event.key === 'ArrowUp') { event.preventDefault(); updatePan(0, amount) }
       if (event.key === 'ArrowDown') { event.preventDefault(); updatePan(0, -amount) }
       if (event.key === 'ArrowLeft') { event.preventDefault(); updatePan(amount, 0) }
@@ -284,14 +455,15 @@ function MapView() {
 
       if (event.key === '+' || event.key === '=') {
         event.preventDefault()
-        setZoom((current) => Math.min(1.8, Number((current + 0.12).toFixed(2))))
+        setZoom((current) => Math.min(MAX_ZOOM, Number((current + ZOOM_STEP).toFixed(2))))
       }
       if (event.key === '-' || event.key === '_') {
         event.preventDefault()
-        setZoom((current) => Math.max(0.5, Number((current - 0.12).toFixed(2))))
+        setZoom((current) => Math.max(MIN_ZOOM, Number((current - ZOOM_STEP).toFixed(2))))
       }
       if (event.key === '0') {
         event.preventDefault()
+        setPan({ x: 0, y: 0 })
         setZoom(1)
       }
     }
@@ -313,10 +485,10 @@ function MapView() {
         let dx = 0
         let dy = 0
 
-        if (x >= 0 && x <= zone) dx = 6 + (1 - x / zone) * 7
-        if (x >= rect.width - zone && x <= rect.width) dx = -(6 + (1 - (rect.width - x) / zone) * 7)
-        if (y >= 0 && y <= zone) dy = 6 + (1 - y / zone) * 7
-        if (y >= rect.height - zone && y <= rect.height) dy = -(6 + (1 - (rect.height - y) / zone) * 7)
+        if (x >= 0 && x <= zone) dx = 5 + (1 - x / zone) * 10
+        if (x >= rect.width - zone && x <= rect.width) dx = -(5 + (1 - (rect.width - x) / zone) * 10)
+        if (y >= 0 && y <= zone) dy = 5 + (1 - y / zone) * 10
+        if (y >= rect.height - zone && y <= rect.height) dy = -(5 + (1 - (rect.height - y) / zone) * 10)
 
         if (dx || dy) updatePan(dx, dy)
       }
@@ -328,7 +500,7 @@ function MapView() {
     return () => cancelAnimationFrame(edgeFrameRef.current)
   }, [])
 
-  const clampZoom = (value) => Math.min(1.8, Math.max(0.5, value))
+  const clampZoom = (value) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value))
 
   const zoomAtPoint = (nextZoom, clientX, clientY) => {
     const stage = stageRef.current
@@ -342,9 +514,10 @@ function MapView() {
 
     if (Math.abs(targetZoom - currentZoom) < 0.001) return
 
+    const ratio = targetZoom / currentZoom
     setPan((currentPan) => ({
-      x: offsetX - (offsetX - currentPan.x) * (targetZoom / currentZoom),
-      y: offsetY - (offsetY - currentPan.y) * (targetZoom / currentZoom),
+      x: offsetX - (offsetX - currentPan.x) * ratio,
+      y: offsetY - (offsetY - currentPan.y) * ratio,
     }))
     setZoom(targetZoom)
   }
@@ -352,7 +525,7 @@ function MapView() {
   const handleWheel = (event) => {
     event.preventDefault()
     const direction = event.deltaY > 0 ? -1 : 1
-    const amount = event.ctrlKey ? 0.06 : 0.11
+    const amount = event.ctrlKey ? 0.05 : 0.11
     zoomAtPoint(zoomRef.current + direction * amount, event.clientX, event.clientY)
   }
 
@@ -386,26 +559,70 @@ function MapView() {
     if (!dragRef.current.active) pointerRef.current.inside = false
   }
 
+  const centreTileX = Math.round(-pan.x / (TILE_STEP * zoom))
+  const centreTileY = Math.round(-pan.y / (TILE_STEP * zoom))
+
   const mapCells = useMemo(() => {
-    const startX = Math.floor(-pan.x / TILE_STEP) - GRID_RADIUS
-    const startY = Math.floor(-pan.y / TILE_STEP) - GRID_RADIUS
+    const startX = centreTileX - RENDER_RADIUS
+    const startY = centreTileY - RENDER_RADIUS
     const cells = []
 
-    for (let y = startY; y < startY + GRID_DIAMETER; y += 1) {
-      for (let x = startX; x < startX + GRID_DIAMETER; x += 1) {
-        const known = getKnownTile(x, y)
-        cells.push({ x, y, state: known?.state ?? 'fog', creature: known?.creature, completed: known?.completed ?? false })
+    for (let y = startY; y <= centreTileY + RENDER_RADIUS; y += 1) {
+      for (let x = startX; x <= centreTileX + RENDER_RADIUS; x += 1) {
+        const known = tiles[keyFor(x, y)]
+        cells.push({
+          x,
+          y,
+          state: known?.state ?? 'fog',
+          creatureId: known?.creatureId,
+          completed: known?.completed ?? false,
+        })
       }
     }
 
+    const gridSize = RENDER_DIAMETER * TILE_SIZE + (RENDER_DIAMETER - 1) * TILE_GAP
     return {
       startX,
       startY,
       cells,
-      left: pan.x + startX * TILE_STEP - TILE_SIZE / 2,
-      top: pan.y + startY * TILE_STEP - TILE_SIZE / 2,
+      gridSize,
+      offsetX: pan.x + centreTileX * TILE_STEP * zoom,
+      offsetY: pan.y + centreTileY * TILE_STEP * zoom,
     }
-  }, [pan])
+  }, [centreTileX, centreTileY, pan.x, pan.y, tiles, zoom])
+
+  const exploredCount = Object.values(tiles).filter((tile) => tile.state === 'explored').length
+  const frontierCount = Object.values(tiles).filter((tile) => tile.state === 'frontier').length
+
+  const handleComplete = (tile) => {
+    if (!tile || tile.state !== 'frontier') return
+
+    setTiles((current) => {
+      const completedMap = {
+        ...current,
+        [keyFor(tile.x, tile.y)]: {
+          ...current[keyFor(tile.x, tile.y)],
+          state: 'explored',
+          completed: true,
+        },
+      }
+      return recomputeFrontier(completedMap, creatures)
+    })
+
+    setSelectedTile((current) => ({
+      ...current,
+      state: 'explored',
+      completed: true,
+    }))
+    onCompletedCountChange?.((current) => current + 1)
+  }
+
+  const selectTile = (tile) => setSelectedTile(tile)
+
+  const resetCamera = () => {
+    setPan({ x: 0, y: 0 })
+    setZoom(1)
+  }
 
   return (
     <div className={`map-layout ${panelOpen ? '' : 'panel-collapsed-layout'}`}>
@@ -438,15 +655,19 @@ function MapView() {
         >
           <div
             className="map-grid-pan"
-            style={{ transform: `translate3d(calc(-50% + ${mapCells.left}px), calc(-50% + ${mapCells.top}px), 0)` }}
+            style={{
+              width: mapCells.gridSize,
+              height: mapCells.gridSize,
+              transform: `translate3d(calc(-50% + ${mapCells.offsetX}px), calc(-50% + ${mapCells.offsetY}px), 0)`,
+            }}
           >
             <div
               className="map-grid"
               style={{
-                width: GRID_DIAMETER * TILE_SIZE + (GRID_DIAMETER - 1) * TILE_GAP,
-                height: GRID_DIAMETER * TILE_SIZE + (GRID_DIAMETER - 1) * TILE_GAP,
-                gridTemplateColumns: `repeat(${GRID_DIAMETER}, ${TILE_SIZE}px)`,
-                gridTemplateRows: `repeat(${GRID_DIAMETER}, ${TILE_SIZE}px)`,
+                width: mapCells.gridSize,
+                height: mapCells.gridSize,
+                gridTemplateColumns: `repeat(${RENDER_DIAMETER}, ${TILE_SIZE}px)`,
+                gridTemplateRows: `repeat(${RENDER_DIAMETER}, ${TILE_SIZE}px)`,
                 transform: `scale(${zoom})`,
               }}
             >
@@ -455,7 +676,8 @@ function MapView() {
                   key={`${tile.x}:${tile.y}`}
                   tile={tile}
                   selected={selectedTile && selectedTile.x === tile.x && selectedTile.y === tile.y}
-                  onSelect={setSelectedTile}
+                  onSelect={selectTile}
+                  creatureById={creatureById}
                 />
               ))}
             </div>
@@ -466,9 +688,9 @@ function MapView() {
             onPointerDown={(event) => event.stopPropagation()}
             onWheel={(event) => event.stopPropagation()}
           >
-            <button type="button" onClick={() => zoomAtPoint(zoom - 0.12, window.innerWidth / 2, window.innerHeight / 2)} aria-label="Zoom out">−</button>
-            <button type="button" className="zoom-readout" onClick={() => zoomAtPoint(1, window.innerWidth / 2, window.innerHeight / 2)} aria-label="Reset zoom">{Math.round(zoom * 100)}%</button>
-            <button type="button" onClick={() => zoomAtPoint(zoom + 0.12, window.innerWidth / 2, window.innerHeight / 2)} aria-label="Zoom in">+</button>
+            <button type="button" onClick={() => zoomAtPoint(zoom - ZOOM_STEP, window.innerWidth / 2, window.innerHeight / 2)} aria-label="Zoom out">−</button>
+            <button type="button" className="zoom-readout" onClick={resetCamera} aria-label="Reset map and zoom">{Math.round(zoom * 100)}%</button>
+            <button type="button" onClick={() => zoomAtPoint(zoom + ZOOM_STEP, window.innerWidth / 2, window.innerHeight / 2)} aria-label="Zoom in">+</button>
           </div>
 
           <div className="map-control-hint">
@@ -483,30 +705,62 @@ function MapView() {
             <div><span className="key-dot key-frontier" /> Visible frontier</div>
             <div><span className="key-dot key-fog" /> Unknown</div>
           </div>
-          <div className="map-position">WORLD {Math.round(-pan.x / TILE_STEP)}, {Math.round(-pan.y / TILE_STEP)}</div>
+          <div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
         </div>
 
         <div className="map-footer-bar">
-          <div><span>EXPLORED</span><strong>1</strong></div>
-          <div><span>FRONTIER</span><strong>4</strong></div>
-          <div><span>CREATURES COMPLETED</span><strong>1 / {MASTER_CREATURE_COUNT}</strong></div>
+          <div><span>EXPLORED</span><strong>{exploredCount}</strong></div>
+          <div><span>FRONTIER</span><strong>{frontierCount}</strong></div>
+          <div><span>CREATURES COMPLETED</span><strong>{exploredCount} / {creatureCount}</strong></div>
           <div className="footer-note"><Eye size={13} /> The wider map remains hidden.</div>
         </div>
       </section>
-      <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={() => setSelectedTile(null)} />
+
+      <SidePanel
+        open={panelOpen}
+        setOpen={setPanelOpen}
+        selectedTile={selectedTile}
+        onClear={() => setSelectedTile(null)}
+        onComplete={handleComplete}
+        exploredCount={exploredCount}
+        frontierCount={frontierCount}
+        creatureById={creatureById}
+        creatureCount={creatureCount}
+      />
     </div>
   )
 }
 
 function App() {
   const [tab, setTab] = useState('map')
+  const [creatures] = useState(() => {
+    try {
+      return loadCreatureCatalog()
+    } catch {
+      return []
+    }
+  })
+  const [completedCount, setCompletedCount] = useState(1)
 
-  const page = useMemo(() => {
-    if (tab === 'skills') return <SkillsView />
-    if (tab === 'quests') return <QuestsView />
-    if (tab === 'diaries') return <DiariesView />
-    return <MapView />
-  }, [tab])
+  if (creatures.length === 0) {
+    return (
+      <div className="app-shell">
+        <div className="full-tab-page">
+          <div className="tab-page-heading">
+            <div className="eyebrow"><ShieldCheck size={14} /> DATA ERROR</div>
+            <h1>Creature data could not be loaded</h1>
+            <p>Check that <code>data/creatures.csv</code> exists in the repository and contains an Active creature pool.</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const creatureCount = creatures.length
+  const page = tab === 'skills' ? <SkillsView />
+    : tab === 'quests' ? <QuestsView />
+      : tab === 'diaries' ? <DiariesView />
+        : <MapView creatures={creatures} onCompletedCountChange={setCompletedCount} />
 
   return (
     <div className="app-shell">
@@ -520,8 +774,13 @@ function App() {
         </div>
 
         <nav className="top-tabs" aria-label="Primary navigation">
-          {topTabs.map(({ id, label, icon: Icon }) => (
-            <button key={id} className={tab === id ? 'active' : ''} onClick={() => setTab(id)}>
+          {[
+            { id: 'map', label: 'Map', icon: LayoutGrid },
+            { id: 'skills', label: 'Skills', icon: Gem },
+            { id: 'quests', label: 'Quests', icon: ScrollText },
+            { id: 'diaries', label: 'Diaries', icon: BookOpen },
+          ].map(({ id, label, icon: Icon }) => (
+            <button type="button" key={id} className={tab === id ? 'active' : ''} onClick={() => setTab(id)}>
               <Icon size={16} />{label}
             </button>
           ))}
@@ -529,18 +788,18 @@ function App() {
 
         <div className="header-actions">
           <div className="header-progress">
-            <div className="progress-label"><span>CREATURES</span><strong>1 / {MASTER_CREATURE_COUNT}</strong></div>
-            <div className="progress-track"><div className="progress-fill" style={{ width: `${100 / MASTER_CREATURE_COUNT}%` }} /></div>
+            <div className="progress-label"><span>CREATURES</span><strong>{completedCount} / {creatureCount}</strong></div>
+            <div className="progress-track"><div className="progress-fill" style={{ width: `${Math.max(0, Math.min(100, (completedCount / creatureCount) * 100))}%` }} /></div>
           </div>
-          <button className="account-button"><Users size={16} /> Account</button>
+          <button type="button" className="account-button"><Users size={16} /> Account</button>
         </div>
       </header>
 
       <main className="app-main">{page}</main>
 
       <footer className="footer">
-        <span>ZOOLOGIST • FRONTEND PROTOTYPE</span>
-        <span>Square grid • Fog of war • Edge pan • Arrow keys • Middle mouse • Wheel zoom</span>
+        <span>ZOOLOGIST • MASTER DATA CONNECTED</span>
+        <span>{creatureCount} Active creatures • Local images • Square grid • Fog of war</span>
       </footer>
     </div>
   )

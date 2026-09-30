@@ -65,14 +65,17 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 .legend-swatch.fog { background: #2a363d; }
 
 .map-stage { position: absolute; inset: 0; min-height: 0; overflow: hidden; background-color: #0a1115; cursor: grab; touch-action: none; user-select: none; background-image: linear-gradient(rgba(31,44,52,.35) 1px, transparent 1px), linear-gradient(90deg, rgba(31,44,52,.35) 1px, transparent 1px); background-size: 131px 131px; }
+.map-stage button { -webkit-user-drag: none; }
 .map-stage::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(29,45,50,.15) 0, rgba(8,13,17,.50) 72%, rgba(4,8,10,.78) 100%); pointer-events: none; }
 .map-stage:focus-visible { outline: 1px solid rgba(213,170,99,.36); outline-offset: -1px; }
 .map-stage.is-dragging { cursor: grabbing; }
 .map-stage::after { content: ''; position: absolute; left: 18%; right: 18%; top: 13%; bottom: 13%; border: 1px dashed rgba(115,140,150,.07); border-radius: 10px; pointer-events: none; }
 .map-grid-pan { position: absolute; z-index: 2; left: 50%; top: 50%; pointer-events: auto; will-change: transform; }
-.map-grid { display: grid; gap: 2px; transform-origin: center center; pointer-events: auto; will-change: transform; transition: transform .24s cubic-bezier(.2,.75,.2,1); }
-.map-tile { position: relative; width: 128px; height: 128px; border: 1px solid #23313a; background: #0d151a; color: #56656e; display: grid; place-items: center; padding: 5px; cursor: pointer; transition: transform .13s ease, border-color .13s ease, box-shadow .13s ease, background .13s ease; overflow: hidden; }
-.map-tile:hover { transform: translateY(-1px); z-index: 3; }
+.map-grid { display: grid; gap: 3px; transform-origin: center center; pointer-events: auto; will-change: transform; transition: none; }
+.creature-image { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: auto; user-select: none; pointer-events: none; }
+.creature-fallback-glyph { display: block; line-height: 1; }
+.map-tile { position: relative; width: 128px; height: 128px; border: 1px solid #23313a; background: #0d151a; color: #56656e; display: grid; place-items: center; padding: 5px; cursor: pointer; transition: border-color .13s ease, box-shadow .13s ease, background .13s ease; overflow: hidden; transform: none; }
+.map-tile:hover { z-index: 3; }
 .map-tile:focus-visible { outline: 2px solid rgba(238,225,198,.85); outline-offset: -2px; z-index: 4; }
 .map-tile-explored { background: var(--explored-bg); border-color: #385146; }
 .map-tile-explored:hover { border-color: #5b7e6b; box-shadow: 0 0 0 2px rgba(112,151,131,.08); }
@@ -178,4 +181,69 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
   .brand-subtitle { display: none; }.brand-name { font-size: 14px; }.top-tabs button { font-size: 10px; }.top-tabs svg { width: 14px; }
   .map-panel { min-height: 585px; }.map-control-hint { font-size: 8px; padding: 8px 9px; }
   .map-grid { transform-origin: center center; }.map-stage { min-height: 560px; }.map-footer-bar { gap: 12px; flex-wrap: wrap; padding: 9px 12px; }.map-footer-bar .footer-note { display: none; }.full-tab-page { padding: 19px; }.skills-grid { grid-template-columns: 1fr; }
+}
+
+
+
+/* Consolidated creature image rendering: preserve aspect ratio and avoid upscaling. */
+.creature-glyph {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.creature-glyph-tile {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 78px;
+  height: 78px;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.creature-glyph-tile .creature-image {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  display: block;
+  user-select: none;
+}
+
+.creature-glyph-hero {
+  width: 74px;
+  height: 74px;
+}
+
+.creature-glyph-hero .creature-image {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.map-stage, .map-layout {
+  overscroll-behavior: contain;
+}
+
+.map-grid-pan {
+  transform-origin: center center;
+}
+
+@media (max-width: 760px) {
+  .creature-glyph-tile {
+    width: 60px;
+    height: 60px;
+    top: 43%;
+  }
 }

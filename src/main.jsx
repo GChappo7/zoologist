@@ -69,7 +69,9 @@ const SKILL_BOX_ASSETS = {
 }
 
 function skillIconUrl(skill) {
-  const filename = String(skill ?? '').replace(/\s+/g,'_')
+  const name = String(skill ?? '')
+  if(name === 'Sailing') return 'https://oldschool.runescape.wiki/images/Sailing_icon.png'
+  const filename = name.replace(/\s+/g,'_')
   return `https://oldschool.runescape.wiki/images/${filename}_icon_(detail).png`
 }
 

@@ -150,6 +150,21 @@ function getSkillRewardSequence(skill){
 function getInitialSkillProgress(){
   return Object.fromEntries(rewardCatalog.lockedSkills.map(skill=>[skill,{unlocked:false,maxLevel:0,nextRewardIndex:0}]))
 }
+function normalizeSkillProgress(saved){
+  const initial=getInitialSkillProgress()
+  for(const skill of rewardCatalog.lockedSkills){
+    const value=saved?.[skill]
+    if(!value)continue
+    if(value.unlocked===true&&Number(value.maxLevel)===0){
+      initial[skill]={unlocked:false,maxLevel:0,nextRewardIndex:0}
+      continue
+    }
+    const maxLevel=Math.min(99,Math.max(0,Number(value.maxLevel)||0))
+    const nextRewardIndex=Math.min(10,Math.max(0,Number(value.nextRewardIndex)||0))
+    initial[skill]={unlocked:maxLevel>0,maxLevel,nextRewardIndex}
+  }
+  return initial
+}
 function getNextSkillBand(skillProgress,skill){
   const progress=skillProgress?.[skill]??{nextRewardIndex:0}
   return getSkillRewardSequence(skill)[progress.nextRewardIndex]??null
@@ -388,7 +403,7 @@ function App(){
   const [tab,setTab]=useState('map')
   const [creatures]=useState(()=>{try{return loadCreatureCatalog()}catch{return[]}})
   const [progress,setProgress]=useState({explored:0,revealed:1})
-  const [skillProgress,setSkillProgress]=useState(()=>{try{return JSON.parse(localStorage.getItem('zoologist-skill-progress'))||getInitialSkillProgress()}catch{return getInitialSkillProgress()}})
+  const [skillProgress,setSkillProgress]=useState(()=>{try{return normalizeSkillProgress(JSON.parse(localStorage.getItem('zoologist-skill-progress')))}catch{return getInitialSkillProgress()}})
   useEffect(()=>localStorage.setItem('zoologist-skill-progress',JSON.stringify(skillProgress)),[skillProgress])
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{
     const skill=reward?.skill

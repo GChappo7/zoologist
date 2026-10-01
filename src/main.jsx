@@ -35,8 +35,8 @@ function parseCsv(text){
     if(char==='"'&&quoted&&next==='"'){field+='"';i+=1;continue}
     if(char==='"'){quoted=!quoted;continue}
     if(char===','&&!quoted){row.push(field);field='';continue}
-    if((char==='\\n'||char==='\\r')&&!quoted){
-      if(char==='\\r'&&next==='\\n')i+=1
+    if((char==='\n'||char==='\r')&&!quoted){
+      if(char==='\r'&&next==='\n')i+=1
       row.push(field);field=''
       if(row.some(v=>v.trim()!==''))rows.push(row)
       row=[];continue
@@ -50,7 +50,7 @@ function parseCsv(text){
   return rows.slice(1).map(values=>Object.fromEntries(headers.map((h,i)=>[h,(values[i]??'').trim()])))
 }
 function firstValue(row,...keys){for(const key of keys){const value=row[key.toLowerCase()];if(value!=null&&value!=='')return value}return''}
-function slugifyCreatureName(name){return(name??'').toLowerCase().replace(/’/g,'').replace(/\\([^)]*\\)/g,' ').replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'')}
+function slugifyCreatureName(name){return(name??'').toLowerCase().replace(/’/g,'').replace(/\([^)]*\)/g,' ').replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'')}
 function rowToCreature(row){
   const id=Number(firstValue(row,'id')),name=firstValue(row,'candidate')
   const score=Number(firstValue(row,'accessibility score','accessibility_score','accessibility'))

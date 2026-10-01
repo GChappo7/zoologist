@@ -220,7 +220,7 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById}){
     </div>}
   </aside>
 }
-function MapView({creatures,onCompletedCountChange}){
+function MapView({creatures,onProgressChange}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[startCreature]=useState(()=>pickStartingCreature(creatures))
   const [tiles,setTiles]=useState(()=>createInitialTiles(creatures,startCreature)),[fogVisible,setFogVisible]=useState(false),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false)
@@ -281,6 +281,7 @@ function MapView({creatures,onCompletedCountChange}){
     return{cells,gridSize,offsetX:pan.x+centreTileX*TILE_STEP*zoom,offsetY:pan.y+centreTileY*TILE_STEP*zoom}
   },[centreTileX,centreTileY,pan.x,pan.y,tiles,zoom,fogVisible])
   const exploredCount=knownTiles.filter(t=>t.state==='explored').length,frontierCount=knownTiles.filter(t=>t.state==='frontier').length,creatureCount=creatures.length
+  useEffect(()=>{onProgressChange?.({explored:exploredCount,revealed:frontierCount})},[exploredCount,frontierCount,onProgressChange])
   const openTile=tile=>{
     if(!tile?.creatureId)return
     setSelectedTile(tile)
@@ -299,7 +300,7 @@ function MapView({creatures,onCompletedCountChange}){
     setTiles(current=>recomputeFrontier({...current,[keyFor(tile.x,tile.y)]:completed},creatures))
     setSelectedTile(completed)
     setPanelOpen(false)
-    onCompletedCountChange?.(n=>n+1)
+    onProgressChange?.({explored:1, revealed:frontierCount})
   }
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
@@ -316,14 +317,14 @@ function MapView({creatures,onCompletedCountChange}){
 function App(){
   const [tab,setTab]=useState('map')
   const [creatures]=useState(()=>{try{return loadCreatureCatalog()}catch{return[]}})
-  const [completedCount,setCompletedCount]=useState(0)
+  const [progress,setProgress]=useState({explored:0,revealed:1})
   if(!creatures.length)return <div className="app-shell"><div className="full-tab-page"><h1>Creature data could not be loaded</h1><p>Check data/creatures.csv.</p></div></div>
   const creatureCount=creatures.length
   const tabs=[
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText},
     {id:'diaries',label:'Diaries',icon:BookOpen},{id:'shop',label:'Shop',icon:ShoppingBag},{id:'bosses',label:'Bosses',icon:Skull}
   ]
-  const page=tab==='skills'?<SkillsView/>:tab==='quests'?<QuestsView/>:tab==='diaries'?<DiariesView/>:tab==='shop'?<ShopView/>:tab==='bosses'?<BossView/>:<MapView creatures={creatures} onCompletedCountChange={setCompletedCount}/>
-  return <div className="app-shell"><header className="topbar"><div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration</div></div></div><nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} className={tab===id?'active':''} onClick={()=>setTab(id)}><Icon size={16}/>{label}</button>)}</nav><div className="header-actions"><div className="header-progress"><div className="progress-label"><span>CREATURES EXPLORED</span><strong>{completedCount} / {creatureCount}</strong></div><div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,completedCount/creatureCount*100)}%`}}/></div></div><button className="account-button"><Users size={16}/> Account</button></div></header><main className="app-main">{page}</main><footer className="footer"><span>ZOOLOGIST • MASTER DATA CONNECTED</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer></div>
+  const page=tab==='skills'?<SkillsView/>:tab==='quests'?<QuestsView/>:tab==='diaries'?<DiariesView/>:tab==='shop'?<ShopView/>:tab==='bosses'?<BossView/>:<MapView creatures={creatures} onProgressChange={setProgress}/>
+  return <div className="app-shell"><header className="topbar"><div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration</div></div></div><nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} className={tab===id?'active':''} onClick={()=>setTab(id)}><Icon size={16}/>{label}</button>)}</nav><div className="header-actions"><div className="header-progress"><div className="progress-label"><span>EXPLORED <b>{progress.explored}</b> · REVEALED <b>{progress.revealed}</b></span><strong>{progress.explored} / {creatureCount}</strong></div><div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,progress.explored/creatureCount*100)}%`}}/></div></div><button className="account-button"><Users size={16}/> Account</button></div></header><main className="app-main">{page}</main><footer className="footer"><span>ZOOLOGIST • MASTER DATA CONNECTED</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer></div>
 }
 createRoot(document.getElementById('root')).render(<App />)

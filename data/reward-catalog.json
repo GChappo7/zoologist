@@ -1,0 +1,3012 @@
+{
+  "version": 1,
+  "mandatory": [
+    {
+      "id": "quest-novice-1",
+      "type": "quest",
+      "questId": "novice-1",
+      "label": "A Porcine of Interest"
+    },
+    {
+      "id": "quest-novice-2",
+      "type": "quest",
+      "questId": "novice-2",
+      "label": "A Ruff Situation"
+    },
+    {
+      "id": "quest-novice-3",
+      "type": "quest",
+      "questId": "novice-3",
+      "label": "Below Ice Mountain"
+    },
+    {
+      "id": "quest-novice-4",
+      "type": "quest",
+      "questId": "novice-4",
+      "label": "Biohazard"
+    },
+    {
+      "id": "quest-novice-5",
+      "type": "quest",
+      "questId": "novice-5",
+      "label": "Children of the Sun"
+    },
+    {
+      "id": "quest-novice-6",
+      "type": "quest",
+      "questId": "novice-6",
+      "label": "Client of Kourend"
+    },
+    {
+      "id": "quest-novice-7",
+      "type": "quest",
+      "questId": "novice-7",
+      "label": "Clock Tower"
+    },
+    {
+      "id": "quest-novice-8",
+      "type": "quest",
+      "questId": "novice-8",
+      "label": "Cook's Assistant"
+    },
+    {
+      "id": "quest-novice-9",
+      "type": "quest",
+      "questId": "novice-9",
+      "label": "Current Affairs"
+    },
+    {
+      "id": "quest-novice-10",
+      "type": "quest",
+      "questId": "novice-10",
+      "label": "Death Plateau"
+    },
+    {
+      "id": "quest-novice-11",
+      "type": "quest",
+      "questId": "novice-11",
+      "label": "Demon Slayer"
+    },
+    {
+      "id": "quest-novice-12",
+      "type": "quest",
+      "questId": "novice-12",
+      "label": "Doric's Quest"
+    },
+    {
+      "id": "quest-novice-13",
+      "type": "quest",
+      "questId": "novice-13",
+      "label": "Druidic Ritual"
+    },
+    {
+      "id": "quest-novice-14",
+      "type": "quest",
+      "questId": "novice-14",
+      "label": "Dwarf Cannon"
+    },
+    {
+      "id": "quest-novice-15",
+      "type": "quest",
+      "questId": "novice-15",
+      "label": "Eagles' Peak"
+    },
+    {
+      "id": "quest-novice-16",
+      "type": "quest",
+      "questId": "novice-16",
+      "label": "Elemental Workshop I"
+    },
+    {
+      "id": "quest-novice-17",
+      "type": "quest",
+      "questId": "novice-17",
+      "label": "Ernest the Chicken"
+    },
+    {
+      "id": "quest-novice-18",
+      "type": "quest",
+      "questId": "novice-18",
+      "label": "Ethically Acquired Antiquities"
+    },
+    {
+      "id": "quest-novice-19",
+      "type": "quest",
+      "questId": "novice-19",
+      "label": "Fishing Contest"
+    },
+    {
+      "id": "quest-novice-20",
+      "type": "quest",
+      "questId": "novice-20",
+      "label": "Gertrude's Cat"
+    },
+    {
+      "id": "quest-novice-21",
+      "type": "quest",
+      "questId": "novice-21",
+      "label": "Goblin Diplomacy"
+    },
+    {
+      "id": "quest-novice-22",
+      "type": "quest",
+      "questId": "novice-22",
+      "label": "Hazeel Cult"
+    },
+    {
+      "id": "quest-novice-23",
+      "type": "quest",
+      "questId": "novice-23",
+      "label": "Imp Catcher"
+    },
+    {
+      "id": "quest-novice-24",
+      "type": "quest",
+      "questId": "novice-24",
+      "label": "Jungle Potion"
+    },
+    {
+      "id": "quest-novice-25",
+      "type": "quest",
+      "questId": "novice-25",
+      "label": "Learning the Ropes"
+    },
+    {
+      "id": "quest-novice-26",
+      "type": "quest",
+      "questId": "novice-26",
+      "label": "Misthalin Mystery"
+    },
+    {
+      "id": "quest-novice-27",
+      "type": "quest",
+      "questId": "novice-27",
+      "label": "Monk's Friend"
+    },
+    {
+      "id": "quest-novice-28",
+      "type": "quest",
+      "questId": "novice-28",
+      "label": "Murder Mystery"
+    },
+    {
+      "id": "quest-novice-29",
+      "type": "quest",
+      "questId": "novice-29",
+      "label": "Pandemonium"
+    },
+    {
+      "id": "quest-novice-30",
+      "type": "quest",
+      "questId": "novice-30",
+      "label": "Pirate's Treasure"
+    },
+    {
+      "id": "quest-novice-31",
+      "type": "quest",
+      "questId": "novice-31",
+      "label": "Plague City"
+    },
+    {
+      "id": "quest-novice-32",
+      "type": "quest",
+      "questId": "novice-32",
+      "label": "Priest in Peril"
+    },
+    {
+      "id": "quest-novice-33",
+      "type": "quest",
+      "questId": "novice-33",
+      "label": "Prince Ali Rescue"
+    },
+    {
+      "id": "quest-novice-34",
+      "type": "quest",
+      "questId": "novice-34",
+      "label": "Rag and Bone Man I"
+    },
+    {
+      "id": "quest-novice-35",
+      "type": "quest",
+      "questId": "novice-35",
+      "label": "Recruitment Drive"
+    },
+    {
+      "id": "quest-novice-36",
+      "type": "quest",
+      "questId": "novice-36",
+      "label": "Romeo & Juliet"
+    },
+    {
+      "id": "quest-novice-37",
+      "type": "quest",
+      "questId": "novice-37",
+      "label": "Rune Mysteries"
+    },
+    {
+      "id": "quest-novice-38",
+      "type": "quest",
+      "questId": "novice-38",
+      "label": "Sheep Herder"
+    },
+    {
+      "id": "quest-novice-39",
+      "type": "quest",
+      "questId": "novice-39",
+      "label": "Sheep Shearer"
+    },
+    {
+      "id": "quest-novice-40",
+      "type": "quest",
+      "questId": "novice-40",
+      "label": "Shield of Arrav"
+    },
+    {
+      "id": "quest-novice-41",
+      "type": "quest",
+      "questId": "novice-41",
+      "label": "The Ides of Milk"
+    },
+    {
+      "id": "quest-novice-42",
+      "type": "quest",
+      "questId": "novice-42",
+      "label": "The Restless Ghost"
+    },
+    {
+      "id": "quest-novice-43",
+      "type": "quest",
+      "questId": "novice-43",
+      "label": "The Ribbiting Tale of a Lily Pad Labour Dispute"
+    },
+    {
+      "id": "quest-novice-44",
+      "type": "quest",
+      "questId": "novice-44",
+      "label": "Tower of Life"
+    },
+    {
+      "id": "quest-novice-45",
+      "type": "quest",
+      "questId": "novice-45",
+      "label": "Witch's Potion"
+    },
+    {
+      "id": "quest-novice-46",
+      "type": "quest",
+      "questId": "novice-46",
+      "label": "X Marks the Spot"
+    },
+    {
+      "id": "quest-intermediate-1",
+      "type": "quest",
+      "questId": "intermediate-1",
+      "label": "A Soul's Bane"
+    },
+    {
+      "id": "quest-intermediate-2",
+      "type": "quest",
+      "questId": "intermediate-2",
+      "label": "A Tail of Two Cats"
+    },
+    {
+      "id": "quest-intermediate-3",
+      "type": "quest",
+      "questId": "intermediate-3",
+      "label": "Animal Magnetism"
+    },
+    {
+      "id": "quest-intermediate-4",
+      "type": "quest",
+      "questId": "intermediate-4",
+      "label": "Another Slice of H.A.M."
+    },
+    {
+      "id": "quest-intermediate-5",
+      "type": "quest",
+      "questId": "intermediate-5",
+      "label": "At First Light"
+    },
+    {
+      "id": "quest-intermediate-6",
+      "type": "quest",
+      "questId": "intermediate-6",
+      "label": "Big Chompy Bird Hunting"
+    },
+    {
+      "id": "quest-intermediate-7",
+      "type": "quest",
+      "questId": "intermediate-7",
+      "label": "Black Knights' Fortress"
+    },
+    {
+      "id": "quest-intermediate-8",
+      "type": "quest",
+      "questId": "intermediate-8",
+      "label": "Bone Voyage"
+    },
+    {
+      "id": "quest-intermediate-9",
+      "type": "quest",
+      "questId": "intermediate-9",
+      "label": "Cold War"
+    },
+    {
+      "id": "quest-intermediate-10",
+      "type": "quest",
+      "questId": "intermediate-10",
+      "label": "Crab Quest"
+    },
+    {
+      "id": "quest-intermediate-11",
+      "type": "quest",
+      "questId": "intermediate-11",
+      "label": "Creature of Fenkenstrain"
+    },
+    {
+      "id": "quest-intermediate-12",
+      "type": "quest",
+      "questId": "intermediate-12",
+      "label": "Death on the Isle"
+    },
+    {
+      "id": "quest-intermediate-13",
+      "type": "quest",
+      "questId": "intermediate-13",
+      "label": "Death to the Dorgeshuun"
+    },
+    {
+      "id": "quest-intermediate-14",
+      "type": "quest",
+      "questId": "intermediate-14",
+      "label": "Eadgar's Ruse"
+    },
+    {
+      "id": "quest-intermediate-15",
+      "type": "quest",
+      "questId": "intermediate-15",
+      "label": "Elemental Workshop II"
+    },
+    {
+      "id": "quest-intermediate-16",
+      "type": "quest",
+      "questId": "intermediate-16",
+      "label": "Enlightened Journey"
+    },
+    {
+      "id": "quest-intermediate-17",
+      "type": "quest",
+      "questId": "intermediate-17",
+      "label": "Fairytale I - Growing Pains"
+    },
+    {
+      "id": "quest-intermediate-18",
+      "type": "quest",
+      "questId": "intermediate-18",
+      "label": "Fight Arena"
+    },
+    {
+      "id": "quest-intermediate-19",
+      "type": "quest",
+      "questId": "intermediate-19",
+      "label": "Forgettable Tale..."
+    },
+    {
+      "id": "quest-intermediate-20",
+      "type": "quest",
+      "questId": "intermediate-20",
+      "label": "Garden of Tranquillity"
+    },
+    {
+      "id": "quest-intermediate-21",
+      "type": "quest",
+      "questId": "intermediate-21",
+      "label": "Getting Ahead"
+    },
+    {
+      "id": "quest-intermediate-22",
+      "type": "quest",
+      "questId": "intermediate-22",
+      "label": "Ghosts Ahoy"
+    },
+    {
+      "id": "quest-intermediate-23",
+      "type": "quest",
+      "questId": "intermediate-23",
+      "label": "Holy Grail"
+    },
+    {
+      "id": "quest-intermediate-24",
+      "type": "quest",
+      "questId": "intermediate-24",
+      "label": "Horror from the Deep"
+    },
+    {
+      "id": "quest-intermediate-25",
+      "type": "quest",
+      "questId": "intermediate-25",
+      "label": "Icthlarin's Little Helper"
+    },
+    {
+      "id": "quest-intermediate-26",
+      "type": "quest",
+      "questId": "intermediate-26",
+      "label": "In Aid of the Myreque"
+    },
+    {
+      "id": "quest-intermediate-27",
+      "type": "quest",
+      "questId": "intermediate-27",
+      "label": "In Search of the Myreque"
+    },
+    {
+      "id": "quest-intermediate-28",
+      "type": "quest",
+      "questId": "intermediate-28",
+      "label": "Lost City"
+    },
+    {
+      "id": "quest-intermediate-29",
+      "type": "quest",
+      "questId": "intermediate-29",
+      "label": "Making History"
+    },
+    {
+      "id": "quest-intermediate-30",
+      "type": "quest",
+      "questId": "intermediate-30",
+      "label": "Merlin's Crystal"
+    },
+    {
+      "id": "quest-intermediate-31",
+      "type": "quest",
+      "questId": "intermediate-31",
+      "label": "Mountain Daughter"
+    },
+    {
+      "id": "quest-intermediate-32",
+      "type": "quest",
+      "questId": "intermediate-32",
+      "label": "Nature Spirit"
+    },
+    {
+      "id": "quest-intermediate-33",
+      "type": "quest",
+      "questId": "intermediate-33",
+      "label": "Observatory Quest"
+    },
+    {
+      "id": "quest-intermediate-34",
+      "type": "quest",
+      "questId": "intermediate-34",
+      "label": "Olaf's Quest"
+    },
+    {
+      "id": "quest-intermediate-35",
+      "type": "quest",
+      "questId": "intermediate-35",
+      "label": "Prying Times"
+    },
+    {
+      "id": "quest-intermediate-36",
+      "type": "quest",
+      "questId": "intermediate-36",
+      "label": "Ratcatchers"
+    },
+    {
+      "id": "quest-intermediate-37",
+      "type": "quest",
+      "questId": "intermediate-37",
+      "label": "Scorpion Catcher"
+    },
+    {
+      "id": "quest-intermediate-38",
+      "type": "quest",
+      "questId": "intermediate-38",
+      "label": "Scrambled!"
+    },
+    {
+      "id": "quest-intermediate-39",
+      "type": "quest",
+      "questId": "intermediate-39",
+      "label": "Sea Slug"
+    },
+    {
+      "id": "quest-intermediate-40",
+      "type": "quest",
+      "questId": "intermediate-40",
+      "label": "Shades of Mort'ton"
+    },
+    {
+      "id": "quest-intermediate-41",
+      "type": "quest",
+      "questId": "intermediate-41",
+      "label": "Shadow of the Storm"
+    },
+    {
+      "id": "quest-intermediate-42",
+      "type": "quest",
+      "questId": "intermediate-42",
+      "label": "Shilo Village"
+    },
+    {
+      "id": "quest-intermediate-43",
+      "type": "quest",
+      "questId": "intermediate-43",
+      "label": "Sleeping Giants"
+    },
+    {
+      "id": "quest-intermediate-44",
+      "type": "quest",
+      "questId": "intermediate-44",
+      "label": "Spirits of the Elid"
+    },
+    {
+      "id": "quest-intermediate-45",
+      "type": "quest",
+      "questId": "intermediate-45",
+      "label": "Tai Bwo Wannai Trio"
+    },
+    {
+      "id": "quest-intermediate-46",
+      "type": "quest",
+      "questId": "intermediate-46",
+      "label": "Tale of the Righteous"
+    },
+    {
+      "id": "quest-intermediate-47",
+      "type": "quest",
+      "questId": "intermediate-47",
+      "label": "Tears of Guthix"
+    },
+    {
+      "id": "quest-intermediate-48",
+      "type": "quest",
+      "questId": "intermediate-48",
+      "label": "Temple of Ikov"
+    },
+    {
+      "id": "quest-intermediate-49",
+      "type": "quest",
+      "questId": "intermediate-49",
+      "label": "Temple of the Eye"
+    },
+    {
+      "id": "quest-intermediate-50",
+      "type": "quest",
+      "questId": "intermediate-50",
+      "label": "The Ascent of Arceuus"
+    },
+    {
+      "id": "quest-intermediate-51",
+      "type": "quest",
+      "questId": "intermediate-51",
+      "label": "The Corsair Curse"
+    },
+    {
+      "id": "quest-intermediate-52",
+      "type": "quest",
+      "questId": "intermediate-52",
+      "label": "The Depths of Despair"
+    },
+    {
+      "id": "quest-intermediate-53",
+      "type": "quest",
+      "questId": "intermediate-53",
+      "label": "The Dig Site"
+    },
+    {
+      "id": "quest-intermediate-54",
+      "type": "quest",
+      "questId": "intermediate-54",
+      "label": "The Eyes of Glouphrie"
+    },
+    {
+      "id": "quest-intermediate-55",
+      "type": "quest",
+      "questId": "intermediate-55",
+      "label": "The Feud"
+    },
+    {
+      "id": "quest-intermediate-56",
+      "type": "quest",
+      "questId": "intermediate-56",
+      "label": "The Forsaken Tower"
+    },
+    {
+      "id": "quest-intermediate-57",
+      "type": "quest",
+      "questId": "intermediate-57",
+      "label": "The Fremennik Trials"
+    },
+    {
+      "id": "quest-intermediate-58",
+      "type": "quest",
+      "questId": "intermediate-58",
+      "label": "The Garden of Death"
+    },
+    {
+      "id": "quest-intermediate-59",
+      "type": "quest",
+      "questId": "intermediate-59",
+      "label": "The Giant Dwarf"
+    },
+    {
+      "id": "quest-intermediate-60",
+      "type": "quest",
+      "questId": "intermediate-60",
+      "label": "The Golem"
+    },
+    {
+      "id": "quest-intermediate-61",
+      "type": "quest",
+      "questId": "intermediate-61",
+      "label": "The Grand Tree"
+    },
+    {
+      "id": "quest-intermediate-62",
+      "type": "quest",
+      "questId": "intermediate-62",
+      "label": "The Hand in the Sand"
+    },
+    {
+      "id": "quest-intermediate-63",
+      "type": "quest",
+      "questId": "intermediate-63",
+      "label": "The Knight's Sword"
+    },
+    {
+      "id": "quest-intermediate-64",
+      "type": "quest",
+      "questId": "intermediate-64",
+      "label": "The Lost Tribe"
+    },
+    {
+      "id": "quest-intermediate-65",
+      "type": "quest",
+      "questId": "intermediate-65",
+      "label": "The Queen of Thieves"
+    },
+    {
+      "id": "quest-intermediate-66",
+      "type": "quest",
+      "questId": "intermediate-66",
+      "label": "The Slug Menace"
+    },
+    {
+      "id": "quest-intermediate-67",
+      "type": "quest",
+      "questId": "intermediate-67",
+      "label": "The Tourist Trap"
+    },
+    {
+      "id": "quest-intermediate-68",
+      "type": "quest",
+      "questId": "intermediate-68",
+      "label": "Tree Gnome Village"
+    },
+    {
+      "id": "quest-intermediate-69",
+      "type": "quest",
+      "questId": "intermediate-69",
+      "label": "Tribal Totem"
+    },
+    {
+      "id": "quest-intermediate-70",
+      "type": "quest",
+      "questId": "intermediate-70",
+      "label": "Troll Romance"
+    },
+    {
+      "id": "quest-intermediate-71",
+      "type": "quest",
+      "questId": "intermediate-71",
+      "label": "Troll Stronghold"
+    },
+    {
+      "id": "quest-intermediate-72",
+      "type": "quest",
+      "questId": "intermediate-72",
+      "label": "Twilight's Promise"
+    },
+    {
+      "id": "quest-intermediate-73",
+      "type": "quest",
+      "questId": "intermediate-73",
+      "label": "Vampyre Slayer"
+    },
+    {
+      "id": "quest-intermediate-74",
+      "type": "quest",
+      "questId": "intermediate-74",
+      "label": "Wanted!"
+    },
+    {
+      "id": "quest-intermediate-75",
+      "type": "quest",
+      "questId": "intermediate-75",
+      "label": "Watchtower"
+    },
+    {
+      "id": "quest-intermediate-76",
+      "type": "quest",
+      "questId": "intermediate-76",
+      "label": "Waterfall Quest"
+    },
+    {
+      "id": "quest-intermediate-77",
+      "type": "quest",
+      "questId": "intermediate-77",
+      "label": "What Lies Below"
+    },
+    {
+      "id": "quest-intermediate-78",
+      "type": "quest",
+      "questId": "intermediate-78",
+      "label": "Witch's House"
+    },
+    {
+      "id": "quest-intermediate-79",
+      "type": "quest",
+      "questId": "intermediate-79",
+      "label": "Zogre Flesh Eaters"
+    },
+    {
+      "id": "quest-experienced-1",
+      "type": "quest",
+      "questId": "experienced-1",
+      "label": "A Kingdom Divided"
+    },
+    {
+      "id": "quest-experienced-2",
+      "type": "quest",
+      "questId": "experienced-2",
+      "label": "A Taste of Hope"
+    },
+    {
+      "id": "quest-experienced-3",
+      "type": "quest",
+      "questId": "experienced-3",
+      "label": "Between a Rock..."
+    },
+    {
+      "id": "quest-experienced-4",
+      "type": "quest",
+      "questId": "experienced-4",
+      "label": "Cabin Fever"
+    },
+    {
+      "id": "quest-experienced-5",
+      "type": "quest",
+      "questId": "experienced-5",
+      "label": "Contact!"
+    },
+    {
+      "id": "quest-experienced-6",
+      "type": "quest",
+      "questId": "experienced-6",
+      "label": "Darkness of Hallowvale"
+    },
+    {
+      "id": "quest-experienced-7",
+      "type": "quest",
+      "questId": "experienced-7",
+      "label": "Defender of Varrock"
+    },
+    {
+      "id": "quest-experienced-8",
+      "type": "quest",
+      "questId": "experienced-8",
+      "label": "Devious Minds"
+    },
+    {
+      "id": "quest-experienced-9",
+      "type": "quest",
+      "questId": "experienced-9",
+      "label": "Dragon Slayer I"
+    },
+    {
+      "id": "quest-experienced-10",
+      "type": "quest",
+      "questId": "experienced-10",
+      "label": "Enakhra's Lament"
+    },
+    {
+      "id": "quest-experienced-11",
+      "type": "quest",
+      "questId": "experienced-11",
+      "label": "Fairytale II - Cure a Queen"
+    },
+    {
+      "id": "quest-experienced-12",
+      "type": "quest",
+      "questId": "experienced-12",
+      "label": "Fallen From Grace"
+    },
+    {
+      "id": "quest-experienced-13",
+      "type": "quest",
+      "questId": "experienced-13",
+      "label": "Family Crest"
+    },
+    {
+      "id": "quest-experienced-14",
+      "type": "quest",
+      "questId": "experienced-14",
+      "label": "Haunted Mine"
+    },
+    {
+      "id": "quest-experienced-15",
+      "type": "quest",
+      "questId": "experienced-15",
+      "label": "Heroes' Quest"
+    },
+    {
+      "id": "quest-experienced-16",
+      "type": "quest",
+      "questId": "experienced-16",
+      "label": "King's Ransom"
+    },
+    {
+      "id": "quest-experienced-17",
+      "type": "quest",
+      "questId": "experienced-17",
+      "label": "Land of the Goblins"
+    },
+    {
+      "id": "quest-experienced-18",
+      "type": "quest",
+      "questId": "experienced-18",
+      "label": "Lunar Diplomacy"
+    },
+    {
+      "id": "quest-experienced-19",
+      "type": "quest",
+      "questId": "experienced-19",
+      "label": "Meat and Greet"
+    },
+    {
+      "id": "quest-experienced-20",
+      "type": "quest",
+      "questId": "experienced-20",
+      "label": "My Arm's Big Adventure"
+    },
+    {
+      "id": "quest-experienced-21",
+      "type": "quest",
+      "questId": "experienced-21",
+      "label": "One Small Favour"
+    },
+    {
+      "id": "quest-experienced-22",
+      "type": "quest",
+      "questId": "experienced-22",
+      "label": "Rag and Bone Man II"
+    },
+    {
+      "id": "quest-experienced-23",
+      "type": "quest",
+      "questId": "experienced-23",
+      "label": "Regicide"
+    },
+    {
+      "id": "quest-experienced-24",
+      "type": "quest",
+      "questId": "experienced-24",
+      "label": "Roving Elves"
+    },
+    {
+      "id": "quest-experienced-25",
+      "type": "quest",
+      "questId": "experienced-25",
+      "label": "Royal Trouble"
+    },
+    {
+      "id": "quest-experienced-26",
+      "type": "quest",
+      "questId": "experienced-26",
+      "label": "Rum Deal"
+    },
+    {
+      "id": "quest-experienced-27",
+      "type": "quest",
+      "questId": "experienced-27",
+      "label": "Shadows of Custodia"
+    },
+    {
+      "id": "quest-experienced-28",
+      "type": "quest",
+      "questId": "experienced-28",
+      "label": "The Fremennik Isles"
+    },
+    {
+      "id": "quest-experienced-29",
+      "type": "quest",
+      "questId": "experienced-29",
+      "label": "The Great Brain Robbery"
+    },
+    {
+      "id": "quest-experienced-30",
+      "type": "quest",
+      "questId": "experienced-30",
+      "label": "The Heart of Darkness"
+    },
+    {
+      "id": "quest-experienced-31",
+      "type": "quest",
+      "questId": "experienced-31",
+      "label": "The Path of Glouphrie"
+    },
+    {
+      "id": "quest-experienced-32",
+      "type": "quest",
+      "questId": "experienced-32",
+      "label": "The Red Reef"
+    },
+    {
+      "id": "quest-experienced-33",
+      "type": "quest",
+      "questId": "experienced-33",
+      "label": "Throne of Miscellania"
+    },
+    {
+      "id": "quest-experienced-34",
+      "type": "quest",
+      "questId": "experienced-34",
+      "label": "Troubled Tortugans"
+    },
+    {
+      "id": "quest-experienced-35",
+      "type": "quest",
+      "questId": "experienced-35",
+      "label": "Underground Pass"
+    },
+    {
+      "id": "quest-master-1",
+      "type": "quest",
+      "questId": "master-1",
+      "label": "A Night at the Theatre"
+    },
+    {
+      "id": "quest-master-2",
+      "type": "quest",
+      "questId": "master-2",
+      "label": "Beneath Cursed Sands"
+    },
+    {
+      "id": "quest-master-3",
+      "type": "quest",
+      "questId": "master-3",
+      "label": "Desert Treasure I"
+    },
+    {
+      "id": "quest-master-4",
+      "type": "quest",
+      "questId": "master-4",
+      "label": "Dream Mentor"
+    },
+    {
+      "id": "quest-master-5",
+      "type": "quest",
+      "questId": "master-5",
+      "label": "Grim Tales"
+    },
+    {
+      "id": "quest-master-6",
+      "type": "quest",
+      "questId": "master-6",
+      "label": "Legends' Quest"
+    },
+    {
+      "id": "quest-master-7",
+      "type": "quest",
+      "questId": "master-7",
+      "label": "Making Friends with My Arm"
+    },
+    {
+      "id": "quest-master-8",
+      "type": "quest",
+      "questId": "master-8",
+      "label": "Monkey Madness I"
+    },
+    {
+      "id": "quest-master-9",
+      "type": "quest",
+      "questId": "master-9",
+      "label": "Mourning's End Part I"
+    },
+    {
+      "id": "quest-master-10",
+      "type": "quest",
+      "questId": "master-10",
+      "label": "Mourning's End Part II"
+    },
+    {
+      "id": "quest-master-11",
+      "type": "quest",
+      "questId": "master-11",
+      "label": "Perilous Moons"
+    },
+    {
+      "id": "quest-master-12",
+      "type": "quest",
+      "questId": "master-12",
+      "label": "Secrets of the North"
+    },
+    {
+      "id": "quest-master-13",
+      "type": "quest",
+      "questId": "master-13",
+      "label": "Sins of the Father"
+    },
+    {
+      "id": "quest-master-14",
+      "type": "quest",
+      "questId": "master-14",
+      "label": "Swan Song"
+    },
+    {
+      "id": "quest-master-15",
+      "type": "quest",
+      "questId": "master-15",
+      "label": "The Curse of Arrav"
+    },
+    {
+      "id": "quest-master-16",
+      "type": "quest",
+      "questId": "master-16",
+      "label": "The Final Dawn"
+    },
+    {
+      "id": "quest-master-17",
+      "type": "quest",
+      "questId": "master-17",
+      "label": "The Fremennik Exiles"
+    },
+    {
+      "id": "quest-grandmaster-1",
+      "type": "quest",
+      "questId": "grandmaster-1",
+      "label": "Desert Treasure II - The Fallen Empire"
+    },
+    {
+      "id": "quest-grandmaster-2",
+      "type": "quest",
+      "questId": "grandmaster-2",
+      "label": "Dragon Slayer II"
+    },
+    {
+      "id": "quest-grandmaster-3",
+      "type": "quest",
+      "questId": "grandmaster-3",
+      "label": "Monkey Madness II"
+    },
+    {
+      "id": "quest-grandmaster-4",
+      "type": "quest",
+      "questId": "grandmaster-4",
+      "label": "Song of the Elves"
+    },
+    {
+      "id": "quest-grandmaster-5",
+      "type": "quest",
+      "questId": "grandmaster-5",
+      "label": "The Blood Moon Rises"
+    },
+    {
+      "id": "quest-grandmaster-6",
+      "type": "quest",
+      "questId": "grandmaster-6",
+      "label": "While Guthix Sleeps"
+    },
+    {
+      "id": "quest-special-1",
+      "type": "quest",
+      "questId": "special-1",
+      "label": "Recipe for Disaster"
+    },
+    {
+      "id": "strength-unlock",
+      "type": "skill",
+      "skill": "Strength",
+      "band": "unlock",
+      "label": "Strength — Unlock Skill"
+    },
+    {
+      "id": "strength-1-10",
+      "type": "skill",
+      "skill": "Strength",
+      "band": "1-10",
+      "label": "Strength — Levels 1-10"
+    },
+    {
+      "id": "strength-11-20",
+      "type": "skill",
+      "skill": "Strength",
+      "band": "11-20",
+      "label": "Strength — Levels 11-20"
+    },
+    {
+      "id": "strength-21-30",
+      "type": "skill",
+      "skill": "Strength",
+      "band": "21-30",
+      "label": "Strength — Levels 21-30"
+    },
+    {
+      "id": "strength-31-40",
+      "type": "skill",
+      "skill": "Strength",
+      "band": "31-40",
+      "label": "Strength — Levels 31-40"
+    },
+    {
+      "id": "strength-41-50",
+      "type": "skill",
+      "skill": "Strength",
+      "band": "41-50",
+      "label": "Strength — Levels 41-50"
+    },
+    {
+      "id": "strength-51-60",
+      "type": "skill",
+      "skill": "Strength",
+      "band": "51-60",
+      "label": "Strength — Levels 51-60"
+    },
+    {
+      "id": "strength-61-70",
+      "type": "skill",
+      "skill": "Strength",
+      "band": "61-70",
+      "label": "Strength — Levels 61-70"
+    },
+    {
+      "id": "strength-71-80",
+      "type": "skill",
+      "skill": "Strength",
+      "band": "71-80",
+      "label": "Strength — Levels 71-80"
+    },
+    {
+      "id": "strength-81-90",
+      "type": "skill",
+      "skill": "Strength",
+      "band": "81-90",
+      "label": "Strength — Levels 81-90"
+    },
+    {
+      "id": "strength-91-99",
+      "type": "skill",
+      "skill": "Strength",
+      "band": "91-99",
+      "label": "Strength — Levels 91-99"
+    },
+    {
+      "id": "defence-unlock",
+      "type": "skill",
+      "skill": "Defence",
+      "band": "unlock",
+      "label": "Defence — Unlock Skill"
+    },
+    {
+      "id": "defence-1-10",
+      "type": "skill",
+      "skill": "Defence",
+      "band": "1-10",
+      "label": "Defence — Levels 1-10"
+    },
+    {
+      "id": "defence-11-20",
+      "type": "skill",
+      "skill": "Defence",
+      "band": "11-20",
+      "label": "Defence — Levels 11-20"
+    },
+    {
+      "id": "defence-21-30",
+      "type": "skill",
+      "skill": "Defence",
+      "band": "21-30",
+      "label": "Defence — Levels 21-30"
+    },
+    {
+      "id": "defence-31-40",
+      "type": "skill",
+      "skill": "Defence",
+      "band": "31-40",
+      "label": "Defence — Levels 31-40"
+    },
+    {
+      "id": "defence-41-50",
+      "type": "skill",
+      "skill": "Defence",
+      "band": "41-50",
+      "label": "Defence — Levels 41-50"
+    },
+    {
+      "id": "defence-51-60",
+      "type": "skill",
+      "skill": "Defence",
+      "band": "51-60",
+      "label": "Defence — Levels 51-60"
+    },
+    {
+      "id": "defence-61-70",
+      "type": "skill",
+      "skill": "Defence",
+      "band": "61-70",
+      "label": "Defence — Levels 61-70"
+    },
+    {
+      "id": "defence-71-80",
+      "type": "skill",
+      "skill": "Defence",
+      "band": "71-80",
+      "label": "Defence — Levels 71-80"
+    },
+    {
+      "id": "defence-81-90",
+      "type": "skill",
+      "skill": "Defence",
+      "band": "81-90",
+      "label": "Defence — Levels 81-90"
+    },
+    {
+      "id": "defence-91-99",
+      "type": "skill",
+      "skill": "Defence",
+      "band": "91-99",
+      "label": "Defence — Levels 91-99"
+    },
+    {
+      "id": "ranged-unlock",
+      "type": "skill",
+      "skill": "Ranged",
+      "band": "unlock",
+      "label": "Ranged — Unlock Skill"
+    },
+    {
+      "id": "ranged-1-10",
+      "type": "skill",
+      "skill": "Ranged",
+      "band": "1-10",
+      "label": "Ranged — Levels 1-10"
+    },
+    {
+      "id": "ranged-11-20",
+      "type": "skill",
+      "skill": "Ranged",
+      "band": "11-20",
+      "label": "Ranged — Levels 11-20"
+    },
+    {
+      "id": "ranged-21-30",
+      "type": "skill",
+      "skill": "Ranged",
+      "band": "21-30",
+      "label": "Ranged — Levels 21-30"
+    },
+    {
+      "id": "ranged-31-40",
+      "type": "skill",
+      "skill": "Ranged",
+      "band": "31-40",
+      "label": "Ranged — Levels 31-40"
+    },
+    {
+      "id": "ranged-41-50",
+      "type": "skill",
+      "skill": "Ranged",
+      "band": "41-50",
+      "label": "Ranged — Levels 41-50"
+    },
+    {
+      "id": "ranged-51-60",
+      "type": "skill",
+      "skill": "Ranged",
+      "band": "51-60",
+      "label": "Ranged — Levels 51-60"
+    },
+    {
+      "id": "ranged-61-70",
+      "type": "skill",
+      "skill": "Ranged",
+      "band": "61-70",
+      "label": "Ranged — Levels 61-70"
+    },
+    {
+      "id": "ranged-71-80",
+      "type": "skill",
+      "skill": "Ranged",
+      "band": "71-80",
+      "label": "Ranged — Levels 71-80"
+    },
+    {
+      "id": "ranged-81-90",
+      "type": "skill",
+      "skill": "Ranged",
+      "band": "81-90",
+      "label": "Ranged — Levels 81-90"
+    },
+    {
+      "id": "ranged-91-99",
+      "type": "skill",
+      "skill": "Ranged",
+      "band": "91-99",
+      "label": "Ranged — Levels 91-99"
+    },
+    {
+      "id": "prayer-unlock",
+      "type": "skill",
+      "skill": "Prayer",
+      "band": "unlock",
+      "label": "Prayer — Unlock Skill"
+    },
+    {
+      "id": "prayer-1-10",
+      "type": "skill",
+      "skill": "Prayer",
+      "band": "1-10",
+      "label": "Prayer — Levels 1-10"
+    },
+    {
+      "id": "prayer-11-20",
+      "type": "skill",
+      "skill": "Prayer",
+      "band": "11-20",
+      "label": "Prayer — Levels 11-20"
+    },
+    {
+      "id": "prayer-21-30",
+      "type": "skill",
+      "skill": "Prayer",
+      "band": "21-30",
+      "label": "Prayer — Levels 21-30"
+    },
+    {
+      "id": "prayer-31-40",
+      "type": "skill",
+      "skill": "Prayer",
+      "band": "31-40",
+      "label": "Prayer — Levels 31-40"
+    },
+    {
+      "id": "prayer-41-50",
+      "type": "skill",
+      "skill": "Prayer",
+      "band": "41-50",
+      "label": "Prayer — Levels 41-50"
+    },
+    {
+      "id": "prayer-51-60",
+      "type": "skill",
+      "skill": "Prayer",
+      "band": "51-60",
+      "label": "Prayer — Levels 51-60"
+    },
+    {
+      "id": "prayer-61-70",
+      "type": "skill",
+      "skill": "Prayer",
+      "band": "61-70",
+      "label": "Prayer — Levels 61-70"
+    },
+    {
+      "id": "prayer-71-80",
+      "type": "skill",
+      "skill": "Prayer",
+      "band": "71-80",
+      "label": "Prayer — Levels 71-80"
+    },
+    {
+      "id": "prayer-81-90",
+      "type": "skill",
+      "skill": "Prayer",
+      "band": "81-90",
+      "label": "Prayer — Levels 81-90"
+    },
+    {
+      "id": "prayer-91-99",
+      "type": "skill",
+      "skill": "Prayer",
+      "band": "91-99",
+      "label": "Prayer — Levels 91-99"
+    },
+    {
+      "id": "magic-unlock",
+      "type": "skill",
+      "skill": "Magic",
+      "band": "unlock",
+      "label": "Magic — Unlock Skill"
+    },
+    {
+      "id": "magic-1-10",
+      "type": "skill",
+      "skill": "Magic",
+      "band": "1-10",
+      "label": "Magic — Levels 1-10"
+    },
+    {
+      "id": "magic-11-20",
+      "type": "skill",
+      "skill": "Magic",
+      "band": "11-20",
+      "label": "Magic — Levels 11-20"
+    },
+    {
+      "id": "magic-21-30",
+      "type": "skill",
+      "skill": "Magic",
+      "band": "21-30",
+      "label": "Magic — Levels 21-30"
+    },
+    {
+      "id": "magic-31-40",
+      "type": "skill",
+      "skill": "Magic",
+      "band": "31-40",
+      "label": "Magic — Levels 31-40"
+    },
+    {
+      "id": "magic-41-50",
+      "type": "skill",
+      "skill": "Magic",
+      "band": "41-50",
+      "label": "Magic — Levels 41-50"
+    },
+    {
+      "id": "magic-51-60",
+      "type": "skill",
+      "skill": "Magic",
+      "band": "51-60",
+      "label": "Magic — Levels 51-60"
+    },
+    {
+      "id": "magic-61-70",
+      "type": "skill",
+      "skill": "Magic",
+      "band": "61-70",
+      "label": "Magic — Levels 61-70"
+    },
+    {
+      "id": "magic-71-80",
+      "type": "skill",
+      "skill": "Magic",
+      "band": "71-80",
+      "label": "Magic — Levels 71-80"
+    },
+    {
+      "id": "magic-81-90",
+      "type": "skill",
+      "skill": "Magic",
+      "band": "81-90",
+      "label": "Magic — Levels 81-90"
+    },
+    {
+      "id": "magic-91-99",
+      "type": "skill",
+      "skill": "Magic",
+      "band": "91-99",
+      "label": "Magic — Levels 91-99"
+    },
+    {
+      "id": "runecraft-unlock",
+      "type": "skill",
+      "skill": "Runecraft",
+      "band": "unlock",
+      "label": "Runecraft — Unlock Skill"
+    },
+    {
+      "id": "runecraft-1-10",
+      "type": "skill",
+      "skill": "Runecraft",
+      "band": "1-10",
+      "label": "Runecraft — Levels 1-10"
+    },
+    {
+      "id": "runecraft-11-20",
+      "type": "skill",
+      "skill": "Runecraft",
+      "band": "11-20",
+      "label": "Runecraft — Levels 11-20"
+    },
+    {
+      "id": "runecraft-21-30",
+      "type": "skill",
+      "skill": "Runecraft",
+      "band": "21-30",
+      "label": "Runecraft — Levels 21-30"
+    },
+    {
+      "id": "runecraft-31-40",
+      "type": "skill",
+      "skill": "Runecraft",
+      "band": "31-40",
+      "label": "Runecraft — Levels 31-40"
+    },
+    {
+      "id": "runecraft-41-50",
+      "type": "skill",
+      "skill": "Runecraft",
+      "band": "41-50",
+      "label": "Runecraft — Levels 41-50"
+    },
+    {
+      "id": "runecraft-51-60",
+      "type": "skill",
+      "skill": "Runecraft",
+      "band": "51-60",
+      "label": "Runecraft — Levels 51-60"
+    },
+    {
+      "id": "runecraft-61-70",
+      "type": "skill",
+      "skill": "Runecraft",
+      "band": "61-70",
+      "label": "Runecraft — Levels 61-70"
+    },
+    {
+      "id": "runecraft-71-80",
+      "type": "skill",
+      "skill": "Runecraft",
+      "band": "71-80",
+      "label": "Runecraft — Levels 71-80"
+    },
+    {
+      "id": "runecraft-81-90",
+      "type": "skill",
+      "skill": "Runecraft",
+      "band": "81-90",
+      "label": "Runecraft — Levels 81-90"
+    },
+    {
+      "id": "runecraft-91-99",
+      "type": "skill",
+      "skill": "Runecraft",
+      "band": "91-99",
+      "label": "Runecraft — Levels 91-99"
+    },
+    {
+      "id": "construction-unlock",
+      "type": "skill",
+      "skill": "Construction",
+      "band": "unlock",
+      "label": "Construction — Unlock Skill"
+    },
+    {
+      "id": "construction-1-10",
+      "type": "skill",
+      "skill": "Construction",
+      "band": "1-10",
+      "label": "Construction — Levels 1-10"
+    },
+    {
+      "id": "construction-11-20",
+      "type": "skill",
+      "skill": "Construction",
+      "band": "11-20",
+      "label": "Construction — Levels 11-20"
+    },
+    {
+      "id": "construction-21-30",
+      "type": "skill",
+      "skill": "Construction",
+      "band": "21-30",
+      "label": "Construction — Levels 21-30"
+    },
+    {
+      "id": "construction-31-40",
+      "type": "skill",
+      "skill": "Construction",
+      "band": "31-40",
+      "label": "Construction — Levels 31-40"
+    },
+    {
+      "id": "construction-41-50",
+      "type": "skill",
+      "skill": "Construction",
+      "band": "41-50",
+      "label": "Construction — Levels 41-50"
+    },
+    {
+      "id": "construction-51-60",
+      "type": "skill",
+      "skill": "Construction",
+      "band": "51-60",
+      "label": "Construction — Levels 51-60"
+    },
+    {
+      "id": "construction-61-70",
+      "type": "skill",
+      "skill": "Construction",
+      "band": "61-70",
+      "label": "Construction — Levels 61-70"
+    },
+    {
+      "id": "construction-71-80",
+      "type": "skill",
+      "skill": "Construction",
+      "band": "71-80",
+      "label": "Construction — Levels 71-80"
+    },
+    {
+      "id": "construction-81-90",
+      "type": "skill",
+      "skill": "Construction",
+      "band": "81-90",
+      "label": "Construction — Levels 81-90"
+    },
+    {
+      "id": "construction-91-99",
+      "type": "skill",
+      "skill": "Construction",
+      "band": "91-99",
+      "label": "Construction — Levels 91-99"
+    },
+    {
+      "id": "agility-unlock",
+      "type": "skill",
+      "skill": "Agility",
+      "band": "unlock",
+      "label": "Agility — Unlock Skill"
+    },
+    {
+      "id": "agility-1-10",
+      "type": "skill",
+      "skill": "Agility",
+      "band": "1-10",
+      "label": "Agility — Levels 1-10"
+    },
+    {
+      "id": "agility-11-20",
+      "type": "skill",
+      "skill": "Agility",
+      "band": "11-20",
+      "label": "Agility — Levels 11-20"
+    },
+    {
+      "id": "agility-21-30",
+      "type": "skill",
+      "skill": "Agility",
+      "band": "21-30",
+      "label": "Agility — Levels 21-30"
+    },
+    {
+      "id": "agility-31-40",
+      "type": "skill",
+      "skill": "Agility",
+      "band": "31-40",
+      "label": "Agility — Levels 31-40"
+    },
+    {
+      "id": "agility-41-50",
+      "type": "skill",
+      "skill": "Agility",
+      "band": "41-50",
+      "label": "Agility — Levels 41-50"
+    },
+    {
+      "id": "agility-51-60",
+      "type": "skill",
+      "skill": "Agility",
+      "band": "51-60",
+      "label": "Agility — Levels 51-60"
+    },
+    {
+      "id": "agility-61-70",
+      "type": "skill",
+      "skill": "Agility",
+      "band": "61-70",
+      "label": "Agility — Levels 61-70"
+    },
+    {
+      "id": "agility-71-80",
+      "type": "skill",
+      "skill": "Agility",
+      "band": "71-80",
+      "label": "Agility — Levels 71-80"
+    },
+    {
+      "id": "agility-81-90",
+      "type": "skill",
+      "skill": "Agility",
+      "band": "81-90",
+      "label": "Agility — Levels 81-90"
+    },
+    {
+      "id": "agility-91-99",
+      "type": "skill",
+      "skill": "Agility",
+      "band": "91-99",
+      "label": "Agility — Levels 91-99"
+    },
+    {
+      "id": "herblore-unlock",
+      "type": "skill",
+      "skill": "Herblore",
+      "band": "unlock",
+      "label": "Herblore — Unlock Skill"
+    },
+    {
+      "id": "herblore-1-10",
+      "type": "skill",
+      "skill": "Herblore",
+      "band": "1-10",
+      "label": "Herblore — Levels 1-10"
+    },
+    {
+      "id": "herblore-11-20",
+      "type": "skill",
+      "skill": "Herblore",
+      "band": "11-20",
+      "label": "Herblore — Levels 11-20"
+    },
+    {
+      "id": "herblore-21-30",
+      "type": "skill",
+      "skill": "Herblore",
+      "band": "21-30",
+      "label": "Herblore — Levels 21-30"
+    },
+    {
+      "id": "herblore-31-40",
+      "type": "skill",
+      "skill": "Herblore",
+      "band": "31-40",
+      "label": "Herblore — Levels 31-40"
+    },
+    {
+      "id": "herblore-41-50",
+      "type": "skill",
+      "skill": "Herblore",
+      "band": "41-50",
+      "label": "Herblore — Levels 41-50"
+    },
+    {
+      "id": "herblore-51-60",
+      "type": "skill",
+      "skill": "Herblore",
+      "band": "51-60",
+      "label": "Herblore — Levels 51-60"
+    },
+    {
+      "id": "herblore-61-70",
+      "type": "skill",
+      "skill": "Herblore",
+      "band": "61-70",
+      "label": "Herblore — Levels 61-70"
+    },
+    {
+      "id": "herblore-71-80",
+      "type": "skill",
+      "skill": "Herblore",
+      "band": "71-80",
+      "label": "Herblore — Levels 71-80"
+    },
+    {
+      "id": "herblore-81-90",
+      "type": "skill",
+      "skill": "Herblore",
+      "band": "81-90",
+      "label": "Herblore — Levels 81-90"
+    },
+    {
+      "id": "herblore-91-99",
+      "type": "skill",
+      "skill": "Herblore",
+      "band": "91-99",
+      "label": "Herblore — Levels 91-99"
+    },
+    {
+      "id": "thieving-unlock",
+      "type": "skill",
+      "skill": "Thieving",
+      "band": "unlock",
+      "label": "Thieving — Unlock Skill"
+    },
+    {
+      "id": "thieving-1-10",
+      "type": "skill",
+      "skill": "Thieving",
+      "band": "1-10",
+      "label": "Thieving — Levels 1-10"
+    },
+    {
+      "id": "thieving-11-20",
+      "type": "skill",
+      "skill": "Thieving",
+      "band": "11-20",
+      "label": "Thieving — Levels 11-20"
+    },
+    {
+      "id": "thieving-21-30",
+      "type": "skill",
+      "skill": "Thieving",
+      "band": "21-30",
+      "label": "Thieving — Levels 21-30"
+    },
+    {
+      "id": "thieving-31-40",
+      "type": "skill",
+      "skill": "Thieving",
+      "band": "31-40",
+      "label": "Thieving — Levels 31-40"
+    },
+    {
+      "id": "thieving-41-50",
+      "type": "skill",
+      "skill": "Thieving",
+      "band": "41-50",
+      "label": "Thieving — Levels 41-50"
+    },
+    {
+      "id": "thieving-51-60",
+      "type": "skill",
+      "skill": "Thieving",
+      "band": "51-60",
+      "label": "Thieving — Levels 51-60"
+    },
+    {
+      "id": "thieving-61-70",
+      "type": "skill",
+      "skill": "Thieving",
+      "band": "61-70",
+      "label": "Thieving — Levels 61-70"
+    },
+    {
+      "id": "thieving-71-80",
+      "type": "skill",
+      "skill": "Thieving",
+      "band": "71-80",
+      "label": "Thieving — Levels 71-80"
+    },
+    {
+      "id": "thieving-81-90",
+      "type": "skill",
+      "skill": "Thieving",
+      "band": "81-90",
+      "label": "Thieving — Levels 81-90"
+    },
+    {
+      "id": "thieving-91-99",
+      "type": "skill",
+      "skill": "Thieving",
+      "band": "91-99",
+      "label": "Thieving — Levels 91-99"
+    },
+    {
+      "id": "crafting-unlock",
+      "type": "skill",
+      "skill": "Crafting",
+      "band": "unlock",
+      "label": "Crafting — Unlock Skill"
+    },
+    {
+      "id": "crafting-1-10",
+      "type": "skill",
+      "skill": "Crafting",
+      "band": "1-10",
+      "label": "Crafting — Levels 1-10"
+    },
+    {
+      "id": "crafting-11-20",
+      "type": "skill",
+      "skill": "Crafting",
+      "band": "11-20",
+      "label": "Crafting — Levels 11-20"
+    },
+    {
+      "id": "crafting-21-30",
+      "type": "skill",
+      "skill": "Crafting",
+      "band": "21-30",
+      "label": "Crafting — Levels 21-30"
+    },
+    {
+      "id": "crafting-31-40",
+      "type": "skill",
+      "skill": "Crafting",
+      "band": "31-40",
+      "label": "Crafting — Levels 31-40"
+    },
+    {
+      "id": "crafting-41-50",
+      "type": "skill",
+      "skill": "Crafting",
+      "band": "41-50",
+      "label": "Crafting — Levels 41-50"
+    },
+    {
+      "id": "crafting-51-60",
+      "type": "skill",
+      "skill": "Crafting",
+      "band": "51-60",
+      "label": "Crafting — Levels 51-60"
+    },
+    {
+      "id": "crafting-61-70",
+      "type": "skill",
+      "skill": "Crafting",
+      "band": "61-70",
+      "label": "Crafting — Levels 61-70"
+    },
+    {
+      "id": "crafting-71-80",
+      "type": "skill",
+      "skill": "Crafting",
+      "band": "71-80",
+      "label": "Crafting — Levels 71-80"
+    },
+    {
+      "id": "crafting-81-90",
+      "type": "skill",
+      "skill": "Crafting",
+      "band": "81-90",
+      "label": "Crafting — Levels 81-90"
+    },
+    {
+      "id": "crafting-91-99",
+      "type": "skill",
+      "skill": "Crafting",
+      "band": "91-99",
+      "label": "Crafting — Levels 91-99"
+    },
+    {
+      "id": "fletching-unlock",
+      "type": "skill",
+      "skill": "Fletching",
+      "band": "unlock",
+      "label": "Fletching — Unlock Skill"
+    },
+    {
+      "id": "fletching-1-10",
+      "type": "skill",
+      "skill": "Fletching",
+      "band": "1-10",
+      "label": "Fletching — Levels 1-10"
+    },
+    {
+      "id": "fletching-11-20",
+      "type": "skill",
+      "skill": "Fletching",
+      "band": "11-20",
+      "label": "Fletching — Levels 11-20"
+    },
+    {
+      "id": "fletching-21-30",
+      "type": "skill",
+      "skill": "Fletching",
+      "band": "21-30",
+      "label": "Fletching — Levels 21-30"
+    },
+    {
+      "id": "fletching-31-40",
+      "type": "skill",
+      "skill": "Fletching",
+      "band": "31-40",
+      "label": "Fletching — Levels 31-40"
+    },
+    {
+      "id": "fletching-41-50",
+      "type": "skill",
+      "skill": "Fletching",
+      "band": "41-50",
+      "label": "Fletching — Levels 41-50"
+    },
+    {
+      "id": "fletching-51-60",
+      "type": "skill",
+      "skill": "Fletching",
+      "band": "51-60",
+      "label": "Fletching — Levels 51-60"
+    },
+    {
+      "id": "fletching-61-70",
+      "type": "skill",
+      "skill": "Fletching",
+      "band": "61-70",
+      "label": "Fletching — Levels 61-70"
+    },
+    {
+      "id": "fletching-71-80",
+      "type": "skill",
+      "skill": "Fletching",
+      "band": "71-80",
+      "label": "Fletching — Levels 71-80"
+    },
+    {
+      "id": "fletching-81-90",
+      "type": "skill",
+      "skill": "Fletching",
+      "band": "81-90",
+      "label": "Fletching — Levels 81-90"
+    },
+    {
+      "id": "fletching-91-99",
+      "type": "skill",
+      "skill": "Fletching",
+      "band": "91-99",
+      "label": "Fletching — Levels 91-99"
+    },
+    {
+      "id": "slayer-unlock",
+      "type": "skill",
+      "skill": "Slayer",
+      "band": "unlock",
+      "label": "Slayer — Unlock Skill"
+    },
+    {
+      "id": "slayer-1-10",
+      "type": "skill",
+      "skill": "Slayer",
+      "band": "1-10",
+      "label": "Slayer — Levels 1-10"
+    },
+    {
+      "id": "slayer-11-20",
+      "type": "skill",
+      "skill": "Slayer",
+      "band": "11-20",
+      "label": "Slayer — Levels 11-20"
+    },
+    {
+      "id": "slayer-21-30",
+      "type": "skill",
+      "skill": "Slayer",
+      "band": "21-30",
+      "label": "Slayer — Levels 21-30"
+    },
+    {
+      "id": "slayer-31-40",
+      "type": "skill",
+      "skill": "Slayer",
+      "band": "31-40",
+      "label": "Slayer — Levels 31-40"
+    },
+    {
+      "id": "slayer-41-50",
+      "type": "skill",
+      "skill": "Slayer",
+      "band": "41-50",
+      "label": "Slayer — Levels 41-50"
+    },
+    {
+      "id": "slayer-51-60",
+      "type": "skill",
+      "skill": "Slayer",
+      "band": "51-60",
+      "label": "Slayer — Levels 51-60"
+    },
+    {
+      "id": "slayer-61-70",
+      "type": "skill",
+      "skill": "Slayer",
+      "band": "61-70",
+      "label": "Slayer — Levels 61-70"
+    },
+    {
+      "id": "slayer-71-80",
+      "type": "skill",
+      "skill": "Slayer",
+      "band": "71-80",
+      "label": "Slayer — Levels 71-80"
+    },
+    {
+      "id": "slayer-81-90",
+      "type": "skill",
+      "skill": "Slayer",
+      "band": "81-90",
+      "label": "Slayer — Levels 81-90"
+    },
+    {
+      "id": "slayer-91-99",
+      "type": "skill",
+      "skill": "Slayer",
+      "band": "91-99",
+      "label": "Slayer — Levels 91-99"
+    },
+    {
+      "id": "mining-unlock",
+      "type": "skill",
+      "skill": "Mining",
+      "band": "unlock",
+      "label": "Mining — Unlock Skill"
+    },
+    {
+      "id": "mining-1-10",
+      "type": "skill",
+      "skill": "Mining",
+      "band": "1-10",
+      "label": "Mining — Levels 1-10"
+    },
+    {
+      "id": "mining-11-20",
+      "type": "skill",
+      "skill": "Mining",
+      "band": "11-20",
+      "label": "Mining — Levels 11-20"
+    },
+    {
+      "id": "mining-21-30",
+      "type": "skill",
+      "skill": "Mining",
+      "band": "21-30",
+      "label": "Mining — Levels 21-30"
+    },
+    {
+      "id": "mining-31-40",
+      "type": "skill",
+      "skill": "Mining",
+      "band": "31-40",
+      "label": "Mining — Levels 31-40"
+    },
+    {
+      "id": "mining-41-50",
+      "type": "skill",
+      "skill": "Mining",
+      "band": "41-50",
+      "label": "Mining — Levels 41-50"
+    },
+    {
+      "id": "mining-51-60",
+      "type": "skill",
+      "skill": "Mining",
+      "band": "51-60",
+      "label": "Mining — Levels 51-60"
+    },
+    {
+      "id": "mining-61-70",
+      "type": "skill",
+      "skill": "Mining",
+      "band": "61-70",
+      "label": "Mining — Levels 61-70"
+    },
+    {
+      "id": "mining-71-80",
+      "type": "skill",
+      "skill": "Mining",
+      "band": "71-80",
+      "label": "Mining — Levels 71-80"
+    },
+    {
+      "id": "mining-81-90",
+      "type": "skill",
+      "skill": "Mining",
+      "band": "81-90",
+      "label": "Mining — Levels 81-90"
+    },
+    {
+      "id": "mining-91-99",
+      "type": "skill",
+      "skill": "Mining",
+      "band": "91-99",
+      "label": "Mining — Levels 91-99"
+    },
+    {
+      "id": "smithing-unlock",
+      "type": "skill",
+      "skill": "Smithing",
+      "band": "unlock",
+      "label": "Smithing — Unlock Skill"
+    },
+    {
+      "id": "smithing-1-10",
+      "type": "skill",
+      "skill": "Smithing",
+      "band": "1-10",
+      "label": "Smithing — Levels 1-10"
+    },
+    {
+      "id": "smithing-11-20",
+      "type": "skill",
+      "skill": "Smithing",
+      "band": "11-20",
+      "label": "Smithing — Levels 11-20"
+    },
+    {
+      "id": "smithing-21-30",
+      "type": "skill",
+      "skill": "Smithing",
+      "band": "21-30",
+      "label": "Smithing — Levels 21-30"
+    },
+    {
+      "id": "smithing-31-40",
+      "type": "skill",
+      "skill": "Smithing",
+      "band": "31-40",
+      "label": "Smithing — Levels 31-40"
+    },
+    {
+      "id": "smithing-41-50",
+      "type": "skill",
+      "skill": "Smithing",
+      "band": "41-50",
+      "label": "Smithing — Levels 41-50"
+    },
+    {
+      "id": "smithing-51-60",
+      "type": "skill",
+      "skill": "Smithing",
+      "band": "51-60",
+      "label": "Smithing — Levels 51-60"
+    },
+    {
+      "id": "smithing-61-70",
+      "type": "skill",
+      "skill": "Smithing",
+      "band": "61-70",
+      "label": "Smithing — Levels 61-70"
+    },
+    {
+      "id": "smithing-71-80",
+      "type": "skill",
+      "skill": "Smithing",
+      "band": "71-80",
+      "label": "Smithing — Levels 71-80"
+    },
+    {
+      "id": "smithing-81-90",
+      "type": "skill",
+      "skill": "Smithing",
+      "band": "81-90",
+      "label": "Smithing — Levels 81-90"
+    },
+    {
+      "id": "smithing-91-99",
+      "type": "skill",
+      "skill": "Smithing",
+      "band": "91-99",
+      "label": "Smithing — Levels 91-99"
+    },
+    {
+      "id": "fishing-unlock",
+      "type": "skill",
+      "skill": "Fishing",
+      "band": "unlock",
+      "label": "Fishing — Unlock Skill"
+    },
+    {
+      "id": "fishing-1-10",
+      "type": "skill",
+      "skill": "Fishing",
+      "band": "1-10",
+      "label": "Fishing — Levels 1-10"
+    },
+    {
+      "id": "fishing-11-20",
+      "type": "skill",
+      "skill": "Fishing",
+      "band": "11-20",
+      "label": "Fishing — Levels 11-20"
+    },
+    {
+      "id": "fishing-21-30",
+      "type": "skill",
+      "skill": "Fishing",
+      "band": "21-30",
+      "label": "Fishing — Levels 21-30"
+    },
+    {
+      "id": "fishing-31-40",
+      "type": "skill",
+      "skill": "Fishing",
+      "band": "31-40",
+      "label": "Fishing — Levels 31-40"
+    },
+    {
+      "id": "fishing-41-50",
+      "type": "skill",
+      "skill": "Fishing",
+      "band": "41-50",
+      "label": "Fishing — Levels 41-50"
+    },
+    {
+      "id": "fishing-51-60",
+      "type": "skill",
+      "skill": "Fishing",
+      "band": "51-60",
+      "label": "Fishing — Levels 51-60"
+    },
+    {
+      "id": "fishing-61-70",
+      "type": "skill",
+      "skill": "Fishing",
+      "band": "61-70",
+      "label": "Fishing — Levels 61-70"
+    },
+    {
+      "id": "fishing-71-80",
+      "type": "skill",
+      "skill": "Fishing",
+      "band": "71-80",
+      "label": "Fishing — Levels 71-80"
+    },
+    {
+      "id": "fishing-81-90",
+      "type": "skill",
+      "skill": "Fishing",
+      "band": "81-90",
+      "label": "Fishing — Levels 81-90"
+    },
+    {
+      "id": "fishing-91-99",
+      "type": "skill",
+      "skill": "Fishing",
+      "band": "91-99",
+      "label": "Fishing — Levels 91-99"
+    },
+    {
+      "id": "cooking-unlock",
+      "type": "skill",
+      "skill": "Cooking",
+      "band": "unlock",
+      "label": "Cooking — Unlock Skill"
+    },
+    {
+      "id": "cooking-1-10",
+      "type": "skill",
+      "skill": "Cooking",
+      "band": "1-10",
+      "label": "Cooking — Levels 1-10"
+    },
+    {
+      "id": "cooking-11-20",
+      "type": "skill",
+      "skill": "Cooking",
+      "band": "11-20",
+      "label": "Cooking — Levels 11-20"
+    },
+    {
+      "id": "cooking-21-30",
+      "type": "skill",
+      "skill": "Cooking",
+      "band": "21-30",
+      "label": "Cooking — Levels 21-30"
+    },
+    {
+      "id": "cooking-31-40",
+      "type": "skill",
+      "skill": "Cooking",
+      "band": "31-40",
+      "label": "Cooking — Levels 31-40"
+    },
+    {
+      "id": "cooking-41-50",
+      "type": "skill",
+      "skill": "Cooking",
+      "band": "41-50",
+      "label": "Cooking — Levels 41-50"
+    },
+    {
+      "id": "cooking-51-60",
+      "type": "skill",
+      "skill": "Cooking",
+      "band": "51-60",
+      "label": "Cooking — Levels 51-60"
+    },
+    {
+      "id": "cooking-61-70",
+      "type": "skill",
+      "skill": "Cooking",
+      "band": "61-70",
+      "label": "Cooking — Levels 61-70"
+    },
+    {
+      "id": "cooking-71-80",
+      "type": "skill",
+      "skill": "Cooking",
+      "band": "71-80",
+      "label": "Cooking — Levels 71-80"
+    },
+    {
+      "id": "cooking-81-90",
+      "type": "skill",
+      "skill": "Cooking",
+      "band": "81-90",
+      "label": "Cooking — Levels 81-90"
+    },
+    {
+      "id": "cooking-91-99",
+      "type": "skill",
+      "skill": "Cooking",
+      "band": "91-99",
+      "label": "Cooking — Levels 91-99"
+    },
+    {
+      "id": "firemaking-unlock",
+      "type": "skill",
+      "skill": "Firemaking",
+      "band": "unlock",
+      "label": "Firemaking — Unlock Skill"
+    },
+    {
+      "id": "firemaking-1-10",
+      "type": "skill",
+      "skill": "Firemaking",
+      "band": "1-10",
+      "label": "Firemaking — Levels 1-10"
+    },
+    {
+      "id": "firemaking-11-20",
+      "type": "skill",
+      "skill": "Firemaking",
+      "band": "11-20",
+      "label": "Firemaking — Levels 11-20"
+    },
+    {
+      "id": "firemaking-21-30",
+      "type": "skill",
+      "skill": "Firemaking",
+      "band": "21-30",
+      "label": "Firemaking — Levels 21-30"
+    },
+    {
+      "id": "firemaking-31-40",
+      "type": "skill",
+      "skill": "Firemaking",
+      "band": "31-40",
+      "label": "Firemaking — Levels 31-40"
+    },
+    {
+      "id": "firemaking-41-50",
+      "type": "skill",
+      "skill": "Firemaking",
+      "band": "41-50",
+      "label": "Firemaking — Levels 41-50"
+    },
+    {
+      "id": "firemaking-51-60",
+      "type": "skill",
+      "skill": "Firemaking",
+      "band": "51-60",
+      "label": "Firemaking — Levels 51-60"
+    },
+    {
+      "id": "firemaking-61-70",
+      "type": "skill",
+      "skill": "Firemaking",
+      "band": "61-70",
+      "label": "Firemaking — Levels 61-70"
+    },
+    {
+      "id": "firemaking-71-80",
+      "type": "skill",
+      "skill": "Firemaking",
+      "band": "71-80",
+      "label": "Firemaking — Levels 71-80"
+    },
+    {
+      "id": "firemaking-81-90",
+      "type": "skill",
+      "skill": "Firemaking",
+      "band": "81-90",
+      "label": "Firemaking — Levels 81-90"
+    },
+    {
+      "id": "firemaking-91-99",
+      "type": "skill",
+      "skill": "Firemaking",
+      "band": "91-99",
+      "label": "Firemaking — Levels 91-99"
+    },
+    {
+      "id": "woodcutting-unlock",
+      "type": "skill",
+      "skill": "Woodcutting",
+      "band": "unlock",
+      "label": "Woodcutting — Unlock Skill"
+    },
+    {
+      "id": "woodcutting-1-10",
+      "type": "skill",
+      "skill": "Woodcutting",
+      "band": "1-10",
+      "label": "Woodcutting — Levels 1-10"
+    },
+    {
+      "id": "woodcutting-11-20",
+      "type": "skill",
+      "skill": "Woodcutting",
+      "band": "11-20",
+      "label": "Woodcutting — Levels 11-20"
+    },
+    {
+      "id": "woodcutting-21-30",
+      "type": "skill",
+      "skill": "Woodcutting",
+      "band": "21-30",
+      "label": "Woodcutting — Levels 21-30"
+    },
+    {
+      "id": "woodcutting-31-40",
+      "type": "skill",
+      "skill": "Woodcutting",
+      "band": "31-40",
+      "label": "Woodcutting — Levels 31-40"
+    },
+    {
+      "id": "woodcutting-41-50",
+      "type": "skill",
+      "skill": "Woodcutting",
+      "band": "41-50",
+      "label": "Woodcutting — Levels 41-50"
+    },
+    {
+      "id": "woodcutting-51-60",
+      "type": "skill",
+      "skill": "Woodcutting",
+      "band": "51-60",
+      "label": "Woodcutting — Levels 51-60"
+    },
+    {
+      "id": "woodcutting-61-70",
+      "type": "skill",
+      "skill": "Woodcutting",
+      "band": "61-70",
+      "label": "Woodcutting — Levels 61-70"
+    },
+    {
+      "id": "woodcutting-71-80",
+      "type": "skill",
+      "skill": "Woodcutting",
+      "band": "71-80",
+      "label": "Woodcutting — Levels 71-80"
+    },
+    {
+      "id": "woodcutting-81-90",
+      "type": "skill",
+      "skill": "Woodcutting",
+      "band": "81-90",
+      "label": "Woodcutting — Levels 81-90"
+    },
+    {
+      "id": "woodcutting-91-99",
+      "type": "skill",
+      "skill": "Woodcutting",
+      "band": "91-99",
+      "label": "Woodcutting — Levels 91-99"
+    },
+    {
+      "id": "farming-unlock",
+      "type": "skill",
+      "skill": "Farming",
+      "band": "unlock",
+      "label": "Farming — Unlock Skill"
+    },
+    {
+      "id": "farming-1-10",
+      "type": "skill",
+      "skill": "Farming",
+      "band": "1-10",
+      "label": "Farming — Levels 1-10"
+    },
+    {
+      "id": "farming-11-20",
+      "type": "skill",
+      "skill": "Farming",
+      "band": "11-20",
+      "label": "Farming — Levels 11-20"
+    },
+    {
+      "id": "farming-21-30",
+      "type": "skill",
+      "skill": "Farming",
+      "band": "21-30",
+      "label": "Farming — Levels 21-30"
+    },
+    {
+      "id": "farming-31-40",
+      "type": "skill",
+      "skill": "Farming",
+      "band": "31-40",
+      "label": "Farming — Levels 31-40"
+    },
+    {
+      "id": "farming-41-50",
+      "type": "skill",
+      "skill": "Farming",
+      "band": "41-50",
+      "label": "Farming — Levels 41-50"
+    },
+    {
+      "id": "farming-51-60",
+      "type": "skill",
+      "skill": "Farming",
+      "band": "51-60",
+      "label": "Farming — Levels 51-60"
+    },
+    {
+      "id": "farming-61-70",
+      "type": "skill",
+      "skill": "Farming",
+      "band": "61-70",
+      "label": "Farming — Levels 61-70"
+    },
+    {
+      "id": "farming-71-80",
+      "type": "skill",
+      "skill": "Farming",
+      "band": "71-80",
+      "label": "Farming — Levels 71-80"
+    },
+    {
+      "id": "farming-81-90",
+      "type": "skill",
+      "skill": "Farming",
+      "band": "81-90",
+      "label": "Farming — Levels 81-90"
+    },
+    {
+      "id": "farming-91-99",
+      "type": "skill",
+      "skill": "Farming",
+      "band": "91-99",
+      "label": "Farming — Levels 91-99"
+    },
+    {
+      "id": "ardougne-easy",
+      "type": "diary",
+      "region": "Ardougne",
+      "tier": "Easy",
+      "label": "Easy — Ardougne"
+    },
+    {
+      "id": "ardougne-medium",
+      "type": "diary",
+      "region": "Ardougne",
+      "tier": "Medium",
+      "label": "Medium — Ardougne"
+    },
+    {
+      "id": "ardougne-hard",
+      "type": "diary",
+      "region": "Ardougne",
+      "tier": "Hard",
+      "label": "Hard — Ardougne"
+    },
+    {
+      "id": "ardougne-elite",
+      "type": "diary",
+      "region": "Ardougne",
+      "tier": "Elite",
+      "label": "Elite — Ardougne"
+    },
+    {
+      "id": "desert-easy",
+      "type": "diary",
+      "region": "Desert",
+      "tier": "Easy",
+      "label": "Easy — Desert"
+    },
+    {
+      "id": "desert-medium",
+      "type": "diary",
+      "region": "Desert",
+      "tier": "Medium",
+      "label": "Medium — Desert"
+    },
+    {
+      "id": "desert-hard",
+      "type": "diary",
+      "region": "Desert",
+      "tier": "Hard",
+      "label": "Hard — Desert"
+    },
+    {
+      "id": "desert-elite",
+      "type": "diary",
+      "region": "Desert",
+      "tier": "Elite",
+      "label": "Elite — Desert"
+    },
+    {
+      "id": "falador-easy",
+      "type": "diary",
+      "region": "Falador",
+      "tier": "Easy",
+      "label": "Easy — Falador"
+    },
+    {
+      "id": "falador-medium",
+      "type": "diary",
+      "region": "Falador",
+      "tier": "Medium",
+      "label": "Medium — Falador"
+    },
+    {
+      "id": "falador-hard",
+      "type": "diary",
+      "region": "Falador",
+      "tier": "Hard",
+      "label": "Hard — Falador"
+    },
+    {
+      "id": "falador-elite",
+      "type": "diary",
+      "region": "Falador",
+      "tier": "Elite",
+      "label": "Elite — Falador"
+    },
+    {
+      "id": "fremennik-easy",
+      "type": "diary",
+      "region": "Fremennik",
+      "tier": "Easy",
+      "label": "Easy — Fremennik"
+    },
+    {
+      "id": "fremennik-medium",
+      "type": "diary",
+      "region": "Fremennik",
+      "tier": "Medium",
+      "label": "Medium — Fremennik"
+    },
+    {
+      "id": "fremennik-hard",
+      "type": "diary",
+      "region": "Fremennik",
+      "tier": "Hard",
+      "label": "Hard — Fremennik"
+    },
+    {
+      "id": "fremennik-elite",
+      "type": "diary",
+      "region": "Fremennik",
+      "tier": "Elite",
+      "label": "Elite — Fremennik"
+    },
+    {
+      "id": "kandarin-easy",
+      "type": "diary",
+      "region": "Kandarin",
+      "tier": "Easy",
+      "label": "Easy — Kandarin"
+    },
+    {
+      "id": "kandarin-medium",
+      "type": "diary",
+      "region": "Kandarin",
+      "tier": "Medium",
+      "label": "Medium — Kandarin"
+    },
+    {
+      "id": "kandarin-hard",
+      "type": "diary",
+      "region": "Kandarin",
+      "tier": "Hard",
+      "label": "Hard — Kandarin"
+    },
+    {
+      "id": "kandarin-elite",
+      "type": "diary",
+      "region": "Kandarin",
+      "tier": "Elite",
+      "label": "Elite — Kandarin"
+    },
+    {
+      "id": "karamja-easy",
+      "type": "diary",
+      "region": "Karamja",
+      "tier": "Easy",
+      "label": "Easy — Karamja"
+    },
+    {
+      "id": "karamja-medium",
+      "type": "diary",
+      "region": "Karamja",
+      "tier": "Medium",
+      "label": "Medium — Karamja"
+    },
+    {
+      "id": "karamja-hard",
+      "type": "diary",
+      "region": "Karamja",
+      "tier": "Hard",
+      "label": "Hard — Karamja"
+    },
+    {
+      "id": "karamja-elite",
+      "type": "diary",
+      "region": "Karamja",
+      "tier": "Elite",
+      "label": "Elite — Karamja"
+    },
+    {
+      "id": "kourend-kebos-easy",
+      "type": "diary",
+      "region": "Kourend & Kebos",
+      "tier": "Easy",
+      "label": "Easy — Kourend & Kebos"
+    },
+    {
+      "id": "kourend-kebos-medium",
+      "type": "diary",
+      "region": "Kourend & Kebos",
+      "tier": "Medium",
+      "label": "Medium — Kourend & Kebos"
+    },
+    {
+      "id": "kourend-kebos-hard",
+      "type": "diary",
+      "region": "Kourend & Kebos",
+      "tier": "Hard",
+      "label": "Hard — Kourend & Kebos"
+    },
+    {
+      "id": "kourend-kebos-elite",
+      "type": "diary",
+      "region": "Kourend & Kebos",
+      "tier": "Elite",
+      "label": "Elite — Kourend & Kebos"
+    },
+    {
+      "id": "lumbridge-draynor-easy",
+      "type": "diary",
+      "region": "Lumbridge & Draynor",
+      "tier": "Easy",
+      "label": "Easy — Lumbridge & Draynor"
+    },
+    {
+      "id": "lumbridge-draynor-medium",
+      "type": "diary",
+      "region": "Lumbridge & Draynor",
+      "tier": "Medium",
+      "label": "Medium — Lumbridge & Draynor"
+    },
+    {
+      "id": "lumbridge-draynor-hard",
+      "type": "diary",
+      "region": "Lumbridge & Draynor",
+      "tier": "Hard",
+      "label": "Hard — Lumbridge & Draynor"
+    },
+    {
+      "id": "lumbridge-draynor-elite",
+      "type": "diary",
+      "region": "Lumbridge & Draynor",
+      "tier": "Elite",
+      "label": "Elite — Lumbridge & Draynor"
+    },
+    {
+      "id": "morytania-easy",
+      "type": "diary",
+      "region": "Morytania",
+      "tier": "Easy",
+      "label": "Easy — Morytania"
+    },
+    {
+      "id": "morytania-medium",
+      "type": "diary",
+      "region": "Morytania",
+      "tier": "Medium",
+      "label": "Medium — Morytania"
+    },
+    {
+      "id": "morytania-hard",
+      "type": "diary",
+      "region": "Morytania",
+      "tier": "Hard",
+      "label": "Hard — Morytania"
+    },
+    {
+      "id": "morytania-elite",
+      "type": "diary",
+      "region": "Morytania",
+      "tier": "Elite",
+      "label": "Elite — Morytania"
+    },
+    {
+      "id": "varrock-easy",
+      "type": "diary",
+      "region": "Varrock",
+      "tier": "Easy",
+      "label": "Easy — Varrock"
+    },
+    {
+      "id": "varrock-medium",
+      "type": "diary",
+      "region": "Varrock",
+      "tier": "Medium",
+      "label": "Medium — Varrock"
+    },
+    {
+      "id": "varrock-hard",
+      "type": "diary",
+      "region": "Varrock",
+      "tier": "Hard",
+      "label": "Hard — Varrock"
+    },
+    {
+      "id": "varrock-elite",
+      "type": "diary",
+      "region": "Varrock",
+      "tier": "Elite",
+      "label": "Elite — Varrock"
+    },
+    {
+      "id": "western-provinces-easy",
+      "type": "diary",
+      "region": "Western Provinces",
+      "tier": "Easy",
+      "label": "Easy — Western Provinces"
+    },
+    {
+      "id": "western-provinces-medium",
+      "type": "diary",
+      "region": "Western Provinces",
+      "tier": "Medium",
+      "label": "Medium — Western Provinces"
+    },
+    {
+      "id": "western-provinces-hard",
+      "type": "diary",
+      "region": "Western Provinces",
+      "tier": "Hard",
+      "label": "Hard — Western Provinces"
+    },
+    {
+      "id": "western-provinces-elite",
+      "type": "diary",
+      "region": "Western Provinces",
+      "tier": "Elite",
+      "label": "Elite — Western Provinces"
+    },
+    {
+      "id": "wilderness-easy",
+      "type": "diary",
+      "region": "Wilderness",
+      "tier": "Easy",
+      "label": "Easy — Wilderness"
+    },
+    {
+      "id": "wilderness-medium",
+      "type": "diary",
+      "region": "Wilderness",
+      "tier": "Medium",
+      "label": "Medium — Wilderness"
+    },
+    {
+      "id": "wilderness-hard",
+      "type": "diary",
+      "region": "Wilderness",
+      "tier": "Hard",
+      "label": "Hard — Wilderness"
+    },
+    {
+      "id": "wilderness-elite",
+      "type": "diary",
+      "region": "Wilderness",
+      "tier": "Elite",
+      "label": "Elite — Wilderness"
+    }
+  ],
+  "unrestrictedSkills": [
+    "Attack",
+    "Hitpoints",
+    "Hunter"
+  ],
+  "lockedSkills": [
+    "Strength",
+    "Defence",
+    "Ranged",
+    "Prayer",
+    "Magic",
+    "Runecraft",
+    "Construction",
+    "Agility",
+    "Herblore",
+    "Thieving",
+    "Crafting",
+    "Fletching",
+    "Slayer",
+    "Mining",
+    "Smithing",
+    "Fishing",
+    "Cooking",
+    "Firemaking",
+    "Woodcutting",
+    "Farming"
+  ]
+}

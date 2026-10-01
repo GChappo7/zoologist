@@ -366,24 +366,38 @@
   background: rgba(8,14,18,.82);
 }
 
-/* Reward popup progression icons use the same framed position for quests, diaries and skills. */
+/* Reward popup progression icons act as large, faded watermarks behind the reward copy. */
 .tile-popup-progression-icon {
   position:absolute !important;
-  width:38px !important;
-  height:38px !important;
-  left:17% !important;
+  width:108px !important;
+  height:108px !important;
+  left:16% !important;
   top:50% !important;
   inset:auto !important;
   transform:translate(-50%,-50%);
   object-fit:contain !important;
   image-rendering:pixelated;
-  filter:drop-shadow(0 3px 4px rgba(0,0,0,.78));
-  z-index:2;
+  opacity:.13;
+  filter:grayscale(1) brightness(.42) drop-shadow(0 3px 4px rgba(0,0,0,.7));
+  z-index:0 !important;
+  pointer-events:none;
+}
+
+.tile-popup-content {
+  position:absolute;
+  inset:0;
+  z-index:1;
 }
 
 @media (max-width:760px) {
-  .tile-popup-progression-icon { width:34px !important; height:34px !important; }
+  .tile-popup-progression-icon {
+    width:96px !important;
+    height:96px !important;
+  }
 }
 @media (max-width:500px) {
-  .tile-popup-progression-icon { width:30px !important; height:30px !important; }
+  .tile-popup-progression-icon {
+    width:82px !important;
+    height:82px !important;
+  }
 }

@@ -554,42 +554,35 @@
   top: 0;
   bottom: 0;
   z-index: 5;
-  min-width: 42px;
+  width: 24px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 6px 0;
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
-  text-align: right;
-  white-space: nowrap;
   color: #f4e72b;
-  font-family: 'RuneScape', 'RuneScape Bold', 'RSFont', Arial, sans-serif;
-  font-size: 12px;
-  line-height: 1;
+  font-family: var(--font-runescape);
+  font-size: 13px;
+  line-height: .9;
   font-weight: 700;
   letter-spacing: 0;
   text-shadow: 1px 1px 0 #17130b, -1px 0 #17130b, 0 1px 0 #17130b;
 }
 
-.osrs-skill-level-lower,
-.osrs-skill-level-upper {
+.osrs-skill-level-number,
+.osrs-skill-level-slash {
   display: block;
-  line-height: 1;
+  line-height: .9;
 }
 
-.osrs-skill-level-lower {
-  margin-bottom: auto;
-}
-
-.osrs-skill-level-upper {
-  margin-top: auto;
+.osrs-skill-level-slash {
+  margin: 1px 0;
 }
 
 .osrs-skill-slot.is-locked .osrs-skill-level {
   color: #aaa59a;
   text-shadow: 1px 1px 0 #22201d;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
 }
 .osrs-total-level {

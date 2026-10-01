@@ -42,10 +42,41 @@ const SKILL_TAB_LAYOUT = [
   ['Construction','Hunter','Sailing'],
 ]
 
+const SKILL_BOX_ASSETS = {
+  Agility: 'Agility Box.png',
+  Attack: 'Attack Box.png',
+  Construction: 'Construction Box.png',
+  Cooking: 'Cooking Box.png',
+  Crafting: 'Crafting Box.png',
+  Defence: 'Defence Box.png',
+  Farming: 'Farming Box.png',
+  Firemaking: 'Firemaking Box.png',
+  Fishing: 'Fishing Box.png',
+  Fletching: 'Fletching Box.png',
+  Herblore: 'Herblore Box.png',
+  Hitpoints: 'Hitpoints Box.png',
+  Hunter: 'Hunter Box.png',
+  Magic: 'Magic Box.png',
+  Mining: 'Mining Box.png',
+  Prayer: 'Prayer Box.png',
+  Ranged: 'Ranged Box.png',
+  Runecraft: 'Runecrafting Box.png',
+  Slayer: 'Slayer Box.png',
+  Smithing: 'Smithing Box.png',
+  Strength: 'Strength Box.png',
+  Thieving: 'Theiving Box.png',
+  Woodcutting: 'Woodcutting Box.png',
+}
+
 function skillIconUrl(skill) {
-  if (skill === 'Sailing') return `${import.meta.env.BASE_URL}assets/ui/skills/sailing.svg`
   const filename = String(skill ?? '').replace(/\s+/g,'_')
   return `https://oldschool.runescape.wiki/images/${filename}_icon_(detail).png`
+}
+
+function skillBoxUrl(skill) {
+  if (skill === 'Sailing') return `${import.meta.env.BASE_URL}assets/ui/skills/sailing.svg`
+  const asset = SKILL_BOX_ASSETS[skill]
+  return asset ? `${import.meta.env.BASE_URL}assets/ui/skills/${encodeURIComponent(asset)}` : null
 }
 
 function ProgressionIcon({type,skill,background=false,className=''}) {
@@ -224,7 +255,7 @@ function SkillsDropdown({open,onClose,skillProgress}) {
           const unlocked=unrestricted.has(name)||(skillProgress?.[name]?.unlocked===true)
           const value=getDisplay(name)
           return <div className={`osrs-skill-slot ${unlocked?'is-unlocked':'is-locked'}`} key={name} title={unlocked?`${name}: ${value}`:`${name}: locked`}>
-            <ProgressionIcon type="skill" skill={name} className="osrs-skill-icon"/>
+            {skillBoxUrl(name) ? <img className="osrs-skill-box" src={skillBoxUrl(name)} alt="" aria-hidden="true" draggable="false"/> : null}
             {!unlocked&&<Lock size={11} className="osrs-skill-lock"/>}
             <span className="osrs-skill-level">{value}</span>
           </div>

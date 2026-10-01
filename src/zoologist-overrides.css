@@ -245,10 +245,12 @@
 .creature-glyph-tile {
   width: 128px;
   height: 128px;
-  top: 40%;
+  top: 8%;
+  bottom: 58px;
+  height: auto;
   padding: 0;
   box-sizing: border-box;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .creature-glyph-tile .creature-image {

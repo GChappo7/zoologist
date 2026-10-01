@@ -102,10 +102,26 @@ function CreatureGlyph({creature,size='medium'}){
   const candidates=getCreatureImageCandidates(creature)
   return <div className={`creature-glyph creature-glyph-${size}`}>{!failed?<img src={candidates[index]} alt="" className="creature-image" draggable="false" onError={()=>index+1<candidates.length?setIndex(i=>i+1):setFailed(true)}/>:<span className="creature-fallback-glyph">🐾</span>}</div>
 }
-function MapTile({tile,selected,onSelect,creatureById}){
+function MapTile({tile,selected,onSelect,onReveal,creatureById}){
   const creature=tile.creatureId?creatureById[tile.creatureId]:null
-  return <button type="button" className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''}`} onClick={()=>creature&&onSelect(tile)} aria-label={creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
-    {creature&&<><CreatureGlyph creature={creature} size="tile"/><span className="tile-name">{creature.name}</span>{tile.completed?<span className="tile-status tile-status-complete">✓</span>:<span className="tile-status tile-status-frontier"><Eye size={10}/> NEW</span>}</>}
+  const isFaceDown=Boolean(tile.faceDown)
+  const baseUrl=import.meta.env.BASE_URL
+  const handleClick=()=>{
+    if(isFaceDown&&creature){onReveal?.(tile);return}
+    if(creature)onSelect(tile)
+  }
+  return <button type="button" className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
+    {creature&&<>
+      <span className="map-card-face map-card-back" aria-hidden="true"><img src={`${baseUrl}assets/ui/map_tile_back.png`} alt="" draggable="false"/></span>
+      <span className="map-card-face map-card-front">
+        <img src={`${baseUrl}assets/ui/map_tile.png`} alt="" draggable="false"/>
+        <span className="map-card-content">
+          <CreatureGlyph creature={creature} size="tile"/>
+          <span className="tile-name">{creature.name}</span>
+          {tile.completed?<span className="tile-status tile-status-complete">✓</span>:<span className="tile-status tile-status-frontier"><Eye size={10}/> NEW</span>}
+        </span>
+      </span>
+    </>}
     {tile.state==='locked'&&<span className="tile-lock"><Lock size={13}/></span>}
   </button>
 }

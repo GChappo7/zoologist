@@ -205,7 +205,7 @@ function getRewardPresentation(reward){
 function skillIconUrl(skill){
   return `https://oldschool.runescape.wiki/images/${encodeURIComponent(skill??'').replace(/%20/g,'_')}_icon.png`
 }
-function TilePopup({selectedTile,onClose,onShowMore,creatureById,position}){
+function TilePopup({selectedTile,onShowMore,creatureById,position}){
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null
   const reward=getTileReward(selectedTile,creature)
@@ -226,7 +226,6 @@ function TilePopup({selectedTile,onClose,onShowMore,creatureById,position}){
         {presentation.subtitle&&<span className="tile-popup-subtitle">{presentation.subtitle}</span>}
       </div>
       <div className="tile-popup-footer">
-        {selectedTile.bossId&&<button className="boss-button" type="button"><Skull size={14}/> Boss</button>}
         <button className="show-more-button" onClick={onShowMore}>More details <ChevronRight size={14}/></button>
       </div>
     </div>
@@ -276,7 +275,7 @@ function MapView({creatures,onProgressChange}){
       setPopupPosition({left,top})
     })
     return()=>cancelAnimationFrame(frame)
-  },[selectedTile,pan,zoom,mapCells.gridSize])
+  },[selectedTile,pan.x,pan.y,zoom])
 
   const updatePan=(dx,dy)=>setPan(current=>({x:current.x+dx,y:current.y+dy}))
   useEffect(()=>{
@@ -362,7 +361,7 @@ function MapView({creatures,onProgressChange}){
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
     </div>
   </section>
-  <TilePopup selectedTile={selectedTile} onClose={()=>setSelectedTile(null)} onShowMore={()=>setPanelOpen(true)} creatureById={creatureById} position={popupPosition}/>
+  <TilePopup selectedTile={selectedTile} onShowMore={()=>setPanelOpen(true)} creatureById={creatureById} position={popupPosition}/>
   <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById}/>
 </div>
 }

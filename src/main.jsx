@@ -122,7 +122,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
         <span className="map-card-content">
           <CreatureGlyph creature={creature} size="tile"/>
           <span className="tile-name">{creature.name}</span>
-          {tile.completed?<span className="tile-status tile-status-complete">✓</span>:<span className="tile-status tile-status-frontier"><Eye size={10}/> NEW</span>}
+          {!tile.completed&&<span className="tile-status tile-status-frontier"><Eye size={10}/> NEW</span>}
         </span>
       </span>
     </>}

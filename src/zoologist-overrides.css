@@ -373,7 +373,8 @@
   height:108px !important;
   left:16% !important;
   top:50% !important;
-  inset:auto !important;
+  right:auto !important;
+  bottom:auto !important;
   transform:translate(-50%,-50%);
   object-fit:contain !important;
   image-rendering:pixelated;

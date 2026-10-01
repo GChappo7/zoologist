@@ -402,3 +402,21 @@
     height:82px !important;
   }
 }
+
+
+/* Small progression stamp on revealed map tiles: the icon identifies the reward type without competing with the creature art. */
+.tile-progression-stamp {
+  position:absolute !important;
+  width:38px !important;
+  height:38px !important;
+  left:18px !important;
+  top:18px !important;
+  right:auto !important;
+  bottom:auto !important;
+  object-fit:contain !important;
+  image-rendering:pixelated;
+  opacity:.88;
+  filter:drop-shadow(0 3px 3px rgba(0,0,0,.78)) drop-shadow(0 0 2px rgba(0,0,0,.65));
+  z-index:4 !important;
+  pointer-events:none;
+}

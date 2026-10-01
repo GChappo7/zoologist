@@ -25,6 +25,21 @@ const ZOOM_STEP = 0.12
 const CARDINAL_DIRECTIONS = [[0,-1],[1,0],[0,1],[-1,0]]
 const QUEST_FILTERS = ['all','revealed','completed']
 
+const PROGRESSION_ASSETS = {
+  quest: 'https://oldschool.runescape.wiki/images/Quests.png',
+  diary: 'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',
+  skills: {
+    Attack: 'https://oldschool.runescape.wiki/images/Attack_icon_(detail).png',
+    Strength: 'https://oldschool.runescape.wiki/images/Strength_icon_(detail).png',
+  },
+}
+
+function ProgressionIcon({type,skill,background=false,className=''}) {
+  const src=type==='skill' ? PROGRESSION_ASSETS.skills[skill] : PROGRESSION_ASSETS[type]
+  if(!src)return null
+  return <img className={`progression-icon ${background?'progression-icon-background':''} ${className}`} src={src} alt="" aria-hidden="true" draggable="false"/>
+}
+
 function keyFor(x,y){ return `${x}:${y}` }
 
 function parseCsv(text){
@@ -134,8 +149,8 @@ function SkillsView(){
   const locked=rewardCatalog.lockedSkills
   return <div className="full-tab-page">
     <div className="tab-page-heading"><div className="eyebrow"><Gem size={14}/> ACCOUNT PROGRESSION</div><h1>Skills</h1><p>Three skills are always available. All other skills are unlocked through Zoologist rewards.</p></div>
-    <div className="skill-section"><h2>Unrestricted</h2><div className="skills-grid">{unrestricted.map(name=><div className="skill-card unrestricted" key={name}><div className="skill-icon">{name.slice(0,2).toUpperCase()}</div><div><strong>{name}</strong><span>Levels 1–99 available</span></div></div>)}</div></div>
-    <div className="skill-section"><h2>Locked skills</h2><div className="skills-grid">{locked.map(name=><div className="skill-card" key={name}><div className="skill-icon"><Lock size={12}/></div><div><strong>{name}</strong><span>Unlock + 1–10 through 91–99</span></div></div>)}</div></div>
+    <div className="skill-section"><h2>Unrestricted</h2><div className="skills-grid">{unrestricted.map(name=><div className="skill-card unrestricted" key={name}><div className="skill-icon"><ProgressionIcon type="skill" skill={name}/></div><div><strong>{name}</strong><span>Levels 1–99 available</span></div></div>)}</div></div>
+    <div className="skill-section"><h2>Locked skills</h2><div className="skills-grid">{locked.map(name=><div className="skill-card" key={name}><div className="skill-icon"><ProgressionIcon type="skill" skill={name}/><Lock size={12} className="skill-lock-overlay"/></div><div><strong>{name}</strong><span>Unlock + 1–10 through 91–99</span></div></div>)}</div></div>
   </div>
 }
 function QuestsView(){
@@ -154,7 +169,7 @@ function QuestsView(){
   const statusLabel={unrevealed:'Unrevealed',revealed:'Not started',in_progress:'In progress',completed:'Complete'}
   return <div className="quest-log-page">
     <div className="quest-log-shell">
-      <div className="quest-log-title"><ScrollText size={17}/><div><strong>Quest Log</strong><span>184 quests</span></div></div>
+      <div className="quest-log-title"><ProgressionIcon type="quest"/><div><strong>Quest Log</strong><span>184 quests</span></div></div>
       <div className="quest-log-controls"><div className="quest-filters">{QUEST_FILTERS.map(f=><button key={f} className={filter===f?'active':''} onClick={()=>setFilter(f)}>{f[0].toUpperCase()+f.slice(1)} <span>{counts[f]}</span></button>)}</div><label className="quest-search"><Search size={14}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search quests"/></label></div>
       <div className="quest-log-body"><div className="quest-list">{grouped.map(([difficulty,rows])=><section key={difficulty}><h3>{difficulty}</h3>{rows.map(q=>{const status=statuses[q.id]||'unrevealed';return <button key={q.id} className={`quest-row quest-${status}`} onClick={()=>status!=='unrevealed'&&cycleStatus(q.id)}><span className="quest-status-dot"/><span className="quest-name">{status==='unrevealed'?'???':q.name}</span><span className="quest-status-label">{statusLabel[status]}</span></button>})}</section>)}</div><div className="quest-info"><ScrollText size={30}/><h2>Quest Log</h2><p>Quest rewards reveal individual quests. Revealed quests are shown in red until started and green when complete.</p><small>For testing, click a revealed quest to cycle its local prototype status.</small></div></div>
     </div>
@@ -162,7 +177,7 @@ function QuestsView(){
 }
 function DiariesView(){
   const regions=['Ardougne','Desert','Falador','Fremennik','Kandarin','Karamja','Kourend & Kebos','Lumbridge & Draynor','Morytania','Varrock','Western Provinces','Wilderness']
-  return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><BookOpen size={14}/> ACCOUNT PROGRESSION</div><h1>Achievement Diaries</h1><p>Every region has Easy, Medium, Hard and Elite reward milestones.</p></div><div className="diary-grid">{regions.map(region=><div className="diary-card" key={region}><strong>{region}</strong><div>{['Easy','Medium','Hard','Elite'].map(t=><span key={t}><i/> {t}</span>)}</div></div>)}</div></div>
+  return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><BookOpen size={14}/> ACCOUNT PROGRESSION</div><h1>Achievement Diaries</h1><p>Every region has Easy, Medium, Hard and Elite reward milestones.</p></div><div className="diary-grid">{regions.map(region=><div className="diary-card" key={region}><ProgressionIcon type="diary" background/><strong>{region}</strong><div>{['Easy','Medium','Hard','Elite'].map(t=><span key={t}><i/> {t}</span>)}</div></div>)}</div></div>
 }
 function ShopView(){
   return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><ShoppingBag size={14}/> ZOOLOGIST POINTS</div><h1>Shop</h1><p>Boss tasks will award Zoologist Points. Costs remain configurable until the progression rules are finalized.</p></div><div className="shop-grid">{shop.items.map(item=><div className="shop-card" key={item.id}><div className="shop-card-icon"><Sparkles size={17}/></div><strong>{item.name}</strong><p>{item.description}</p><span>Cost: TBD</span></div>)}</div></div>

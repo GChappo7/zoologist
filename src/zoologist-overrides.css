@@ -1,22 +1,65 @@
 
 /* Zoologist progression/fog layer overrides */
 .map-stage {
-  background: #f7f5ee;
-  background-image: radial-gradient(circle at 50% 40%, rgba(255,255,255,.94), rgba(242,239,229,.88) 55%, rgba(225,220,209,.94));
-}
-.map-stage::before { display:none; }
-.map-stage::after { display:none; }
-.cloud-bank {
-  position:absolute; inset:0; z-index:1; pointer-events:none;
   background:
-    radial-gradient(ellipse at 12% 18%, rgba(255,255,255,.95) 0 9%, transparent 24%),
-    radial-gradient(ellipse at 86% 20%, rgba(255,255,255,.92) 0 10%, transparent 26%),
-    radial-gradient(ellipse at 18% 82%, rgba(255,255,255,.93) 0 10%, transparent 27%),
-    radial-gradient(ellipse at 82% 80%, rgba(255,255,255,.95) 0 12%, transparent 28%),
-    linear-gradient(rgba(255,255,255,.28),rgba(255,255,255,.72));
-  filter: blur(10px);
+    radial-gradient(ellipse at 50% 45%, rgba(248,247,241,.92), rgba(229,226,216,.96) 72%),
+    #e4e1d8;
+  overflow:hidden;
+}
+.map-stage::before,
+.map-stage::after { display:none; }
+
+/* World-space cloud layer: soft, oversized masses drifting slowly across the fog. */
+.cloud-bank {
+  position:absolute;
+  inset:-18%;
+  z-index:3;
+  pointer-events:none;
+  opacity:.92;
+  filter:blur(18px);
+  background:
+    radial-gradient(ellipse 20% 15% at 8% 22%, rgba(255,255,255,.86) 0 35%, transparent 76%),
+    radial-gradient(ellipse 25% 19% at 31% 12%, rgba(255,255,255,.72) 0 30%, transparent 74%),
+    radial-gradient(ellipse 23% 18% at 58% 25%, rgba(255,255,255,.84) 0 34%, transparent 76%),
+    radial-gradient(ellipse 27% 20% at 87% 15%, rgba(255,255,255,.68) 0 31%, transparent 76%),
+    radial-gradient(ellipse 28% 21% at 18% 63%, rgba(255,255,255,.78) 0 32%, transparent 78%),
+    radial-gradient(ellipse 22% 17% at 49% 76%, rgba(255,255,255,.9) 0 35%, transparent 77%),
+    radial-gradient(ellipse 28% 20% at 82% 67%, rgba(255,255,255,.74) 0 31%, transparent 78%),
+    radial-gradient(ellipse 19% 14% at 66% 94%, rgba(255,255,255,.82) 0 34%, transparent 78%);
+  animation:zoologist-cloud-drift 32s ease-in-out infinite alternate;
+}
+.cloud-bank::before,
+.cloud-bank::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse 15% 10% at 15% 42%, rgba(255,255,255,.58), transparent 72%),
+    radial-gradient(ellipse 18% 12% at 42% 42%, rgba(255,255,255,.46), transparent 72%),
+    radial-gradient(ellipse 14% 10% at 73% 47%, rgba(255,255,255,.62), transparent 72%),
+    radial-gradient(ellipse 20% 12% at 92% 52%, rgba(255,255,255,.42), transparent 74%);
+  filter:blur(11px);
+  animation:zoologist-cloud-wisp 21s ease-in-out infinite alternate;
+}
+.cloud-bank::after {
+  opacity:.62;
+  transform:scale(1.18) translate3d(-2%,3%,0);
+  animation-duration:37s;
+  animation-direction:alternate-reverse;
+}
+@keyframes zoologist-cloud-drift {
+  from { transform:translate3d(-2%,1%,0) scale(1.02); }
+  to { transform:translate3d(3%,-2%,0) scale(1.07); }
+}
+@keyframes zoologist-cloud-wisp {
+  from { transform:translate3d(-3%,0,0) scale(1); }
+  to { transform:translate3d(4%,2%,0) scale(1.06); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .cloud-bank,.cloud-bank::before,.cloud-bank::after { animation:none; }
 }
 .map-grid-pan { z-index:2; }
+
 .map-card-face{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:block;transition:transform .55s cubic-bezier(.2,.75,.25,1);overflow:hidden;}
 .map-card-face>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
 .map-card-content{position:absolute;inset:0;display:block;z-index:2;}
@@ -54,18 +97,49 @@
 .map-tile-explored { background-color:rgba(255,255,255,.05); }
 .map-tile-frontier { background-color:rgba(255,255,255,.16); }
 .map-tile-locked {
-  background-color:rgba(255,255,255,.42);
-  filter:saturate(.55) brightness(1.04);
-  opacity:.82;
+  background:
+    radial-gradient(ellipse 80% 55% at 25% 35%, rgba(255,255,255,.82) 0 28%, transparent 72%),
+    radial-gradient(ellipse 72% 62% at 78% 68%, rgba(255,255,255,.9) 0 25%, transparent 70%),
+    radial-gradient(ellipse 55% 45% at 55% 18%, rgba(242,241,235,.82) 0 24%, transparent 72%),
+    rgba(224,222,214,.64);
+  border-color:transparent;
+  filter:blur(.15px);
+  opacity:.94;
   cursor:default;
+  overflow:hidden;
 }
+.map-tile-locked::before,
 .map-tile-locked::after {
   content:"";
-  position:absolute; inset:0;
-  background:rgba(255,255,255,.48);
-  backdrop-filter:blur(1px);
+  position:absolute;
+  inset:-35%;
+  pointer-events:none;
+  border-radius:50%;
 }
-.tile-lock { position:relative; z-index:2; color:rgba(90,98,91,.55); }
+.map-tile-locked::before {
+  background:
+    radial-gradient(ellipse at 28% 42%, rgba(255,255,255,.96) 0 13%, transparent 38%),
+    radial-gradient(ellipse at 68% 30%, rgba(255,255,255,.88) 0 15%, transparent 42%),
+    radial-gradient(ellipse at 58% 72%, rgba(255,255,255,.92) 0 17%, transparent 44%);
+  filter:blur(8px);
+  animation:zoologist-tile-smoke 13s ease-in-out infinite alternate;
+}
+.map-tile-locked::after {
+  background:
+    radial-gradient(ellipse at 42% 60%, rgba(255,255,255,.54) 0 12%, transparent 40%),
+    radial-gradient(ellipse at 82% 58%, rgba(255,255,255,.48) 0 10%, transparent 38%);
+  filter:blur(5px);
+  animation:zoologist-tile-smoke-alt 17s ease-in-out infinite alternate;
+}
+@keyframes zoologist-tile-smoke {
+  from { transform:translate3d(-7%,-3%,0) rotate(-3deg) scale(.96); }
+  to { transform:translate3d(7%,4%,0) rotate(4deg) scale(1.08); }
+}
+@keyframes zoologist-tile-smoke-alt {
+  from { transform:translate3d(5%,2%,0) scale(1.04); }
+  to { transform:translate3d(-6%,-4%,0) scale(.94); }
+}
+.tile-lock { position:relative; z-index:2; color:rgba(90,98,91,.38); }
 .map-tile-explored::after,
 .map-tile-frontier::after { content:""; position:absolute; inset:0; background:rgba(255,255,255,.04); pointer-events:none; }
 .map-tile > * { z-index:2; }

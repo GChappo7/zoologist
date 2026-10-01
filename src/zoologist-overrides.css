@@ -246,6 +246,8 @@
   width: 118px;
   height: 118px;
   top: 42%;
+  padding: 8px;
+  box-sizing: border-box;
   overflow: hidden;
 }
 

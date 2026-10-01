@@ -15,11 +15,11 @@
 .map-card-face{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:block;transition:transform .55s cubic-bezier(.2,.75,.25,1);overflow:hidden;}
 .map-card-face>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
 .map-card-content{position:absolute;inset:0;display:block;z-index:2;}
-.map-card-back{transform:rotateY(180deg);}
-.map-card-front{transform:rotateY(0deg);}
+.map-card-back{transform:rotateY(180deg);z-index:3;}
+.map-card-front{transform:rotateY(0deg);z-index:2;}
 .map-tile.is-face-down{transform-style:preserve-3d;cursor:pointer;}
-.map-tile.is-face-down .map-card-back{transform:rotateY(0deg);}
-.map-tile.is-face-down .map-card-front{transform:rotateY(-180deg);}
+.map-tile.is-face-down .map-card-back{transform:rotateY(0deg);z-index:3;visibility:visible;opacity:1;}
+.map-tile.is-face-down .map-card-front{transform:rotateY(-180deg);z-index:2;visibility:visible;opacity:1;}
 .map-tile:not(.is-face-down){transform-style:preserve-3d;}
 .map-tile.is-face-down:hover{filter:brightness(1.04);}
 
@@ -87,6 +87,8 @@
 .map-tile-explored::after,
 .map-tile-frontier::after { content:""; position:absolute; inset:0; background:rgba(255,255,255,.04); pointer-events:none; }
 .map-tile > * { z-index:2; }
+.map-tile.is-face-down { z-index:4; background:transparent; border-color:transparent; }
+.map-tile.is-face-down::before { content:""; position:absolute; inset:0; background:transparent; z-index:0; }
 .map-tile-explored .creature-image,
 .map-tile-frontier .creature-image { filter:drop-shadow(0 4px 7px rgba(0,0,0,.25)); }
 

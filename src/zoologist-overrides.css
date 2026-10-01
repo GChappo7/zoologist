@@ -551,17 +551,17 @@
 .osrs-skill-level {
   position: absolute;
   right: 7px;
-  bottom: 7px;
+  top: 8px;
   z-index: 5;
   min-width: 42px;
   text-align: right;
   white-space: nowrap;
   color: #f4e72b;
-  font-family: 'Trebuchet MS', Arial, sans-serif;
+  font-family: 'RuneScape', 'RuneScape Bold', 'RSFont', Arial, sans-serif;
   font-size: 12px;
   line-height: 1;
-  font-weight: 900;
-  letter-spacing: -.04em;
+  font-weight: 700;
+  letter-spacing: 0;
   text-shadow: 1px 1px 0 #17130b, -1px 0 #17130b, 0 1px 0 #17130b;
 }
 
@@ -570,6 +570,10 @@
   text-shadow: 1px 1px 0 #22201d;
   font-size: 9px;
   font-weight: 700;
+}
+
+.osrs-skill-slot .osrs-skill-level::after {
+  content: '';
 }
 
 .osrs-total-level {

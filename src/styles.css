@@ -411,14 +411,14 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
   background:transparent;
   box-shadow:none;
   outline:none;
-  transform:translateY(-50%);
+  transform:none;
   animation:tile-popup-in-right .14s ease-out;
   pointer-events:auto;
   overflow:visible;
 }
 @keyframes tile-popup-in-right {
-  from { opacity:0; transform:translate(-6px,-50%); }
-  to { opacity:1; transform:translate(0,-50%); }
+  from { opacity:0; transform:translateX(-6px); }
+  to { opacity:1; transform:translateX(0); }
 }
 .tile-popup-frame {
   position:absolute;

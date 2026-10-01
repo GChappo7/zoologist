@@ -43,6 +43,7 @@ const SKILL_TAB_LAYOUT = [
 ]
 
 function skillIconUrl(skill) {
+  if (skill === 'Sailing') return `${import.meta.env.BASE_URL}assets/ui/skills/sailing.svg`
   const filename = String(skill ?? '').replace(/\s+/g,'_')
   return `https://oldschool.runescape.wiki/images/${filename}_icon_(detail).png`
 }

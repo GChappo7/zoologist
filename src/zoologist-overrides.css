@@ -231,3 +231,9 @@
     radial-gradient(circle at 50% 48%, rgba(150, 205, 166, .38) 0%, rgba(104, 168, 126, .24) 42%, rgba(46, 92, 62, .18) 72%, rgba(24, 48, 34, .10) 100%),
     linear-gradient(145deg, rgba(184, 225, 194, .16), rgba(69, 126, 88, .22));
 }
+
+
+/* Remove the tile border itself so adjacent card faces meet edge-to-edge. */
+.map-tile {
+  border: 0 !important;
+}

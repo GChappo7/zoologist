@@ -399,17 +399,17 @@
 /* Large progression icon behind the creature on revealed map tiles, echoing the existing green/yellow state glow. */
 .tile-progression-stamp {
   position:absolute !important;
-  width:190px !important;
-  height:190px !important;
-  left:50% !important;
-  top:47% !important;
+  width:82px !important;
+  height:82px !important;
+  left:29% !important;
+  top:50% !important;
   right:auto !important;
   bottom:auto !important;
   transform:translate(-50%,-50%);
   object-fit:contain !important;
   image-rendering:pixelated;
-  opacity:.20;
-  filter:drop-shadow(0 2px 3px rgba(0,0,0,.38));
+  opacity:.30;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.55));
   z-index:1 !important;
   pointer-events:none;
 }
@@ -570,14 +570,14 @@
   position: relative;
   z-index: 3;
   margin-left: auto;
-  min-width: 42px;
-  text-align: right;
+  min-width: 56px;
+  text-align: center;
   white-space: nowrap;
   color: #f4e72b;
-  font-family: 'Trebuchet MS', Arial, sans-serif;
-  font-size: 12px;
+  font-family: var(--font-runescape);
+  font-size: 17px;
   line-height: 1;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: -.04em;
   text-shadow: 1px 1px 0 #17130b, -1px 0 #17130b, 0 1px 0 #17130b;
 }
@@ -628,6 +628,6 @@
     margin-right: 4px;
   }
   .osrs-skill-level {
-    font-size: 10px;
+    font-size: 14px;
   }
 }

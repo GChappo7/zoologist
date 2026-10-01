@@ -2840,6 +2840,76 @@
       "region": "Wilderness",
       "tier": "Elite",
       "label": "Elite — Wilderness"
+    },
+    {
+      "id": "sailing-1-10",
+      "type": "skill",
+      "skill": "Sailing",
+      "band": "1-10",
+      "label": "Sailing — Levels 1-10"
+    },
+    {
+      "id": "sailing-11-20",
+      "type": "skill",
+      "skill": "Sailing",
+      "band": "11-20",
+      "label": "Sailing — Levels 11-20"
+    },
+    {
+      "id": "sailing-21-30",
+      "type": "skill",
+      "skill": "Sailing",
+      "band": "21-30",
+      "label": "Sailing — Levels 21-30"
+    },
+    {
+      "id": "sailing-31-40",
+      "type": "skill",
+      "skill": "Sailing",
+      "band": "31-40",
+      "label": "Sailing — Levels 31-40"
+    },
+    {
+      "id": "sailing-41-50",
+      "type": "skill",
+      "skill": "Sailing",
+      "band": "41-50",
+      "label": "Sailing — Levels 41-50"
+    },
+    {
+      "id": "sailing-51-60",
+      "type": "skill",
+      "skill": "Sailing",
+      "band": "51-60",
+      "label": "Sailing — Levels 51-60"
+    },
+    {
+      "id": "sailing-61-70",
+      "type": "skill",
+      "skill": "Sailing",
+      "band": "61-70",
+      "label": "Sailing — Levels 61-70"
+    },
+    {
+      "id": "sailing-71-80",
+      "type": "skill",
+      "skill": "Sailing",
+      "band": "71-80",
+      "label": "Sailing — Levels 71-80"
+    },
+    {
+      "id": "sailing-81-90",
+      "type": "skill",
+      "skill": "Sailing",
+      "band": "81-90",
+      "label": "Sailing — Levels 81-90"
+    },
+    {
+      "id": "sailing-91-99",
+      "type": "skill",
+      "skill": "Sailing",
+      "band": "91-99",
+      "label": "Sailing — Levels 91-99"
     }
   ],
   "unrestrictedSkills": [
@@ -2867,6 +2937,7 @@
     "Cooking",
     "Firemaking",
     "Woodcutting",
-    "Farming"
+    "Farming",
+    "Sailing"
   ]
 }

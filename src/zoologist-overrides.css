@@ -258,3 +258,22 @@
   font-size: 15px;
   line-height: 1.15;
 }
+
+/* Frontier/revealed tiles use a warm yellow radial glow to indicate in-progress state. */
+.map-tile-frontier .map-card-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 48%,
+      rgba(232, 202, 102, .34) 0%,
+      rgba(190, 156, 48, .22) 42%,
+      rgba(111, 88, 24, .16) 58%,
+      transparent 68%);
+}
+
+.map-tile-frontier .tile-status-front {
+  display: none;
+}

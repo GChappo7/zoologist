@@ -170,13 +170,59 @@ function ShopView(){
 function BossView(){
   return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div><h1>Boss Tasks</h1><p>Boss layers are ready to award Zoologist Points once boss placement and task eligibility are finalized.</p></div><div className="boss-empty"><MapPinned size={28}/><strong>Boss pool not assigned yet</strong><span>{bossSystem.tasks.length} boss tasks configured</span></div></div>
 }
-function SidePanel({open,setOpen,selectedTile,onClear,onComplete,exploredCount,frontierCount,creatureById,creatureCount}){
+function getTileReward(tile,creature){
+  if(tile?.reward)return tile.reward
+  const types=['Quest','Skill','Diary']
+  return {type:types[((creature?.id??1)-1)%types.length],name:'Reward assignment pending'}
+}
+function TilePopup({selectedTile,onClose,onShowMore,onComplete,creatureById}){
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
-  return <aside className={`side-panel ${open?'side-panel-open':'side-panel-collapsed'}`}>{open?<><div className="side-panel-header"><div><div className="eyebrow"><Compass size={13}/> EXPEDITION LOG</div><strong>Discovery details</strong></div><button className="icon-button" onClick={()=>setOpen(false)}><ChevronRight size={17}/></button></div>{!creature?<div className="side-empty"><div className="empty-orb"><PawPrint size={24}/></div><h2>Select a tile</h2><p>Click an explored or newly revealed creature to inspect its progression reward.</p><div className="side-stat-grid"><div><span>Explored</span><strong>{exploredCount}</strong></div><div><span>Revealed</span><strong>{frontierCount}</strong></div><div><span>Creatures</span><strong>{creatureCount}</strong></div><div><span>Points</span><strong>0</strong></div></div></div>:<div className="side-detail"><button className="back-link" onClick={onClear}><ChevronLeft size={14}/> Back to expedition</button><div className={`detail-banner ${selectedTile.completed?'complete':'frontier'}`}><span>{selectedTile.completed?'COMPLETED TILE':'NEWLY REVEALED'}</span>{selectedTile.completed?<ShieldCheck size={15}/>:<Eye size={15}/>}</div><div className="detail-creature"><CreatureGlyph creature={creature} size="hero"/><div><h2>{creature.name}</h2><span>Creature ID {creature.id}</span></div></div><p className="detail-description">{creature.description}</p><div className="detail-stats"><div><span>Accessibility</span><strong>Score {creature.score}</strong></div><div><span>Completion</span><strong>{selectedTile.completed?'Complete':'Not complete'}</strong></div></div><div className="reward-box"><div className="reward-heading"><Sparkles size={15}/> Completion reward</div><strong>Reward assignment pending</strong><p>The reward catalog is ready; creature-specific eligibility and assignment will be added once quest/diary dependency rules are finalized.</p></div>{!selectedTile.completed&&<button className="complete-button" onClick={()=>onComplete(selectedTile)}><Flag size={15}/> Mark complete</button>}</div>}</>:<button className="collapsed-rail" onClick={()=>setOpen(true)}><ChevronLeft size={18}/><span>EXPEDITION</span></button>}</aside>
+  if(!selectedTile||!creature)return null
+  const reward=getTileReward(selectedTile,creature)
+  return <div className="tile-popup-backdrop" onMouseDown={onClose}>
+    <section className="tile-popup" onMouseDown={e=>e.stopPropagation()}>
+      <button className="tile-popup-close" onClick={onClose} aria-label="Close tile details"><ChevronRight size={17}/></button>
+      <div className={`tile-popup-status ${selectedTile.completed?'complete':'frontier'}`}>
+        <span>{selectedTile.completed?'COMPLETED':'REVEALED'}</span>
+        {selectedTile.completed?<ShieldCheck size={14}/>:<Eye size={14}/>}
+      </div>
+      <div className="tile-popup-creature">
+        <CreatureGlyph creature={creature} size="hero"/>
+        <div><span className="tile-popup-eyebrow">ANIMAL</span><h2>{creature.name}</h2></div>
+      </div>
+      <div className="tile-popup-reward">
+        <div><span>REWARD</span><strong>{reward.type}</strong></div>
+        <p>{reward.name}</p>
+      </div>
+      <div className="tile-popup-actions">
+        <button className="show-more-button" onClick={onShowMore}>Show more <ChevronRight size={15}/></button>
+        {!selectedTile.completed&&<button className="complete-button" onClick={()=>onComplete(selectedTile)}><Flag size={15}/> Mark complete</button>}
+        {selectedTile.bossId&&<button className="boss-button" type="button"><Skull size={15}/> Boss</button>}
+      </div>
+    </section>
+  </div>
+}
+function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById}){
+  const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
+  const reward=selectedTile&&creature?getTileReward(selectedTile,creature):null
+  if(!open)return null
+  return <aside className="side-panel side-panel-open">
+    <div className="side-panel-header"><div><div className="eyebrow"><Compass size={13}/> EXPEDITION LOG</div><strong>Animal details</strong></div><button className="icon-button" onClick={()=>setOpen(false)}><ChevronRight size={17}/></button></div>
+    {!creature?<div className="side-empty"><div className="empty-orb"><PawPrint size={24}/></div><h2>Select a tile</h2><p>Click a revealed or completed animal to inspect it.</p></div>:<div className="side-detail">
+      <button className="back-link" onClick={onClear}><ChevronLeft size={14}/> Back to expedition</button>
+      <div className={`detail-banner ${selectedTile.completed?'complete':'frontier'}`}><span>{selectedTile.completed?'COMPLETED TILE':'REVEALED TILE'}</span>{selectedTile.completed?<ShieldCheck size={15}/>:<Eye size={15}/>}</div>
+      <div className="detail-creature"><CreatureGlyph creature={creature} size="hero"/><div><h2>{creature.name}</h2><span>Creature ID {creature.id}</span></div></div>
+      <p className="detail-description">{creature.description}</p>
+      <div className="detail-stats"><div><span>Accessibility</span><strong>Score {creature.score}</strong></div><div><span>Status</span><strong>{selectedTile.completed?'Complete':'Not complete'}</strong></div></div>
+      <div className="reward-box"><div className="reward-heading"><Sparkles size={15}/> Reward</div><strong>{reward.type}</strong><p>{reward.name}</p></div>
+      {selectedTile.bossId&&<button className="boss-button side-boss-button" type="button"><Skull size={15}/> Boss</button>}
+      {!selectedTile.completed&&<button className="complete-button" onClick={()=>onComplete(selectedTile)}><Flag size={15}/> Mark complete</button>}
+    </div>}
+  </aside>
 }
 function MapView({creatures,onCompletedCountChange}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
-  const [panelOpen,setPanelOpen]=useState(true),[selectedTile,setSelectedTile]=useState(null),[startCreature]=useState(()=>pickStartingCreature(creatures))
+  const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[startCreature]=useState(()=>pickStartingCreature(creatures))
   const [tiles,setTiles]=useState(()=>createInitialTiles(creatures,startCreature)),[fogVisible,setFogVisible]=useState(false),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false)
   const stageRef=useRef(null),zoomRef=useRef(zoom),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0}),edgeFrameRef=useRef(null)
   useEffect(()=>{zoomRef.current=zoom},[zoom])
@@ -235,42 +281,42 @@ function MapView({creatures,onCompletedCountChange}){
     return{cells,gridSize,offsetX:pan.x+centreTileX*TILE_STEP*zoom,offsetY:pan.y+centreTileY*TILE_STEP*zoom}
   },[centreTileX,centreTileY,pan.x,pan.y,tiles,zoom,fogVisible])
   const exploredCount=knownTiles.filter(t=>t.state==='explored').length,frontierCount=knownTiles.filter(t=>t.state==='frontier').length,creatureCount=creatures.length
+  const openTile=tile=>{
+    if(!tile?.creatureId)return
+    setSelectedTile(tile)
+    setPanelOpen(false)
+  }
   const handleReveal=tile=>{
     if(!tile?.faceDown)return
     const revealed={...tile,faceDown:false}
     setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:revealed}))
     setFogVisible(true)
-    setSelectedTile(revealed)
+    openTile(revealed)
   }
   const handleComplete=tile=>{
     if(!tile||tile.state!=='frontier'||tile.completed||tile.faceDown)return
-    setTiles(current=>recomputeFrontier({
-      ...current,
-      [keyFor(tile.x,tile.y)]:{
-        ...current[keyFor(tile.x,tile.y)],
-        state:'explored',
-        completed:true,
-        faceDown:false,
-      },
-    },creatures))
-    setSelectedTile(current=>({...current,state:'explored',completed:true,faceDown:false}))
+    const completed={...tile,state:'explored',completed:true,faceDown:false}
+    setTiles(current=>recomputeFrontier({...current,[keyFor(tile.x,tile.y)]:completed},creatures))
+    setSelectedTile(completed)
+    setPanelOpen(false)
     onCompletedCountChange?.(n=>n+1)
   }
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
-    <div className="map-toolbar"><div><div className="eyebrow"><Gamepad2 size={13}/> ZOOLOGIST EXPEDITION</div><h1>Unknown Territory</h1><p>Explore the revealed frontier and look beyond the cloud.</p></div><div className="map-legend"><span><i className="legend-swatch explored"/> Explored</span><span><i className="legend-swatch frontier"/> Revealed</span><span><i className="legend-swatch fog"/> Clouded</span></div></div>
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
-  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y} onSelect={setSelectedTile} onReveal={handleReveal} creatureById={creatureById}/>)}</div></div>
+  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById}/>)}</div></div>
       <div className="map-zoom-controls" onPointerDown={e=>e.stopPropagation()}><button onClick={()=>zoomAtPoint(zoom-ZOOM_STEP,innerWidth/2,innerHeight/2)}>−</button><button className="zoom-readout" onClick={()=>{setPan({x:0,y:0});setZoom(1)}}>{Math.round(zoom*100)}%</button><button onClick={()=>zoomAtPoint(zoom+ZOOM_STEP,innerWidth/2,innerHeight/2)}>+</button></div>
       <div className="map-control-hint"><div><MousePointer2 size={13}/> Move to edge to pan</div><div>↑ ↓ ← → <span>Arrow keys</span></div><div>MMB <span>Drag to pan</span></div><div>Wheel <span>Zoom</span></div></div>
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
     </div>
-    <div className="map-footer-bar"><div><span>EXPLORED</span><strong>{exploredCount}</strong></div><div><span>REVEALED</span><strong>{frontierCount}</strong></div><div><span>CREATURES COMPLETED</span><strong>{exploredCount} / {creatureCount}</strong></div><div className="footer-note"><Eye size={13}/> The wider world is hidden.</div></div>
-  </section><SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} exploredCount={exploredCount} frontierCount={frontierCount} creatureById={creatureById} creatureCount={creatureCount}/></div>
+  </section>
+  <TilePopup selectedTile={selectedTile} onClose={()=>setSelectedTile(null)} onShowMore={()=>setPanelOpen(true)} onComplete={handleComplete} creatureById={creatureById}/>
+  <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById}/>
+</div>
 }
 function App(){
   const [tab,setTab]=useState('map')
   const [creatures]=useState(()=>{try{return loadCreatureCatalog()}catch{return[]}})
-  const [completedCount,setCompletedCount]=useState(1)
+  const [completedCount,setCompletedCount]=useState(0)
   if(!creatures.length)return <div className="app-shell"><div className="full-tab-page"><h1>Creature data could not be loaded</h1><p>Check data/creatures.csv.</p></div></div>
   const creatureCount=creatures.length
   const tabs=[
@@ -278,6 +324,6 @@ function App(){
     {id:'diaries',label:'Diaries',icon:BookOpen},{id:'shop',label:'Shop',icon:ShoppingBag},{id:'bosses',label:'Bosses',icon:Skull}
   ]
   const page=tab==='skills'?<SkillsView/>:tab==='quests'?<QuestsView/>:tab==='diaries'?<DiariesView/>:tab==='shop'?<ShopView/>:tab==='bosses'?<BossView/>:<MapView creatures={creatures} onCompletedCountChange={setCompletedCount}/>
-  return <div className="app-shell"><header className="topbar"><div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration</div></div></div><nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} className={tab===id?'active':''} onClick={()=>setTab(id)}><Icon size={16}/>{label}</button>)}</nav><div className="header-actions"><div className="header-progress"><div className="progress-label"><span>CREATURES</span><strong>{completedCount} / {creatureCount}</strong></div><div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,completedCount/creatureCount*100)}%`}}/></div></div><button className="account-button"><Users size={16}/> Account</button></div></header><main className="app-main">{page}</main><footer className="footer"><span>ZOOLOGIST • MASTER DATA CONNECTED</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer></div>
+  return <div className="app-shell"><header className="topbar"><div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration</div></div></div><nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} className={tab===id?'active':''} onClick={()=>setTab(id)}><Icon size={16}/>{label}</button>)}</nav><div className="header-actions"><div className="header-progress"><div className="progress-label"><span>CREATURES EXPLORED</span><strong>{completedCount} / {creatureCount}</strong></div><div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,completedCount/creatureCount*100)}%`}}/></div></div><button className="account-button"><Users size={16}/> Account</button></div></header><main className="app-main">{page}</main><footer className="footer"><span>ZOOLOGIST • MASTER DATA CONNECTED</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer></div>
 }
 createRoot(document.getElementById('root')).render(<App />)

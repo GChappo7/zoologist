@@ -70,20 +70,14 @@
 .fog-darken {
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,.42);
+  background:#000;
   z-index:3;
   pointer-events:none;
 }
-.map-tile-dark-fog-1 .fog-darken { background:rgba(0,0,0,.28); }
-.map-tile-dark-fog-2 .fog-darken { background:rgba(0,0,0,.55); }
-.map-tile-dark-fog-3 .fog-darken { background:rgba(0,0,0,.78); }
-.map-tile-black-fog .map-fog-gradient {
-  position:absolute;
-  inset:0;
-  z-index:3;
-  pointer-events:none;
-  background:rgba(0,0,0,.94);
-}
+.map-tile-dark-fog-1 .fog-darken { opacity:.28; }
+.map-tile-dark-fog-2 .fog-darken { opacity:.55; }
+.map-tile-dark-fog-3 .fog-darken { opacity:.78; }
+.map-tile-black-fog .fog-darken { opacity:.94; }
 .map-tile-explored::after,
 .map-tile-frontier::after { content:""; position:absolute; inset:0; background:rgba(255,255,255,.04); pointer-events:none; }
 .map-tile > * { z-index:2; }

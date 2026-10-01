@@ -1,0 +1,291 @@
+
+/* Zoologist progression/fog layer overrides */
+.map-stage {
+  background:#000;
+  overflow:hidden;
+}
+.map-stage::before,
+.map-stage::after { display:none; }
+
+/* Fog is rendered in world space by the individual tiles below the revealed map layer. */
+.map-grid-pan { z-index:2; }
+
+
+
+.map-card-face{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:block;transition:transform .55s cubic-bezier(.2,.75,.25,1);overflow:hidden;}
+.map-card-face>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
+.map-card-content{position:absolute;inset:0;display:block;z-index:2;}
+.map-card-back{transform:rotateY(180deg);z-index:3;}
+.map-card-front{transform:rotateY(0deg);z-index:2;}
+.map-tile.is-face-down{transform-style:preserve-3d;cursor:pointer;}
+.map-tile.is-face-down .map-card-back{transform:rotateY(0deg);z-index:3;visibility:visible;opacity:1;}
+.map-tile.is-face-down .map-card-front{transform:rotateY(-180deg);z-index:2;visibility:visible;opacity:1;}
+.map-tile:not(.is-face-down){transform-style:preserve-3d;}
+.map-tile.is-face-down:hover{filter:brightness(1.04);}
+
+/* Newly unlocked frontier cards all flip from their backs together after a completed tile. */
+.map-tile.is-batch-reveal .map-card-back{
+  transform:rotateY(0deg);
+  animation:zoologist-batch-back .55s cubic-bezier(.2,.75,.25,1) forwards;
+}
+.map-tile.is-batch-reveal .map-card-front{
+  transform:rotateY(-180deg);
+  animation:zoologist-batch-front .55s cubic-bezier(.2,.75,.25,1) forwards;
+}
+@keyframes zoologist-batch-back{
+  from{transform:rotateY(0deg);}
+  to{transform:rotateY(180deg);}
+}
+@keyframes zoologist-batch-front{
+  from{transform:rotateY(-180deg);}
+  to{transform:rotateY(0deg);}
+}
+
+.map-tile {
+  background-image:none;
+  background-color:transparent;
+  border-color:rgba(73,84,66,.42);
+}
+.map-tile-explored { background-color:rgba(255,255,255,.05); }
+.map-tile-frontier { background-color:#000; }
+.map-tile-locked,
+.map-tile-dark-fog-1,
+.map-tile-dark-fog-2,
+.map-tile-dark-fog-3,
+.map-tile-black-fog {
+  background:transparent;
+  border-color:transparent;
+  cursor:default;
+  overflow:hidden;
+  pointer-events:none;
+}
+.map-fog-card {
+  transform:rotateY(0deg);
+  transition:none;
+  z-index:2;
+  pointer-events:none;
+  opacity:0;
+  animation:zoologist-fog-ripple .9s cubic-bezier(.2,.72,.2,1) forwards;
+  animation-delay:calc(var(--fog-distance, 1) * 55ms);
+}
+@keyframes zoologist-fog-ripple {
+  0% { opacity:0; transform:scale(.86); }
+  55% { opacity:1; transform:scale(1.035); }
+  100% { opacity:1; transform:scale(1); }
+}
+.fog-darken {
+  position:absolute;
+  inset:0;
+  background:#000;
+  z-index:3;
+  pointer-events:none;
+}
+.map-tile-dark-fog-1 .fog-darken { opacity:.28; }
+.map-tile-dark-fog-2 .fog-darken { opacity:.55; }
+.map-tile-dark-fog-3 .fog-darken { opacity:.78; }
+.map-tile-black-fog .fog-darken { opacity:.94; }
+.map-tile-explored::after,
+.map-tile-frontier::after { content:""; position:absolute; inset:0; background:rgba(255,255,255,.04); pointer-events:none; }
+.map-tile > * { z-index:2; }
+.map-tile.is-face-down { z-index:4; background:transparent; border-color:transparent; }
+.map-tile.is-face-down::before { content:""; position:absolute; inset:0; background:transparent; z-index:0; }
+.map-tile-explored .creature-image,
+.map-tile-frontier .creature-image { filter:drop-shadow(0 4px 7px rgba(0,0,0,.25)); }
+
+.top-tabs { overflow-x:auto; scrollbar-width:none; }
+.top-tabs::-webkit-scrollbar { display:none; }
+
+.full-tab-page { background:rgba(22,28,25,.96); }
+.skill-section { margin-top:24px; }
+.skill-section h2 { font-size:14px; margin:0 0 10px; color:#d8d1bf; }
+.skill-card.unrestricted { border-color:#405b48; background:#122019; }
+
+.quest-log-page { min-height:calc(100vh - 76px); padding:20px; background:#171a18; }
+.quest-log-shell {
+  max-width:1180px; min-height:calc(100vh - 116px); margin:0 auto;
+  background:#d7c9a8; color:#251f18; border:5px solid #66543b;
+  box-shadow:inset 0 0 0 2px #b8a27a, 0 18px 70px rgba(0,0,0,.38);
+  font-family:Georgia,'Times New Roman',serif;
+}
+.quest-log-title {
+  display:flex; align-items:center; gap:10px; padding:14px 18px;
+  background:linear-gradient(#51442f,#342c20); color:#eadfbe;
+  border-bottom:3px solid #9d875f; font-size:16px;
+}
+.quest-log-title div { display:flex; flex-direction:column; }
+.quest-log-title span { font:10px 'Space Mono',monospace; color:#b9ad8f; margin-top:2px; }
+.quest-log-controls { display:flex; gap:10px; align-items:center; padding:10px; background:#bcae8c; border-bottom:2px solid #78694d; }
+.quest-filters { display:flex; gap:3px; flex-wrap:wrap; }
+.quest-filters button {
+  border:1px solid #79694a; background:#d7c9a8; color:#332a1e; padding:7px 10px;
+  font:700 11px Georgia,serif; cursor:pointer; box-shadow:inset 0 1px rgba(255,255,255,.45);
+}
+.quest-filters button.active { background:#66543b; color:#f0e5c8; }
+.quest-filters span { opacity:.7; margin-left:4px; }
+.quest-search { margin-left:auto; display:flex; align-items:center; gap:6px; background:#eee5cf; border:1px solid #79694a; padding:6px 8px; min-width:220px; }
+.quest-search input { border:0; outline:0; background:transparent; font:12px Georgia,serif; color:#2b241b; width:100%; }
+.quest-log-body { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr); min-height:600px; }
+.quest-list { padding:14px; overflow:auto; max-height:calc(100vh - 235px); }
+.quest-list section h3 {
+  margin:12px 4px 5px; padding-bottom:4px; border-bottom:1px solid #a08d68;
+  font-size:13px; color:#4b3c29;
+}
+.quest-row {
+  width:100%; border:0; border-bottom:1px solid rgba(104,87,59,.22); background:transparent;
+  min-height:30px; padding:5px 7px; display:grid; grid-template-columns:13px 1fr auto;
+  gap:7px; align-items:center; text-align:left; font:12px Georgia,serif; color:#b12626; cursor:pointer;
+}
+.quest-row:hover { background:rgba(255,255,255,.22); }
+.quest-status-dot { width:8px; height:8px; border-radius:50%; background:#777; border:1px solid rgba(0,0,0,.25); }
+.quest-row.quest-revealed .quest-status-dot { background:#c52e2e; }
+.quest-row.quest-in_progress { color:#9a701b; }
+.quest-row.quest-in_progress .quest-status-dot { background:#d4a72c; }
+.quest-row.quest-completed { color:#287d39; }
+.quest-row.quest-completed .quest-status-dot { background:#3a9b4b; }
+.quest-row.quest-unrevealed { color:#6b6252; cursor:default; }
+.quest-status-label { font-size:10px; opacity:.65; }
+.quest-info {
+  border-left:2px solid #a08d68; background:rgba(239,230,208,.42); padding:38px 28px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#62533c;
+}
+.quest-info h2 { margin:12px 0 6px; font-size:20px; }
+.quest-info p { max-width:280px; font-size:12px; line-height:1.5; margin:0; }
+.quest-info small { max-width:280px; margin-top:18px; font-size:10px; opacity:.65; }
+
+.diary-grid,.shop-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.diary-card,.shop-card {
+  padding:15px; border:1px solid var(--border); background:#111a20; border-radius:10px;
+}
+.diary-card strong { display:block; margin-bottom:10px; }
+.diary-card div { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.diary-card span { font-size:10px; color:#8d9a9f; }
+.diary-card i { display:inline-block; width:6px; height:6px; border-radius:50%; background:#64727a; }
+.shop-card { min-height:150px; }
+.shop-card-icon { color:var(--accent); margin-bottom:10px; }
+.shop-card p { color:var(--muted); font-size:11px; line-height:1.45; min-height:34px; }
+.shop-card span { color:#d3ae6e; font:9px 'Space Mono',monospace; }
+.boss-empty {
+  min-height:220px; border:1px dashed #394850; border-radius:12px; display:flex;
+  flex-direction:column; align-items:center; justify-content:center; gap:8px; color:#718088;
+}
+.boss-empty strong { color:#c4ced2; }
+
+@media (max-width:900px){
+  .quest-log-body { grid-template-columns:1fr; }
+  .quest-info { display:none; }
+  .quest-list { max-height:none; }
+  .quest-search { min-width:140px; }
+  .diary-grid,.shop-grid { grid-template-columns:1fr 1fr; }
+}
+@media (max-width:600px){
+  .quest-log-page { padding:8px; }
+  .quest-log-controls { align-items:stretch; flex-direction:column; }
+  .quest-search { margin-left:0; }
+  .diary-grid,.shop-grid { grid-template-columns:1fr; }
+}
+
+.map-void{width:128px;height:128px;background:transparent;border:0;pointer-events:none;}
+
+/* Startup card visibility fix: keep the starter's back face explicitly above the map. */
+.map-grid { perspective: 1400px; }
+.map-tile.is-face-down {
+  display: grid !important;
+  place-items: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+  z-index: 20 !important;
+  isolation: isolate;
+}
+.map-tile.is-face-down .map-card-face {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: none;
+}
+.map-tile.is-face-down .map-card-back {
+  transform: rotateY(0deg) !important;
+  -webkit-transform: rotateY(0deg) !important;
+  z-index: 10 !important;
+}
+.map-tile.is-face-down .map-card-front {
+  transform: rotateY(-180deg) !important;
+  -webkit-transform: rotateY(-180deg) !important;
+  z-index: 9 !important;
+}
+
+/* Keep the map void completely black: remove the decorative world-space grid from the base map. */
+.map-stage {
+  background-image: none !important;
+  background-color: #000 !important;
+}
+
+/* Completed creatures use a soft green glow/gradient instead of a completion tick. */
+.map-tile-explored .map-card-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 48%,
+      rgba(150, 205, 166, .38) 0%,
+      rgba(104, 168, 126, .24) 42%,
+      rgba(46, 92, 62, .18) 58%,
+      transparent 68%);
+}
+
+
+/* Remove the tile border itself so adjacent card faces meet edge-to-edge. */
+.map-tile {
+  border: 0 !important;
+}
+
+/* Give the larger 256px map cards more room for creature art and labels. */
+.creature-glyph-tile {
+  width: 128px;
+  height: 160px;
+  top: 40%;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.creature-glyph-tile .creature-image {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  transform: translateX(-50%);
+  object-fit: contain;
+  object-position: center bottom;
+}
+.tile-name {
+  bottom: 30px;
+  left: 12px;
+  right: 12px;
+  font-size: 15px;
+  line-height: 1.15;
+}
+
+/* Frontier/revealed tiles use a warm yellow radial glow to indicate in-progress state. */
+.map-tile-frontier .map-card-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 48%,
+      rgba(232, 202, 102, .34) 0%,
+      rgba(190, 156, 48, .22) 42%,
+      rgba(111, 88, 24, .16) 58%,
+      transparent 68%);
+}
+
+.map-tile-frontier .tile-status-front {
+  display: none;
+}

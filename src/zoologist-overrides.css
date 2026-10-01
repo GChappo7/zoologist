@@ -47,7 +47,7 @@
   border-color:rgba(73,84,66,.42);
 }
 .map-tile-explored { background-color:rgba(255,255,255,.05); }
-.map-tile-frontier { background-color:rgba(255,255,255,.16); }
+.map-tile-frontier { background-color:#000; }
 .map-tile-locked,
 .map-tile-dark-fog-1,
 .map-tile-dark-fog-2,

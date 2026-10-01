@@ -263,10 +263,10 @@
   object-position: center bottom;
 }
 .tile-name {
-  bottom: 28px;
-  left: 16px;
-  right: 16px;
-  font-size: 28px;
+  bottom: 34px;
+  left: 28px;
+  right: 28px;
+  font-size: 24px;
   line-height: 1.05;
   white-space: normal;
   overflow: hidden;
@@ -275,6 +275,7 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow-wrap: break-word;
+  text-align: center;
 }
 
 /* Frontier/revealed tiles use a warm yellow radial glow to indicate in-progress state. */

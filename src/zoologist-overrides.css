@@ -248,7 +248,7 @@
   top: 40%;
   padding: 0;
   box-sizing: border-box;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .creature-glyph-tile .creature-image {

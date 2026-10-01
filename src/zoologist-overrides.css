@@ -185,3 +185,31 @@
 }
 
 .map-void{width:128px;height:128px;background:transparent;border:0;pointer-events:none;}
+
+/* Startup card visibility fix: keep the starter's back face explicitly above the map. */
+.map-grid { perspective: 1400px; }
+.map-tile.is-face-down {
+  display: grid !important;
+  place-items: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+  z-index: 20 !important;
+  isolation: isolate;
+}
+.map-tile.is-face-down .map-card-face {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: none;
+}
+.map-tile.is-face-down .map-card-back {
+  transform: rotateY(0deg) !important;
+  -webkit-transform: rotateY(0deg) !important;
+  z-index: 10 !important;
+}
+.map-tile.is-face-down .map-card-front {
+  transform: rotateY(-180deg) !important;
+  -webkit-transform: rotateY(-180deg) !important;
+  z-index: 9 !important;
+}

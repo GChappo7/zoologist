@@ -327,7 +327,7 @@ function MapView({creatures,onProgressChange}){
     if(!tile||tile.state!=='frontier'||tile.completed||tile.faceDown)return
     const completed={...tile,state:'explored',completed:true,faceDown:false}
     setTiles(current=>recomputeFrontier({...current,[keyFor(tile.x,tile.y)]:completed},creatures))
-    setSelectedTile(completed)
+    setSelectedTile(null)
     setPanelOpen(false)
     onProgressChange?.({explored:1, revealed:frontierCount})
   }

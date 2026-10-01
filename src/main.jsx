@@ -314,9 +314,6 @@ function getRewardPresentation(reward){
     asset:'reward_quest.png',
   }
 }
-function skillIconUrl(skill){
-  return `https://oldschool.runescape.wiki/images/${encodeURIComponent(skill??'').replace(/%20/g,'_')}_icon.png`
-}
 function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,skillProgress}){
   const [isDismissing,setIsDismissing]=useState(false)
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null

@@ -28,6 +28,24 @@
 .map-tile:not(.is-face-down){transform-style:preserve-3d;}
 .map-tile.is-face-down:hover{filter:brightness(1.04);}
 
+/* Newly unlocked frontier cards all flip from their backs together after a completed tile. */
+.map-tile.is-batch-reveal .map-card-back{
+  transform:rotateY(0deg);
+  animation:zoologist-batch-back .55s cubic-bezier(.2,.75,.25,1) forwards;
+}
+.map-tile.is-batch-reveal .map-card-front{
+  transform:rotateY(-180deg);
+  animation:zoologist-batch-front .55s cubic-bezier(.2,.75,.25,1) forwards;
+}
+@keyframes zoologist-batch-back{
+  from{transform:rotateY(0deg);}
+  to{transform:rotateY(180deg);}
+}
+@keyframes zoologist-batch-front{
+  from{transform:rotateY(-180deg);}
+  to{transform:rotateY(0deg);}
+}
+
 .map-tile {
   background-image:none;
   background-color:transparent;

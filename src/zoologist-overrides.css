@@ -51,9 +51,9 @@
 .map-tile-explored { background-color:rgba(255,255,255,.05); }
 .map-tile-frontier { background-color:rgba(255,255,255,.16); }
 .map-tile-locked,
-.map-tile-dark-fog,
-.map-tile-grey-fog,
-.map-tile-deep-fog,
+.map-tile-dark-fog-1,
+.map-tile-dark-fog-2,
+.map-tile-dark-fog-3,
 .map-tile-black-fog {
   background:transparent;
   border-color:transparent;
@@ -74,20 +74,15 @@
   z-index:3;
   pointer-events:none;
 }
+.map-tile-dark-fog-1 .fog-darken { background:rgba(0,0,0,.24); }
+.map-tile-dark-fog-2 .fog-darken { background:rgba(0,0,0,.48); }
+.map-tile-dark-fog-3 .fog-darken { background:rgba(0,0,0,.72); }
 .map-fog-gradient {
   position:absolute;
   inset:0;
   z-index:2;
   pointer-events:none;
-}
-.map-tile-grey-fog .map-fog-gradient {
-  background:rgba(112,116,112,.62);
-}
-.map-tile-deep-fog .map-fog-gradient {
-  background:rgba(67,70,67,.78);
-}
-.map-tile-black-fog .map-fog-gradient {
-  background:rgba(15,17,16,.91);
+  background:#050505;
 }
 .map-tile-explored::after,
 .map-tile-frontier::after { content:""; position:absolute; inset:0; background:rgba(255,255,255,.04); pointer-events:none; }

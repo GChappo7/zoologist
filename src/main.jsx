@@ -6,6 +6,7 @@ import {
   Sparkles, Users, Search, ShoppingBag, Skull, MapPinned
 } from 'lucide-react'
 import './styles.css'
+import './zoologist-overrides.css'
 import creatureCsv from '../data/creatures.csv?raw'
 import quests from '../data/quests.json'
 import rewardCatalog from '../data/reward-catalog.json'

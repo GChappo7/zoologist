@@ -78,7 +78,7 @@ function weightedCreaturePick(available,preferredScore=null){
 function pickUnusedCreature(creatures,usedIds,preferredScore=null){return weightedCreaturePick(creatures.filter(c=>!usedIds.has(c.id)),preferredScore)}
 function preferredScoreForDistance(x,y){return Math.min(8,Math.max(1,1+Math.floor((Math.abs(x)+Math.abs(y))/4)))}
 function createInitialTiles(creatures,startCreature){
-  const tiles={[keyFor(0,0)]:{x:0,y:0,state:'explored',creatureId:startCreature.id,completed:true}}
+  const tiles={[keyFor(0,0)]:{x:0,y:0,state:'explored',creatureId:startCreature.id,completed:true,faceDown:true}}
   const used=new Set([startCreature.id])
   CARDINAL_DIRECTIONS.forEach(([dx,dy])=>{const creature=pickUnusedCreature(creatures,used,preferredScoreForDistance(dx,dy));if(creature){used.add(creature.id);tiles[keyFor(dx,dy)]={x:dx,y:dy,state:'frontier',creatureId:creature.id,completed:false}}})
   return tiles
@@ -208,6 +208,12 @@ function MapView({creatures,onCompletedCountChange}){
     return{cells,gridSize,offsetX:pan.x+centreTileX*TILE_STEP*zoom,offsetY:pan.y+centreTileY*TILE_STEP*zoom}
   },[centreTileX,centreTileY,pan.x,pan.y,tiles,zoom])
   const exploredCount=knownTiles.filter(t=>t.state==='explored').length,frontierCount=knownTiles.filter(t=>t.state==='frontier').length,creatureCount=creatures.length
+  const handleReveal=tile=>{
+    if(!tile?.faceDown)return
+    const revealed={...tile,faceDown:false}
+    setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:revealed}))
+    setSelectedTile(revealed)
+  }
   const handleComplete=tile=>{
     if(!tile||tile.state!=='frontier')return
     setTiles(current=>recomputeFrontier({...current,[keyFor(tile.x,tile.y)]:{...current[keyFor(tile.x,tile.y)],state:'explored',completed:true}},creatures))
@@ -217,7 +223,7 @@ function MapView({creatures,onCompletedCountChange}){
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
     <div className="map-toolbar"><div><div className="eyebrow"><Gamepad2 size={13}/> ZOOLOGIST EXPEDITION</div><h1>Unknown Territory</h1><p>Explore the revealed frontier and look beyond the cloud.</p></div><div className="map-legend"><span><i className="legend-swatch explored"/> Explored</span><span><i className="legend-swatch frontier"/> Revealed</span><span><i className="legend-swatch fog"/> Clouded</span></div></div>
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
-      <div className="cloud-bank" aria-hidden="true"/><div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y} onSelect={setSelectedTile} creatureById={creatureById}/>)}</div></div>
+      <div className="cloud-bank" aria-hidden="true"/><div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y} onSelect={setSelectedTile} onReveal={handleReveal} creatureById={creatureById}/>)}</div></div>
       <div className="map-zoom-controls" onPointerDown={e=>e.stopPropagation()}><button onClick={()=>zoomAtPoint(zoom-ZOOM_STEP,innerWidth/2,innerHeight/2)}>−</button><button className="zoom-readout" onClick={()=>{setPan({x:0,y:0});setZoom(1)}}>{Math.round(zoom*100)}%</button><button onClick={()=>zoomAtPoint(zoom+ZOOM_STEP,innerWidth/2,innerHeight/2)}>+</button></div>
       <div className="map-control-hint"><div><MousePointer2 size={13}/> Move to edge to pan</div><div>↑ ↓ ← → <span>Arrow keys</span></div><div>MMB <span>Drag to pan</span></div><div>Wheel <span>Zoom</span></div></div>
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>

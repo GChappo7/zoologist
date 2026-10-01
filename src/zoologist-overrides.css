@@ -213,3 +213,21 @@
   -webkit-transform: rotateY(-180deg) !important;
   z-index: 9 !important;
 }
+
+/* Keep the map void completely black: remove the decorative world-space grid from the base map. */
+.map-stage {
+  background-image: none !important;
+  background-color: #000 !important;
+}
+
+/* Completed creatures use a soft green glow/gradient instead of a completion tick. */
+.map-tile-explored .map-card-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(150, 205, 166, .38) 0%, rgba(104, 168, 126, .24) 42%, rgba(46, 92, 62, .18) 72%, rgba(24, 48, 34, .10) 100%),
+    linear-gradient(145deg, rgba(184, 225, 194, .16), rgba(69, 126, 88, .22));
+}

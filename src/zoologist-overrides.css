@@ -9,56 +9,10 @@
 .map-stage::before,
 .map-stage::after { display:none; }
 
-/* World-space cloud layer: soft, oversized masses drifting slowly across the fog. */
-.cloud-bank {
-  position:absolute;
-  inset:-18%;
-  z-index:3;
-  pointer-events:none;
-  opacity:.92;
-  filter:blur(18px);
-  background:
-    radial-gradient(ellipse 20% 15% at 8% 22%, rgba(255,255,255,.86) 0 35%, transparent 76%),
-    radial-gradient(ellipse 25% 19% at 31% 12%, rgba(255,255,255,.72) 0 30%, transparent 74%),
-    radial-gradient(ellipse 23% 18% at 58% 25%, rgba(255,255,255,.84) 0 34%, transparent 76%),
-    radial-gradient(ellipse 27% 20% at 87% 15%, rgba(255,255,255,.68) 0 31%, transparent 76%),
-    radial-gradient(ellipse 28% 21% at 18% 63%, rgba(255,255,255,.78) 0 32%, transparent 78%),
-    radial-gradient(ellipse 22% 17% at 49% 76%, rgba(255,255,255,.9) 0 35%, transparent 77%),
-    radial-gradient(ellipse 28% 20% at 82% 67%, rgba(255,255,255,.74) 0 31%, transparent 78%),
-    radial-gradient(ellipse 19% 14% at 66% 94%, rgba(255,255,255,.82) 0 34%, transparent 78%);
-  animation:zoologist-cloud-drift 32s ease-in-out infinite alternate;
-}
-.cloud-bank::before,
-.cloud-bank::after {
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(ellipse 15% 10% at 15% 42%, rgba(255,255,255,.58), transparent 72%),
-    radial-gradient(ellipse 18% 12% at 42% 42%, rgba(255,255,255,.46), transparent 72%),
-    radial-gradient(ellipse 14% 10% at 73% 47%, rgba(255,255,255,.62), transparent 72%),
-    radial-gradient(ellipse 20% 12% at 92% 52%, rgba(255,255,255,.42), transparent 74%);
-  filter:blur(11px);
-  animation:zoologist-cloud-wisp 21s ease-in-out infinite alternate;
-}
-.cloud-bank::after {
-  opacity:.62;
-  transform:scale(1.18) translate3d(-2%,3%,0);
-  animation-duration:37s;
-  animation-direction:alternate-reverse;
-}
-@keyframes zoologist-cloud-drift {
-  from { transform:translate3d(-2%,1%,0) scale(1.02); }
-  to { transform:translate3d(3%,-2%,0) scale(1.07); }
-}
-@keyframes zoologist-cloud-wisp {
-  from { transform:translate3d(-3%,0,0) scale(1); }
-  to { transform:translate3d(4%,2%,0) scale(1.06); }
-}
-@media (prefers-reduced-motion:reduce) {
-  .cloud-bank,.cloud-bank::before,.cloud-bank::after { animation:none; }
-}
+/* Fog is rendered in world space by the individual tiles below the revealed map layer. */
 .map-grid-pan { z-index:2; }
+
+
 
 .map-card-face{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:block;transition:transform .55s cubic-bezier(.2,.75,.25,1);overflow:hidden;}
 .map-card-face>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
@@ -96,17 +50,44 @@
 }
 .map-tile-explored { background-color:rgba(255,255,255,.05); }
 .map-tile-frontier { background-color:rgba(255,255,255,.16); }
-.map-tile-locked {
+.map-tile-locked,
+.map-tile-dark-fog,
+.map-tile-grey-fog,
+.map-tile-deep-fog,
+.map-tile-black-fog {
   background:transparent;
   border-color:transparent;
   cursor:default;
   overflow:hidden;
+  pointer-events:none;
 }
 .map-fog-card {
   transform:rotateY(0deg);
   transition:none;
   z-index:2;
   pointer-events:none;
+}
+.fog-darken {
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.42);
+  z-index:3;
+  pointer-events:none;
+}
+.map-fog-gradient {
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+}
+.map-tile-grey-fog .map-fog-gradient {
+  background:rgba(112,116,112,.62);
+}
+.map-tile-deep-fog .map-fog-gradient {
+  background:rgba(67,70,67,.78);
+}
+.map-tile-black-fog .map-fog-gradient {
+  background:rgba(15,17,16,.91);
 }
 .map-tile-explored::after,
 .map-tile-frontier::after { content:""; position:absolute; inset:0; background:rgba(255,255,255,.04); pointer-events:none; }

@@ -188,7 +188,16 @@ function BossView(){
 function getTileReward(tile,creature){
   if(tile?.reward)return tile.reward
   const types=['Quest','Skill','Diary']
-  return {type:types[((creature?.id??1)-1)%types.length],name:'Reward assignment pending'}
+  const type=types[((creature?.id??1)-1)%types.length]
+  const rewards=rewardCatalog.mandatory.filter(reward=>String(reward.type).toLowerCase()===type.toLowerCase())
+  if(type==='Skill'){
+    const skillRewards=rewards.filter(reward=>reward.skill)
+    return skillRewards[((creature?.id??1)-1)%skillRewards.length]??{type:'skill',skill:'Strength',band:'unlock',label:'Strength — Unlock Skill'}
+  }
+  if(type==='Diary'){
+    return rewards[((creature?.id??1)-1)%rewards.length]??{type:'diary',region:'Location pending',tier:'Easy',label:'Easy — Location pending'}
+  }
+  return rewards[((creature?.id??1)-1)%rewards.length]??{type:'quest',name:'Quest reward pending'}
 }
 function getRewardPresentation(reward){
   const metadata=reward?.metadata??reward?.reward_metadata??{}

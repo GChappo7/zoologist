@@ -263,9 +263,9 @@
   object-position: center bottom;
 }
 .tile-name {
-  bottom: 34px;
-  left: 28px;
-  right: 28px;
+  bottom: 52px;
+  left: 24px;
+  right: 24px;
   font-size: 24px;
   line-height: 1.05;
   white-space: normal;

@@ -360,8 +360,8 @@
 /* Reward popup progression icons act as large, faded watermarks behind the reward copy. */
 .tile-popup-progression-icon {
   position:absolute !important;
-  width:108px !important;
-  height:88% !important;
+  width:128px !important;
+  height:78% !important;
   left:16% !important;
   top:50% !important;
   right:auto !important;
@@ -383,31 +383,31 @@
 
 @media (max-width:760px) {
   .tile-popup-progression-icon {
-    width:88px !important;
-    height:88% !important;
+    width:108px !important;
+    height:78% !important;
   }
 }
 @media (max-width:500px) {
   .tile-popup-progression-icon {
-    width:76px !important;
-    height:88% !important;
+    width:94px !important;
+    height:78% !important;
   }
 }
 
 
-/* Small progression stamp on revealed map tiles: the icon identifies the reward type without competing with the creature art. */
+/* Larger, softer progression stamp on revealed map tiles: the icon sits behind the creature and acts as a subtle reward-type watermark. */
 .tile-progression-stamp {
   position:absolute !important;
-  width:38px !important;
-  height:38px !important;
-  left:58px !important;
-  top:28px !important;
+  width:72px !important;
+  height:72px !important;
+  left:52px !important;
+  top:12px !important;
   right:auto !important;
   bottom:auto !important;
   object-fit:contain !important;
   image-rendering:pixelated;
-  opacity:.88;
-  filter:drop-shadow(0 3px 3px rgba(0,0,0,.78)) drop-shadow(0 0 2px rgba(0,0,0,.65));
-  z-index:4 !important;
+  opacity:.20;
+  filter:grayscale(1) brightness(.45) drop-shadow(0 2px 3px rgba(0,0,0,.6));
+  z-index:1 !important;
   pointer-events:none;
 }

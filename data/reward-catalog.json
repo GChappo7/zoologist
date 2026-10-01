@@ -1106,13 +1106,6 @@
       "label": "Recipe for Disaster"
     },
     {
-      "id": "strength-unlock",
-      "type": "skill",
-      "skill": "Strength",
-      "band": "unlock",
-      "label": "Strength — Unlock Skill"
-    },
-    {
       "id": "strength-1-10",
       "type": "skill",
       "skill": "Strength",
@@ -1181,13 +1174,6 @@
       "skill": "Strength",
       "band": "91-99",
       "label": "Strength — Levels 91-99"
-    },
-    {
-      "id": "defence-unlock",
-      "type": "skill",
-      "skill": "Defence",
-      "band": "unlock",
-      "label": "Defence — Unlock Skill"
     },
     {
       "id": "defence-1-10",
@@ -1260,13 +1246,6 @@
       "label": "Defence — Levels 91-99"
     },
     {
-      "id": "ranged-unlock",
-      "type": "skill",
-      "skill": "Ranged",
-      "band": "unlock",
-      "label": "Ranged — Unlock Skill"
-    },
-    {
       "id": "ranged-1-10",
       "type": "skill",
       "skill": "Ranged",
@@ -1335,13 +1314,6 @@
       "skill": "Ranged",
       "band": "91-99",
       "label": "Ranged — Levels 91-99"
-    },
-    {
-      "id": "prayer-unlock",
-      "type": "skill",
-      "skill": "Prayer",
-      "band": "unlock",
-      "label": "Prayer — Unlock Skill"
     },
     {
       "id": "prayer-1-10",
@@ -1414,13 +1386,6 @@
       "label": "Prayer — Levels 91-99"
     },
     {
-      "id": "magic-unlock",
-      "type": "skill",
-      "skill": "Magic",
-      "band": "unlock",
-      "label": "Magic — Unlock Skill"
-    },
-    {
       "id": "magic-1-10",
       "type": "skill",
       "skill": "Magic",
@@ -1489,13 +1454,6 @@
       "skill": "Magic",
       "band": "91-99",
       "label": "Magic — Levels 91-99"
-    },
-    {
-      "id": "runecraft-unlock",
-      "type": "skill",
-      "skill": "Runecraft",
-      "band": "unlock",
-      "label": "Runecraft — Unlock Skill"
     },
     {
       "id": "runecraft-1-10",
@@ -1568,13 +1526,6 @@
       "label": "Runecraft — Levels 91-99"
     },
     {
-      "id": "construction-unlock",
-      "type": "skill",
-      "skill": "Construction",
-      "band": "unlock",
-      "label": "Construction — Unlock Skill"
-    },
-    {
       "id": "construction-1-10",
       "type": "skill",
       "skill": "Construction",
@@ -1643,13 +1594,6 @@
       "skill": "Construction",
       "band": "91-99",
       "label": "Construction — Levels 91-99"
-    },
-    {
-      "id": "agility-unlock",
-      "type": "skill",
-      "skill": "Agility",
-      "band": "unlock",
-      "label": "Agility — Unlock Skill"
     },
     {
       "id": "agility-1-10",
@@ -1722,13 +1666,6 @@
       "label": "Agility — Levels 91-99"
     },
     {
-      "id": "herblore-unlock",
-      "type": "skill",
-      "skill": "Herblore",
-      "band": "unlock",
-      "label": "Herblore — Unlock Skill"
-    },
-    {
       "id": "herblore-1-10",
       "type": "skill",
       "skill": "Herblore",
@@ -1797,13 +1734,6 @@
       "skill": "Herblore",
       "band": "91-99",
       "label": "Herblore — Levels 91-99"
-    },
-    {
-      "id": "thieving-unlock",
-      "type": "skill",
-      "skill": "Thieving",
-      "band": "unlock",
-      "label": "Thieving — Unlock Skill"
     },
     {
       "id": "thieving-1-10",
@@ -1876,13 +1806,6 @@
       "label": "Thieving — Levels 91-99"
     },
     {
-      "id": "crafting-unlock",
-      "type": "skill",
-      "skill": "Crafting",
-      "band": "unlock",
-      "label": "Crafting — Unlock Skill"
-    },
-    {
       "id": "crafting-1-10",
       "type": "skill",
       "skill": "Crafting",
@@ -1951,13 +1874,6 @@
       "skill": "Crafting",
       "band": "91-99",
       "label": "Crafting — Levels 91-99"
-    },
-    {
-      "id": "fletching-unlock",
-      "type": "skill",
-      "skill": "Fletching",
-      "band": "unlock",
-      "label": "Fletching — Unlock Skill"
     },
     {
       "id": "fletching-1-10",
@@ -2030,13 +1946,6 @@
       "label": "Fletching — Levels 91-99"
     },
     {
-      "id": "slayer-unlock",
-      "type": "skill",
-      "skill": "Slayer",
-      "band": "unlock",
-      "label": "Slayer — Unlock Skill"
-    },
-    {
       "id": "slayer-1-10",
       "type": "skill",
       "skill": "Slayer",
@@ -2105,13 +2014,6 @@
       "skill": "Slayer",
       "band": "91-99",
       "label": "Slayer — Levels 91-99"
-    },
-    {
-      "id": "mining-unlock",
-      "type": "skill",
-      "skill": "Mining",
-      "band": "unlock",
-      "label": "Mining — Unlock Skill"
     },
     {
       "id": "mining-1-10",
@@ -2184,13 +2086,6 @@
       "label": "Mining — Levels 91-99"
     },
     {
-      "id": "smithing-unlock",
-      "type": "skill",
-      "skill": "Smithing",
-      "band": "unlock",
-      "label": "Smithing — Unlock Skill"
-    },
-    {
       "id": "smithing-1-10",
       "type": "skill",
       "skill": "Smithing",
@@ -2259,13 +2154,6 @@
       "skill": "Smithing",
       "band": "91-99",
       "label": "Smithing — Levels 91-99"
-    },
-    {
-      "id": "fishing-unlock",
-      "type": "skill",
-      "skill": "Fishing",
-      "band": "unlock",
-      "label": "Fishing — Unlock Skill"
     },
     {
       "id": "fishing-1-10",
@@ -2338,13 +2226,6 @@
       "label": "Fishing — Levels 91-99"
     },
     {
-      "id": "cooking-unlock",
-      "type": "skill",
-      "skill": "Cooking",
-      "band": "unlock",
-      "label": "Cooking — Unlock Skill"
-    },
-    {
       "id": "cooking-1-10",
       "type": "skill",
       "skill": "Cooking",
@@ -2413,13 +2294,6 @@
       "skill": "Cooking",
       "band": "91-99",
       "label": "Cooking — Levels 91-99"
-    },
-    {
-      "id": "firemaking-unlock",
-      "type": "skill",
-      "skill": "Firemaking",
-      "band": "unlock",
-      "label": "Firemaking — Unlock Skill"
     },
     {
       "id": "firemaking-1-10",
@@ -2492,13 +2366,6 @@
       "label": "Firemaking — Levels 91-99"
     },
     {
-      "id": "woodcutting-unlock",
-      "type": "skill",
-      "skill": "Woodcutting",
-      "band": "unlock",
-      "label": "Woodcutting — Unlock Skill"
-    },
-    {
       "id": "woodcutting-1-10",
       "type": "skill",
       "skill": "Woodcutting",
@@ -2567,13 +2434,6 @@
       "skill": "Woodcutting",
       "band": "91-99",
       "label": "Woodcutting — Levels 91-99"
-    },
-    {
-      "id": "farming-unlock",
-      "type": "skill",
-      "skill": "Farming",
-      "band": "unlock",
-      "label": "Farming — Unlock Skill"
     },
     {
       "id": "farming-1-10",

@@ -116,9 +116,9 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
   }
   return <button type="button" style={{...(tile.fogDistance?{'--fog-distance':tile.fogDistance}:{}),...(tile.gridColumn?{gridColumn:tile.gridColumn,gridRow:tile.gridRow}:{})}} className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
     {creature&&<>
-      <span className="map-card-face map-card-back" aria-hidden="true"><img src="/assets/ui/map_tile_back.png" alt="" draggable="false"/></span>
+      <span className="map-card-face map-card-back" aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/ui/map_tile_back.png`} alt="" draggable="false"/></span>
       <span className="map-card-face map-card-front">
-        <img src="/assets/ui/map_tile.png" alt="" draggable="false"/>
+        <img src={`${import.meta.env.BASE_URL}assets/ui/map_tile.png`} alt="" draggable="false"/>
         <span className="map-card-content">
           <CreatureGlyph creature={creature} size="tile"/>
           <span className="tile-name">{creature.name}</span>
@@ -126,7 +126,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
         </span>
       </span>
     </>}
-    {['locked','dark-fog-1','dark-fog-2','dark-fog-3','black-fog'].includes(tile.state)&&<span className="map-card-face map-card-back map-fog-card" aria-hidden="true"><img src="/assets/ui/map_tile_back.png" alt="" draggable="false"/>{tile.state!=='locked'&&<span className="fog-darken" aria-hidden="true"/>}</span>}
+    {['locked','dark-fog-1','dark-fog-2','dark-fog-3','black-fog'].includes(tile.state)&&<span className="map-card-face map-card-back map-fog-card" aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/ui/map_tile_back.png`} alt="" draggable="false"/>{tile.state!=='locked'&&<span className="fog-darken" aria-hidden="true"/>}</span>}
   </button>
 }
 function SkillsView(){

@@ -18,7 +18,6 @@ const TILE_GAP = 3
 const TILE_STEP = TILE_SIZE + TILE_GAP
 const RENDER_RADIUS = 20
 const RENDER_DIAMETER = RENDER_RADIUS * 2 + 1
-const FOG_RADIUS = 2
 const EDGE_ZONE = 70
 const MIN_ZOOM = 0.5
 const MAX_ZOOM = 2.25
@@ -225,9 +224,9 @@ function MapView({creatures,onCompletedCountChange}){
         const distance=nearestKnownDistance(x,y)
         const fogState =
           distance === 1 ? 'locked' :
-          distance === 2 ? 'dark-fog' :
-          distance === 3 ? 'grey-fog' :
-          distance === 4 ? 'deep-fog' :
+          distance === 2 ? 'dark-fog-1' :
+          distance === 3 ? 'dark-fog-2' :
+          distance === 4 ? 'dark-fog-3' :
           distance <= 6 ? 'black-fog' :
           'void'
         cells.push({x,y,state:fogState,completed:false})

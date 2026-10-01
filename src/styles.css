@@ -419,7 +419,7 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
   border:0;
   border-radius:0;
   background:transparent;
-  box-shadow:0 8px 18px rgba(0,0,0,.34), 0 2px 5px rgba(0,0,0,.28);
+  box-shadow:0 10px 24px rgba(0,0,0,.62), 0 3px 8px rgba(0,0,0,.48);
   outline:none;
   transform:none;
   animation:tile-popup-unroll .28s cubic-bezier(.22,.8,.25,1) both;

@@ -361,9 +361,9 @@
 .tile-popup-progression-icon {
   position:absolute !important;
   width:104px !important;
-  height:104px !important;
+  height:98px !important;
   left:16% !important;
-  top:calc(50% + 2px) !important;
+  top:calc(50% - 0px) !important;
   right:auto !important;
   bottom:auto !important;
   transform:translate(-50%,-50%);
@@ -384,13 +384,13 @@
 @media (max-width:760px) {
   .tile-popup-progression-icon {
     width:88px !important;
-    height:88px !important;
+    height:83px !important;
   }
 }
 @media (max-width:500px) {
   .tile-popup-progression-icon {
     width:76px !important;
-    height:76px !important;
+    height:72px !important;
   }
 }
 

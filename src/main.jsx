@@ -78,10 +78,16 @@ function weightedCreaturePick(available,preferredScore=null){
 function pickUnusedCreature(creatures,usedIds,preferredScore=null){return weightedCreaturePick(creatures.filter(c=>!usedIds.has(c.id)),preferredScore)}
 function preferredScoreForDistance(x,y){return Math.min(8,Math.max(1,1+Math.floor((Math.abs(x)+Math.abs(y))/4)))}
 function createInitialTiles(creatures,startCreature){
-  const tiles={[keyFor(0,0)]:{x:0,y:0,state:'explored',creatureId:startCreature.id,completed:true,faceDown:true}}
-  const used=new Set([startCreature.id])
-  CARDINAL_DIRECTIONS.forEach(([dx,dy])=>{const creature=pickUnusedCreature(creatures,used,preferredScoreForDistance(dx,dy));if(creature){used.add(creature.id);tiles[keyFor(dx,dy)]={x:dx,y:dy,state:'frontier',creatureId:creature.id,completed:false}}})
-  return tiles
+  return {
+    [keyFor(0,0)]:{
+      x:0,
+      y:0,
+      state:'frontier',
+      creatureId:startCreature.id,
+      completed:false,
+      faceDown:true,
+    },
+  }
 }
 function getAdjacentPositions(tiles){
   const positions=new Map()

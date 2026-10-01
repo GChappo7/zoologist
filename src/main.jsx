@@ -218,7 +218,6 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position}){
   >
     <img className="tile-popup-frame" src={rewardAsset} alt="" aria-hidden="true" draggable="false"/>
     <div className="tile-popup-content">
-      {presentation.type==='skill'&&<img className="tile-popup-skill-icon" src={skillIconUrl(presentation.iconName)} alt="" draggable="false"/>}
       <div className="tile-popup-reward-copy">
         <strong className="tile-popup-title">{presentation.title}</strong>
         {presentation.subtitle&&<span className="tile-popup-subtitle">{presentation.subtitle}</span>}

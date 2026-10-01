@@ -422,13 +422,14 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
   box-shadow:none;
   outline:none;
   transform:none;
-  animation:tile-popup-in-right .14s ease-out;
+  animation:tile-popup-unroll .28s cubic-bezier(.22,.8,.25,1) both;
+  transform-origin:left top;
   pointer-events:auto;
   overflow:visible;
 }
-@keyframes tile-popup-in-right {
-  from { opacity:0; transform:translateX(-6px); }
-  to { opacity:1; transform:translateX(0); }
+@keyframes tile-popup-unroll {
+  from { opacity:0; clip-path:inset(0 100% 0 0 round 0); }
+  to { opacity:1; clip-path:inset(0 0 0 0 round 0); }
 }
 .tile-popup-frame {
   position:absolute;

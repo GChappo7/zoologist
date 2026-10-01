@@ -127,7 +127,8 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
         </span>
       </span>
     </>}
-    {tile.state==='locked'&&<span className="map-card-face map-card-back map-fog-card" aria-hidden="true"><img src="/assets/ui/map_tile_back.png" alt="" draggable="false"/></span>}
+    {['locked','dark-fog'].includes(tile.state)&&<span className="map-card-face map-card-back map-fog-card" aria-hidden="true"><img src="/assets/ui/map_tile_back.png" alt="" draggable="false"/>{tile.state==='dark-fog'&&<span className="fog-darken" aria-hidden="true"/>}</span>}
+    {['grey-fog','deep-fog','black-fog'].includes(tile.state)&&<span className="map-fog-gradient" aria-hidden="true"/>}
   </button>
 }
 function SkillsView(){
@@ -222,7 +223,14 @@ function MapView({creatures,onCompletedCountChange}){
       if(known) cells.push({...known})
       else {
         const distance=nearestKnownDistance(x,y)
-        cells.push({x,y,state:distance<=FOG_RADIUS?'locked':'void',completed:false})
+        const fogState =
+          distance === 1 ? 'locked' :
+          distance === 2 ? 'dark-fog' :
+          distance === 3 ? 'grey-fog' :
+          distance === 4 ? 'deep-fog' :
+          distance <= 6 ? 'black-fog' :
+          'void'
+        cells.push({x,y,state:fogState,completed:false})
       }
     }
     const gridSize=RENDER_DIAMETER*TILE_SIZE+(RENDER_DIAMETER-1)*TILE_GAP
@@ -252,7 +260,7 @@ function MapView({creatures,onCompletedCountChange}){
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
     <div className="map-toolbar"><div><div className="eyebrow"><Gamepad2 size={13}/> ZOOLOGIST EXPEDITION</div><h1>Unknown Territory</h1><p>Explore the revealed frontier and look beyond the cloud.</p></div><div className="map-legend"><span><i className="legend-swatch explored"/> Explored</span><span><i className="legend-swatch frontier"/> Revealed</span><span><i className="legend-swatch fog"/> Clouded</span></div></div>
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
-      <div className="cloud-bank" aria-hidden="true"/><div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y} onSelect={setSelectedTile} onReveal={handleReveal} creatureById={creatureById}/>)}</div></div>
+  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y} onSelect={setSelectedTile} onReveal={handleReveal} creatureById={creatureById}/>)}</div></div>
       <div className="map-zoom-controls" onPointerDown={e=>e.stopPropagation()}><button onClick={()=>zoomAtPoint(zoom-ZOOM_STEP,innerWidth/2,innerHeight/2)}>−</button><button className="zoom-readout" onClick={()=>{setPan({x:0,y:0});setZoom(1)}}>{Math.round(zoom*100)}%</button><button onClick={()=>zoomAtPoint(zoom+ZOOM_STEP,innerWidth/2,innerHeight/2)}>+</button></div>
       <div className="map-control-hint"><div><MousePointer2 size={13}/> Move to edge to pan</div><div>↑ ↓ ← → <span>Arrow keys</span></div><div>MMB <span>Drag to pan</span></div><div>Wheel <span>Zoom</span></div></div>
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>

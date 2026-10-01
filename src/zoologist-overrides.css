@@ -370,7 +370,8 @@
   object-fit:contain !important;
   image-rendering:pixelated;
   opacity:.20;
-  filter:grayscale(1) brightness(.42) drop-shadow(0 3px 4px rgba(0,0,0,.7));
+  /* Keep the watermark recognisable by type while still letting the popup artwork and text dominate. */
+  filter:saturate(.85) brightness(.72) drop-shadow(0 3px 4px rgba(0,0,0,.7));
   z-index:0 !important;
   pointer-events:none;
 }

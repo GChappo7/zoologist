@@ -39,7 +39,7 @@ const SKILL_TAB_LAYOUT = [
   ['Prayer','Crafting','Firemaking'],
   ['Magic','Fletching','Woodcutting'],
   ['Runecraft','Slayer','Farming'],
-  ['Construction','Hunter'],
+  ['Construction','Hunter','Sailing'],
 ]
 
 function skillIconUrl(skill) {

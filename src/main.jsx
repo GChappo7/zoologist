@@ -135,7 +135,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress}){
       <span className="map-card-face map-card-front">
         <img src={`${import.meta.env.BASE_URL}assets/ui/map_tile.png`} alt="" draggable="false"/>
         <span className="map-card-content">
-          <ProgressionIcon type={getRewardPresentation(getTileReward(tile,creature,skillProgress)).type} skill={getRewardPresentation(getTileReward(tile,creature)).iconName} className="tile-progression-stamp"/>
+          {(()=>{const reward=getTileReward(tile,creature,skillProgress);const presentation=getRewardPresentation(reward);return reward&&<ProgressionIcon type={presentation.type} skill={presentation.iconName} className="tile-progression-stamp"/>})()}
           <CreatureGlyph creature={creature} size="tile"/>
           <span className="tile-name">{creature.name}</span>
         </span>
@@ -145,10 +145,18 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress}){
   </button>
 }
 function getSkillRewardSequence(skill){
-  return rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()==='skill'&&r.skill===skill).sort((a,b)=>a.band==='unlock'?-1:b.band==='unlock'?1:Number(a.band.split('-')[0])-Number(b.band.split('-')[0]))
+  return rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()==='skill'&&r.skill===skill).sort((a,b)=>Number(a.band.split('-')[0])-Number(b.band.split('-')[0]))
 }
 function getInitialSkillProgress(){
   return Object.fromEntries(rewardCatalog.lockedSkills.map(skill=>[skill,{unlocked:false,maxLevel:0,nextRewardIndex:0}]))
+}
+function getNextSkillBand(skillProgress,skill){
+  const progress=skillProgress?.[skill]??{nextRewardIndex:0}
+  return getSkillRewardSequence(skill)[progress.nextRewardIndex]??null
+}
+function getSkillForCreature(creature){
+  const skills=rewardCatalog.lockedSkills
+  return skills[((creature?.id??1)-1)%skills.length]??skills[0]??'Strength'
 }
 function SkillsView({skillProgress}){
   const unrestricted=['Attack','Hitpoints','Hunter']
@@ -190,20 +198,15 @@ function ShopView(){
 function BossView(){
   return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div><h1>Boss Tasks</h1><p>Boss layers are ready to award Zoologist Points once boss placement and task eligibility are finalized.</p></div><div className="boss-empty"><MapPinned size={28}/><strong>Boss pool not assigned yet</strong><span>{bossSystem.tasks.length} boss tasks configured</span></div></div>
 }
-function getNextSkillReward(skillProgress){
-  const candidates=[]
-  for(const skill of rewardCatalog.lockedSkills){
-    const p=skillProgress[skill]??{nextRewardIndex:0}
-    const reward=getSkillRewardSequence(skill)[p.nextRewardIndex]
-    if(reward)candidates.push(reward)
-  }
-  return candidates.length?candidates[Math.floor(Math.random()*candidates.length)]:null
-}
 function getTileReward(tile,creature,skillProgress){
   if(tile?.reward)return tile.reward
   const type=['Quest','Skill','Diary'][((creature?.id??1)-1)%3]
   const rewards=rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()===type.toLowerCase())
-  if(type==='Skill')return getNextSkillReward(skillProgress??getInitialSkillProgress())??{type:'skill',skill:'Strength',band:'unlock',label:'Strength — Unlock Skill'}
+  if(type==='Skill'){
+    const skill=getSkillForCreature(creature)
+    const reward=getNextSkillBand(skillProgress??getInitialSkillProgress(),skill)
+    return reward?{...reward,type:'skill',skill}:null
+  }
   return rewards[((creature?.id??1)-1)%rewards.length]??{type:type.toLowerCase(),name:'Reward assignment pending'}
 }
 function getRewardPresentation(reward){
@@ -241,7 +244,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
   const [isDismissing,setIsDismissing]=useState(false)
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null
-  const reward=getTileReward(selectedTile,creature)
+  const reward=getTileReward(selectedTile,creature,skillProgress)
   const presentation=getRewardPresentation(reward)
   const rewardAsset=`${import.meta.env.BASE_URL}assets/ui/${presentation.asset}`
   return <section
@@ -276,7 +279,7 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,sk
       <div className="detail-creature"><CreatureGlyph creature={creature} size="hero"/><div><h2>{creature.name}</h2><span>Creature ID {creature.id}</span></div></div>
       <p className="detail-description">{creature.description}</p>
       <div className="detail-stats"><div><span>Accessibility</span><strong>Score {creature.score}</strong></div><div><span>Status</span><strong>{selectedTile.completed?'Complete':'Not complete'}</strong></div></div>
-      <div className="reward-box"><div className="reward-heading"><Sparkles size={15}/> Reward</div><strong>{reward.type}</strong><p>{reward.name}</p></div>
+      <div className="reward-box"><div className="reward-heading"><Sparkles size={15}/> Reward</div><strong>{reward.type}</strong><p>{reward.label??reward.name}</p></div>
       {selectedTile.bossId&&<button className="boss-button side-boss-button" type="button"><Skull size={15}/> Boss</button>}
       {!selectedTile.completed&&<button className="complete-button" onClick={()=>onComplete(selectedTile)}><Flag size={15}/> Mark complete</button>}
     </div>}
@@ -360,8 +363,8 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
   }
   const handleComplete=tile=>{
     if(!tile||tile.state!=='frontier'||tile.completed||tile.faceDown)return
-    const completed={...tile,state:'explored',completed:true,faceDown:false}
     const reward=getTileReward(tile,creatureById[tile.creatureId],skillProgress)
+    const completed={...tile,state:'explored',completed:true,faceDown:false,reward}
     if(String(reward?.type).toLowerCase()==='skill')onSkillRewardComplete?.(reward)
     setTiles(current=>recomputeFrontier({...current,[keyFor(tile.x,tile.y)]:completed},creatures))
     setSelectedTile(completed)
@@ -394,8 +397,8 @@ function App(){
     const index=sequence.findIndex(item=>item.id===reward.id)
     if(index<0)return current
     const band=sequence[index]?.band
-    const maxLevel=band==='unlock'?0:Number(String(band).split('-').pop())||0
-    return {...current,[skill]:{unlocked:true,maxLevel,nextRewardIndex:Math.max(current[skill]?.nextRewardIndex??0,index+1)}}
+    const maxLevel=Number(String(band).split('-').pop())||0
+    return {...current,[skill]:{unlocked:true,maxLevel,nextRewardIndex:index+1}}
   })
   if(!creatures.length)return <div className="app-shell"><div className="full-tab-page"><h1>Creature data could not be loaded</h1><p>Check data/creatures.csv.</p></div></div>
   const creatureCount=creatures.length

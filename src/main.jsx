@@ -215,6 +215,16 @@ function BossView(){
 }
 function getTileReward(tile,creature,skillProgress){
   if(tile?.reward)return tile.reward
+
+  // The expedition must always begin with a useful progression reward.
+  // The starting tile is guaranteed to be the first (1–10) unlock for a
+  // locked skill, while every subsequent tile can use the normal reward mix.
+  if(tile?.x===0&&tile?.y===0){
+    const skill=getSkillForCreature(creature)
+    const reward=getSkillRewardSequence(skill)[0]??getNextSkillBand(skillProgress??getInitialSkillProgress(),skill)
+    return reward?{...reward,type:'skill',skill}:null
+  }
+
   const type=['Quest','Skill','Diary'][((creature?.id??1)-1)%3]
   const rewards=rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()===type.toLowerCase())
   if(type==='Skill'){

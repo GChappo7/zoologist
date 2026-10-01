@@ -244,7 +244,7 @@
 /* Give the larger 256px map cards more room for creature art and labels. */
 .creature-glyph-tile {
   width: 128px;
-  height: 128px;
+  height: 160px;
   top: 40%;
   padding: 0;
   box-sizing: border-box;

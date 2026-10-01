@@ -135,9 +135,9 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
       <span className="map-card-face map-card-front">
         <img src={`${import.meta.env.BASE_URL}assets/ui/map_tile.png`} alt="" draggable="false"/>
         <span className="map-card-content">
+          <ProgressionIcon type={getRewardPresentation(getTileReward(tile,creature)).type} skill={getRewardPresentation(getTileReward(tile,creature)).iconName} className="tile-progression-stamp"/>
           <CreatureGlyph creature={creature} size="tile"/>
           <span className="tile-name">{creature.name}</span>
-          {!tile.completed&&<span className="tile-status tile-status-frontier"><Eye size={10}/> NEW</span>}
         </span>
       </span>
     </>}

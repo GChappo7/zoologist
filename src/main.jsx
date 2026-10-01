@@ -126,8 +126,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
         </span>
       </span>
     </>}
-    {['locked','dark-fog'].includes(tile.state)&&<span className="map-card-face map-card-back map-fog-card" aria-hidden="true"><img src="/assets/ui/map_tile_back.png" alt="" draggable="false"/>{tile.state==='dark-fog'&&<span className="fog-darken" aria-hidden="true"/>}</span>}
-    {['grey-fog','deep-fog','black-fog'].includes(tile.state)&&<span className="map-fog-gradient" aria-hidden="true"/>}
+    {['locked','dark-fog-1','dark-fog-2','dark-fog-3','black-fog'].includes(tile.state)&&<span className="map-card-face map-card-back map-fog-card" aria-hidden="true"><img src="/assets/ui/map_tile_back.png" alt="" draggable="false"/>{tile.state!=='locked'&&<span className="fog-darken" aria-hidden="true"/>}</span>}
   </button>
 }
 function SkillsView(){

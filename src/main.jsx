@@ -231,9 +231,17 @@ function MapView({creatures,onCompletedCountChange}){
     setSelectedTile(revealed)
   }
   const handleComplete=tile=>{
-    if(!tile||tile.state!=='frontier')return
-    setTiles(current=>recomputeFrontier({...current,[keyFor(tile.x,tile.y)]:{...current[keyFor(tile.x,tile.y)],state:'explored',completed:true}},creatures))
-    setSelectedTile(current=>({...current,state:'explored',completed:true}))
+    if(!tile||tile.state!=='frontier'||tile.completed||tile.faceDown)return
+    setTiles(current=>recomputeFrontier({
+      ...current,
+      [keyFor(tile.x,tile.y)]:{
+        ...current[keyFor(tile.x,tile.y)],
+        state:'explored',
+        completed:true,
+        faceDown:false,
+      },
+    },creatures))
+    setSelectedTile(current=>({...current,state:'explored',completed:true,faceDown:false}))
     onCompletedCountChange?.(n=>n+1)
   }
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">

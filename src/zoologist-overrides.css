@@ -252,12 +252,16 @@
 }
 
 .creature-glyph-tile .creature-image {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
   width: auto;
   height: auto;
-  max-width: 92%;
-  max-height: 92%;
+  max-width: 100%;
+  max-height: 100%;
+  transform: translateX(-50%);
   object-fit: contain;
-  object-position: center;
+  object-position: center bottom;
 }
 .tile-name {
   bottom: 30px;

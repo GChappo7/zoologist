@@ -114,7 +114,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
     if(isFaceDown&&creature){onReveal?.(tile);return}
     if(creature)onSelect(tile)
   }
-  return <button type="button" style={tile.fogDistance?{'--fog-distance':tile.fogDistance}:undefined} className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
+  return <button type="button" style={{...(tile.fogDistance?{'--fog-distance':tile.fogDistance}:{}),...(tile.gridColumn?{gridColumn:tile.gridColumn,gridRow:tile.gridRow}:{})}} className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
     {creature&&<>
       <span className="map-card-face map-card-back" aria-hidden="true"><img src="/assets/ui/map_tile_back.png" alt="" draggable="false"/></span>
       <span className="map-card-face map-card-front">
@@ -218,7 +218,7 @@ function MapView({creatures,onCompletedCountChange}){
     const startX=centreTileX-RENDER_RADIUS,startY=centreTileY-RENDER_RADIUS,cells=[]
     for(let y=startY;y<=centreTileY+RENDER_RADIUS;y+=1)for(let x=startX;x<=centreTileX+RENDER_RADIUS;x+=1){
       const known=tiles[keyFor(x,y)]
-      if(known) cells.push({...known})
+      if(known) cells.push({...known,gridColumn:x-startX+1,gridRow:y-startY+1})
       else if(fogVisible) {
         const distance=nearestKnownDistance(x,y)
         const fogState =
@@ -228,7 +228,7 @@ function MapView({creatures,onCompletedCountChange}){
           distance === 4 ? 'dark-fog-3' :
           distance <= 6 ? 'black-fog' :
           'void'
-        cells.push({x,y,state:fogState,completed:false,fogDistance:distance})
+        cells.push({x,y,state:fogState,completed:false,fogDistance:distance,gridColumn:x-startX+1,gridRow:y-startY+1})
       }
     }
     const gridSize=RENDER_DIAMETER*TILE_SIZE+(RENDER_DIAMETER-1)*TILE_GAP

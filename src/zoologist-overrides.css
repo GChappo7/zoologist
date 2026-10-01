@@ -551,9 +551,16 @@
 .osrs-skill-level {
   position: absolute;
   right: 7px;
-  top: 8px;
+  top: 0;
+  bottom: 0;
   z-index: 5;
   min-width: 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 6px 0;
+  box-sizing: border-box;
   text-align: right;
   white-space: nowrap;
   color: #f4e72b;
@@ -565,17 +572,26 @@
   text-shadow: 1px 1px 0 #17130b, -1px 0 #17130b, 0 1px 0 #17130b;
 }
 
+.osrs-skill-level-lower,
+.osrs-skill-level-upper {
+  display: block;
+  line-height: 1;
+}
+
+.osrs-skill-level-lower {
+  margin-bottom: auto;
+}
+
+.osrs-skill-level-upper {
+  margin-top: auto;
+}
+
 .osrs-skill-slot.is-locked .osrs-skill-level {
   color: #aaa59a;
   text-shadow: 1px 1px 0 #22201d;
   font-size: 9px;
   font-weight: 700;
 }
-
-.osrs-skill-slot .osrs-skill-level::after {
-  content: '';
-}
-
 .osrs-total-level {
   grid-column: 3;
   min-height: 45px;

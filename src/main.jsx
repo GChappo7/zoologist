@@ -205,7 +205,33 @@ function getRewardPresentation(reward){
 function skillIconUrl(skill){
   return `https://oldschool.runescape.wiki/images/${encodeURIComponent(skill??'').replace(/%20/g,'_')}_icon.png`
 }
-function TilePopup({selectedTile,onShowMore,creatureById,position}){
+function getRewardPresentation(reward){
+  const metadata=reward?.metadata??reward?.reward_metadata??{}
+  const type=String(reward?.type??'Quest')
+  if(type==='Skill') return {
+    type:'skill',
+    title:reward?.skill??reward?.skillName??metadata.skill??reward?.name??'Skill',
+    subtitle:reward?.band??reward?.levelBracket??reward?.level_bracket??metadata.band??metadata.levelBracket??'Unlock',
+    asset:'reward_skill.png',
+    iconName:reward?.skill??reward?.skillName??metadata.skill??reward?.name??'Skill',
+  }
+  if(type==='Diary') return {
+    type:'diary',
+    title:reward?.tier??metadata.tier??'Diary',
+    subtitle:reward?.region??reward?.location??metadata.region??metadata.location??'Location pending',
+    asset:'reward_diary.png',
+  }
+  return {
+    type:'quest',
+    title:reward?.name??reward?.label??metadata.name??metadata.label??'Quest reward pending',
+    subtitle:'',
+    asset:'reward_quest.png',
+  }
+}
+function skillIconUrl(skill){
+  return `https://oldschool.runescape.wiki/images/${encodeURIComponent(skill??'').replace(/%20/g,'_')}_icon.png`
+}
+function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position}){
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null
   const reward=getTileReward(selectedTile,creature)
@@ -216,17 +242,16 @@ function TilePopup({selectedTile,onShowMore,creatureById,position}){
     style={position?{left:position.left,top:position.top}:undefined}
     aria-label="Reward details"
   >
-    <div className="tile-popup-art" aria-hidden="true">
-      <img src={rewardAsset} alt="" draggable="false"/>
+    <img className="tile-popup-frame" src={rewardAsset} alt="" aria-hidden="true" draggable="false"/>
+    <div className="tile-popup-content">
       {presentation.type==='skill'&&<img className="tile-popup-skill-icon" src={skillIconUrl(presentation.iconName)} alt="" draggable="false"/>}
-    </div>
-    <div className="tile-popup-body">
       <div className="tile-popup-reward-copy">
         <strong className="tile-popup-title">{presentation.title}</strong>
         {presentation.subtitle&&<span className="tile-popup-subtitle">{presentation.subtitle}</span>}
       </div>
-      <div className="tile-popup-footer">
-        <button className="show-more-button" onClick={onShowMore}>More details <ChevronRight size={14}/></button>
+      <div className="tile-popup-actions">
+        {!selectedTile.completed&&<button className="tile-popup-complete" onClick={()=>onComplete(selectedTile)}><Flag size={14}/> Mark Complete</button>}
+        <button className="tile-popup-more" onClick={onShowMore}>More details <ChevronRight size={14}/></button>
       </div>
     </div>
   </section>
@@ -361,7 +386,7 @@ function MapView({creatures,onProgressChange}){
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
     </div>
   </section>
-  <TilePopup selectedTile={selectedTile} onShowMore={()=>setPanelOpen(true)} creatureById={creatureById} position={popupPosition}/>
+  <TilePopup selectedTile={selectedTile} onShowMore={()=>setPanelOpen(true)} onComplete={handleComplete} creatureById={creatureById} position={popupPosition}/>
   <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById}/>
 </div>
 }

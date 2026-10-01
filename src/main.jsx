@@ -224,7 +224,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position}){
       </div>
       <div className="tile-popup-actions">
         {!selectedTile.completed&&<button className="tile-popup-complete" onClick={()=>onComplete(selectedTile)}><Flag size={14}/> Mark Complete</button>}
-        <button className="tile-popup-more" onClick={onShowMore}>More details <ChevronRight size={14}/></button>
+        <button className="tile-popup-more" onClick={onShowMore}>More details <ChevronRight size={13}/></button>
       </div>
     </div>
   </section>

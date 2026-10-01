@@ -127,7 +127,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
         </span>
       </span>
     </>}
-    {tile.state==='locked'&&<span className="map-fog-card" aria-hidden="true"><img src="/assets/ui/map_tile_back.png" alt="" draggable="false"/></span>}
+    {tile.state==='locked'&&<span className="map-card-face map-card-back map-fog-card" aria-hidden="true"><img src="/assets/ui/map_tile_back.png" alt="" draggable="false"/></span>}
   </button>
 }
 function SkillsView(){

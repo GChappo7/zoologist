@@ -179,28 +179,34 @@ function TilePopup({selectedTile,onClose,onShowMore,onComplete,creatureById}){
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null
   const reward=getTileReward(selectedTile,creature)
-  return <div className="tile-popup-backdrop" onMouseDown={onClose}>
-    <section className="tile-popup" onMouseDown={e=>e.stopPropagation()}>
-      <button className="tile-popup-close" onClick={onClose} aria-label="Close tile details"><ChevronRight size={17}/></button>
-      <div className={`tile-popup-status ${selectedTile.completed?'complete':'frontier'}`}>
-        <span>{selectedTile.completed?'COMPLETED':'REVEALED'}</span>
-        {selectedTile.completed?<ShieldCheck size={14}/>:<Eye size={14}/>}
-      </div>
-      <div className="tile-popup-creature">
-        <CreatureGlyph creature={creature} size="hero"/>
-        <div><span className="tile-popup-eyebrow">ANIMAL</span><h2>{creature.name}</h2></div>
-      </div>
-      <div className="tile-popup-reward">
-        <div><span>REWARD</span><strong>{reward.type}</strong></div>
+  const rewardClass=reward.type==='Skill'?'skill':reward.type==='Diary'?'diary':'quest'
+  const rewardAsset=`${import.meta.env.BASE_URL}assets/ui/reward_${rewardClass}.png`
+  return <section className="tile-popup" aria-label={`${creature.name} details`}>
+    <button className="tile-popup-close" onClick={onClose} aria-label="Close tile details"><ChevronRight size={17}/></button>
+    <div className={`tile-popup-status ${selectedTile.completed?'complete':'frontier'}`}>
+      <span>{selectedTile.completed?'COMPLETED':'REVEALED'}</span>
+      {selectedTile.completed?<ShieldCheck size={14}/>:<Eye size={14}/>}
+    </div>
+    <div className="tile-popup-creature">
+      <CreatureGlyph creature={creature} size="hero"/>
+      <div><span className="tile-popup-eyebrow">ANIMAL</span><h2>{creature.name}</h2></div>
+    </div>
+    <div className={`tile-popup-reward tile-popup-reward-${rewardClass}`}>
+      <img src={rewardAsset} alt="" aria-hidden="true"/>
+      <div className="tile-popup-reward-content">
+        <span>REWARD</span>
+        <strong>{reward.type}</strong>
         <p>{reward.name}</p>
       </div>
-      <div className="tile-popup-actions">
-        <button className="show-more-button" onClick={onShowMore}>Show more <ChevronRight size={15}/></button>
-        {!selectedTile.completed&&<button className="complete-button" onClick={()=>onComplete(selectedTile)}><Flag size={15}/> Mark complete</button>}
+    </div>
+    <div className="tile-popup-actions">
+      <div className="tile-popup-secondary-actions">
         {selectedTile.bossId&&<button className="boss-button" type="button"><Skull size={15}/> Boss</button>}
+        <button className="show-more-button" onClick={onShowMore}>Show more <ChevronRight size={15}/></button>
       </div>
-    </section>
-  </div>
+      {!selectedTile.completed&&<button className="complete-button" onClick={()=>onComplete(selectedTile)}><Flag size={15}/> Mark complete</button>}
+    </div>
+  </section>
 }
 function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById}){
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null

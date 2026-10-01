@@ -1,9 +1,7 @@
 
 /* Zoologist progression/fog layer overrides */
 .map-stage {
-  background:
-    radial-gradient(ellipse at 50% 45%, rgba(248,247,241,.92), rgba(229,226,216,.96) 72%),
-    #e4e1d8;
+  background:#000;
   overflow:hidden;
 }
 .map-stage::before,
@@ -66,6 +64,14 @@
   transition:none;
   z-index:2;
   pointer-events:none;
+  opacity:0;
+  animation:zoologist-fog-ripple .9s cubic-bezier(.2,.72,.2,1) forwards;
+  animation-delay:calc(var(--fog-distance, 1) * 55ms);
+}
+@keyframes zoologist-fog-ripple {
+  0% { opacity:0; transform:scale(.86); }
+  55% { opacity:1; transform:scale(1.035); }
+  100% { opacity:1; transform:scale(1); }
 }
 .fog-darken {
   position:absolute;

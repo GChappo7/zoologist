@@ -14,7 +14,7 @@ import shop from '../data/shop.json'
 import bossSystem from '../data/boss-system.json'
 
 const TILE_SIZE = 128
-const TILE_GAP = 3
+const TILE_GAP = 0
 const TILE_STEP = TILE_SIZE + TILE_GAP
 const RENDER_RADIUS = 20
 const RENDER_DIAMETER = RENDER_RADIUS * 2 + 1

@@ -426,6 +426,53 @@
 }
 
 
+/* Quest and achievement diary rewards use the same large, prominent typography as skill rewards. */
+.tile-popup-quest .tile-popup-title,
+.tile-popup-diary .tile-popup-title {
+  font-family: var(--font-runescape) !important;
+  font-size: 34px !important;
+  line-height: 1 !important;
+  margin-bottom: 1px !important;
+  text-align: center !important;
+  white-space: nowrap;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.8);
+}
+
+.tile-popup-quest .tile-popup-subtitle,
+.tile-popup-diary .tile-popup-subtitle {
+  font-family: var(--font-runescape) !important;
+  font-size: 32px !important;
+  line-height: 1 !important;
+  margin-top: 0 !important;
+  font-weight: 700 !important;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  text-align: center !important;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.8);
+}
+
+@media (max-width:760px) {
+  .tile-popup-quest .tile-popup-title,
+  .tile-popup-diary .tile-popup-title {
+    font-size: 28px !important;
+  }
+  .tile-popup-quest .tile-popup-subtitle,
+  .tile-popup-diary .tile-popup-subtitle {
+    font-size: 26px !important;
+  }
+}
+
+@media (max-width:500px) {
+  .tile-popup-quest .tile-popup-title,
+  .tile-popup-diary .tile-popup-title {
+    font-size: 23px !important;
+  }
+  .tile-popup-quest .tile-popup-subtitle,
+  .tile-popup-diary .tile-popup-subtitle {
+    font-size: 21px !important;
+  }
+}
+
 /* Skill rewards make the level band the primary information in the popup. */
 .tile-popup-skill .tile-popup-reward-copy {
   left: 4% !important;

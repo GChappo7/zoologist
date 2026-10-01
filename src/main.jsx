@@ -207,8 +207,10 @@ function SkillsDropdown({open,onClose,skillProgress}) {
   const unrestricted=new Set(['Attack','Hitpoints','Hunter'])
   const getDisplay=name=>{
     if(unrestricted.has(name))return '1–99'
-    const progress=skillProgress?.[name]??{unlocked:false,maxLevel:0}
-    return progress.unlocked?`1–${progress.maxLevel}`:'Locked'
+    const progress=skillProgress?.[name]??{unlocked:false,maxLevel:0,nextRewardIndex:0}
+    if(!progress.unlocked)return 'Locked'
+    const completedIndex=Math.max(0,Math.min(9,Number(progress.nextRewardIndex)-1))
+    return getSkillRewardSequence(name)[completedIndex]?.band??'91–99'
   }
   const totalLevel=Object.keys(skillProgress??{}).reduce((sum,name)=>{
     const progress=skillProgress[name]
@@ -344,7 +346,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
 }
 function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,skillProgress}){
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
-  const reward=selectedTile&&creature?getTileReward(selectedTile,creature):null
+  const reward=selectedTile&&creature?getTileReward(selectedTile,creature,skillProgress):null
   if(!open)return null
   return <aside className="side-panel side-panel-open">
     <div className="side-panel-header"><div><div className="eyebrow"><Compass size={13}/> EXPEDITION LOG</div><strong>Animal details</strong></div><button className="icon-button" onClick={()=>setOpen(false)}><ChevronRight size={17}/></button></div>

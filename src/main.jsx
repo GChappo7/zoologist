@@ -205,32 +205,6 @@ function getRewardPresentation(reward){
 function skillIconUrl(skill){
   return `https://oldschool.runescape.wiki/images/${encodeURIComponent(skill??'').replace(/%20/g,'_')}_icon.png`
 }
-function getRewardPresentation(reward){
-  const metadata=reward?.metadata??reward?.reward_metadata??{}
-  const type=String(reward?.type??'Quest')
-  if(type==='Skill') return {
-    type:'skill',
-    title:reward?.skill??reward?.skillName??metadata.skill??reward?.name??'Skill',
-    subtitle:reward?.band??reward?.levelBracket??reward?.level_bracket??metadata.band??metadata.levelBracket??'Unlock',
-    asset:'reward_skill.png',
-    iconName:reward?.skill??reward?.skillName??metadata.skill??reward?.name??'Skill',
-  }
-  if(type==='Diary') return {
-    type:'diary',
-    title:reward?.tier??metadata.tier??'Diary',
-    subtitle:reward?.region??reward?.location??metadata.region??metadata.location??'Location pending',
-    asset:'reward_diary.png',
-  }
-  return {
-    type:'quest',
-    title:reward?.name??reward?.label??metadata.name??metadata.label??'Quest reward pending',
-    subtitle:'',
-    asset:'reward_quest.png',
-  }
-}
-function skillIconUrl(skill){
-  return `https://oldschool.runescape.wiki/images/${encodeURIComponent(skill??'').replace(/%20/g,'_')}_icon.png`
-}
 function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position}){
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null

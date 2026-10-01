@@ -428,8 +428,8 @@
 
 /* Skill rewards make the level band the primary information in the popup. */
 .tile-popup-skill .tile-popup-reward-copy {
-  left: 20% !important;
-  right: 7% !important;
+  left: 11% !important;
+  right: 18% !important;
   top: 50% !important;
   transform: translateY(-50%);
   text-align: center !important;

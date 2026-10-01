@@ -257,7 +257,12 @@ function SkillsDropdown({open,onClose,skillProgress}) {
           return <div className={`osrs-skill-slot ${unlocked?'is-unlocked':'is-locked'}`} key={name} title={unlocked?`${name}: ${value}`:`${name}: locked`}>
             {skillBoxUrl(name) ? <img className="osrs-skill-box" src={skillBoxUrl(name)} alt="" aria-hidden="true" draggable="false"/> : null}
             {!unlocked&&<Lock size={11} className="osrs-skill-lock"/>}
-            <span className="osrs-skill-level">{value}</span>
+            <span className="osrs-skill-level" aria-label={value}>
+              {String(value).includes('–') ? <>
+                <span className="osrs-skill-level-lower">{String(value).split('–')[0]}</span>
+                <span className="osrs-skill-level-upper">{String(value).split('–')[1]}</span>
+              </> : value}
+            </span>
           </div>
         }))}
         <div className="osrs-total-level">Total level: {totalLevel}</div>

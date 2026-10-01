@@ -250,30 +250,10 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById}){
 function MapView({creatures,onProgressChange}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[startCreature]=useState(()=>pickStartingCreature(creatures))
-  const [tiles,setTiles]=useState(()=>createInitialTiles(creatures,startCreature)),[fogVisible,setFogVisible]=useState(false),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false),[popupPosition,setPopupPosition]=useState(null)
+  const [tiles,setTiles]=useState(()=>createInitialTiles(creatures,startCreature)),[fogVisible,setFogVisible]=useState(false),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false)
   const stageRef=useRef(null),zoomRef=useRef(zoom),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0}),edgeFrameRef=useRef(null)
   useEffect(()=>{zoomRef.current=zoom},[zoom])
-  useLayoutEffect(()=>{
-    if(!selectedTile){
-      setPopupPosition(null)
-      return
-    }
-    const frame=requestAnimationFrame(()=>{
-      const stage=stageRef.current
-      const tile=stage?.querySelector(`[data-tile-key="${keyFor(selectedTile.x,selectedTile.y)}"]`)
-      if(!stage||!tile)return
-      const stageRect=stage.getBoundingClientRect()
-      const tileRect=tile.getBoundingClientRect()
-      const estimatedWidth=390
-      const gap=12
-      const desiredLeft=tileRect.right-stageRect.left+gap
-      const desiredTop=tileRect.top-stageRect.top+(tileRect.height/2)
-      const left=Math.max(12,Math.min(desiredLeft,stageRect.width-estimatedWidth-12))
-      const top=Math.max(96,Math.min(desiredTop,stageRect.height-96))
-      setPopupPosition({left,top})
-    })
-    return()=>cancelAnimationFrame(frame)
-  },[selectedTile,pan.x,pan.y,zoom])
+
 
   const updatePan=(dx,dy)=>setPan(current=>({x:current.x+dx,y:current.y+dy}))
   useEffect(()=>{
@@ -353,13 +333,12 @@ function MapView({creatures,onProgressChange}){
   }
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
-  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById}/>)}</div></div>
+  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById}/>)}{selectedTile&&<TilePopup selectedTile={selectedTile} onShowMore={()=>setPanelOpen(true)} onComplete={handleComplete} creatureById={creatureById} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+TILE_SIZE+12,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP}}/>}</div></div>
       <div className="map-zoom-controls" onPointerDown={e=>e.stopPropagation()}><button onClick={()=>zoomAtPoint(zoom-ZOOM_STEP,innerWidth/2,innerHeight/2)}>−</button><button className="zoom-readout" onClick={()=>{setPan({x:0,y:0});setZoom(1)}}>{Math.round(zoom*100)}%</button><button onClick={()=>zoomAtPoint(zoom+ZOOM_STEP,innerWidth/2,innerHeight/2)}>+</button></div>
       <div className="map-control-hint"><div><MousePointer2 size={13}/> Move to edge to pan</div><div>↑ ↓ ← → <span>Arrow keys</span></div><div>MMB <span>Drag to pan</span></div><div>Wheel <span>Zoom</span></div></div>
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
     </div>
   </section>
-  <TilePopup selectedTile={selectedTile} onShowMore={()=>setPanelOpen(true)} onComplete={handleComplete} creatureById={creatureById} position={popupPosition}/>
   <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById}/>
 </div>
 }

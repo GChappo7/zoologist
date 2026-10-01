@@ -469,33 +469,34 @@
 }
 
 
-/* Authentic OSRS-style skills dropdown. The real OSRS skill artwork is loaded from the OSRS Wiki;
-   the surrounding panel is recreated in CSS so the level text remains dynamic. */
+/* Authentic OSRS-style skills dropdown.
+   The panel uses the actual OSRS Skills-tab artwork as a texture, while the
+   skill cells remain HTML so Zoologist can change levels/locked states dynamically. */
 .skills-dropdown-anchor {
   position: fixed;
   top: 70px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  width: 310px;
+  width: 318px;
   pointer-events: none;
 }
 
 .skills-dropdown-panel {
   width: 100%;
-  padding: 8px;
+  padding: 7px;
   box-sizing: border-box;
   pointer-events: auto;
-  border: 4px solid #51483d;
-  border-radius: 3px;
+  border: 0;
+  border-radius: 0;
   background:
-    linear-gradient(135deg, rgba(255,255,255,.08), transparent 20%, rgba(0,0,0,.08) 70%),
-    repeating-linear-gradient(0deg, rgba(45,40,35,.10) 0 2px, rgba(126,116,99,.10) 2px 4px),
-    #70695d;
+    linear-gradient(rgba(62,57,49,.18), rgba(62,57,49,.18)),
+    url('https://oldschool.runescape.wiki/images/Skills_tab.png') center / 100% 100% no-repeat,
+    #5b564e;
   box-shadow:
-    inset 0 0 0 2px #918879,
-    inset 0 0 0 4px #4c463d,
-    0 7px 18px rgba(0,0,0,.72);
+    0 1px 0 rgba(255,255,255,.20),
+    0 4px 12px rgba(0,0,0,.78);
+  image-rendering: pixelated;
 }
 
 .skills-dropdown-grid {
@@ -504,9 +505,9 @@
   grid-auto-rows: 45px;
   gap: 1px;
   padding: 2px;
-  background: #3c3934;
-  border: 2px solid #2d2a27;
-  box-shadow: inset 0 1px rgba(255,255,255,.16);
+  background: rgba(45,42,38,.38);
+  border: 1px solid rgba(34,31,28,.72);
+  box-shadow: inset 0 1px rgba(255,255,255,.10);
 }
 
 .osrs-skill-slot {
@@ -515,14 +516,15 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 3px 7px 3px 7px;
+  padding: 3px 7px;
   box-sizing: border-box;
   overflow: hidden;
-  border: 1px solid #777064;
+  border: 1px solid rgba(117,108,94,.72);
   background:
-    linear-gradient(135deg, rgba(255,255,255,.10), transparent 35%),
-    #5f5a51;
-  box-shadow: inset 0 1px rgba(255,255,255,.12), inset 0 -1px rgba(0,0,0,.34);
+    linear-gradient(135deg, rgba(122,114,101,.82), rgba(82,77,69,.88));
+  box-shadow:
+    inset 0 1px rgba(232,224,202,.12),
+    inset 0 -1px rgba(20,18,16,.42);
 }
 
 .osrs-skill-slot.is-unlocked {
@@ -531,8 +533,7 @@
 
 .osrs-skill-slot.is-locked {
   background:
-    linear-gradient(135deg, rgba(255,255,255,.04), transparent 35%),
-    #484640;
+    linear-gradient(135deg, rgba(84,80,72,.88), rgba(57,54,49,.92));
 }
 
 .osrs-skill-icon {
@@ -598,9 +599,8 @@
   box-sizing: border-box;
   color: #f4e72b;
   background:
-    linear-gradient(135deg, rgba(255,255,255,.05), transparent 35%),
-    #171612;
-  border: 1px solid #6f6655;
+    linear-gradient(135deg, rgba(38,35,31,.94), rgba(21,20,18,.98));
+  border: 1px solid rgba(111,102,85,.9);
   font-family: 'Trebuchet MS', Arial, sans-serif;
   font-size: 12px;
   line-height: 1.05;
@@ -612,7 +612,7 @@
 @media (max-width:760px) {
   .skills-dropdown-anchor {
     top: 64px;
-    width: min(310px, calc(100vw - 16px));
+    width: min(318px, calc(100vw - 16px));
   }
   .skills-dropdown-grid {
     grid-auto-rows: 42px;

@@ -398,10 +398,10 @@
 /* Large progression icon behind the creature on revealed map tiles, echoing the existing green/yellow state glow. */
 .tile-progression-stamp {
   position:absolute !important;
-  width:175px !important;
-  height:175px !important;
+  width:190px !important;
+  height:190px !important;
   left:50% !important;
-  top:43% !important;
+  top:47% !important;
   right:auto !important;
   bottom:auto !important;
   transform:translate(-50%,-50%);

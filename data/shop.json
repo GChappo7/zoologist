@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "currency": "zoologist_points",
+  "items": [
+    {
+      "id": "animal-clue",
+      "name": "Animal Clue",
+      "description": "Provides a clue towards the location of a specific undiscovered creature.",
+      "cost": null,
+      "enabled": true
+    },
+    {
+      "id": "specific-quest",
+      "name": "Specific Quest",
+      "description": "Allows a specific quest to be selected as a reward/target, subject to eligibility rules.",
+      "cost": null,
+      "enabled": true
+    },
+    {
+      "id": "reward-reveal",
+      "name": "Reward Reveal",
+      "description": "Reveals the reward attached to a discovered creature tile.",
+      "cost": null,
+      "enabled": true
+    },
+    {
+      "id": "skill-levels",
+      "name": "Skill Levels",
+      "description": "Provides a small amount of assistance toward a locked skill progression band.",
+      "cost": null,
+      "enabled": true
+    },
+    {
+      "id": "animal-reveal",
+      "name": "Animal Reveal",
+      "description": "Reveals a specific creature somewhere in the unexplored map.",
+      "cost": null,
+      "enabled": true
+    },
+    {
+      "id": "map-reveal",
+      "name": "Map Reveal",
+      "description": "Reveals a small additional section of the map frontier.",
+      "cost": null,
+      "enabled": true
+    }
+  ]
+}

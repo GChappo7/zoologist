@@ -207,7 +207,7 @@ function MapView({creatures,onCompletedCountChange}){
     const gridSize=RENDER_DIAMETER*TILE_SIZE+(RENDER_DIAMETER-1)*TILE_GAP
     return{cells,gridSize,offsetX:pan.x+centreTileX*TILE_STEP*zoom,offsetY:pan.y+centreTileY*TILE_STEP*zoom}
   },[centreTileX,centreTileY,pan.x,pan.y,tiles,zoom])
-  const exploredCount=knownTiles.filter(t=>t.state==='explored').length,frontierCount=knownTiles.filter(t=>t.state==='frontier').length
+  const exploredCount=knownTiles.filter(t=>t.state==='explored').length,frontierCount=knownTiles.filter(t=>t.state==='frontier').length,creatureCount=creatures.length
   const handleComplete=tile=>{
     if(!tile||tile.state!=='frontier')return
     setTiles(current=>recomputeFrontier({...current,[keyFor(tile.x,tile.y)]:{...current[keyFor(tile.x,tile.y)],state:'explored',completed:true}},creatures))

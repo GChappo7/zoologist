@@ -35,7 +35,7 @@ const PROGRESSION_ASSETS = {
 }
 
 function ProgressionIcon({type,skill,background=false,className=''}) {
-  const src=type==='skill' ? PROGRESSION_ASSETS.skills[skill] : PROGRESSION_ASSETS[type]
+  const src=type==='skill' ? (PROGRESSION_ASSETS.skills[skill] ?? skillIconUrl(skill)) : PROGRESSION_ASSETS[type]
   if(!src)return null
   return <img className={`progression-icon ${background?'progression-icon-background':''} ${className}`} src={src} alt="" aria-hidden="true" draggable="false"/>
 }
@@ -192,17 +192,18 @@ function getTileReward(tile,creature){
 }
 function getRewardPresentation(reward){
   const metadata=reward?.metadata??reward?.reward_metadata??{}
-  const type=String(reward?.type??'Quest')
-  if(type==='Skill'){
+  const type=String(reward?.type??'quest').toLowerCase()
+  if(type==='skill'){
+    const skill=reward?.skill??reward?.skillName??metadata.skill??reward?.name??'Skill'
     return {
       type:'skill',
-      title:reward?.skill??reward?.skillName??metadata.skill??reward?.name??'Skill',
+      title:skill,
       subtitle:reward?.band??reward?.levelBracket??reward?.level_bracket??metadata.band??metadata.levelBracket??'Unlock',
       asset:'reward_skill.png',
-      iconName:reward?.skill??reward?.skillName??metadata.skill??reward?.name??'Skill',
+      iconName:skill,
     }
   }
-  if(type==='Diary'){
+  if(type==='diary'){
     return {
       type:'diary',
       title:reward?.tier??metadata.tier??'Diary',
@@ -234,6 +235,8 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position}){
   >
     <img className="tile-popup-frame" src={rewardAsset} alt="" aria-hidden="true" draggable="false"/>
     <div className="tile-popup-content">
+      <ProgressionIcon type={presentation.type} skill={presentation.iconName} className={`tile-popup-progression-icon tile-popup-${presentation.type}-icon`}/>
+
       <div className="tile-popup-reward-copy">
         <strong className="tile-popup-title">{presentation.title}</strong>
         {presentation.subtitle&&<span className="tile-popup-subtitle">{presentation.subtitle}</span>}

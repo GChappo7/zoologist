@@ -111,16 +111,15 @@ function CreatureGlyph({creature,size='medium'}){
 function MapTile({tile,selected,onSelect,onReveal,creatureById}){
   const creature=tile.creatureId?creatureById[tile.creatureId]:null
   const isFaceDown=Boolean(tile.faceDown)
-  const baseUrl=import.meta.env.BASE_URL
-  const handleClick=()=>{
+    const handleClick=()=>{
     if(isFaceDown&&creature){onReveal?.(tile);return}
     if(creature)onSelect(tile)
   }
   return <button type="button" className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
     {creature&&<>
-      <span className="map-card-face map-card-back" aria-hidden="true"><img src={`${baseUrl}assets/ui/map_tile_back.png`} alt="" draggable="false"/></span>
+      <span className="map-card-face map-card-back" aria-hidden="true"><img src="/assets/ui/map_tile_back.png" alt="" draggable="false"/></span>
       <span className="map-card-face map-card-front">
-        <img src={`${baseUrl}assets/ui/map_tile.png`} alt="" draggable="false"/>
+        <img src="/assets/ui/map_tile.png" alt="" draggable="false"/>
         <span className="map-card-content">
           <CreatureGlyph creature={creature} size="tile"/>
           <span className="tile-name">{creature.name}</span>

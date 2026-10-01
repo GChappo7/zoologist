@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
   BookOpen, ChevronLeft, ChevronRight, Compass, Eye, Flag, Gamepad2, Gem,
@@ -114,7 +114,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
     if(isFaceDown&&creature){onReveal?.(tile);return}
     if(creature)onSelect(tile)
   }
-  return <button type="button" style={{...(tile.fogDistance?{'--fog-distance':tile.fogDistance}:{}),...(tile.gridColumn?{gridColumn:tile.gridColumn,gridRow:tile.gridRow}:{})}} className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
+  return <button type="button" style={{...(tile.fogDistance?{'--fog-distance':tile.fogDistance}:{}),...(tile.gridColumn?{gridColumn:tile.gridColumn,gridRow:tile.gridRow}:{})}} data-tile-key={keyFor(tile.x,tile.y)} className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
     {creature&&<>
       <span className="map-card-face map-card-back" aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/ui/map_tile_back.png`} alt="" draggable="false"/></span>
       <span className="map-card-face map-card-front">
@@ -175,36 +175,60 @@ function getTileReward(tile,creature){
   const types=['Quest','Skill','Diary']
   return {type:types[((creature?.id??1)-1)%types.length],name:'Reward assignment pending'}
 }
-function TilePopup({selectedTile,onClose,onShowMore,onComplete,creatureById}){
+function getRewardPresentation(reward){
+  const metadata=reward?.metadata??reward?.reward_metadata??{}
+  const type=String(reward?.type??'Quest')
+  if(type==='Skill'){
+    return {
+      type:'skill',
+      title:reward?.skill??reward?.skillName??metadata.skill??reward?.name??'Skill',
+      subtitle:reward?.band??reward?.levelBracket??reward?.level_bracket??metadata.band??metadata.levelBracket??'Unlock',
+      asset:'reward_skill.png',
+      iconName:reward?.skill??reward?.skillName??metadata.skill??reward?.name??'Skill',
+    }
+  }
+  if(type==='Diary'){
+    return {
+      type:'diary',
+      title:reward?.tier??metadata.tier??'Diary',
+      subtitle:reward?.region??reward?.location??metadata.region??metadata.location??'Location pending',
+      asset:'reward_diary.png',
+    }
+  }
+  return {
+    type:'quest',
+    title:reward?.name??reward?.label??metadata.name??metadata.label??'Quest reward pending',
+    subtitle:'',
+    asset:'reward_quest.png',
+  }
+}
+function skillIconUrl(skill){
+  return `https://oldschool.runescape.wiki/images/${encodeURIComponent(skill??'').replace(/%20/g,'_')}_icon.png`
+}
+function TilePopup({selectedTile,onClose,onShowMore,creatureById,position}){
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null
   const reward=getTileReward(selectedTile,creature)
-  const rewardClass=reward.type==='Skill'?'skill':reward.type==='Diary'?'diary':'quest'
-  const rewardAsset=`${import.meta.env.BASE_URL}assets/ui/reward_${rewardClass}.png`
-  return <section className="tile-popup" aria-label={`${creature.name} details`}>
-    <button className="tile-popup-close" onClick={onClose} aria-label="Close tile details"><ChevronRight size={17}/></button>
-    <div className={`tile-popup-status ${selectedTile.completed?'complete':'frontier'}`}>
-      <span>{selectedTile.completed?'COMPLETED':'REVEALED'}</span>
-      {selectedTile.completed?<ShieldCheck size={14}/>:<Eye size={14}/>}
+  const presentation=getRewardPresentation(reward)
+  const rewardAsset=`${import.meta.env.BASE_URL}assets/ui/${presentation.asset}`
+  return <section
+    className={`tile-popup tile-popup-${presentation.type}`}
+    style={position?{left:position.left,top:position.top}:undefined}
+    aria-label="Reward details"
+  >
+    <div className="tile-popup-art" aria-hidden="true">
+      <img src={rewardAsset} alt="" draggable="false"/>
+      {presentation.type==='skill'&&<img className="tile-popup-skill-icon" src={skillIconUrl(presentation.iconName)} alt="" draggable="false"/>}
     </div>
-    <div className="tile-popup-creature">
-      <CreatureGlyph creature={creature} size="hero"/>
-      <div><span className="tile-popup-eyebrow">ANIMAL</span><h2>{creature.name}</h2></div>
-    </div>
-    <div className={`tile-popup-reward tile-popup-reward-${rewardClass}`}>
-      <img src={rewardAsset} alt="" aria-hidden="true"/>
-      <div className="tile-popup-reward-content">
-        <span>REWARD</span>
-        <strong>{reward.type}</strong>
-        <p>{reward.name}</p>
+    <div className="tile-popup-body">
+      <div className="tile-popup-reward-copy">
+        <strong className="tile-popup-title">{presentation.title}</strong>
+        {presentation.subtitle&&<span className="tile-popup-subtitle">{presentation.subtitle}</span>}
       </div>
-    </div>
-    <div className="tile-popup-actions">
-      <div className="tile-popup-secondary-actions">
-        {selectedTile.bossId&&<button className="boss-button" type="button"><Skull size={15}/> Boss</button>}
-        <button className="show-more-button" onClick={onShowMore}>Show more <ChevronRight size={15}/></button>
+      <div className="tile-popup-footer">
+        {selectedTile.bossId&&<button className="boss-button" type="button"><Skull size={14}/> Boss</button>}
+        <button className="show-more-button" onClick={onShowMore}>More details <ChevronRight size={14}/></button>
       </div>
-      {!selectedTile.completed&&<button className="complete-button" onClick={()=>onComplete(selectedTile)}><Flag size={15}/> Mark complete</button>}
     </div>
   </section>
 }
@@ -229,9 +253,31 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById}){
 function MapView({creatures,onProgressChange}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[startCreature]=useState(()=>pickStartingCreature(creatures))
-  const [tiles,setTiles]=useState(()=>createInitialTiles(creatures,startCreature)),[fogVisible,setFogVisible]=useState(false),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false)
+  const [tiles,setTiles]=useState(()=>createInitialTiles(creatures,startCreature)),[fogVisible,setFogVisible]=useState(false),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false),[popupPosition,setPopupPosition]=useState(null)
   const stageRef=useRef(null),zoomRef=useRef(zoom),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0}),edgeFrameRef=useRef(null)
   useEffect(()=>{zoomRef.current=zoom},[zoom])
+  useLayoutEffect(()=>{
+    if(!selectedTile){
+      setPopupPosition(null)
+      return
+    }
+    const frame=requestAnimationFrame(()=>{
+      const stage=stageRef.current
+      const tile=stage?.querySelector(`[data-tile-key="${keyFor(selectedTile.x,selectedTile.y)}"]`)
+      if(!stage||!tile)return
+      const stageRect=stage.getBoundingClientRect()
+      const tileRect=tile.getBoundingClientRect()
+      const estimatedWidth=390
+      const gap=12
+      const desiredLeft=tileRect.right-stageRect.left+gap
+      const desiredTop=tileRect.top-stageRect.top+(tileRect.height/2)
+      const left=Math.max(12,Math.min(desiredLeft,stageRect.width-estimatedWidth-12))
+      const top=Math.max(96,Math.min(desiredTop,stageRect.height-96))
+      setPopupPosition({left,top})
+    })
+    return()=>cancelAnimationFrame(frame)
+  },[selectedTile,pan,zoom,mapCells.gridSize])
+
   const updatePan=(dx,dy)=>setPan(current=>({x:current.x+dx,y:current.y+dy}))
   useEffect(()=>{
     const handleKeyDown=e=>{
@@ -316,7 +362,7 @@ function MapView({creatures,onProgressChange}){
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
     </div>
   </section>
-  <TilePopup selectedTile={selectedTile} onClose={()=>setSelectedTile(null)} onShowMore={()=>setPanelOpen(true)} onComplete={handleComplete} creatureById={creatureById}/>
+  <TilePopup selectedTile={selectedTile} onClose={()=>setSelectedTile(null)} onShowMore={()=>setPanelOpen(true)} creatureById={creatureById} position={popupPosition}/>
   <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById}/>
 </div>
 }

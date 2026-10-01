@@ -98,7 +98,7 @@ function getAdjacentPositions(tiles){
 }
 function recomputeFrontier(tiles,creatures){
   const next={...tiles},used=new Set(Object.values(next).map(t=>t.creatureId).filter(Boolean))
-  getAdjacentPositions(tiles).forEach(({x,y})=>{const creature=pickUnusedCreature(creatures,used,preferredScoreForDistance(x,y));if(creature){used.add(creature.id);next[keyFor(x,y)]={x,y,state:'frontier',creatureId:creature.id,completed:false}}})
+  getAdjacentPositions(tiles).forEach(({x,y})=>{const creature=pickUnusedCreature(creatures,used,preferredScoreForDistance(x,y));if(creature){used.add(creature.id);next[keyFor(x,y)]={x,y,state:'frontier',creatureId:creature.id,completed:false,faceDown:false,revealAnimation:true}}})
   return next
 }
 function CreatureGlyph({creature,size='medium'}){
@@ -115,7 +115,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
     if(isFaceDown&&creature){onReveal?.(tile);return}
     if(creature)onSelect(tile)
   }
-  return <button type="button" className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
+  return <button type="button" className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
     {creature&&<>
       <span className="map-card-face map-card-back" aria-hidden="true"><img src="/assets/ui/map_tile_back.png" alt="" draggable="false"/></span>
       <span className="map-card-face map-card-front">

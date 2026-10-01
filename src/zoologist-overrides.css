@@ -267,8 +267,8 @@
   bottom: 30px;
   left: 12px;
   right: 12px;
-  font-size: 15px;
-  line-height: 1.15;
+  font-size: 40px;
+  line-height: 1;
 }
 
 /* Frontier/revealed tiles use a warm yellow radial glow to indicate in-progress state. */

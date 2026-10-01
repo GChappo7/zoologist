@@ -198,8 +198,11 @@ function MapView({creatures,onCompletedCountChange}){
     const startX=centreTileX-RENDER_RADIUS,startY=centreTileY-RENDER_RADIUS,cells=[]
     for(let y=startY;y<=centreTileY+RENDER_RADIUS;y+=1)for(let x=startX;x<=centreTileX+RENDER_RADIUS;x+=1){
       const known=tiles[keyFor(x,y)]
-      if(known)cells.push({...known})
-      else {const distance=nearestKnownDistance(x,y);if(distance<=FOG_RADIUS)cells.push({x,y,state:'locked',completed:false})}
+      if(known) cells.push({...known})
+      else {
+        const distance=nearestKnownDistance(x,y)
+        cells.push({x,y,state:distance<=FOG_RADIUS?'locked':'void',completed:false})
+      }
     }
     const gridSize=RENDER_DIAMETER*TILE_SIZE+(RENDER_DIAMETER-1)*TILE_GAP
     return{cells,gridSize,offsetX:pan.x+centreTileX*TILE_STEP*zoom,offsetY:pan.y+centreTileY*TILE_STEP*zoom}

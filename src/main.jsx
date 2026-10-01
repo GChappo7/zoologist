@@ -122,7 +122,7 @@ function CreatureGlyph({creature,size='medium'}){
   const candidates=getCreatureImageCandidates(creature)
   return <div className={`creature-glyph creature-glyph-${size}`}>{!failed?<img src={candidates[index]} alt="" className="creature-image" draggable="false" onError={()=>index+1<candidates.length?setIndex(i=>i+1):setFailed(true)}/>:<span className="creature-fallback-glyph">🐾</span>}</div>
 }
-function MapTile({tile,selected,onSelect,onReveal,creatureById}){
+function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress}){
   const creature=tile.creatureId?creatureById[tile.creatureId]:null
   const isFaceDown=Boolean(tile.faceDown)
     const handleClick=()=>{
@@ -135,7 +135,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
       <span className="map-card-face map-card-front">
         <img src={`${import.meta.env.BASE_URL}assets/ui/map_tile.png`} alt="" draggable="false"/>
         <span className="map-card-content">
-          <ProgressionIcon type={getRewardPresentation(getTileReward(tile,creature)).type} skill={getRewardPresentation(getTileReward(tile,creature)).iconName} className="tile-progression-stamp"/>
+          <ProgressionIcon type={getRewardPresentation(getTileReward(tile,creature,skillProgress)).type} skill={getRewardPresentation(getTileReward(tile,creature)).iconName} className="tile-progression-stamp"/>
           <CreatureGlyph creature={creature} size="tile"/>
           <span className="tile-name">{creature.name}</span>
         </span>
@@ -144,13 +144,18 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
     {['locked','dark-fog-1','dark-fog-2','dark-fog-3','black-fog'].includes(tile.state)&&<span className="map-card-face map-card-back map-fog-card" aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/ui/map_tile_back.png`} alt="" draggable="false"/>{tile.state!=='locked'&&<span className="fog-darken" aria-hidden="true"/>}</span>}
   </button>
 }
-function SkillsView(){
+function getSkillRewardSequence(skill){
+  return rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()==='skill'&&r.skill===skill).sort((a,b)=>a.band==='unlock'?-1:b.band==='unlock'?1:Number(a.band.split('-')[0])-Number(b.band.split('-')[0]))
+}
+function getInitialSkillProgress(){
+  return Object.fromEntries(rewardCatalog.lockedSkills.map(skill=>[skill,{unlocked:false,maxLevel:0,nextRewardIndex:0}]))
+}
+function SkillsView({skillProgress}){
   const unrestricted=['Attack','Hitpoints','Hunter']
-  const locked=rewardCatalog.lockedSkills
   return <div className="full-tab-page">
-    <div className="tab-page-heading"><div className="eyebrow"><Gem size={14}/> ACCOUNT PROGRESSION</div><h1>Skills</h1><p>Three skills are always available. All other skills are unlocked through Zoologist rewards.</p></div>
+    <div className="tab-page-heading"><div className="eyebrow"><Gem size={14}/> ACCOUNT PROGRESSION</div><h1>Skills</h1><p>Three skills are always available. All other skills unlock through Zoologist rewards and then increase through level bands.</p></div>
     <div className="skill-section"><h2>Unrestricted</h2><div className="skills-grid">{unrestricted.map(name=><div className="skill-card unrestricted" key={name}><div className="skill-icon"><ProgressionIcon type="skill" skill={name}/></div><div><strong>{name}</strong><span>Levels 1–99 available</span></div></div>)}</div></div>
-    <div className="skill-section"><h2>Locked skills</h2><div className="skills-grid">{locked.map(name=><div className="skill-card" key={name}><div className="skill-icon"><ProgressionIcon type="skill" skill={name}/><Lock size={12} className="skill-lock-overlay"/></div><div><strong>{name}</strong><span>Unlock + 1–10 through 91–99</span></div></div>)}</div></div>
+    <div className="skill-section"><h2>Locked skills</h2><div className="skills-grid">{rewardCatalog.lockedSkills.map(name=>{const p=skillProgress[name]??{unlocked:false,maxLevel:0};return <div className={`skill-card ${p.unlocked?'unrestricted':''}`} key={name}><div className="skill-icon"><ProgressionIcon type="skill" skill={name}/>{!p.unlocked&&<Lock size={12} className="skill-lock-overlay"/>}</div><div><strong>{name}</strong><span>{p.unlocked?`Levels 1–${p.maxLevel}`:'Locked — requires a Zoologist reward'}</span></div></div>})}</div></div>
   </div>
 }
 function QuestsView(){
@@ -185,19 +190,21 @@ function ShopView(){
 function BossView(){
   return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div><h1>Boss Tasks</h1><p>Boss layers are ready to award Zoologist Points once boss placement and task eligibility are finalized.</p></div><div className="boss-empty"><MapPinned size={28}/><strong>Boss pool not assigned yet</strong><span>{bossSystem.tasks.length} boss tasks configured</span></div></div>
 }
-function getTileReward(tile,creature){
+function getNextSkillReward(skillProgress){
+  const candidates=[]
+  for(const skill of rewardCatalog.lockedSkills){
+    const p=skillProgress[skill]??{nextRewardIndex:0}
+    const reward=getSkillRewardSequence(skill)[p.nextRewardIndex]
+    if(reward)candidates.push(reward)
+  }
+  return candidates.length?candidates[Math.floor(Math.random()*candidates.length)]:null
+}
+function getTileReward(tile,creature,skillProgress){
   if(tile?.reward)return tile.reward
-  const types=['Quest','Skill','Diary']
-  const type=types[((creature?.id??1)-1)%types.length]
-  const rewards=rewardCatalog.mandatory.filter(reward=>String(reward.type).toLowerCase()===type.toLowerCase())
-  if(type==='Skill'){
-    const skillRewards=rewards.filter(reward=>reward.skill)
-    return skillRewards[((creature?.id??1)-1)%skillRewards.length]??{type:'skill',skill:'Strength',band:'unlock',label:'Strength — Unlock Skill'}
-  }
-  if(type==='Diary'){
-    return rewards[((creature?.id??1)-1)%rewards.length]??{type:'diary',region:'Location pending',tier:'Easy',label:'Easy — Location pending'}
-  }
-  return rewards[((creature?.id??1)-1)%rewards.length]??{type:'quest',name:'Quest reward pending'}
+  const type=['Quest','Skill','Diary'][((creature?.id??1)-1)%3]
+  const rewards=rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()===type.toLowerCase())
+  if(type==='Skill')return getNextSkillReward(skillProgress??getInitialSkillProgress())??{type:'skill',skill:'Strength',band:'unlock',label:'Strength — Unlock Skill'}
+  return rewards[((creature?.id??1)-1)%rewards.length]??{type:type.toLowerCase(),name:'Reward assignment pending'}
 }
 function getRewardPresentation(reward){
   const metadata=reward?.metadata??reward?.reward_metadata??{}
@@ -230,7 +237,7 @@ function getRewardPresentation(reward){
 function skillIconUrl(skill){
   return `https://oldschool.runescape.wiki/images/${encodeURIComponent(skill??'').replace(/%20/g,'_')}_icon.png`
 }
-function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position}){
+function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,skillProgress}){
   const [isDismissing,setIsDismissing]=useState(false)
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null
@@ -257,7 +264,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position}){
     </div>
   </section>
 }
-function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById}){
+function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,skillProgress}){
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   const reward=selectedTile&&creature?getTileReward(selectedTile,creature):null
   if(!open)return null
@@ -275,7 +282,7 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById}){
     </div>}
   </aside>
 }
-function MapView({creatures,onProgressChange}){
+function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[dismissingTileKey,setDismissingTileKey]=useState(null),[startCreature]=useState(()=>pickStartingCreature(creatures))
   const [tiles,setTiles]=useState(()=>createInitialTiles(creatures,startCreature)),[fogVisible,setFogVisible]=useState(false),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false)
@@ -354,6 +361,8 @@ function MapView({creatures,onProgressChange}){
   const handleComplete=tile=>{
     if(!tile||tile.state!=='frontier'||tile.completed||tile.faceDown)return
     const completed={...tile,state:'explored',completed:true,faceDown:false}
+    const reward=getTileReward(tile,creatureById[tile.creatureId],skillProgress)
+    if(String(reward?.type).toLowerCase()==='skill')onSkillRewardComplete?.(reward)
     setTiles(current=>recomputeFrontier({...current,[keyFor(tile.x,tile.y)]:completed},creatures))
     setSelectedTile(completed)
     setDismissingTileKey(keyFor(completed.x,completed.y))
@@ -363,7 +372,7 @@ function MapView({creatures,onProgressChange}){
   }
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
-  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById}/>)}{selectedTile&&<TilePopup selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+TILE_SIZE-64,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-25}}/>}</div></div>
+  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress}/>)}{selectedTile&&<TilePopup selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+TILE_SIZE-64,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-25}}/>}</div></div>
       <div className="map-zoom-controls" onPointerDown={e=>e.stopPropagation()}><button onClick={()=>zoomAtPoint(zoom-ZOOM_STEP,innerWidth/2,innerHeight/2)}>−</button><button className="zoom-readout" onClick={()=>{setPan({x:0,y:0});setZoom(1)}}>{Math.round(zoom*100)}%</button><button onClick={()=>zoomAtPoint(zoom+ZOOM_STEP,innerWidth/2,innerHeight/2)}>+</button></div>
       <div className="map-control-hint"><div><MousePointer2 size={13}/> Move to edge to pan</div><div>↑ ↓ ← → <span>Arrow keys</span></div><div>MMB <span>Drag to pan</span></div><div>Wheel <span>Zoom</span></div></div>
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
@@ -376,13 +385,25 @@ function App(){
   const [tab,setTab]=useState('map')
   const [creatures]=useState(()=>{try{return loadCreatureCatalog()}catch{return[]}})
   const [progress,setProgress]=useState({explored:0,revealed:1})
+  const [skillProgress,setSkillProgress]=useState(()=>{try{return JSON.parse(localStorage.getItem('zoologist-skill-progress'))||getInitialSkillProgress()}catch{return getInitialSkillProgress()}})
+  useEffect(()=>localStorage.setItem('zoologist-skill-progress',JSON.stringify(skillProgress)),[skillProgress])
+  const handleSkillRewardComplete=reward=>setSkillProgress(current=>{
+    const skill=reward?.skill
+    if(!skill)return current
+    const sequence=getSkillRewardSequence(skill)
+    const index=sequence.findIndex(item=>item.id===reward.id)
+    if(index<0)return current
+    const band=sequence[index]?.band
+    const maxLevel=band==='unlock'?0:Number(String(band).split('-').pop())||0
+    return {...current,[skill]:{unlocked:true,maxLevel,nextRewardIndex:Math.max(current[skill]?.nextRewardIndex??0,index+1)}}
+  })
   if(!creatures.length)return <div className="app-shell"><div className="full-tab-page"><h1>Creature data could not be loaded</h1><p>Check data/creatures.csv.</p></div></div>
   const creatureCount=creatures.length
   const tabs=[
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText},
     {id:'diaries',label:'Diaries',icon:BookOpen},{id:'shop',label:'Shop',icon:ShoppingBag},{id:'bosses',label:'Bosses',icon:Skull}
   ]
-  const page=tab==='skills'?<SkillsView/>:tab==='quests'?<QuestsView/>:tab==='diaries'?<DiariesView/>:tab==='shop'?<ShopView/>:tab==='bosses'?<BossView/>:<MapView creatures={creatures} onProgressChange={setProgress}/>
+  const page=tab==='skills'?<SkillsView skillProgress={skillProgress}/>:tab==='quests'?<QuestsView/>:tab==='diaries'?<DiariesView/>:tab==='shop'?<ShopView/>:tab==='bosses'?<BossView/>:<MapView creatures={creatures} onProgressChange={setProgress} skillProgress={skillProgress} onSkillRewardComplete={handleSkillRewardComplete}/>
   return <div className="app-shell"><header className="topbar"><div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration</div></div></div><nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} className={tab===id?'active':''} onClick={()=>setTab(id)}><Icon size={16}/>{label}</button>)}</nav><div className="header-actions"><div className="header-progress"><div className="progress-label"><span>EXPLORED <b>{progress.explored}</b> · REVEALED <b>{progress.revealed}</b></span><strong>{progress.explored} / {creatureCount}</strong></div><div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,progress.explored/creatureCount*100)}%`}}/></div></div><button className="account-button"><Users size={16}/> Account</button></div></header><main className="app-main">{page}</main><footer className="footer"><span>ZOOLOGIST • MASTER DATA CONNECTED</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer></div>
 }
 createRoot(document.getElementById('root')).render(<App />)

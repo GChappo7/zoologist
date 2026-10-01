@@ -13,7 +13,7 @@ import rewardCatalog from '../data/reward-catalog.json'
 import shop from '../data/shop.json'
 import bossSystem from '../data/boss-system.json'
 
-const TILE_SIZE = 192
+const TILE_SIZE = 256
 const TILE_GAP = 0
 const TILE_STEP = TILE_SIZE + TILE_GAP
 const RENDER_RADIUS = 20

@@ -114,7 +114,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById}){
     if(isFaceDown&&creature){onReveal?.(tile);return}
     if(creature)onSelect(tile)
   }
-  return <button type="button" className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
+  return <button type="button" style={tile.fogDistance?{'--fog-distance':tile.fogDistance}:undefined} className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
     {creature&&<>
       <span className="map-card-face map-card-back" aria-hidden="true"><img src="/assets/ui/map_tile_back.png" alt="" draggable="false"/></span>
       <span className="map-card-face map-card-front">
@@ -177,7 +177,7 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,exploredCount,f
 function MapView({creatures,onCompletedCountChange}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(true),[selectedTile,setSelectedTile]=useState(null),[startCreature]=useState(()=>pickStartingCreature(creatures))
-  const [tiles,setTiles]=useState(()=>createInitialTiles(creatures,startCreature)),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false)
+  const [tiles,setTiles]=useState(()=>createInitialTiles(creatures,startCreature)),[fogVisible,setFogVisible]=useState(false),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false)
   const stageRef=useRef(null),zoomRef=useRef(zoom),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0}),edgeFrameRef=useRef(null)
   useEffect(()=>{zoomRef.current=zoom},[zoom])
   const updatePan=(dx,dy)=>setPan(current=>({x:current.x+dx,y:current.y+dy}))
@@ -219,7 +219,7 @@ function MapView({creatures,onCompletedCountChange}){
     for(let y=startY;y<=centreTileY+RENDER_RADIUS;y+=1)for(let x=startX;x<=centreTileX+RENDER_RADIUS;x+=1){
       const known=tiles[keyFor(x,y)]
       if(known) cells.push({...known})
-      else {
+      else if(fogVisible) {
         const distance=nearestKnownDistance(x,y)
         const fogState =
           distance === 1 ? 'locked' :
@@ -228,17 +228,18 @@ function MapView({creatures,onCompletedCountChange}){
           distance === 4 ? 'dark-fog-3' :
           distance <= 6 ? 'black-fog' :
           'void'
-        cells.push({x,y,state:fogState,completed:false})
+        cells.push({x,y,state:fogState,completed:false,fogDistance:distance})
       }
     }
     const gridSize=RENDER_DIAMETER*TILE_SIZE+(RENDER_DIAMETER-1)*TILE_GAP
     return{cells,gridSize,offsetX:pan.x+centreTileX*TILE_STEP*zoom,offsetY:pan.y+centreTileY*TILE_STEP*zoom}
-  },[centreTileX,centreTileY,pan.x,pan.y,tiles,zoom])
+  },[centreTileX,centreTileY,pan.x,pan.y,tiles,zoom,fogVisible])
   const exploredCount=knownTiles.filter(t=>t.state==='explored').length,frontierCount=knownTiles.filter(t=>t.state==='frontier').length,creatureCount=creatures.length
   const handleReveal=tile=>{
     if(!tile?.faceDown)return
     const revealed={...tile,faceDown:false}
     setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:revealed}))
+    setFogVisible(true)
     setSelectedTile(revealed)
   }
   const handleComplete=tile=>{

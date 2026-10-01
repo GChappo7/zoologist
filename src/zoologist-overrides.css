@@ -424,3 +424,46 @@
   filter:drop-shadow(0 4px 5px rgba(0,0,0,.75)) drop-shadow(0 0 2px rgba(0,0,0,.65));
   z-index:3 !important;
 }
+
+
+/* Skill rewards make the level band the primary information in the popup. */
+.tile-popup-skill .tile-popup-reward-copy {
+  left: 28% !important;
+  right: 8% !important;
+  top: 50% !important;
+  transform: translateY(-50%);
+  text-align: center !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile-popup-skill .tile-popup-title {
+  font-size: 18px !important;
+  line-height: 1.1 !important;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.tile-popup-skill .tile-popup-subtitle {
+  display: block;
+  font-size: 30px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  text-align: center !important;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.8);
+}
+
+@media (max-width:760px) {
+  .tile-popup-skill .tile-popup-subtitle {
+    font-size: 25px !important;
+  }
+}
+@media (max-width:500px) {
+  .tile-popup-skill .tile-popup-subtitle {
+    font-size: 21px !important;
+  }
+}

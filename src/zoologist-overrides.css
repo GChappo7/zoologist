@@ -136,4 +136,4 @@
   .diary-grid,.shop-grid { grid-template-columns:1fr; }
 }
 
-.map-void{width:128px;height:128px;background:transparent;border:0;pointer-events:none;}\n
+.map-void{width:128px;height:128px;background:transparent;border:0;pointer-events:none;}

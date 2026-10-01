@@ -467,3 +467,166 @@
     font-size: 21px !important;
   }
 }
+
+
+/* Authentic OSRS-style skills dropdown. The real OSRS skill artwork is loaded from the OSRS Wiki;
+   the surrounding panel is recreated in CSS so the level text remains dynamic. */
+.skills-dropdown-anchor {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 310px;
+  pointer-events: none;
+}
+
+.skills-dropdown-panel {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  pointer-events: auto;
+  border: 4px solid #51483d;
+  border-radius: 3px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.08), transparent 20%, rgba(0,0,0,.08) 70%),
+    repeating-linear-gradient(0deg, rgba(45,40,35,.10) 0 2px, rgba(126,116,99,.10) 2px 4px),
+    #70695d;
+  box-shadow:
+    inset 0 0 0 2px #918879,
+    inset 0 0 0 4px #4c463d,
+    0 7px 18px rgba(0,0,0,.72);
+}
+
+.skills-dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 45px;
+  gap: 1px;
+  padding: 2px;
+  background: #3c3934;
+  border: 2px solid #2d2a27;
+  box-shadow: inset 0 1px rgba(255,255,255,.16);
+}
+
+.osrs-skill-slot {
+  position: relative;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 3px 7px 3px 7px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid #777064;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.10), transparent 35%),
+    #5f5a51;
+  box-shadow: inset 0 1px rgba(255,255,255,.12), inset 0 -1px rgba(0,0,0,.34);
+}
+
+.osrs-skill-slot.is-unlocked {
+  filter: none;
+}
+
+.osrs-skill-slot.is-locked {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.04), transparent 35%),
+    #484640;
+}
+
+.osrs-skill-icon {
+  width: 31px !important;
+  height: 31px !important;
+  margin-right: 6px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(1px 1px 0 #161411);
+  flex: 0 0 auto;
+}
+
+.osrs-skill-slot.is-locked .osrs-skill-icon {
+  filter: grayscale(1) brightness(.47) contrast(.92) drop-shadow(1px 1px 0 #171512);
+  opacity: .68;
+}
+
+.osrs-skill-lock {
+  position: absolute;
+  left: 27px;
+  bottom: 5px;
+  z-index: 2;
+  width: 12px;
+  height: 12px;
+  padding: 2px;
+  box-sizing: border-box;
+  color: #e3ded0;
+  background: rgba(25,23,20,.88);
+  border: 1px solid #302d28;
+  filter: drop-shadow(1px 1px 0 #111);
+}
+
+.osrs-skill-level {
+  position: relative;
+  z-index: 3;
+  margin-left: auto;
+  min-width: 42px;
+  text-align: right;
+  white-space: nowrap;
+  color: #f4e72b;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -.04em;
+  text-shadow: 1px 1px 0 #17130b, -1px 0 #17130b, 0 1px 0 #17130b;
+}
+
+.osrs-skill-slot.is-locked .osrs-skill-level {
+  color: #aaa59a;
+  text-shadow: 1px 1px 0 #22201d;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.osrs-total-level {
+  grid-column: 3;
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 7px;
+  box-sizing: border-box;
+  color: #f4e72b;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.05), transparent 35%),
+    #171612;
+  border: 1px solid #6f6655;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.05;
+  font-weight: 900;
+  text-align: center;
+  text-shadow: 1px 1px 0 #000;
+}
+
+@media (max-width:760px) {
+  .skills-dropdown-anchor {
+    top: 64px;
+    width: min(310px, calc(100vw - 16px));
+  }
+  .skills-dropdown-grid {
+    grid-auto-rows: 42px;
+  }
+  .osrs-skill-slot {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .osrs-skill-icon {
+    width: 28px !important;
+    height: 28px !important;
+    margin-right: 4px;
+  }
+  .osrs-skill-level {
+    font-size: 10px;
+  }
+}

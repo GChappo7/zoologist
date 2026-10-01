@@ -28,14 +28,27 @@ const QUEST_FILTERS = ['all','revealed','completed']
 const PROGRESSION_ASSETS = {
   quest: 'https://oldschool.runescape.wiki/images/Quests.png',
   diary: 'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',
-  skills: {
-    Attack: 'https://oldschool.runescape.wiki/images/Attack_icon_(detail).png',
-    Strength: 'https://oldschool.runescape.wiki/images/Strength_icon_(detail).png',
-  },
+  skills: {},
+}
+
+const SKILL_TAB_LAYOUT = [
+  ['Attack','Hitpoints','Mining'],
+  ['Strength','Agility','Smithing'],
+  ['Defence','Herblore','Fishing'],
+  ['Ranged','Thieving','Cooking'],
+  ['Prayer','Crafting','Firemaking'],
+  ['Magic','Fletching','Woodcutting'],
+  ['Runecraft','Slayer','Farming'],
+  ['Construction','Hunter'],
+]
+
+function skillIconUrl(skill) {
+  const filename = String(skill ?? '').replace(/\s+/g,'_')
+  return `https://oldschool.runescape.wiki/images/${filename}_icon_(detail).png`
 }
 
 function ProgressionIcon({type,skill,background=false,className=''}) {
-  const src=type==='skill' ? (PROGRESSION_ASSETS.skills[skill] ?? skillIconUrl(skill)) : PROGRESSION_ASSETS[type]
+  const src=type==='skill' ? skillIconUrl(skill) : PROGRESSION_ASSETS[type]
   if(!src)return null
   return <img className={`progression-icon ${background?'progression-icon-background':''} ${className}`} src={src} alt="" aria-hidden="true" draggable="false"/>
 }
@@ -173,12 +186,49 @@ function getSkillForCreature(creature){
   const skills=rewardCatalog.lockedSkills
   return skills[((creature?.id??1)-1)%skills.length]??skills[0]??'Strength'
 }
-function SkillsView({skillProgress}){
-  const unrestricted=['Attack','Hitpoints','Hunter']
-  return <div className="full-tab-page">
-    <div className="tab-page-heading"><div className="eyebrow"><Gem size={14}/> ACCOUNT PROGRESSION</div><h1>Skills</h1><p>Three skills are always available. All other skills unlock through Zoologist rewards and then increase through level bands.</p></div>
-    <div className="skill-section"><h2>Unrestricted</h2><div className="skills-grid">{unrestricted.map(name=><div className="skill-card unrestricted" key={name}><div className="skill-icon"><ProgressionIcon type="skill" skill={name}/></div><div><strong>{name}</strong><span>Levels 1–99 available</span></div></div>)}</div></div>
-    <div className="skill-section"><h2>Locked skills</h2><div className="skills-grid">{rewardCatalog.lockedSkills.map(name=>{const p=skillProgress[name]??{unlocked:false,maxLevel:0};return <div className={`skill-card ${p.unlocked?'unrestricted':''}`} key={name}><div className="skill-icon"><ProgressionIcon type="skill" skill={name}/>{!p.unlocked&&<Lock size={12} className="skill-lock-overlay"/>}</div><div><strong>{name}</strong><span>{p.unlocked?`Levels 1–${p.maxLevel}`:'Locked — requires a Zoologist reward'}</span></div></div>})}</div></div>
+function SkillsDropdown({open,onClose,skillProgress}) {
+  const panelRef=useRef(null)
+  useEffect(()=>{
+    if(!open)return
+    const handlePointerDown=e=>{
+      if(panelRef.current&&!panelRef.current.contains(e.target))onClose?.()
+    }
+    const handleKeyDown=e=>{
+      if(e.key==='Escape')onClose?.()
+    }
+    document.addEventListener('pointerdown',handlePointerDown)
+    window.addEventListener('keydown',handleKeyDown)
+    return()=>{
+      document.removeEventListener('pointerdown',handlePointerDown)
+      window.removeEventListener('keydown',handleKeyDown)
+    }
+  },[open,onClose])
+  if(!open)return null
+  const unrestricted=new Set(['Attack','Hitpoints','Hunter'])
+  const getDisplay=name=>{
+    if(unrestricted.has(name))return '1–99'
+    const progress=skillProgress?.[name]??{unlocked:false,maxLevel:0}
+    return progress.unlocked?`1–${progress.maxLevel}`:'Locked'
+  }
+  const totalLevel=Object.keys(skillProgress??{}).reduce((sum,name)=>{
+    const progress=skillProgress[name]
+    return sum+(progress?.unlocked?Number(progress.maxLevel)||0:0)
+  },0)+3
+  return <div className="skills-dropdown-anchor" ref={panelRef} role="dialog" aria-label="Skills">
+    <div className="skills-dropdown-panel">
+      <div className="skills-dropdown-grid">
+        {SKILL_TAB_LAYOUT.flatMap(row=>row.map(name=>{
+          const unlocked=unrestricted.has(name)||(skillProgress?.[name]?.unlocked===true)
+          const value=getDisplay(name)
+          return <div className={`osrs-skill-slot ${unlocked?'is-unlocked':'is-locked'}`} key={name} title={unlocked?`${name}: ${value}`:`${name}: locked`}>
+            <ProgressionIcon type="skill" skill={name} className="osrs-skill-icon"/>
+            {!unlocked&&<Lock size={11} className="osrs-skill-lock"/>}
+            <span className="osrs-skill-level">{value}</span>
+          </div>
+        }))}
+        <div className="osrs-total-level">Total level: {totalLevel}</div>
+      </div>
+    </div>
   </div>
 }
 function QuestsView(){
@@ -406,11 +456,12 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
     </div>
   </section>
-  <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById}/>
+  <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress}/>
 </div>
 }
 function App(){
   const [tab,setTab]=useState('map')
+  const [skillsOpen,setSkillsOpen]=useState(false)
   const [creatures]=useState(()=>{try{return loadCreatureCatalog()}catch{return[]}})
   const [progress,setProgress]=useState({explored:0,revealed:1})
   const [skillProgress,setSkillProgress]=useState(()=>{try{return normalizeSkillProgress(JSON.parse(localStorage.getItem('zoologist-skill-progress')))}catch{return getInitialSkillProgress()}})
@@ -431,7 +482,16 @@ function App(){
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText},
     {id:'diaries',label:'Diaries',icon:BookOpen},{id:'shop',label:'Shop',icon:ShoppingBag},{id:'bosses',label:'Bosses',icon:Skull}
   ]
-  const page=tab==='skills'?<SkillsView skillProgress={skillProgress}/>:tab==='quests'?<QuestsView/>:tab==='diaries'?<DiariesView/>:tab==='shop'?<ShopView/>:tab==='bosses'?<BossView/>:<MapView creatures={creatures} onProgressChange={setProgress} skillProgress={skillProgress} onSkillRewardComplete={handleSkillRewardComplete}/>
-  return <div className="app-shell"><header className="topbar"><div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration</div></div></div><nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} className={tab===id?'active':''} onClick={()=>setTab(id)}><Icon size={16}/>{label}</button>)}</nav><div className="header-actions"><div className="header-progress"><div className="progress-label"><span>EXPLORED <b>{progress.explored}</b> · REVEALED <b>{progress.revealed}</b></span><strong>{progress.explored} / {creatureCount}</strong></div><div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,progress.explored/creatureCount*100)}%`}}/></div></div><button className="account-button"><Users size={16}/> Account</button></div></header><main className="app-main">{page}</main><footer className="footer"><span>ZOOLOGIST • MASTER DATA CONNECTED</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer></div>
+  const page=tab==='quests'?<QuestsView/>:tab==='diaries'?<DiariesView/>:tab==='shop'?<ShopView/>:tab==='bosses'?<BossView/>:<MapView creatures={creatures} onProgressChange={setProgress} skillProgress={skillProgress} onSkillRewardComplete={handleSkillRewardComplete}/>
+  const handleTabClick=id=>{
+    if(id==='skills'){
+      setTab('map')
+      setSkillsOpen(current=>!current)
+      return
+    }
+    setSkillsOpen(false)
+    setTab(id)
+  }
+  return <div className="app-shell"><header className="topbar"><div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration</div></div></div><nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} className={`top-tab-${id} ${id==='skills'&&skillsOpen||tab===id?'active':''}`} onClick={()=>handleTabClick(id)} aria-expanded={id==='skills'?skillsOpen:undefined}><Icon size={16}/>{label}</button>)}</nav><div className="header-actions"><div className="header-progress"><div className="progress-label"><span>EXPLORED <b>{progress.explored}</b> · REVEALED <b>{progress.revealed}</b></span><strong>{progress.explored} / {creatureCount}</strong></div><div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,progress.explored/creatureCount*100)}%`}}/></div></div><button className="account-button"><Users size={16}/> Account</button></div></header><main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress}/>{page}</main><footer className="footer"><span>ZOOLOGIST • MASTER DATA CONNECTED</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer></div>
 }
 createRoot(document.getElementById('root')).render(<App />)

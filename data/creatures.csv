@@ -70,7 +70,7 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "69","Seagull","0","Active","Find and kill","","","",""
 "70","Cormorant","2","Active","Find and examine","","","",""
 "71","Pelican","2","Active","Find and examine","","","",""
-"72","Albatross","3","Active","Find and kill","Pandemonium","Pandemonium",""""
+72,Albatross,3,Active,Find and kill,Pandemonium,Pandemonium,,
 "73","Parrot","3","Active","Find and examine","","","",""
 "74","Macaw","2","Active","Find and examine","","","",""
 "75","Penguin","2","Active","Find and examine","","","",""
@@ -224,7 +224,7 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "223","Cavefish","4","Active","Find and catch/hunt","Below Ice Mountain","Below Ice Mountain","",""
 "224","Tetra","4","Active","Find and catch/hunt","Below Ice Mountain","Below Ice Mountain","",""
 "225","Catfish","4","Active","Find and catch/hunt","Below Ice Mountain","Below Ice Mountain","",""
-"226","Bream","4","Active","Find and catch/hunt","Perilous Moons;Twilight's Promise;Children of the Sun","Perilous Moons;Twilight's Promise;Children of the Sun",""""
+226,Bream,4,Active,Find and catch/hunt,Perilous Moons;Twilight's Promise;Children of the Sun,Perilous Moons;Twilight's Promise;Children of the Sun,,
 227,Harpoonfish,4,Active,Find and catch/hunt,,,Fishing,55
 228,Rainbow fish,4,Active,Find and catch/hunt,,,Fishing,38
 "229","Paddlefish","5","Active","Find and catch/hunt","Song of the Elves;Mourning's End Part II;Mourning's End Part I;Big Chompy Bird Hunting;Sheep Herder;Roving Elves;Waterfall Quest;Regicide;Underground Pass;Biohazard;Plague City;Making History;Priest in Peril;The Restless Ghost;Druidic Ritual","Song of the Elves;Mourning's End Part II;Mourning's End Part I;Big Chompy Bird Hunting;Sheep Herder;Roving Elves;Waterfall Quest;Regicide;Underground Pass;Biohazard;Plague City;Making History;Priest in Peril;The Restless Ghost;Druidic Ritual","",""
@@ -280,7 +280,7 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "279","Blue Dragon","3","Active","Find and kill","","","",""
 "280","Red Dragon","3","Active","Find and kill","","","",""
 "281","Black Dragon","4","Active","Find and kill","","","",""
-"282","Brutal Green Dragon","5","Active","Find and kill","Barbarian Training (miniquest)","Barbarian Training (miniquest)",""""
+282,Brutal Green Dragon,5,Active,Find and kill,Barbarian Training (miniquest),Barbarian Training (miniquest),,
 "283","Brutal Blue Dragon","5","Active","Find and kill","","","",""
 "284","Brutal Red Dragon","5","Active","Find and kill","","","",""
 285,Brutal Black Dragon,6,Active,Find and kill,,,Slayer,77
@@ -392,9 +392,9 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "391","Stingray","5","Active","Find and kill","Pandemonium","Pandemonium","",""
 "392","Sea turtle","5","Active","Find and kill","Pandemonium","Pandemonium","",""
 "393","Manta Ray (Monster)","5","Active","Find and kill","Pandemonium","Pandemonium","",""
-"394","Tern","4","Active","Find and kill","Pandemonium","Pandemonium",""""
-"395","Osprey","4","Active","Find and kill","Pandemonium","Pandemonium",""""
-"396","Frigatebird","4","Active","Find and kill","Pandemonium","Pandemonium",""""
+394,Tern,4,Active,Find and kill,Pandemonium,Pandemonium,,
+395,Osprey,4,Active,Find and kill,Pandemonium,Pandemonium,,
+396,Frigatebird,4,Active,Find and kill,Pandemonium,Pandemonium,,
 "397","Crimson Swift","4","Active","Find and catch/hunt","","","Hunter","1"
 "398","Golden Warbler","4","Active","Find and catch/hunt","","","Hunter","5"
 "399","Copper Longtail","4","Active","Find and catch/hunt","","","Hunter","9"

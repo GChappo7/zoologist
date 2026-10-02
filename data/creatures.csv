@@ -181,7 +181,7 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "180","Tortugan","3","Active","Find and kill","","","",""
 "181","Tortoise","2","Active","Find and kill","","","",""
 "182","Mutated Tortoise","4","Active","Find and kill","","","",""
-"183","Shrimp","0","Active","Find and catch/hunt","","","Fishing","1"
+"183","Shrimp","1","Active","Find and catch/hunt","","","Fishing","1"
 "184","Anchovy","1","Active","Find and catch/hunt","","","Fishing","15"
 "185","Sardine","1","Active","Find and catch/hunt","","","Fishing","5"
 "186","Herring","1","Active","Find and catch/hunt","","","Fishing","10"

@@ -689,3 +689,25 @@
     font-size: 14px;
   }
 }
+
+
+/* Tile completion method label shown directly above the creature name. */
+.tile-completion-method {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 79px;
+  z-index: 3;
+  text-align: center;
+  font-size: 17px;
+  line-height: 1;
+  font-weight: 700;
+  white-space: nowrap;
+  text-shadow: 2px 2px 0 rgba(0,0,0,.78), -1px -1px 0 rgba(0,0,0,.55);
+}
+.tile-completion-method:empty { display:none; }
+.tile-completion-method { color: #2bd34f; }
+.tile-completion-method + .tile-name { z-index: 3; }
+
+/* Match the three completion methods to their OSRS-style activity colours. */
+.map-tile .tile-completion-method:has(+ .tile-name) { }

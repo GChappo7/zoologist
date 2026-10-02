@@ -243,7 +243,8 @@ function CreatureGlyph({creature,size='medium'}){
   useEffect(()=>{setIndex(0);setFailed(false)},[name])
   if(!creature)return null
   const candidates=getCreatureImageCandidates(creature)
-  return <div className={`creature-glyph creature-glyph-${size}`}>{!failed?<img src={candidates[index]} alt="" className="creature-image" draggable="false" onError={()=>index+1<candidates.length?setIndex(i=>i+1):setFailed(true)}/>:<span className="creature-fallback-glyph">🐾</span>}</div>
+  const isRawFishImage=Boolean(RAW_FISH_WIKI_IMAGES[name]&&index===0)
+  return <div className={`creature-glyph creature-glyph-${size} ${isRawFishImage?'creature-glyph-raw-fish':''}`}>{!failed?<img src={candidates[index]} alt="" className={`creature-image ${isRawFishImage?'creature-image-raw-fish':''}`} draggable="false" onError={()=>index+1<candidates.length?setIndex(i=>i+1):setFailed(true)}/>:<span className="creature-fallback-glyph">🐾</span>}</div>
 }
 function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress}){
   const creature=tile.creatureId?creatureById[tile.creatureId]:null

@@ -10,7 +10,7 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "9","Boar","1","Active","Find and kill","","","",""
 "10","Camel","2","Active","Find and kill","","","",""
 "11","Ugthanki","3","Active","Find and kill","","","",""
-"12","Dog","0","Active","Find and kill","","","",""
+"12","Dog","0","Active","Find and examine","","","",""
 "13","Cat","1","Active","Find and examine","","","",""
 "14","Rooster","0","Active","Find and kill","","","",""
 "15","Fox","2","Active","Find and catch/hunt","","","",""

@@ -280,14 +280,14 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "279","Blue Dragon","3","Active","Find and kill","","","",""
 "280","Red Dragon","3","Active","Find and kill","","","",""
 "281","Black Dragon","4","Active","Find and kill","","","",""
-282,Brutal Green Dragon,5,Active,Find and kill,Barbarian Training (miniquest),Barbarian Training (miniquest),,
+282,Brutal Green Dragon,5,Active,Find and kill,,,,
 "283","Brutal Blue Dragon","5","Active","Find and kill","","","",""
 "284","Brutal Red Dragon","5","Active","Find and kill","","","",""
 285,Brutal Black Dragon,6,Active,Find and kill,,,Slayer,77
 "286","Bronze Dragon","4","Active","Find and kill","","","",""
 "287","Iron Dragon","4","Active","Find and kill","","","",""
 "288","Steel Dragon","5","Active","Find and kill","","","",""
-289,Mithril Dragon,5,Active,Find and kill,Barbarian Training (miniquest),Barbarian Training (miniquest),,
+289,Mithril Dragon,5,Active,Find and kill,,,,
 "290","Adamant Dragon","5","Active","Find and kill","Dragon Slayer II;Legends' Quest;Family Crest;Heroes' Quest;Shield of Arrav;Lost City;Merlin's Crystal;Dragon Slayer I;Underground Pass;Biohazard;Plague City;Waterfall Quest;Dream Mentor;Lunar Diplomacy;The Fremennik Trials;Rune Mysteries;Shilo Village;Jungle Potion;Druidic Ritual;Eadgar's Ruse;Troll Stronghold;Death Plateau;A Tail of Two Cats;Icthlarin's Little Helper;Gertrude's Cat;Animal Magnetism;Ernest the Chicken;Priest in Peril;The Restless Ghost;Ghosts Ahoy;Bone Voyage;The Dig Site;Client of Kourend;X Marks the Spot","Dragon Slayer II;Legends' Quest;Family Crest;Heroes' Quest;Shield of Arrav;Lost City;Merlin's Crystal;Dragon Slayer I;Underground Pass;Biohazard;Plague City;Waterfall Quest;Dream Mentor;Lunar Diplomacy;The Fremennik Trials;Rune Mysteries;Shilo Village;Jungle Potion;Druidic Ritual;Eadgar's Ruse;Troll Stronghold;Death Plateau;A Tail of Two Cats;Icthlarin's Little Helper;Gertrude's Cat;Animal Magnetism;Ernest the Chicken;Priest in Peril;The Restless Ghost;Ghosts Ahoy;Bone Voyage;The Dig Site;Client of Kourend;X Marks the Spot","",""
 "291","Rune Dragon","7","Active","Find and kill","Dragon Slayer II;Legends' Quest;Family Crest;Heroes' Quest;Shield of Arrav;Lost City;Merlin's Crystal;Dragon Slayer I;Underground Pass;Biohazard;Plague City;Waterfall Quest;Dream Mentor;Lunar Diplomacy;The Fremennik Trials;Rune Mysteries;Shilo Village;Jungle Potion;Druidic Ritual;Eadgar's Ruse;Troll Stronghold;Death Plateau;A Tail of Two Cats;Icthlarin's Little Helper;Gertrude's Cat;Animal Magnetism;Ernest the Chicken;Priest in Peril;The Restless Ghost;Ghosts Ahoy","Dragon Slayer II;Legends' Quest;Family Crest;Heroes' Quest;Shield of Arrav;Lost City;Merlin's Crystal;Dragon Slayer I;Underground Pass;Biohazard;Plague City;Waterfall Quest;Dream Mentor;Lunar Diplomacy;The Fremennik Trials;Rune Mysteries;Shilo Village;Jungle Potion;Druidic Ritual;Eadgar's Ruse;Troll Stronghold;Death Plateau;A Tail of Two Cats;Icthlarin's Little Helper;Gertrude's Cat;Animal Magnetism;Ernest the Chicken;Priest in Peril;The Restless Ghost;Ghosts Ahoy","",""
 "292","Lava Dragon","5","Active","Find and kill","","","",""
@@ -318,10 +318,10 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "317","Greater Demon","3","Active","Find and kill","","","",""
 "318","Black Demon","4","Active","Find and kill","","","",""
 "319","Abyssal Demon","5","Active","Find and kill","","","Slayer","85"
-"320","Abyssal Sire","8","Active","Find and kill","Enter the Abyss","Enter the Abyss","Slayer","85"
-"321","Abyssal Leech","3","Active","Find and kill","Enter the Abyss","Enter the Abyss","",""
-"322","Abyssal Guardian","4","Active","Find and kill","Enter the Abyss","Enter the Abyss","",""
-"323","Abyssal Walker","5","Active","Find and kill","Enter the Abyss","Enter the Abyss","",""
+"320","Abyssal Sire","8","Active","Find and kill","","","Slayer","85"
+"321","Abyssal Leech","3","Active","Find and kill","","","",""
+"322","Abyssal Guardian","4","Active","Find and kill","","","",""
+"323","Abyssal Walker","5","Active","Find and kill","","","",""
 "324","Blood Reaver","8","Active","Find and kill","","","",""
 "325","Dust Devil","4","Active","Find and kill","","","Slayer","65"
 "326","Smoke Devil","5","Active","Find and kill","","","Slayer","93"

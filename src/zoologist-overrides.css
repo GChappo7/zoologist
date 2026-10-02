@@ -710,6 +710,7 @@
 .tile-completion-method.tile-method-slay { color: #d83a3a; }
 .tile-completion-method.tile-method-examine { color: #39c85a; }
 .tile-completion-method.tile-method-catch { color: #29d8df; }
+.tile-completion-method.tile-method-shear { color: #29d8df; }
 .tile-completion-method + .tile-name { z-index: 3; }
 
 /* Match the three completion methods to their OSRS-style activity colours. */

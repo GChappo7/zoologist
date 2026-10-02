@@ -141,7 +141,14 @@ function weightedCreaturePick(available,preferredScore=null){
   for(const item of weighted){roll-=item.weight;if(roll<=0)return item.creature}
   return weighted[weighted.length-1].creature
 }
-function pickUnusedCreature(creatures,usedIds,preferredScore=null){return weightedCreaturePick(creatures.filter(c=>!usedIds.has(c.id)),preferredScore)}
+function pickUnusedCreature(creatures,usedIds,preferredScore=null){
+  const available=creatures.filter(c=>!usedIds.has(c.id))
+  if(preferredScore===1){
+    const starterFriendly=available.filter(c=>c.score<=1)
+    if(starterFriendly.length)return starterFriendly[Math.floor(Math.random()*starterFriendly.length)]
+  }
+  return weightedCreaturePick(available,preferredScore)
+}
 function preferredScoreForDistance(x,y){return Math.min(8,Math.max(1,1+Math.floor((Math.abs(x)+Math.abs(y))/4)))}
 function createInitialTiles(creatures,startCreature,skillProgress){
   const reward=getInitialTileReward(startCreature,skillProgress)

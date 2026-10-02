@@ -130,9 +130,46 @@ function loadCreatureCatalog(){
   if(!creatures.length)throw new Error('No Active creatures were found.')
   return creatures
 }
+const RAW_FISH_WIKI_IMAGES={
+  Shrimp:'Raw_shrimps.png',
+  Anchovy:'Raw_anchovies.png',
+  Sardine:'Raw_sardine.png',
+  Herring:'Raw_herring.png',
+  Mackerel:'Raw_mackerel.png',
+  Cod:'Raw_cod.png',
+  Pike:'Raw_pike.png',
+  Trout:'Raw_trout.png',
+  Salmon:'Raw_salmon.png',
+  Tuna:'Raw_tuna.png',
+  Bass:'Raw_bass.png',
+  Swordfish:'Raw_swordfish.png',
+  Lobster:'Raw_lobster.png',
+  Monkfish:'Raw_monkfish.png',
+  Shark:'Raw_shark.png',
+  Anglerfish:'Raw_anglerfish.png',
+  Karambwanji:'Raw_karambwanji.png',
+  Karambwan:'Raw_karambwan.png',
+  'Rainbow fish':'Raw_rainbow_fish.png',
+  'Dark Crab':'Raw_dark_crab.png',
+  'Cave Eel':'Raw_cave_eel.png',
+  'Slimy Eel':'Raw_slimy_eel.png',
+  'Manta Ray':'Raw_manta_ray.png',
+  'Sea Turtle':'Raw_sea_turtle.png',
+  'Swordtip Squid':'Raw_swordtip_squid.png',
+  'Giant Krill':'Raw_giant_krill.png',
+  Haddock:'Raw_haddock.png',
+  Yellowfin:'Raw_yellowfin.png',
+  Halibut:'Raw_halibut.png',
+  Bluefin:'Raw_bluefin.png',
+  Marlin:'Raw_marlin.png',
+  'Jumbo Squid':'Raw_jumbo_squid.png'
+}
 function getCreatureImageCandidates(creature){
-  const slug=slugifyCreatureName(creature?.name??'')
-  return[`${import.meta.env.BASE_URL}assets/creatures/${slug}.png`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.webp`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.jpg`]
+  const name=creature?.name??''
+  const slug=slugifyCreatureName(name)
+  const localCandidates=[`${import.meta.env.BASE_URL}assets/creatures/${slug}.png`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.webp`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.jpg`]
+  const rawFishImage=RAW_FISH_WIKI_IMAGES[name]
+  return rawFishImage?[`https://oldschool.runescape.wiki/images/${rawFishImage}`,...localCandidates]:localCandidates
 }
 const STARTING_TILE_EXCLUDED_CREATURES=new Set(['Duck'])
 function pickStartingCreature(creatures){

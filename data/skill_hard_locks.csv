@@ -1,0 +1,7 @@
+ID,Creature,Required Skill,Required Level,Blocked Reward Skill,Blocked Reward Level,Reason
+97,Moonlight Antelope,Hunter,91,Hunter,91–99,Final-bracket self-lock (Hunter is automatically unlocked; not a progression concern)
+155,Araxyte,Slayer,92,Slayer,Any,High-level same-skill lock: creatures requiring 91+ Slayer cannot reward Slayer
+213,Greater Siren,Fishing,91,Fishing,Any,High-level same-skill lock: creatures requiring 91+ Fishing cannot reward Fishing
+221,Marlin,Fishing,91,Fishing,Any,High-level same-skill lock: creatures requiring 91+ Fishing cannot reward Fishing
+302,Hydra,Slayer,95,Slayer,Any,High-level same-skill lock: creatures requiring 91+ Slayer cannot reward Slayer
+326,Smoke Devil,Slayer,93,Slayer,Any,High-level same-skill lock: creatures requiring 91+ Slayer cannot reward Slayer

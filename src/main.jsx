@@ -149,20 +149,20 @@ const RAW_FISH_WIKI_IMAGES={
   Anglerfish:'Raw_anglerfish.png',
   Karambwanji:'Raw_karambwanji.png',
   Karambwan:'Raw_karambwan.png',
-  'Rainbow fish':'Raw_rainbow_fish.png',
-  'Dark Crab':'Raw_dark_crab.png',
-  'Cave Eel':'Raw_cave_eel.png',
-  'Slimy Eel':'Raw_slimy_eel.png',
-  'Manta Ray':'Raw_manta_ray.png',
-  'Sea Turtle':'Raw_sea_turtle.png',
-  'Swordtip Squid':'Raw_swordtip_squid.png',
-  'Giant Krill':'Raw_giant_krill.png',
+  'Rainbow fish':'Raw_rainbow_fish_detail.png',
+  'Dark Crab':'Raw_dark_crab_detail.png',
+  'Cave Eel':'Raw_cave_eel_detail.png',
+  'Slimy Eel':'Raw_slimy_eel_detail.png',
+  'Manta Ray':'Raw_manta_ray_detail.png',
+  'Sea Turtle':'Raw_sea_turtle_detail.png',
+  'Swordtip Squid':'Raw_swordtip_squid_detail.png',
+  'Giant Krill':'Raw_giant_krill_detail.png',
   Haddock:'Raw_haddock.png',
   Yellowfin:'Raw_yellowfin.png',
   Halibut:'Raw_halibut.png',
   Bluefin:'Raw_bluefin.png',
   Marlin:'Raw_marlin.png',
-  'Jumbo Squid':'Raw_jumbo_squid.png'
+  'Jumbo Squid':'Raw_jumbo_squid_detail.png'
 }
 function getCreatureImageCandidates(creature){
   const name=creature?.name??''

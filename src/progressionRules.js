@@ -44,12 +44,22 @@ export const HIGH_LEVEL_SELF_REWARD_LOCK_SKILLS = new Set([
   'Sailing',
 ])
 
+function getRewardBandBounds(reward) {
+  const band = String(reward?.band ?? '').trim()
+  const match = band.match(/^(\d+)\s*-\s*(\d+)$/)
+  if (!match) return null
+  return { min: Number(match[1]), max: Number(match[2]) }
+}
+
 export function isFinalSkillBracket(reward, skillMaxLevels = DEFAULT_SKILL_MAX_LEVELS) {
   if (!reward || reward.type !== 'skill' || !reward.skill) return false
 
   const maxLevel = skillMaxLevels[reward.skill] ?? 99
+  const bounds = getRewardBandBounds(reward)
   const rewardMax = Number(reward.maxLevel ?? reward.max ?? reward.to)
-  return Number.isFinite(rewardMax) && rewardMax >= maxLevel
+
+  if (Number.isFinite(rewardMax)) return rewardMax >= maxLevel
+  return Boolean(bounds && bounds.max >= maxLevel)
 }
 
 export function isHighLevelSelfRewardLock(creature) {
@@ -71,7 +81,10 @@ export function isFinalBracketSelfLock(creature, reward, skillMaxLevels = DEFAUL
   const requiredSkill = String(creature.requiredSkill ?? '').trim().toLowerCase()
   const rewardSkill = String(reward.skill ?? '').trim().toLowerCase()
   const requiredLevel = Number(creature.requiredLevel)
-  const rewardMin = Number(reward.minLevel ?? reward.min ?? reward.from)
+  const rewardMinValue = Number(reward.minLevel ?? reward.min ?? reward.from)
+  const rewardMin = Number.isFinite(rewardMinValue)
+    ? rewardMinValue
+    : getRewardBandBounds(reward)?.min
 
   if (!requiredSkill || !rewardSkill || requiredSkill !== rewardSkill) return false
   if (!Number.isFinite(requiredLevel) || !Number.isFinite(rewardMin)) return false

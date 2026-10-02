@@ -318,7 +318,7 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "317","Greater Demon","3","Active","Find and kill","","","",""
 "318","Black Demon","4","Active","Find and kill","","","",""
 "319","Abyssal Demon","5","Active","Find and kill","","","Slayer","85"
-"320","Abyssal Sire","8","Active","Find and kill","Enter the Abyss","Enter the Abyss","85","undefined"
+"320","Abyssal Sire","8","Active","Find and kill","Enter the Abyss","Enter the Abyss","Slayer","85"
 "321","Abyssal Leech","3","Active","Find and kill","Enter the Abyss","Enter the Abyss","","undefined"
 "322","Abyssal Guardian","4","Active","Find and kill","Enter the Abyss","Enter the Abyss","","undefined"
 "323","Abyssal Walker","5","Active","Find and kill","Enter the Abyss","Enter the Abyss","","undefined"

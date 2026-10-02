@@ -108,8 +108,8 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 .creature-glyph-tile { width: 58px; height: 58px; font-size: 50px; }
 
 .creature-glyph-tile .creature-image-raw-fish {
-  width: 175%;
-  height: 175%;
+  width: 350%;
+  height: 350%;
   max-width: none;
   max-height: none;
 }

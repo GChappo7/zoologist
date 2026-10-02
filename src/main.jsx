@@ -389,10 +389,34 @@ function getInitialTileReward(creature,skillProgress){
   return firstBand?{...firstBand,type:'skill',skill:skillReward.skill}:skillReward
 }
 
+function weightedRandomPick(items,getWeight){
+  if(!items.length)return null
+  const weighted=items.map(item=>({item,weight:Math.max(0,Number(getWeight(item))||0)}))
+  const total=weighted.reduce((sum,entry)=>sum+entry.weight,0)
+  if(total<=0)return items[Math.floor(Math.random()*items.length)]
+  let roll=Math.random()*total
+  for(const entry of weighted){
+    roll-=entry.weight
+    if(roll<=0)return entry.item
+  }
+  return weighted[weighted.length-1].item
+}
+
+function getDiaryTierWeight(tier,distance){
+  const weightsByDistance=distance<=4
+    ? {Easy:75,Medium:20,Hard:4,Elite:1}
+    : distance<=8
+      ? {Easy:60,Medium:27,Hard:10,Elite:3}
+      : distance<=12
+        ? {Easy:40,Medium:30,Hard:22,Elite:8}
+        : {Easy:25,Medium:30,Hard:30,Elite:15}
+  return weightsByDistance[tier]??0
+}
+
 function createTileReward(creature,skillProgress,distance=Infinity){
-  // Keep achievement diaries uncommon near the centre so early progression
-  // is more often driven by skills and quests.
-  const diaryChance=distance<=4?0.08:distance<=8?0.15:1/3
+  // Achievement diaries should be uncommon near the centre so early
+  // progression is driven more by skills and quests.
+  const diaryChance=distance<=4?0.03:distance<=8?0.07:distance<=12?0.15:0.25
   const type=Math.random()<diaryChance?'Diary':Math.random()<0.5?'Quest':'Skill'
   const rewards=rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()===type.toLowerCase())
   if(type==='Skill')return getRandomSkillReward(creature,skillProgress)
@@ -403,7 +427,8 @@ function createTileReward(creature,skillProgress,distance=Infinity){
     const reward=pool[Math.floor(Math.random()*pool.length)]
     return reward??{type:'quest',name:'Reward assignment pending'}
   }
-  return rewards[((creature?.id??1)-1)%rewards.length]??{type:type.toLowerCase(),name:'Reward assignment pending'}
+  const reward=weightedRandomPick(rewards,reward=>getDiaryTierWeight(reward.tier,distance))
+  return reward??{type:'diary',name:'Reward assignment pending'}
 }
 
 function getTileReward(tile,creature,skillProgress){

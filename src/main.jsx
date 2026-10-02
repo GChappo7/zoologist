@@ -12,7 +12,7 @@ import quests from '../data/quests.json'
 import rewardCatalog from '../data/reward-catalog.json'
 import shop from '../data/shop.json'
 import bossSystem from '../data/boss-system.json'
-import { isValidSkillRewardAssignment } from './progressionRules'
+import { isValidQuestRewardAssignment, isValidSkillRewardAssignment } from './progressionRules'
 
 const TILE_SIZE = 256
 const TILE_GAP = 0
@@ -180,6 +180,7 @@ function pickStartingCreature(creatures){
   return pool[Math.floor(Math.random()*pool.length)]
 }
 function canAssignSkillReward(creature,reward){return isValidSkillRewardAssignment(creature,reward)}
+function canAssignQuestReward(creature,reward){return isValidQuestRewardAssignment(creature,reward)}
 function weightedCreaturePick(available,preferredScore=null){
   if(!available.length)return null
   if(preferredScore==null)return available[Math.floor(Math.random()*available.length)]
@@ -301,8 +302,8 @@ function getRandomSkillReward(creature,skillProgress){
     const nextReward=getNextSkillBand(skillProgress??getInitialSkillProgress(),skill)
     return nextReward&&canAssignSkillReward(creature,{...nextReward,type:'skill',skill})
   })
-  const pool=validSkills.length?validSkills:skills
-  const skill=pool[Math.floor(Math.random()*pool.length)]??'Strength'
+  if(!validSkills.length)return null
+  const skill=validSkills[Math.floor(Math.random()*validSkills.length)]
   const reward=getNextSkillBand(skillProgress??getInitialSkillProgress(),skill)
   return reward?{...reward,type:'skill',skill}:null
 }
@@ -421,17 +422,47 @@ function createTileReward(creature,skillProgress,distance=Infinity){
   // progression is driven more by skills and quests.
   const diaryChance=distance<=4?0.03:distance<=8?0.07:distance<=12?0.15:0.25
   const type=Math.random()<diaryChance?'Diary':Math.random()<0.5?'Quest':'Skill'
-  const rewards=rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()===type.toLowerCase())
-  if(type==='Skill')return getRandomSkillReward(creature,skillProgress)
-  if(type==='Quest'){
-    const blocked=new Set([...(creature?.hardNoRewardQuests??[]),...(creature?.requiredQuests??[])].map(q=>q.toLowerCase()))
-    const validRewards=rewards.filter(r=>!blocked.has(String(r.label??r.name??'').trim().toLowerCase()))
-    const pool=validRewards.length?validRewards:rewards
-    const reward=pool[Math.floor(Math.random()*pool.length)]
-    return reward??{type:'quest',name:'Reward assignment pending'}
+
+  if(type==='Skill'){
+    return getRandomSkillReward(creature,skillProgress)
   }
-  const reward=weightedRandomPick(rewards,reward=>getDiaryTierWeight(reward.tier,distance))
-  return reward??{type:'diary',name:'Reward assignment pending'}
+
+  if(type==='Quest'){
+    const rewards=rewardCatalog.mandatory.filter(
+      r=>String(r.type).toLowerCase()==='quest'
+    )
+    const validRewards=rewards.filter(reward=>{
+      if(!canAssignQuestReward(creature,reward))return false
+
+      // A quest required to access a creature is also a progression deadlock,
+      // so never place it on that creature even if it was not duplicated in
+      // Hard No Reward Quest(s).
+      const requiredQuests=new Set(
+        (creature?.requiredQuests??[]).map(q=>String(q).trim().toLowerCase())
+      )
+      const rewardQuest=String(reward.label??reward.name??'').trim().toLowerCase()
+      return !requiredQuests.has(rewardQuest)
+    })
+
+    // Never fall back to a blocked quest. If every quest is blocked, use a
+    // different reward type instead.
+    if(validRewards.length){
+      return validRewards[Math.floor(Math.random()*validRewards.length)]
+    }
+
+    const skillReward=getRandomSkillReward(creature,skillProgress)
+    if(skillReward)return skillReward
+
+    const diaryRewards=rewardCatalog.mandatory.filter(
+      r=>String(r.type).toLowerCase()==='diary'
+    )
+    return weightedRandomPick(diaryRewards,reward=>getDiaryTierWeight(reward.tier,distance))
+  }
+
+  const diaryRewards=rewardCatalog.mandatory.filter(
+    r=>String(r.type).toLowerCase()==='diary'
+  )
+  return weightedRandomPick(diaryRewards,reward=>getDiaryTierWeight(reward.tier,distance))
 }
 
 function getTileReward(tile,creature,skillProgress){

@@ -79,6 +79,21 @@ export function isFinalBracketSelfLock(creature, reward, skillMaxLevels = DEFAUL
   return requiredLevel >= rewardMin
 }
 
+export function isValidQuestRewardAssignment(creature, reward) {
+  if (!creature || !reward || String(reward.type ?? '').toLowerCase() !== 'quest') return true
+
+  const rewardQuest = String(reward.label ?? reward.name ?? '').trim().toLowerCase()
+  if (!rewardQuest) return true
+
+  const hardNoRewardQuests = Array.isArray(creature.hardNoRewardQuests)
+    ? creature.hardNoRewardQuests
+    : []
+
+  return !hardNoRewardQuests.some(quest =>
+    String(quest).trim().toLowerCase() === rewardQuest
+  )
+}
+
 export function isValidSkillRewardAssignment(creature, reward, skillMaxLevels = DEFAULT_SKILL_MAX_LEVELS) {
   if (!reward || reward.type !== 'skill') return true
 

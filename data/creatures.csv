@@ -195,12 +195,12 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "194","Swordfish","2","Active","Find and catch/hunt","","","Fishing","50"
 "195","Lobster","2","Active","Find and catch/hunt","","","Fishing","40"
 "196","Monkfish","4","Active","Find and catch/hunt","Swan Song;Creature of Fenkenstrain;Druidic Ritual;Garden of Tranquillity;Jungle Potion;One Small Favour;Priest in Peril;Rune Mysteries;Shilo Village;The Restless Ghost","Swan Song;Creature of Fenkenstrain;Druidic Ritual;Garden of Tranquillity;Jungle Potion;One Small Favour;Priest in Peril;Rune Mysteries;Shilo Village;The Restless Ghost","Fishing","62"
-"197","Shark","4","Active","Find and catch/hunt","","","Fishing","76"
+197,Shark,4,Active,Find and catch/hunt,,,Fishing,76
 "198","Anglerfish","5","Active","Find and catch/hunt","","","Fishing","82"
 "199","Karambwanji","3","Active","Find and catch/hunt","Tai Bwo Wannai Trio;Jungle Potion;Druidic Ritual","Tai Bwo Wannai Trio;Jungle Potion;Druidic Ritual","",""
 "200","Karambwan","4","Active","Find and catch/hunt","Tai Bwo Wannai Trio;Jungle Potion;Druidic Ritual","Tai Bwo Wannai Trio;Jungle Potion;Druidic Ritual","",""
-"201","Minnow","5","Active","Find and catch/hunt","","","Fishing","82"
-"202","Manta Ray","5","Active","Find and catch/hunt","","","",""
+201,Minnow,5,Active,Find and catch/hunt,Fishing Contest,Fishing Contest,Fishing,82
+202,Manta Ray,5,Active,Find and catch/hunt,,,Fishing,81
 "203","Sea Turtle","2","Duplicate","Find and catch/hunt","","","",""
 "204","Dark Crab","5","Active","Find and catch/hunt","","","Fishing","85"
 "205","Lava Eel","4","Active","Find and catch/hunt","","","Fishing","53"
@@ -211,28 +211,28 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "210","Bluegill","5","Active","Find and catch/hunt","","","Fishing","43"
 "211","Common Tench","5","Active","Find and catch/hunt","","","Fishing","56"
 "212","Mottled Eel","4","Active","Find and catch/hunt","","","Fishing","73"
-"213","Greater Siren","6","Active","Find and catch/hunt","","","",""
-"214","Sturgeon","4","Active","Find and catch/hunt","","","",""
-"215","Swordtip Squid","5","Active","Find and catch/hunt","Pandemonium","Pandemonium","Fishing","52"
-"216","Giant Krill","5","Active","Find and catch/hunt","Pandemonium","Pandemonium","Fishing","69"
-"217","Haddock","5","Active","Find and catch/hunt","Pandemonium","Pandemonium","Fishing","73"
-"218","Yellowfin","5","Active","Find and catch/hunt","Pandemonium","Pandemonium","Fishing","79"
-"219","Halibut","5","Active","Find and catch/hunt","Pandemonium","Pandemonium","Fishing","83"
-"220","Bluefin","5","Active","Find and catch/hunt","Pandemonium","Pandemonium","Fishing","87"
-"221","Marlin","5","Active","Find and catch/hunt","Pandemonium","Pandemonium","Fishing","91"
+213,Greater Siren,6,Active,Find and catch/hunt,,,Fishing,91
+214,Sturgeon,4,Active,Find and catch/hunt,,,Fishing,70
+215,Swordtip Squid,5,Active,Find and catch/hunt,Pandemonium,Pandemonium,Fishing,52
+216,Giant Krill,5,Active,Find and catch/hunt,Pandemonium,Pandemonium,Fishing,69
+217,Haddock,5,Active,Find and catch/hunt,Pandemonium,Pandemonium,Fishing,73
+218,Yellowfin,5,Active,Find and catch/hunt,Pandemonium,Pandemonium,Fishing,79
+219,Halibut,5,Active,Find and catch/hunt,Pandemonium,Pandemonium,Fishing,83
+220,Bluefin,5,Active,Find and catch/hunt,Pandemonium,Pandemonium,Fishing,87
+221,Marlin,5,Active,Find and catch/hunt,Pandemonium,Pandemonium,Fishing,91
 "222","Guppy","3","Active","Find and catch/hunt","Below Ice Mountain","Below Ice Mountain","",""
 "223","Cavefish","4","Active","Find and catch/hunt","Below Ice Mountain","Below Ice Mountain","",""
 "224","Tetra","4","Active","Find and catch/hunt","Below Ice Mountain","Below Ice Mountain","",""
 "225","Catfish","4","Active","Find and catch/hunt","Below Ice Mountain","Below Ice Mountain","",""
 "226","Bream","4","Active","Find and catch/hunt","Perilous Moons;Twilight's Promise;Children of the Sun","Perilous Moons;Twilight's Promise;Children of the Sun",""""
-"227","Harpoonfish","4","Active","Find and catch/hunt","","","",""
-"228","Rainbow fish","4","Active","Find and catch/hunt","","","",""
+227,Harpoonfish,4,Active,Find and catch/hunt,,,Fishing,55
+228,Rainbow fish,4,Active,Find and catch/hunt,,,Fishing,38
 "229","Paddlefish","5","Active","Find and catch/hunt","Song of the Elves;Mourning's End Part II;Mourning's End Part I;Big Chompy Bird Hunting;Sheep Herder;Roving Elves;Waterfall Quest;Regicide;Underground Pass;Biohazard;Plague City;Making History;Priest in Peril;The Restless Ghost;Druidic Ritual","Song of the Elves;Mourning's End Part II;Mourning's End Part I;Big Chompy Bird Hunting;Sheep Herder;Roving Elves;Waterfall Quest;Regicide;Underground Pass;Biohazard;Plague City;Making History;Priest in Peril;The Restless Ghost;Druidic Ritual","",""
 "230","Pufferfish","4","Active","Find and catch/hunt","Bone Voyage;The Dig Site","Bone Voyage;The Dig Site","",""
-"231","Golden Tench","5","Active","Find and catch/hunt","","","",""
-"232","Leaping trout","3","Active","Find and catch/hunt","","","",""
-"233","Leaping salmon","3","Active","Find and catch/hunt","","","",""
-"234","Leaping sturgeon","4","Active","Find and catch/hunt","","","",""
+231,Golden Tench,5,Active,Find and catch/hunt,,,Fishing,43
+232,Leaping trout,3,Active,Find and catch/hunt,,,Fishing,48
+233,Leaping salmon,3,Active,Find and catch/hunt,,,Fishing,58
+234,Leaping sturgeon,4,Active,Find and catch/hunt,,,Fishing,70
 "235","Catfish","4","Duplicate","Find and catch/hunt","","","",""
 "236","Lobstrosity","4","Active","Find and kill","Bone Voyage;The Dig Site","Bone Voyage;The Dig Site","Slayer","40"
 "237","Spinolyp","4","Active","Find and kill","","","",""
@@ -283,11 +283,11 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "282","Brutal Green Dragon","5","Active","Find and kill","Barbarian Training (miniquest)","Barbarian Training (miniquest)",""""
 "283","Brutal Blue Dragon","5","Active","Find and kill","","","",""
 "284","Brutal Red Dragon","5","Active","Find and kill","","","",""
-"285","Brutal Black Dragon","6","Active","Find and kill","","","",""
+285,Brutal Black Dragon,6,Active,Find and kill,,,Slayer,77
 "286","Bronze Dragon","4","Active","Find and kill","","","",""
 "287","Iron Dragon","4","Active","Find and kill","","","",""
 "288","Steel Dragon","5","Active","Find and kill","","","",""
-"289","Mithril Dragon","5","Active","Find and kill","Barbarian Training (miniquest)","Barbarian Training (miniquest)",""""
+289,Mithril Dragon,5,Active,Find and kill,Barbarian Training (miniquest),Barbarian Training (miniquest),,
 "290","Adamant Dragon","5","Active","Find and kill","Dragon Slayer II;Legends' Quest;Family Crest;Heroes' Quest;Shield of Arrav;Lost City;Merlin's Crystal;Dragon Slayer I;Underground Pass;Biohazard;Plague City;Waterfall Quest;Dream Mentor;Lunar Diplomacy;The Fremennik Trials;Rune Mysteries;Shilo Village;Jungle Potion;Druidic Ritual;Eadgar's Ruse;Troll Stronghold;Death Plateau;A Tail of Two Cats;Icthlarin's Little Helper;Gertrude's Cat;Animal Magnetism;Ernest the Chicken;Priest in Peril;The Restless Ghost;Ghosts Ahoy;Bone Voyage;The Dig Site;Client of Kourend;X Marks the Spot","Dragon Slayer II;Legends' Quest;Family Crest;Heroes' Quest;Shield of Arrav;Lost City;Merlin's Crystal;Dragon Slayer I;Underground Pass;Biohazard;Plague City;Waterfall Quest;Dream Mentor;Lunar Diplomacy;The Fremennik Trials;Rune Mysteries;Shilo Village;Jungle Potion;Druidic Ritual;Eadgar's Ruse;Troll Stronghold;Death Plateau;A Tail of Two Cats;Icthlarin's Little Helper;Gertrude's Cat;Animal Magnetism;Ernest the Chicken;Priest in Peril;The Restless Ghost;Ghosts Ahoy;Bone Voyage;The Dig Site;Client of Kourend;X Marks the Spot","",""
 "291","Rune Dragon","7","Active","Find and kill","Dragon Slayer II;Legends' Quest;Family Crest;Heroes' Quest;Shield of Arrav;Lost City;Merlin's Crystal;Dragon Slayer I;Underground Pass;Biohazard;Plague City;Waterfall Quest;Dream Mentor;Lunar Diplomacy;The Fremennik Trials;Rune Mysteries;Shilo Village;Jungle Potion;Druidic Ritual;Eadgar's Ruse;Troll Stronghold;Death Plateau;A Tail of Two Cats;Icthlarin's Little Helper;Gertrude's Cat;Animal Magnetism;Ernest the Chicken;Priest in Peril;The Restless Ghost;Ghosts Ahoy","Dragon Slayer II;Legends' Quest;Family Crest;Heroes' Quest;Shield of Arrav;Lost City;Merlin's Crystal;Dragon Slayer I;Underground Pass;Biohazard;Plague City;Waterfall Quest;Dream Mentor;Lunar Diplomacy;The Fremennik Trials;Rune Mysteries;Shilo Village;Jungle Potion;Druidic Ritual;Eadgar's Ruse;Troll Stronghold;Death Plateau;A Tail of Two Cats;Icthlarin's Little Helper;Gertrude's Cat;Animal Magnetism;Ernest the Chicken;Priest in Peril;The Restless Ghost;Ghosts Ahoy","",""
 "292","Lava Dragon","5","Active","Find and kill","","","",""
@@ -298,8 +298,8 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "297","Wyrm","4","Active","Find and kill","","","Slayer","62"
 "298","Shadow Wyrm","5","Active","Find and kill","","","",""
 "299","Drake","4","Active","Find and kill","","","Slayer","84"
-"300","Guardian Drake","5","Active","Find and kill","","","",""
-"301","Lava Strykewyrm","6","Active","Find and kill","Pandemonium","Pandemonium","Sailing","60"
+300,Guardian Drake,5,Active,Find and kill,,,Slayer,80
+301,Lava Strykewyrm,6,Active,Find and kill,Pandemonium,Pandemonium,Sailing,60
 "302","Hydra","8","Active","Find and kill","","","Slayer","95"
 "303","Imp","1","Active","Find and kill","","","",""
 "304","Baby Impling","3","Active","Find and catch/hunt","","","",""
@@ -355,7 +355,7 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "354","Zygomite","4","Active","Find and kill","Lost City","Lost City","Slayer","57"
 "355","Mutated Zygomite","5","Retired","Find and kill","Lost City","Lost City","",""
 "356","Ancient Zygomite","5","Active","Find and kill","Bone Voyage;Shadows of Custodia;Children of the Sun","Bone Voyage;Shadows of Custodia;Children of the Sun","",""
-"357","Hespori","6","Active","Find and kill","","","",""
+357,Hespori,6,Active,Find and kill,,,Farming,65
 "358","Herbiboar","5","Active","Find and catch/hunt","Bone Voyage;The Dig Site","Bone Voyage;The Dig Site","Hunter","80"
 "359","Moonlight Cockatrice","4","Active","Find and kill","Perilous Moons;Twilight's Promise;Children of the Sun","Perilous Moons;Twilight's Promise;Children of the Sun","Slayer","25"
 "360","Custodian Stalker","6","Active","Find and kill","Shadows of Custodia;Children of the Sun","Shadows of Custodia;Children of the Sun","Slayer","54"
@@ -374,8 +374,8 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "373","Marlin","5","Duplicate","Find and catch/hunt","","","Fishing","91"
 "374","Gryphon","6","Active","Find and kill","Troubled Tortugans;Pandemonium","Troubled Tortugans;Pandemonium","",""
 "375","Aquanite","6","Active","Find and kill","Pandemonium","Pandemonium","Slayer","78"
-"376","Frost Dragon","7","Active","Find and kill","Pandemonium","Pandemonium","Sailing","87"
-"377","Jumbo Squid","5","Active","Find and catch/hunt","Pandemonium","Pandemonium","Fishing","69"
+376,Frost Dragon,7,Active,Find and kill,Pandemonium,Pandemonium,Sailing,87
+377,Jumbo Squid,5,Active,Find and catch/hunt,Pandemonium,Pandemonium,Fishing,69
 "378","Veiled Kraken","6","Active","Find and kill","Pandemonium","Pandemonium","",""
 "379","Bull shark","5","Active","Find and kill","Pandemonium","Pandemonium","",""
 "380","Hammerhead shark","5","Active","Find and kill","Pandemonium","Pandemonium","",""

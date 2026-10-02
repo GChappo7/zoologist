@@ -120,7 +120,7 @@ function rowToCreature(row){
   const requiredSkill=firstValue(row,'required skill','required_skill')
   const requiredLevelValue=Number(firstValue(row,'required level','required_level'))
   const requiredLevel=Number.isFinite(requiredLevelValue)&&requiredLevelValue>0?requiredLevelValue:null
-  return{id,name,score:Number.isFinite(score)&&score>0?score:1,status,requiredSkill,requiredLevel,description:'A creature in the Zoologist expedition pool.'}
+  return{id,name,score:Number.isFinite(score)&&score>=0?score:1,status,requiredSkill,requiredLevel,description:'A creature in the Zoologist expedition pool.'}
 }
 function loadCreatureCatalog(){
   const creatures=parseCsv(creatureCsv).map(rowToCreature).filter(c=>c.id&&c.name&&c.status.toLowerCase()==='active')

@@ -119,10 +119,11 @@ function rowToCreature(row){
   const status=firstValue(row,'master_status','master status','status')||'Active'
   const requiredSkill=firstValue(row,'required skill','required_skill')
   const requiredLevelValue=Number(firstValue(row,'required level','required_level'))
+  const howToComplete=firstValue(row,'how to complete?','how_to_complete','how to complete')
   const hardNoRewardQuests=firstValue(row,'hard no reward quest(s)','hard_no_reward_quests','hard no reward quests')
     .split(';').map(q=>q.trim()).filter(Boolean)
   const requiredLevel=Number.isFinite(requiredLevelValue)&&requiredLevelValue>0?requiredLevelValue:null
-  return{id,name,score:Number.isFinite(score)&&score>=0?score:1,status,requiredSkill,requiredLevel,hardNoRewardQuests,description:'A creature in the Zoologist expedition pool.'}
+  return{id,name,score:Number.isFinite(score)&&score>=0?score:1,status,howToComplete,requiredSkill,requiredLevel,hardNoRewardQuests,description:'A creature in the Zoologist expedition pool.'}
 }
 function loadCreatureCatalog(){
   const creatures=parseCsv(creatureCsv).map(rowToCreature).filter(c=>c.id&&c.name&&c.status.toLowerCase()==='active')
@@ -222,7 +223,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress}){
         <span className="map-card-content">
           {(()=>{const reward=getTileReward(tile,creature,skillProgress);const presentation=getRewardPresentation(reward);return reward&&<ProgressionIcon type={presentation.type} skill={presentation.iconName} className="tile-progression-stamp"/>})()}
           <CreatureGlyph creature={creature} size="tile"/>
-          <span className="tile-name">{creature.name}</span>
+          <span className="tile-completion-method">{creature.howToComplete === 'Find and kill' ? 'Slay' : creature.howToComplete === 'Find and examine' ? 'Examine' : creature.howToComplete === 'Find and catch/hunt' ? 'Catch or Hunt' : creature.howToComplete}</span><span className="tile-name">{creature.name}</span>
         </span>
       </span>
     </>}

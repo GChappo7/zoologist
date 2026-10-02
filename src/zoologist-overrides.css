@@ -1,4 +1,3 @@
-
 /* Zoologist progression/fog layer overrides */
 .map-stage {
   background:#000;
@@ -12,16 +11,7 @@
 
 
 
-.map-card-face{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:block;transition:transform .55s cubic-bezier(.2,.75,.25,1);overflow:hidden;}
-.map-card-face>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
-.map-card-content{position:absolute;inset:0;display:block;z-index:2;}
-.map-card-back{transform:rotateY(180deg);z-index:3;}
-.map-card-front{transform:rotateY(0deg);z-index:2;}
-.map-tile.is-face-down{transform-style:preserve-3d;cursor:pointer;}
-.map-tile.is-face-down .map-card-back{transform:rotateY(0deg);z-index:3;visibility:visible;opacity:1;}
-.map-tile.is-face-down .map-card-front{transform:rotateY(-180deg);z-index:2;visibility:visible;opacity:1;}
-.map-tile:not(.is-face-down){transform-style:preserve-3d;}
-.map-tile.is-face-down:hover{filter:brightness(1.04);}
+.map-card-face{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:block;transition:transform .55s cubic-bezier(.2,.75,.25,1);overflow:hidden;}.map-card-face>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}.map-card-content{position:absolute;inset:0;display:block;z-index:2;}.map-card-back{transform:rotateY(180deg);z-index:3;}.map-card-front{transform:rotateY(0deg);z-index:2;}.map-tile.is-face-down{transform-style:preserve-3d;cursor:pointer;}.map-tile.is-face-down .map-card-back{transform:rotateY(0deg);z-index:3;visibility:visible;opacity:1;}.map-tile.is-face-down .map-card-front{transform:rotateY(-180deg);z-index:2;visibility:visible;opacity:1;}.map-tile:not(.is-face-down){transform-style:preserve-3d;}.map-tile.is-face-down:hover{filter:brightness(1.04);}
 
 /* Newly unlocked frontier cards all flip from their backs together after a completed tile. */
 .map-tile.is-batch-reveal .map-card-back{
@@ -140,8 +130,8 @@
 .quest-row.quest-revealed .quest-status-dot { background:#c52e2e; }
 .quest-row.quest-in_progress { color:#9a701b; }
 .quest-row.quest-in_progress .quest-status-dot { background:#d4a72c; }
-.quest-row.quest-completed { color:#287d39; }
 .quest-row.quest-completed .quest-status-dot { background:#3a9b4b; }
+.quest-row.quest-completed { color:#287d39; }
 .quest-row.quest-unrevealed { color:#6b6252; cursor:default; }
 .quest-status-label { font-size:10px; opacity:.65; }
 .quest-info {
@@ -264,11 +254,19 @@
   object-position: center bottom;
 }
 .tile-name {
-  bottom: 30px;
-  left: 12px;
-  right: 12px;
-  font-size: 15px;
-  line-height: 1.15;
+  bottom: 52px;
+  left: 24px;
+  right: 24px;
+  font-size: 24px;
+  line-height: 1.05;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: clip;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow-wrap: break-word;
+  text-align: center;
 }
 
 /* Frontier/revealed tiles use a warm yellow radial glow to indicate in-progress state. */
@@ -288,4 +286,406 @@
 
 .map-tile-frontier .tile-status-front {
   display: none;
+}
+
+
+/* Shared OSRS progression icons: Quest, Achievement Diary and Skills. */
+.progression-icon {
+  width: 26px;
+  height: 26px;
+  display: block;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 3px 3px rgba(0,0,0,.72)) drop-shadow(0 0 2px rgba(0,0,0,.75));
+  flex: 0 0 auto;
+}
+
+.progression-icon-background {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  right: -8px;
+  bottom: -16px;
+  opacity: .10;
+  filter: grayscale(1) brightness(.45) drop-shadow(0 3px 4px rgba(0,0,0,.75));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.quest-log-title .progression-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.quest-log-title > div {
+  position: relative;
+  z-index: 1;
+}
+
+.diary-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.diary-card > strong,
+.diary-card > div {
+  position: relative;
+  z-index: 1;
+}
+
+.diary-card > .progression-icon-background {
+  z-index: 0;
+}
+
+.skill-icon {
+  position: relative;
+  overflow: hidden;
+}
+
+.skill-icon .progression-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.skill-lock-overlay {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  z-index: 2;
+  padding: 2px;
+  border-radius: 3px;
+  background: rgba(8,14,18,.82);
+}
+
+/* Reward popup progression icons act as large, faded watermarks behind the reward copy. */
+.tile-popup-progression-icon {
+  position:absolute !important;
+  width:104px !important;
+  height:98px !important;
+  left:16% !important;
+  top:calc(50% - 0px) !important;
+  right:auto !important;
+  bottom:auto !important;
+  transform:translate(-50%,-50%);
+  object-fit:contain !important;
+  image-rendering:pixelated;
+  opacity:.20;
+  /* Keep the watermark recognisable by type while still letting the popup artwork and text dominate. */
+  filter:saturate(.85) brightness(.72) drop-shadow(0 3px 4px rgba(0,0,0,.7));
+  z-index:0 !important;
+  pointer-events:none;
+}
+
+.tile-popup-content {
+  position:absolute;
+  inset:0;
+  z-index:1;
+}
+
+@media (max-width:760px) {
+  .tile-popup-progression-icon {
+    width:88px !important;
+    height:83px !important;
+  }
+}
+@media (max-width:500px) {
+  .tile-popup-progression-icon {
+    width:76px !important;
+    height:72px !important;
+  }
+}
+
+
+/* Large progression icon behind the creature on revealed map tiles, echoing the existing green/yellow state glow. */
+.tile-progression-stamp {
+  position:absolute !important;
+  width:170px !important;
+  height:170px !important;
+  left:50% !important;
+  top:50% !important;
+  right:auto !important;
+  bottom:auto !important;
+  transform:translate(-50%,-50%);
+  object-fit:contain !important;
+  image-rendering:pixelated;
+  opacity:.20;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.38));
+  z-index:1 !important;
+  pointer-events:none;
+}
+
+/* Keep the creature clearly above the progression watermark and give it a stronger silhouette. */
+.map-tile-explored .creature-glyph-tile,
+.map-tile-frontier .creature-glyph-tile {
+  z-index:3 !important;
+}
+.map-tile-explored .creature-image,
+.map-tile-frontier .creature-image {
+  filter:drop-shadow(0 4px 5px rgba(0,0,0,.75)) drop-shadow(0 0 2px rgba(0,0,0,.65));
+  z-index:3 !important;
+}
+
+
+/* Quest and achievement diary rewards use the same large, prominent typography as skill rewards. */
+.tile-popup-quest .tile-popup-title,
+.tile-popup-diary .tile-popup-title {
+  font-family: var(--font-runescape) !important;
+  font-size: 34px !important;
+  line-height: 1 !important;
+  margin-bottom: 1px !important;
+  text-align: center !important;
+  white-space: nowrap;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.8);
+}
+
+.tile-popup-quest .tile-popup-subtitle,
+.tile-popup-diary .tile-popup-subtitle {
+  font-family: var(--font-runescape) !important;
+  font-size: 32px !important;
+  line-height: 1 !important;
+  margin-top: 0 !important;
+  font-weight: 700 !important;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  text-align: center !important;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.8);
+}
+
+@media (max-width:760px) {
+  .tile-popup-quest .tile-popup-title,
+  .tile-popup-diary .tile-popup-title {
+    font-size: 28px !important;
+  }
+  .tile-popup-quest .tile-popup-subtitle,
+  .tile-popup-diary .tile-popup-subtitle {
+    font-size: 26px !important;
+  }
+}
+
+@media (max-width:500px) {
+  .tile-popup-quest .tile-popup-title,
+  .tile-popup-diary .tile-popup-title {
+    font-size: 23px !important;
+  }
+  .tile-popup-quest .tile-popup-subtitle,
+  .tile-popup-diary .tile-popup-subtitle {
+    font-size: 21px !important;
+  }
+}
+
+/* Skill rewards make the level band the primary information in the popup. */
+.tile-popup-skill .tile-popup-reward-copy {
+  left: 4% !important;
+  right: 24% !important;
+  top: 50% !important;
+  transform: translateY(-50%);
+  text-align: center !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile-popup-skill .tile-popup-title {
+  font-family: var(--font-runescape) !important;
+  font-size: 34px !important;
+  line-height: 1 !important;
+  margin-bottom: 1px;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.8);
+}
+
+.tile-popup-skill .tile-popup-subtitle {
+  display: block;
+  font-family: var(--font-runescape) !important;
+  font-size: 32px !important;
+  line-height: 1 !important;
+  font-weight: 700 !important;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  text-align: center !important;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.8);
+}
+
+@media (max-width:760px) {
+  .tile-popup-skill .tile-popup-title {
+    font-size: 28px !important;
+  }
+  .tile-popup-skill .tile-popup-subtitle {
+    font-size: 26px !important;
+  }
+}
+@media (max-width:500px) {
+  .tile-popup-skill .tile-popup-title {
+    font-size: 23px !important;
+  }
+  .tile-popup-skill .tile-popup-subtitle {
+    font-size: 21px !important;
+  }
+}
+
+
+/* Authentic OSRS-style skills dropdown.
+   The panel uses the actual OSRS Skills-tab artwork as a texture, while the
+   skill cells remain HTML so Zoologist can change levels/locked states dynamically. */
+.skills-dropdown-anchor {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 310px;
+  pointer-events: none;
+}
+
+.skills-dropdown-panel {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  pointer-events: auto;
+  border: 4px solid #51483d;
+  border-radius: 3px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.08), transparent 20%, rgba(0,0,0,.08) 70%),
+    repeating-linear-gradient(0deg, rgba(45,40,35,.10) 0 2px, rgba(126,116,99,.10) 2px 4px),
+    #70695d;
+  box-shadow:
+    inset 0 0 0 2px #918879,
+    inset 0 0 0 4px #4c463d,
+    0 7px 18px rgba(0,0,0,.72);
+}
+
+.skills-dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 45px;
+  gap: 1px;
+  padding: 2px;
+  background: #3c3934;
+  border: 2px solid #2d2a27;
+  box-shadow: inset 0 1px rgba(255,255,255,.16);
+}
+
+.osrs-skill-slot {
+  position: relative;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 3px 7px 3px 7px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid #777064;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.10), transparent 35%),
+    #5f5a51;
+  box-shadow: inset 0 1px rgba(255,255,255,.12), inset 0 -1px rgba(0,0,0,.34);
+}
+
+.osrs-skill-slot.is-unlocked {
+  filter: none;
+}
+
+.osrs-skill-slot.is-locked {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.04), transparent 35%),
+    #484640;
+}
+
+.osrs-skill-icon {
+  width: 31px !important;
+  height: 31px !important;
+  margin-right: 6px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(1px 1px 0 #161411);
+  flex: 0 0 auto;
+}
+
+.osrs-skill-slot.is-locked .osrs-skill-icon {
+  filter: grayscale(1) brightness(.47) contrast(.92) drop-shadow(1px 1px 0 #171512);
+  opacity: .68;
+}
+
+.osrs-skill-lock {
+  position: absolute;
+  left: 27px;
+  bottom: 5px;
+  z-index: 2;
+  width: 12px;
+  height: 12px;
+  padding: 2px;
+  box-sizing: border-box;
+  color: #e3ded0;
+  background: rgba(25,23,20,.88);
+  border: 1px solid #302d28;
+  filter: drop-shadow(1px 1px 0 #111);
+}
+
+.osrs-skill-level {
+  position: relative;
+  z-index: 3;
+  margin-left: auto;
+  margin-right: 12px;
+  min-width: 56px;
+  text-align: center;
+  white-space: nowrap;
+  color: #f4e72b;
+  font-family: var(--font-runescape);
+  font-size: 17px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -.04em;
+  text-shadow: 1px 1px 0 #17130b, -1px 0 #17130b, 0 1px 0 #17130b;
+}
+
+.osrs-skill-slot.is-locked .osrs-skill-level {
+  color: #aaa59a;
+  text-shadow: 1px 1px 0 #22201d;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.osrs-total-level {
+  grid-column: 3;
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 7px;
+  box-sizing: border-box;
+  color: #f4e72b;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.05), transparent 35%),
+    #171612;
+  border: 1px solid #6f6655;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.05;
+  font-weight: 900;
+  text-align: center;
+  text-shadow: 1px 1px 0 #000;
+}
+
+@media (max-width:760px) {
+  .skills-dropdown-anchor {
+    top: 64px;
+    width: min(310px, calc(100vw - 16px));
+  }
+  .skills-dropdown-grid {
+    grid-auto-rows: 42px;
+  }
+  .osrs-skill-slot {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .osrs-skill-icon {
+    width: 28px !important;
+    height: 28px !important;
+    margin-right: 4px;
+  }
+  .osrs-skill-level {
+    font-size: 14px;
+  }
 }

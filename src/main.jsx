@@ -120,10 +120,12 @@ function rowToCreature(row){
   const requiredSkill=firstValue(row,'required skill','required_skill')
   const requiredLevelValue=Number(firstValue(row,'required level','required_level'))
   const howToComplete=firstValue(row,'how to complete?','how_to_complete','how to complete')
+  const requiredQuests=firstValue(row,'required quest(s)','required_quest(s)','required quests','required quests')
+    .split(';').map(q=>q.trim()).filter(Boolean)
   const hardNoRewardQuests=firstValue(row,'hard no reward quest(s)','hard_no_reward_quests','hard no reward quests')
     .split(';').map(q=>q.trim()).filter(Boolean)
   const requiredLevel=Number.isFinite(requiredLevelValue)&&requiredLevelValue>0?requiredLevelValue:null
-  return{id,name,score:Number.isFinite(score)&&score>=0?score:1,status,howToComplete,requiredSkill,requiredLevel,hardNoRewardQuests,description:'A creature in the Zoologist expedition pool.'}
+  return{id,name,score:Number.isFinite(score)&&score>=0?score:1,status,howToComplete,requiredQuests,requiredSkill,requiredLevel,hardNoRewardQuests,description:'A creature in the Zoologist expedition pool.'}
 }
 function loadCreatureCatalog(){
   const creatures=parseCsv(creatureCsv).map(rowToCreature).filter(c=>c.id&&c.name&&c.status.toLowerCase()==='active')
@@ -149,20 +151,20 @@ const RAW_FISH_WIKI_IMAGES={
   Anglerfish:'Raw_anglerfish_detail.png',
   Karambwanji:'Raw_karambwanji_detail.png',
   Karambwan:'Raw_karambwan_detail.png',
-  'Rainbow fish':'Raw_rainbow_fish_detail_detail.png',
-  'Dark Crab':'Raw_dark_crab_detail_detail.png',
-  'Cave Eel':'Raw_cave_eel_detail_detail.png',
-  'Slimy Eel':'Raw_slimy_eel_detail_detail.png',
-  'Manta Ray':'Raw_manta_ray_detail_detail.png',
-  'Sea Turtle':'Raw_sea_turtle_detail_detail.png',
-  'Swordtip Squid':'Raw_swordtip_squid_detail_detail.png',
-  'Giant Krill':'Raw_giant_krill_detail_detail.png',
+  'Rainbow fish':'Raw_rainbow_fish_detail.png',
+  'Dark Crab':'Raw_dark_crab_detail.png',
+  'Cave Eel':'Raw_cave_eel_detail.png',
+  'Slimy Eel':'Raw_slimy_eel_detail.png',
+  'Manta Ray':'Raw_manta_ray_detail.png',
+  'Sea Turtle':'Raw_sea_turtle_detail.png',
+  'Swordtip Squid':'Raw_swordtip_squid_detail.png',
+  'Giant Krill':'Raw_giant_krill_detail.png',
   Haddock:'Raw_haddock_detail.png',
   Yellowfin:'Raw_yellowfin_detail.png',
   Halibut:'Raw_halibut_detail.png',
   Bluefin:'Raw_bluefin_detail.png',
   Marlin:'Raw_marlin_detail.png',
-  'Jumbo Squid':'Raw_jumbo_squid_detail_detail.png'
+  'Jumbo Squid':'Raw_jumbo_squid_detail.png'
 }
 function getCreatureImageCandidates(creature){
   const name=creature?.name??''
@@ -422,7 +424,7 @@ function createTileReward(creature,skillProgress,distance=Infinity){
   const rewards=rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()===type.toLowerCase())
   if(type==='Skill')return getRandomSkillReward(creature,skillProgress)
   if(type==='Quest'){
-    const blocked=new Set((creature?.hardNoRewardQuests??[]).map(q=>q.toLowerCase()))
+    const blocked=new Set([...(creature?.hardNoRewardQuests??[]),...(creature?.requiredQuests??[])].map(q=>q.toLowerCase()))
     const validRewards=rewards.filter(r=>!blocked.has(String(r.label??r.name??'').trim().toLowerCase()))
     const pool=validRewards.length?validRewards:rewards
     const reward=pool[Math.floor(Math.random()*pool.length)]

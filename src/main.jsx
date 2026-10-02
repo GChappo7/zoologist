@@ -119,8 +119,10 @@ function rowToCreature(row){
   const status=firstValue(row,'master_status','master status','status')||'Active'
   const requiredSkill=firstValue(row,'required skill','required_skill')
   const requiredLevelValue=Number(firstValue(row,'required level','required_level'))
+  const hardNoRewardQuests=firstValue(row,'hard no reward quest(s)','hard_no_reward_quests','hard no reward quests')
+    .split(';').map(q=>q.trim()).filter(Boolean)
   const requiredLevel=Number.isFinite(requiredLevelValue)&&requiredLevelValue>0?requiredLevelValue:null
-  return{id,name,score:Number.isFinite(score)&&score>=0?score:1,status,requiredSkill,requiredLevel,description:'A creature in the Zoologist expedition pool.'}
+  return{id,name,score:Number.isFinite(score)&&score>=0?score:1,status,requiredSkill,requiredLevel,hardNoRewardQuests,description:'A creature in the Zoologist expedition pool.'}
 }
 function loadCreatureCatalog(){
   const creatures=parseCsv(creatureCsv).map(rowToCreature).filter(c=>c.id&&c.name&&c.status.toLowerCase()==='active')
@@ -351,6 +353,13 @@ function createTileReward(creature,skillProgress,distance=Infinity){
   const type=Math.random()<diaryChance?'Diary':Math.random()<0.5?'Quest':'Skill'
   const rewards=rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()===type.toLowerCase())
   if(type==='Skill')return getRandomSkillReward(creature,skillProgress)
+  if(type==='Quest'){
+    const blocked=new Set((creature?.hardNoRewardQuests??[]).map(q=>q.toLowerCase()))
+    const validRewards=rewards.filter(r=>!blocked.has(String(r.label??r.name??'').trim().toLowerCase()))
+    const pool=validRewards.length?validRewards:rewards
+    const reward=pool[Math.floor(Math.random()*pool.length)]
+    return reward??{type:'quest',name:'Reward assignment pending'}
+  }
   return rewards[((creature?.id??1)-1)%rewards.length]??{type:type.toLowerCase(),name:'Reward assignment pending'}
 }
 

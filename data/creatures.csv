@@ -1,7 +1,7 @@
 ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard No Reward Quest(s),Required Skill,Required Level
 "1","Chicken","0","Active","Find and kill","","","",""
 "2","Cow","0","Active","Find and kill","","","",""
-"3","Bull","1","Active","Find and kill","","","",""
+"3","Bull","2","Active","Find and kill","The Ides of Milk","The Ides of Milk","",""
 "4","Sheep","0","Active","Shear","","","",""
 "5","Ram","1","Active","Find and kill","","","",""
 "6","Goat","0","Active","Find and kill","","","",""

@@ -144,8 +144,17 @@ function weightedCreaturePick(available,preferredScore=null){
 function pickUnusedCreature(creatures,usedIds,preferredScore=null){
   const available=creatures.filter(c=>!usedIds.has(c.id))
   if(preferredScore===1){
-    const starterFriendly=available.filter(c=>c.score<=1)
-    if(starterFriendly.length)return starterFriendly[Math.floor(Math.random()*starterFriendly.length)]
+    const weighted=available.map(creature=>({
+      creature,
+      weight:creature.score<=1?12:creature.score===2?2:0.5
+    }))
+    const total=weighted.reduce((s,i)=>s+i.weight,0)
+    let roll=Math.random()*total
+    for(const item of weighted){
+      roll-=item.weight
+      if(roll<=0)return item.creature
+    }
+    return weighted[weighted.length-1]?.creature??null
   }
   return weightedCreaturePick(available,preferredScore)
 }

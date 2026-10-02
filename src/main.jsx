@@ -186,7 +186,8 @@ function recomputeFrontier(tiles,creatures,skillProgress){
     const creature=pickUnusedCreature(creatures,used,preferredScoreForDistance(x,y))
     if(creature){
       used.add(creature.id)
-      const reward=createTileReward(creature,skillProgress)
+      const distance=Math.abs(x)+Math.abs(y)
+      const reward=createTileReward(creature,skillProgress,distance)
       next[keyFor(x,y)]={x,y,state:'frontier',creatureId:creature.id,completed:false,faceDown:false,revealAnimation:true,...(reward?{reward}:{})}
     }
   })
@@ -343,8 +344,11 @@ function getInitialTileReward(creature,skillProgress){
   return firstBand?{...firstBand,type:'skill',skill:skillReward.skill}:skillReward
 }
 
-function createTileReward(creature,skillProgress){
-  const type=['Quest','Skill','Diary'][((creature?.id??1)-1)%3]
+function createTileReward(creature,skillProgress,distance=Infinity){
+  // Keep achievement diaries uncommon near the centre so early progression
+  // is more often driven by skills and quests.
+  const diaryChance=distance<=4?0.08:distance<=8?0.15:1/3
+  const type=Math.random()<diaryChance?'Diary':Math.random()<0.5?'Quest':'Skill'
   const rewards=rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()===type.toLowerCase())
   if(type==='Skill')return getRandomSkillReward(creature,skillProgress)
   return rewards[((creature?.id??1)-1)%rewards.length]??{type:type.toLowerCase(),name:'Reward assignment pending'}

@@ -691,12 +691,12 @@
 }
 
 
-/* Tile completion method label shown directly above the creature name. */
+/* Tile completion method label shown directly below the creature name. */
 .tile-completion-method {
   position: absolute;
   left: 24px;
   right: 24px;
-  bottom: 79px;
+  bottom: 28px;
   z-index: 3;
   text-align: center;
   font-size: 17px;

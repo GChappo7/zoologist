@@ -65,7 +65,7 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "64","Jungle Eagle","2","Active","Find and kill","","","",""
 "65","Polar Eagle","2","Active","Find and kill","","","",""
 "66","Vulture","2","Active","Find and kill","","","",""
-"67","Duck","0","Active","Find and kill","","","",""
+"67","Duck","1","Active","Find and kill","","","",""
 "68","Swan","2","Active","Find and examine","","","",""
 "69","Seagull","0","Active","Find and examine","","","",""
 "70","Cormorant","2","Active","Find and kill","","","",""

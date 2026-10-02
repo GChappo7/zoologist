@@ -131,7 +131,7 @@ function getCreatureImageCandidates(creature){
   const slug=slugifyCreatureName(creature?.name??'')
   return[`${import.meta.env.BASE_URL}assets/creatures/${slug}.png`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.webp`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.jpg`]
 }
-function pickStartingCreature(creatures){const pool=creatures.filter(c=>c.score===1);return pool[Math.floor(Math.random()*pool.length)]??creatures[0]??null}
+function pickStartingCreature(creatures){const pool=creatures.filter(c=>c.score===0);return pool[Math.floor(Math.random()*pool.length)]??creatures[0]??null}
 function canAssignSkillReward(creature,reward){return isValidSkillRewardAssignment(creature,reward)}
 function weightedCreaturePick(available,preferredScore=null){
   if(!available.length)return null

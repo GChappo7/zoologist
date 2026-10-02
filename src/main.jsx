@@ -133,7 +133,12 @@ function getCreatureImageCandidates(creature){
   const slug=slugifyCreatureName(creature?.name??'')
   return[`${import.meta.env.BASE_URL}assets/creatures/${slug}.png`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.webp`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.jpg`]
 }
-function pickStartingCreature(creatures){const pool=creatures.filter(c=>c.score===0);return pool[Math.floor(Math.random()*pool.length)]??creatures[0]??null}
+const STARTING_TILE_EXCLUDED_CREATURES=new Set(['Duck'])
+function pickStartingCreature(creatures){
+  const pool=creatures.filter(c=>c.score===0&&!STARTING_TILE_EXCLUDED_CREATURES.has(c.name))
+  if(!pool.length)throw new Error('No valid score 0 creatures available for starting tile.')
+  return pool[Math.floor(Math.random()*pool.length)]
+}
 function canAssignSkillReward(creature,reward){return isValidSkillRewardAssignment(creature,reward)}
 function weightedCreaturePick(available,preferredScore=null){
   if(!available.length)return null

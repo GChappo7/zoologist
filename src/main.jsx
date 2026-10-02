@@ -12,6 +12,7 @@ import quests from '../data/quests.json'
 import rewardCatalog from '../data/reward-catalog.json'
 import shop from '../data/shop.json'
 import bossSystem from '../data/boss-system.json'
+import { isValidSkillRewardAssignment } from './progressionRules'
 
 const TILE_SIZE = 256
 const TILE_GAP = 0
@@ -54,7 +55,10 @@ function rowToCreature(row){
   const id=Number(firstValue(row,'id')),name=firstValue(row,'candidate')
   const score=Number(firstValue(row,'accessibility score','accessibility_score','accessibility'))
   const status=firstValue(row,'master_status','master status','status')||'Active'
-  return{id,name,score:Number.isFinite(score)&&score>0?score:1,status,description:'A creature in the Zoologist expedition pool.'}
+  const requiredSkill=firstValue(row,'required skill','required_skill')
+  const requiredLevelValue=Number(firstValue(row,'required level','required_level'))
+  const requiredLevel=Number.isFinite(requiredLevelValue)&&requiredLevelValue>0?requiredLevelValue:null
+  return{id,name,score:Number.isFinite(score)&&score>0?score:1,status,requiredSkill,requiredLevel,description:'A creature in the Zoologist expedition pool.'}
 }
 function loadCreatureCatalog(){
   const creatures=parseCsv(creatureCsv).map(rowToCreature).filter(c=>c.id&&c.name&&c.status.toLowerCase()==='active')
@@ -66,6 +70,7 @@ function getCreatureImageCandidates(creature){
   return[`${import.meta.env.BASE_URL}assets/creatures/${slug}.png`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.webp`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.jpg`]
 }
 function pickStartingCreature(creatures){const pool=creatures.filter(c=>c.score===1);return pool[Math.floor(Math.random()*pool.length)]??creatures[0]??null}
+function canAssignSkillReward(creature,reward){return isValidSkillRewardAssignment(creature,reward)}
 function weightedCreaturePick(available,preferredScore=null){
   if(!available.length)return null
   if(preferredScore==null)return available[Math.floor(Math.random()*available.length)]

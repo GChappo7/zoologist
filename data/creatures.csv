@@ -36,7 +36,7 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "35","Beaver","2","Active","Find and kill","","","",""
 "36","Raccoon","2","Active","Find and kill","","","",""
 "37","Red Panda","2","Active","Find and catch/hunt","","","",""
-"38","Mouse","0","Active","Find and kill","","","",""
+"38","Mouse","1","Active","Find and kill","Grim Tales","Grim Tales","",""
 "39","Bear","2","Active","Find and kill","","","",""
 "40","Black Bear","2","Active","Find and kill","","","",""
 "41","Grizzly Bear","2","Active","Find and kill","","","",""

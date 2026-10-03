@@ -13,6 +13,9 @@ import rewardCatalog from '../data/reward-catalog.json'
 import shop from '../data/shop.json'
 import bossSystem from '../data/boss-system.json'
 import { isValidQuestRewardAssignment, isValidSkillRewardAssignment } from './progressionRules'
+import AccountModal from './lib/accountModal'
+import { supabase } from './lib/supabase'
+import { ensureProfile, loadCloudGameState, readLocalGameState, saveCloudGameState } from './lib/gameState'
 
 const TILE_SIZE = 256
 const TILE_GAP = 0
@@ -354,11 +357,11 @@ function SkillsDropdown({open,onClose,skillProgress}) {
     </div>
   </div>
 }
-function QuestsView(){
+function QuestsView({initialStatuses={},onStatusesChange}){
   const [filter,setFilter]=useState('all')
-  const [statuses,setStatuses]=useState(()=>{try{return JSON.parse(localStorage.getItem('zoologist-quest-statuses')||'{}')}catch{return{}}})
+  const [statuses,setStatuses]=useState(initialStatuses||{})
   const [search,setSearch]=useState('')
-  useEffect(()=>localStorage.setItem('zoologist-quest-statuses',JSON.stringify(statuses)),[statuses])
+  useEffect(()=>{localStorage.setItem('zoologist-quest-statuses',JSON.stringify(statuses));onStatusesChange?.(statuses)},[statuses,onStatusesChange])
   const filtered=quests.filter(q=>{
     const status=statuses[q.id]||'unrevealed'
     const matches=filter==='all'||(filter==='revealed'&&status!=='unrevealed')||(filter==='completed'&&status==='completed')
@@ -542,12 +545,13 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,sk
     </div>}
   </aside>
 }
-function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete}){
+function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete,initialTiles,onTilesChange}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
-  const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[dismissingTileKey,setDismissingTileKey]=useState(null),[startCreature]=useState(()=>pickStartingCreature(creatures))
-  const [tiles,setTiles]=useState(()=>createInitialTiles(creatures,startCreature,skillProgress)),[fogVisible,setFogVisible]=useState(false),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false)
+  const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[dismissingTileKey,setDismissingTileKey]=useState(null),[startCreature]=useState(()=>creatureById[initialTiles?.[keyFor(0,0)]?.creatureId]??pickStartingCreature(creatures))
+  const [tiles,setTiles]=useState(()=>initialTiles&&Object.keys(initialTiles).length?initialTiles:createInitialTiles(creatures,startCreature,skillProgress)),[fogVisible,setFogVisible]=useState(false),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false)
   const stageRef=useRef(null),zoomRef=useRef(zoom),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0}),edgeFrameRef=useRef(null)
   useEffect(()=>{zoomRef.current=zoom},[zoom])
+  useEffect(()=>{onTilesChange?.(tiles)},[tiles,onTilesChange])
 
 
   const updatePan=(dx,dy)=>setPan(current=>({x:current.x+dx,y:current.y+dy}))
@@ -644,10 +648,76 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
 function App(){
   const [tab,setTab]=useState('map')
   const [skillsOpen,setSkillsOpen]=useState(false)
+  const [accountOpen,setAccountOpen]=useState(false)
+  const [session,setSession]=useState(null)
+  const [accountReady,setAccountReady]=useState(false)
+  const [gameState,setGameState]=useState(()=>readLocalGameState())
   const [creatures]=useState(()=>{try{return loadCreatureCatalog()}catch{return[]}})
   const [progress,setProgress]=useState({explored:0,revealed:1})
-  const [skillProgress,setSkillProgress]=useState(()=>{try{return normalizeSkillProgress(JSON.parse(localStorage.getItem('zoologist-skill-progress')))}catch{return getInitialSkillProgress()}})
+  const [skillProgress,setSkillProgress]=useState(()=>normalizeSkillProgress(gameState.skillProgress||{}))
+  const [questStatuses,setQuestStatuses]=useState(gameState.questStatuses||{})
+
+  useEffect(()=>{
+    if(!supabase){setAccountReady(true);return}
+    let active=true
+    supabase.auth.getSession().then(({data})=>{
+      if(active)setSession(data.session||null)
+    })
+    const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,nextSession)=>{
+      if(active)setSession(nextSession||null)
+    })
+    return()=>{active=false;subscription.unsubscribe()}
+  },[])
+
+  useEffect(()=>{
+    let active=true
+    const load=async()=>{
+      if(!session){
+        if(active){setGameState(readLocalGameState());setAccountReady(true)}
+        return
+      }
+      setAccountReady(false)
+      try{
+        await ensureProfile(session.user)
+        const cloud=await loadCloudGameState(session.user.id)
+        const local=readLocalGameState()
+        const next=cloud&&typeof cloud==='object'
+          ? {...local,...cloud,skillProgress:cloud.skillProgress||local.skillProgress,questStatuses:cloud.questStatuses||local.questStatuses}
+          : local
+        if(active){
+          setGameState(next)
+          setSkillProgress(normalizeSkillProgress(next.skillProgress||{}))
+          setQuestStatuses(next.questStatuses||{})
+          setAccountReady(true)
+        }
+      }catch(error){
+        console.error('Could not load Zoologist cloud save:',error)
+        if(active){
+          const local=readLocalGameState()
+          setGameState(local)
+          setSkillProgress(normalizeSkillProgress(local.skillProgress||{}))
+          setQuestStatuses(local.questStatuses||{})
+          setAccountReady(true)
+        }
+      }
+    }
+    load()
+    return()=>{active=false}
+  },[session?.user?.id])
+
   useEffect(()=>localStorage.setItem('zoologist-skill-progress',JSON.stringify(skillProgress)),[skillProgress])
+
+  const updateGameState=patch=>setGameState(current=>({...current,...patch}))
+
+  useEffect(()=>{
+    if(!session||!accountReady)return
+    const payload={...gameState,skillProgress,questStatuses}
+    const timer=window.setTimeout(()=>{
+      saveCloudGameState(session.user.id,payload).catch(error=>console.error('Could not save Zoologist cloud save:',error))
+    },500)
+    return()=>window.clearTimeout(timer)
+  },[session?.user?.id,accountReady,gameState,skillProgress,questStatuses])
+
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{
     const skill=reward?.skill
     if(!skill)return current
@@ -658,7 +728,10 @@ function App(){
     const maxLevel=Number(String(band).split('-').pop())||0
     return {...current,[skill]:{unlocked:true,maxLevel,nextRewardIndex:index+1}}
   })
+
   if(!creatures.length)return <div className="app-shell"><div className="full-tab-page"><h1>Creature data could not be loaded</h1><p>Check data/creatures.csv.</p></div></div>
+  if(!accountReady)return <div className="app-shell"><div className="account-loading"><div className="account-loading-spinner"/>Loading Zoologist…</div></div>
+
   const creatureCount=creatures.length
   const OSRS_TAB_ICONS = {
     map: 'https://oldschool.runescape.wiki/images/World_map_icon.png',
@@ -669,7 +742,19 @@ function App(){
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText},
     {id:'diaries',label:'Diaries',icon:BookOpen},{id:'shop',label:'Shop',icon:ShoppingBag},{id:'bosses',label:'Bosses',icon:Skull}
   ]
-  const page=tab==='quests'?<QuestsView/>:tab==='diaries'?<DiariesView/>:tab==='shop'?<ShopView/>:tab==='bosses'?<BossView/>:<MapView creatures={creatures} onProgressChange={setProgress} skillProgress={skillProgress} onSkillRewardComplete={handleSkillRewardComplete}/>
+  const page=tab==='quests'
+    ?<QuestsView initialStatuses={questStatuses} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/>
+    :tab==='diaries'?<DiariesView/>
+    :tab==='shop'?<ShopView/>
+    :tab==='bosses'?<BossView/>
+    :<MapView
+      creatures={creatures}
+      onProgressChange={setProgress}
+      skillProgress={skillProgress}
+      onSkillRewardComplete={handleSkillRewardComplete}
+      initialTiles={gameState.mapTiles}
+      onTilesChange={mapTiles=>updateGameState({mapTiles})}
+    />
   const handleTabClick=id=>{
     if(id==='skills'){
       setTab('map')
@@ -679,6 +764,18 @@ function App(){
     setSkillsOpen(false)
     setTab(id)
   }
-  return <div className="app-shell"><header className="topbar"><div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration</div></div></div><nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} className={`top-tab-${id} ${id==='skills'&&skillsOpen||tab===id?'active':''}`} onClick={()=>handleTabClick(id)} aria-expanded={id==='skills'?skillsOpen:undefined}>{OSRS_TAB_ICONS[id]?<img className="osrs-top-tab-icon" src={OSRS_TAB_ICONS[id]} alt="" aria-hidden="true" draggable="false"/>:<Icon size={16}/>}<span>{label}</span></button>)}</nav><div className="header-actions"><div className="header-progress"><div className="progress-label"><span>EXPLORED <b>{progress.explored}</b> · REVEALED <b>{progress.revealed}</b></span><strong>{progress.explored} / {creatureCount}</strong></div><div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,progress.explored/creatureCount*100)}%`}}/></div></div><button className="account-button"><Users size={16}/> Account</button></div></header><main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress}/>{page}</main><footer className="footer"><span>ZOOLOGIST • MASTER DATA CONNECTED</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer></div>
+  return <div className="app-shell">
+    <header className="topbar">
+      <div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration</div></div></div>
+      <nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} className={`top-tab-${id} ${id==='skills'&&skillsOpen||tab===id?'active':''}`} onClick={()=>handleTabClick(id)} aria-expanded={id==='skills'?skillsOpen:undefined}>{OSRS_TAB_ICONS[id]?<img className="osrs-top-tab-icon" src={OSRS_TAB_ICONS[id]} alt="" aria-hidden="true" draggable="false"/>:<Icon size={16}/>}<span>{label}</span></button>)}</nav>
+      <div className="header-actions">
+        <div className="header-progress"><div className="progress-label"><span>EXPLORED <b>{progress.explored}</b> · REVEALED <b>{progress.revealed}</b></span><strong>{progress.explored} / {creatureCount}</strong></div><div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,progress.explored/creatureCount*100)}%`}}/></div></div>
+        <button className={`account-button ${session?'account-button-signed-in':''}`} onClick={()=>setAccountOpen(true)}><Users size={16}/><span>{session?'Account':'Account'}</span>{session&&<i className="account-status-dot" aria-label="Cloud save connected"/>}</button>
+      </div>
+    </header>
+    <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress}/>{page}</main>
+    <footer className="footer"><span>ZOOLOGIST • {session?'CLOUD SAVE CONNECTED':'LOCAL SAVE'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
+    <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession}/>
+  </div>
 }
 createRoot(document.getElementById('root')).render(<App />)

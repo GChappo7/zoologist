@@ -9,10 +9,12 @@ export const EMPTY_GAME_STATE = {
 
 export function readLocalGameState() {
   let skillProgress = null
+  let mapTiles = null
   let questStatuses = {}
   try { skillProgress = JSON.parse(localStorage.getItem('zoologist-skill-progress') || 'null') } catch {}
+  try { mapTiles = JSON.parse(localStorage.getItem('zoologist-map-tiles') || 'null') } catch {}
   try { questStatuses = JSON.parse(localStorage.getItem('zoologist-quest-statuses') || '{}') } catch {}
-  return { ...EMPTY_GAME_STATE, skillProgress, questStatuses }
+  return { ...EMPTY_GAME_STATE, skillProgress, mapTiles, questStatuses }
 }
 
 export async function loadCloudGameState(userId) {

@@ -748,6 +748,7 @@ function App(){
     :tab==='shop'?<ShopView/>
     :tab==='bosses'?<BossView/>
     :<MapView
+      key={session?.user?.id??'local'}
       creatures={creatures}
       onProgressChange={setProgress}
       skillProgress={skillProgress}

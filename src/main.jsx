@@ -706,6 +706,9 @@ function App(){
   },[session?.user?.id])
 
   useEffect(()=>localStorage.setItem('zoologist-skill-progress',JSON.stringify(skillProgress)),[skillProgress])
+  useEffect(()=>{
+    if(gameState.mapTiles) localStorage.setItem('zoologist-map-tiles',JSON.stringify(gameState.mapTiles))
+  },[gameState.mapTiles])
 
   const updateGameState=patch=>setGameState(current=>({...current,...patch}))
 

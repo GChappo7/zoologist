@@ -1,0 +1,35 @@
+name: Diagnose skill box slash
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install image tools
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
+
+      - name: Compare Attack JPG and PNG
+        run: |
+          mkdir -p /tmp/diagnostic
+          magick identify "public/assets/ui/skills/Attack Box.png" "public/assets/ui/skills/Attack Box.jpg"
+          magick compare -metric AE "public/assets/ui/skills/Attack Box.png" "public/assets/ui/skills/Attack Box.jpg" /tmp/diagnostic/attack-diff.png 2>/tmp/diagnostic/metric.txt || true
+          magick "public/assets/ui/skills/Attack Box.png" "public/assets/ui/skills/Attack Box.jpg" -append /tmp/diagnostic/attack-reference.png
+          cat /tmp/diagnostic/metric.txt
+
+      - name: Upload diagnostic images
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-box-slash-diagnostic
+          path: /tmp/diagnostic/
+          retention-days: 3

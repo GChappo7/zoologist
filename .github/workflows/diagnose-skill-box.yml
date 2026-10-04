@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install image tools
-        run: python -m pip install --disable-pip-version-check pillow numpy
+        run: python -m pip install --disable-pip-version-check pillow numpy opencv-python-headless
 
       - name: Remove slash using the edited Attack JPG as the reference
         run: |

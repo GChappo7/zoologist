@@ -651,6 +651,7 @@ function App(){
   const [accountOpen,setAccountOpen]=useState(false)
   const [session,setSession]=useState(null)
   const [accountReady,setAccountReady]=useState(false)
+  const [cloudSaveStatus,setCloudSaveStatus]=useState('disconnected')
   const [gameState,setGameState]=useState(()=>readLocalGameState())
   const [creatures]=useState(()=>{try{return loadCreatureCatalog()}catch{return[]}})
   const [progress,setProgress]=useState({explored:0,revealed:1})
@@ -673,31 +674,49 @@ function App(){
     let active=true
     const load=async()=>{
       if(!session){
-        if(active){setGameState(readLocalGameState());setAccountReady(true)}
+        if(active){
+          setAccountReady(true)
+          setCloudSaveStatus('disconnected')
+        }
         return
       }
+
       setAccountReady(false)
+      setCloudSaveStatus('loading')
+
       try{
         await ensureProfile(session.user)
         const cloud=await loadCloudGameState(session.user.id)
-        const local=readLocalGameState()
-        const next=cloud&&typeof cloud==='object'
-          ? {...local,...cloud,skillProgress:cloud.skillProgress||local.skillProgress,questStatuses:cloud.questStatuses||local.questStatuses}
-          : local
+
+        // Cloud state is authoritative once an account has one. Only migrate
+        // the legacy local save into the first account that claims it.
+        let next=cloud&&typeof cloud==='object' ? cloud : null
+        if(!next){
+          const localOwner=localStorage.getItem('zoologist-local-save-owner')
+          const local=readLocalGameState()
+          const hasLocalProgress=Boolean(local.mapTiles||local.skillProgress||Object.keys(local.questStatuses||{}).length)
+          if(!localOwner && hasLocalProgress){
+            next=local
+            localStorage.setItem('zoologist-local-save-owner',session.user.id)
+          } else if(localOwner===session.user.id){
+            next=local
+          } else {
+            next={...EMPTY_GAME_STATE}
+          }
+        }
+
         if(active){
           setGameState(next)
           setSkillProgress(normalizeSkillProgress(next.skillProgress||{}))
           setQuestStatuses(next.questStatuses||{})
           setAccountReady(true)
+          setCloudSaveStatus('connected')
         }
       }catch(error){
         console.error('Could not load Zoologist cloud save:',error)
         if(active){
-          const local=readLocalGameState()
-          setGameState(local)
-          setSkillProgress(normalizeSkillProgress(local.skillProgress||{}))
-          setQuestStatuses(local.questStatuses||{})
           setAccountReady(true)
+          setCloudSaveStatus('error')
         }
       }
     }
@@ -715,8 +734,16 @@ function App(){
   useEffect(()=>{
     if(!session||!accountReady)return
     const payload={...gameState,skillProgress,questStatuses}
-    const timer=window.setTimeout(()=>{
-      saveCloudGameState(session.user.id,payload).catch(error=>console.error('Could not save Zoologist cloud save:',error))
+    const timer=window.setTimeout(async()=>{
+      setCloudSaveStatus('saving')
+      try{
+        await saveCloudGameState(session.user.id,payload)
+        localStorage.setItem('zoologist-local-save-owner',session.user.id)
+        setCloudSaveStatus('connected')
+      }catch(error){
+        console.error('Could not save Zoologist cloud save:',error)
+        setCloudSaveStatus('error')
+      }
     },500)
     return()=>window.clearTimeout(timer)
   },[session?.user?.id,accountReady,gameState,skillProgress,questStatuses])
@@ -734,6 +761,12 @@ function App(){
 
   if(!creatures.length)return <div className="app-shell"><div className="full-tab-page"><h1>Creature data could not be loaded</h1><p>Check data/creatures.csv.</p></div></div>
   if(!accountReady)return <div className="app-shell"><div className="account-loading"><div className="account-loading-spinner"/>Loading Zoologist…</div></div>
+
+  // Authentication is a hard gate: logged-out users never receive the map,
+  // progression tabs, or another account's state.
+  if(!session){
+    return <div className="login-page"><AccountModal open={true} onClose={()=>{}} session={null} onAuthChange={setSession} standalone/></div>
+  }
 
   const creatureCount=creatures.length
   const OSRS_TAB_ICONS = {
@@ -778,7 +811,7 @@ function App(){
       </div>
     </header>
     <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress}/>{page}</main>
-    <footer className="footer"><span>ZOOLOGIST • {session?'CLOUD SAVE CONNECTED':'LOCAL SAVE'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
+    <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
     <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession}/>
   </div>
 }

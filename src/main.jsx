@@ -46,31 +46,7 @@ const SKILL_TAB_LAYOUT = [
   ['Construction','Hunter','Sailing'],
 ]
 
-const SKILL_BOX_ASSETS = {
-  Agility: 'Agility Box.png',
-  Attack: 'Attack Box.png',
-  Construction: 'Construction Box.png',
-  Cooking: 'Cooking Box.png',
-  Crafting: 'Crafting Box.png',
-  Defence: 'Defence Box.png',
-  Farming: 'Farming Box.png',
-  Firemaking: 'Firemaking Box.png',
-  Fishing: 'Fishing Box.png',
-  Fletching: 'Fletching Box.png',
-  Herblore: 'Herblore Box.png',
-  Hitpoints: 'Hitpoints Box.png',
-  Hunter: 'Hunter Box.png',
-  Magic: 'Magic Box.png',
-  Mining: 'Mining Box.png',
-  Prayer: 'Prayer Box.png',
-  Ranged: 'Ranged Box.png',
-  Runecraft: 'Runecrafting Box.png',
-  Slayer: 'Slayer Box.png',
-  Smithing: 'Smithing Box.png',
-  Strength: 'Strength Box.png',
-  Thieving: 'Theiving Box.png',
-  Woodcutting: 'Woodcutting Box.png',
-}
+const SKILL_BOX_ASSET = 'Blank skill.png'
 
 function skillIconUrl(skill) {
   const name = String(skill ?? '')
@@ -79,10 +55,8 @@ function skillIconUrl(skill) {
   return `https://oldschool.runescape.wiki/images/${filename}_icon_(detail).png`
 }
 
-function skillBoxUrl(skill) {
-  if (skill === 'Sailing') return `${import.meta.env.BASE_URL}assets/ui/skills/sailing.svg`
-  const asset = SKILL_BOX_ASSETS[skill]
-  return asset ? `${import.meta.env.BASE_URL}assets/ui/skills/${encodeURIComponent(asset)}` : null
+function skillBoxUrl() {
+  return `${import.meta.env.BASE_URL}assets/ui/skills/${encodeURIComponent(SKILL_BOX_ASSET)}`
 }
 
 function ProgressionIcon({type,skill,background=false,className=''}) {
@@ -346,8 +320,8 @@ function SkillsDropdown({open,onClose,skillProgress}) {
         {SKILL_TAB_LAYOUT.flatMap(row=>row.map(name=>{
           const unlocked=unrestricted.has(name)||(skillProgress?.[name]?.unlocked===true)
           const value=getDisplay(name)
-          const boxUrl=skillBoxUrl(name)
-          return <div className={`osrs-skill-slot ${unlocked?'is-unlocked':'is-locked'}`} key={name} title={unlocked?`${name}: ${value}`:`${name}: locked`} style={boxUrl?{backgroundImage:`url("${boxUrl}")`,backgroundSize:'100% 100%',backgroundRepeat:'no-repeat'}:undefined}>
+          const boxUrl=skillBoxUrl()
+          return <div className={`osrs-skill-slot ${unlocked?'is-unlocked':'is-locked'}`} key={name} title={unlocked?`${name}: ${value}`:`${name}: locked`} style={{backgroundImage:`url("${boxUrl}")`,backgroundSize:'100% 100%',backgroundRepeat:'no-repeat'}}>
             <span className="osrs-skill-box" aria-hidden="true">
               <ProgressionIcon type="skill" skill={name} className="osrs-skill-icon"/>
               {!unlocked&&<img className="osrs-skill-lock-asset" src={`${import.meta.env.BASE_URL}assets/ui/lock_asset.png`} alt="" draggable="false"/>}

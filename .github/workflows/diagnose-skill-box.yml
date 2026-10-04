@@ -1,4 +1,4 @@
-name: Diagnose OSRS skill box slashes
+name: Export OSRS skill box assets for repair
 
 on:
   push:
@@ -9,48 +9,15 @@ permissions:
   contents: read
 
 jobs:
-  diagnose:
+  export:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install image tools
-        run: python -m pip install --disable-pip-version-check pillow numpy
-
-      - name: Export reference images and metadata
-        run: |
-          python <<'PY'
-          from pathlib import Path
-          from PIL import Image
-          import numpy as np
-
-          root = Path("public/assets/ui/skills")
-          png_path = root / "Attack Box.png"
-          jpg_path = root / "Attack Box.jpg"
-
-          png = Image.open(png_path).convert("RGBA")
-          jpg = Image.open(jpg_path).convert("RGB")
-          print("PNG:", png.size, png.mode)
-          print("JPG:", jpg.size, jpg.mode)
-
-          rgba = np.array(png)
-          rgb = rgba[:, :, :3]
-          alpha = rgba[:, :, 3]
-          print("PNG alpha min/max:", int(alpha.min()), int(alpha.max()))
-          print("PNG transparent pixels:", int((alpha == 0).sum()))
-
-          # Make the transparent PNG viewable without altering the source.
-          bg = np.full_like(rgb, 110)
-          a = alpha.astype(np.float32)[:, :, None] / 255.0
-          preview = (rgb * a + bg * (1-a)).astype(np.uint8)
-          Image.fromarray(preview).save("/tmp/attack-png-preview.jpg", quality=95)
-          jpg.save("/tmp/attack-jpg-preview.jpg", quality=95)
-          PY
-
-      - name: Upload reference images
+      - name: Upload skill box assets
         uses: actions/upload-artifact@v4
         with:
-          name: attack-box-reference-images
-          path: /tmp/attack-*-preview.jpg
+          name: skill-box-assets-for-repair
+          path: public/assets/ui/skills/
           retention-days: 3

@@ -886,9 +886,9 @@
 
 
 /* Final popup positioning: the quest title sits immediately beside its watermark. */
- .tile-popup.tile-popup-quest .tile-popup-reward-copy {
+  .tile-popup.tile-popup-quest .tile-popup-reward-copy {
   left: 28% !important;
-  right: 5% !important;
+  right: 30% !important;
   top: 19% !important;
   bottom: 35% !important;
   text-align: left !important;
@@ -896,6 +896,10 @@
 }
 .tile-popup.tile-popup-quest .tile-popup-title {
   text-align: left !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  line-height: 1.05 !important;
 }
 
 /* Use the actual blank OSRS skill box for the popup completion control. */

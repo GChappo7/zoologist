@@ -87,3 +87,5 @@ jobs:
           fi
           git commit -m "Remove black slash from skill box PNGs cleanly"
           git push
+
+# Slash repair is deterministic and idempotent; this workflow can be removed after verification.

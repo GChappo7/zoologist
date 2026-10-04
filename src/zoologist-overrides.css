@@ -1,1 +1,797 @@
 /* Zoologist progression/fog layer overrides */
+.map-stage {
+  background:#000;
+  overflow:hidden;
+}
+.map-stage::before,
+.map-stage::after { display:none; }
+
+/* Fog is rendered in world space by the individual tiles below the revealed map layer. */
+.map-grid-pan { z-index:2; }
+
+
+
+.map-card-face{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:block;transition:transform .55s cubic-bezier(.2,.75,.25,1);overflow:hidden;}.map-card-face>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}.map-card-content{position:absolute;inset:0;display:block;z-index:2;}.map-card-back{transform:rotateY(180deg);z-index:3;}.map-card-front{transform:rotateY(0deg);z-index:2;}.map-tile.is-face-down{transform-style:preserve-3d;cursor:pointer;}.map-tile.is-face-down .map-card-back{transform:rotateY(0deg);z-index:3;visibility:visible;opacity:1;}.map-tile.is-face-down .map-card-front{transform:rotateY(-180deg);z-index:2;visibility:visible;opacity:1;}.map-tile:not(.is-face-down){transform-style:preserve-3d;}.map-tile.is-face-down:hover{filter:brightness(1.04);}
+
+/* Newly unlocked frontier cards all flip from their backs together after a completed tile. */
+.map-tile.is-batch-reveal .map-card-back{
+  transform:rotateY(0deg);
+  animation:zoologist-batch-back .55s cubic-bezier(.2,.75,.25,1) forwards;
+}
+.map-tile.is-batch-reveal .map-card-front{
+  transform:rotateY(-180deg);
+  animation:zoologist-batch-front .55s cubic-bezier(.2,.75,.25,1) forwards;
+}
+@keyframes zoologist-batch-back{
+  from{transform:rotateY(0deg);}
+  to{transform:rotateY(180deg);}
+}
+@keyframes zoologist-batch-front{
+  from{transform:rotateY(-180deg);}
+  to{transform:rotateY(0deg);}
+}
+
+.map-tile {
+  background-image:none;
+  background-color:transparent;
+  border-color:rgba(73,84,66,.42);
+}
+.map-tile-explored { background-color:rgba(255,255,255,.05); }
+.map-tile-frontier { background-color:#000; }
+.map-tile-locked,
+.map-tile-dark-fog-1,
+.map-tile-dark-fog-2,
+.map-tile-dark-fog-3,
+.map-tile-black-fog {
+  background:transparent;
+  border-color:transparent;
+  cursor:default;
+  overflow:hidden;
+  pointer-events:none;
+}
+.map-fog-card {
+  transform:rotateY(0deg);
+  transition:none;
+  z-index:2;
+  pointer-events:none;
+  opacity:0;
+  animation:zoologist-fog-ripple .9s cubic-bezier(.2,.72,.2,1) forwards;
+  animation-delay:calc(var(--fog-distance, 1) * 55ms);
+}
+@keyframes zoologist-fog-ripple {
+  0% { opacity:0; transform:scale(.86); }
+  55% { opacity:1; transform:scale(1.035); }
+  100% { opacity:1; transform:scale(1); }
+}
+.fog-darken {
+  position:absolute;
+  inset:0;
+  background:#000;
+  z-index:3;
+  pointer-events:none;
+}
+.map-tile-dark-fog-1 .fog-darken { opacity:.28; }
+.map-tile-dark-fog-2 .fog-darken { opacity:.55; }
+.map-tile-dark-fog-3 .fog-darken { opacity:.78; }
+.map-tile-black-fog .fog-darken { opacity:.94; }
+.map-tile-explored::after,
+.map-tile-frontier::after { content:""; position:absolute; inset:0; background:rgba(255,255,255,.04); pointer-events:none; }
+.map-tile > * { z-index:2; }
+.map-tile.is-face-down { z-index:4; background:transparent; border-color:transparent; }
+.map-tile.is-face-down::before { content:""; position:absolute; inset:0; background:transparent; z-index:0; }
+.map-tile-explored .creature-image,
+.map-tile-frontier .creature-image { filter:drop-shadow(0 4px 7px rgba(0,0,0,.25)); }
+
+.top-tabs { overflow-x:auto; scrollbar-width:none; }
+.top-tabs::-webkit-scrollbar { display:none; }
+
+.full-tab-page { background:rgba(22,28,25,.96); }
+.skill-section { margin-top:24px; }
+.skill-section h2 { font-size:14px; margin:0 0 10px; color:#d8d1bf; }
+.skill-card.unrestricted { border-color:#405b48; background:#122019; }
+
+.quest-log-page { min-height:calc(100vh - 76px); padding:20px; background:#171a18; }
+.quest-log-shell {
+  max-width:1180px; min-height:calc(100vh - 116px); margin:0 auto;
+  background:#d7c9a8; color:#251f18; border:5px solid #66543b;
+  box-shadow:inset 0 0 0 2px #b8a27a, 0 18px 70px rgba(0,0,0,.38);
+  font-family:Georgia,'Times New Roman',serif;
+}
+.quest-log-title {
+  display:flex; align-items:center; gap:10px; padding:14px 18px;
+  background:linear-gradient(#51442f,#342c20); color:#eadfbe;
+  border-bottom:3px solid #9d875f; font-size:16px;
+}
+.quest-log-title div { display:flex; flex-direction:column; }
+.quest-log-title span { font:10px 'Space Mono',monospace; color:#b9ad8f; margin-top:2px; }
+.quest-log-controls { display:flex; gap:10px; align-items:center; padding:10px; background:#bcae8c; border-bottom:2px solid #78694d; }
+.quest-filters { display:flex; gap:3px; flex-wrap:wrap; }
+.quest-filters button {
+  border:1px solid #79694a; background:#d7c9a8; color:#332a1e; padding:7px 10px;
+  font:700 11px Georgia,serif; cursor:pointer; box-shadow:inset 0 1px rgba(255,255,255,.45);
+}
+.quest-filters button.active { background:#66543b; color:#f0e5c8; }
+.quest-filters span { opacity:.7; margin-left:4px; }
+.quest-search { margin-left:auto; display:flex; align-items:center; gap:6px; background:#eee5cf; border:1px solid #79694a; padding:6px 8px; min-width:220px; }
+.quest-search input { border:0; outline:0; background:transparent; font:12px Georgia,serif; color:#2b241b; width:100%; }
+.quest-log-body { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr); min-height:600px; }
+.quest-list { padding:14px; overflow:auto; max-height:calc(100vh - 235px); }
+.quest-list section h3 {
+  margin:12px 4px 5px; padding-bottom:4px; border-bottom:1px solid #a08d68;
+  font-size:13px; color:#4b3c29;
+}
+.quest-row {
+  width:100%; border:0; border-bottom:1px solid rgba(104,87,59,.22); background:transparent;
+  min-height:30px; padding:5px 7px; display:grid; grid-template-columns:13px 1fr auto;
+  gap:7px; align-items:center; text-align:left; font:12px Georgia,serif; color:#b12626; cursor:pointer;
+}
+.quest-row:hover { background:rgba(255,255,255,.22); }
+.quest-status-dot { width:8px; height:8px; border-radius:50%; background:#777; border:1px solid rgba(0,0,0,.25); }
+.quest-row.quest-revealed .quest-status-dot { background:#c52e2e; }
+.quest-row.quest-in_progress { color:#9a701b; }
+.quest-row.quest-in_progress .quest-status-dot { background:#d4a72c; }
+.quest-row.quest-completed .quest-status-dot { background:#3a9b4b; }
+.quest-row.quest-completed { color:#287d39; }
+.quest-row.quest-unrevealed { color:#6b6252; cursor:default; }
+.quest-status-label { font-size:10px; opacity:.65; }
+.quest-info {
+  border-left:2px solid #a08d68; background:rgba(239,230,208,.42); padding:38px 28px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#62533c;
+}
+.quest-info h2 { margin:12px 0 6px; font-size:20px; }
+.quest-info p { max-width:280px; font-size:12px; line-height:1.5; margin:0; }
+.quest-info small { max-width:280px; margin-top:18px; font-size:10px; opacity:.65; }
+
+.diary-grid,.shop-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.diary-card,.shop-card {
+  padding:15px; border:1px solid var(--border); background:#111a20; border-radius:10px;
+}
+.diary-card strong { display:block; margin-bottom:10px; }
+.diary-card div { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.diary-card span { font-size:10px; color:#8d9a9f; }
+.diary-card i { display:inline-block; width:6px; height:6px; border-radius:50%; background:#64727a; }
+.shop-card { min-height:150px; }
+.shop-card-icon { color:var(--accent); margin-bottom:10px; }
+.shop-card p { color:var(--muted); font-size:11px; line-height:1.45; min-height:34px; }
+.shop-card span { color:#d3ae6e; font:9px 'Space Mono',monospace; }
+.boss-empty {
+  min-height:220px; border:1px dashed #394850; border-radius:12px; display:flex;
+  flex-direction:column; align-items:center; justify-content:center; gap:8px; color:#718088;
+}
+.boss-empty strong { color:#c4ced2; }
+
+@media (max-width:900px){
+  .quest-log-body { grid-template-columns:1fr; }
+  .quest-info { display:none; }
+  .quest-list { max-height:none; }
+  .quest-search { min-width:140px; }
+  .diary-grid,.shop-grid { grid-template-columns:1fr 1fr; }
+}
+@media (max-width:600px){
+  .quest-log-page { padding:8px; }
+  .quest-log-controls { align-items:stretch; flex-direction:column; }
+  .quest-search { margin-left:0; }
+  .diary-grid,.shop-grid { grid-template-columns:1fr; }
+}
+
+.map-void{width:128px;height:128px;background:transparent;border:0;pointer-events:none;}
+
+/* Startup card visibility fix: keep the starter's back face explicitly above the map. */
+.map-grid { perspective: 1400px; }
+.map-tile.is-face-down {
+  display: grid !important;
+  place-items: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+  z-index: 20 !important;
+  isolation: isolate;
+}
+.map-tile.is-face-down .map-card-face {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: none;
+}
+.map-tile.is-face-down .map-card-back {
+  transform: rotateY(0deg) !important;
+  -webkit-transform: rotateY(0deg) !important;
+  z-index: 10 !important;
+}
+.map-tile.is-face-down .map-card-front {
+  transform: rotateY(-180deg) !important;
+  -webkit-transform: rotateY(-180deg) !important;
+  z-index: 9 !important;
+}
+
+/* Keep the map void completely black: remove the decorative world-space grid from the base map. */
+.map-stage {
+  background-image: none !important;
+  background-color: #000 !important;
+}
+
+/* Completed creatures use a soft green glow/gradient instead of a completion tick. */
+.map-tile-explored .map-card-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 48%,
+      rgba(150, 205, 166, .38) 0%,
+      rgba(104, 168, 126, .24) 42%,
+      rgba(46, 92, 62, .18) 58%,
+      transparent 68%);
+}
+
+
+/* Remove the tile border itself so adjacent card faces meet edge-to-edge. */
+.map-tile {
+  border: 0 !important;
+}
+
+/* Give the larger 256px map cards more room for creature art and labels. */
+.creature-glyph-tile {
+  width: 128px;
+  height: 160px;
+  top: 40%;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.creature-glyph-tile .creature-image {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  transform: translateX(-50%);
+  object-fit: contain;
+  object-position: center bottom;
+}
+.tile-name {
+  bottom: 52px;
+  left: 24px;
+  right: 24px;
+  font-size: 24px;
+  line-height: 1.05;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: clip;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow-wrap: break-word;
+  text-align: center;
+}
+
+/* Frontier/revealed tiles use a warm yellow radial glow to indicate in-progress state. */
+.map-tile-frontier .map-card-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 48%,
+      rgba(232, 202, 102, .34) 0%,
+      rgba(190, 156, 48, .22) 42%,
+      rgba(111, 88, 24, .16) 58%,
+      transparent 68%);
+}
+
+.map-tile-frontier .tile-status-front {
+  display: none;
+}
+
+
+/* Shared OSRS progression icons: Quest, Achievement Diary and Skills. */
+.progression-icon {
+  width: 26px;
+  height: 26px;
+  display: block;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 3px 3px rgba(0,0,0,.72)) drop-shadow(0 0 2px rgba(0,0,0,.75));
+  flex: 0 0 auto;
+}
+
+.progression-icon-background {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  right: -8px;
+  bottom: -16px;
+  opacity: .10;
+  filter: grayscale(1) brightness(.45) drop-shadow(0 3px 4px rgba(0,0,0,.75));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.quest-log-title .progression-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.quest-log-title > div {
+  position: relative;
+  z-index: 1;
+}
+
+.diary-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.diary-card > strong,
+.diary-card > div {
+  position: relative;
+  z-index: 1;
+}
+
+.diary-card > .progression-icon-background {
+  z-index: 0;
+}
+
+.skill-icon {
+  position: relative;
+  overflow: hidden;
+}
+
+.skill-icon .progression-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.skill-lock-overlay {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  z-index: 2;
+  padding: 2px;
+  border-radius: 3px;
+  background: rgba(8,14,18,.82);
+}
+
+/* Reward popup progression icons act as large, faded watermarks behind the reward copy. */
+.tile-popup-progression-icon {
+  position:absolute !important;
+  width:104px !important;
+  height:98px !important;
+  left:16% !important;
+  top:calc(50% - 0px) !important;
+  right:auto !important;
+  bottom:auto !important;
+  transform:translate(-50%,-50%);
+  object-fit:contain !important;
+  image-rendering:pixelated;
+  opacity:.20;
+  /* Keep the watermark recognisable by type while still letting the popup artwork and text dominate. */
+  filter:saturate(.85) brightness(.72) drop-shadow(0 3px 4px rgba(0,0,0,.7));
+  z-index:0 !important;
+  pointer-events:none;
+}
+
+.tile-popup-content {
+  position:absolute;
+  inset:0;
+  z-index:1;
+}
+
+@media (max-width:760px) {
+  .tile-popup-progression-icon {
+    width:88px !important;
+    height:83px !important;
+  }
+}
+@media (max-width:500px) {
+  .tile-popup-progression-icon {
+    width:76px !important;
+    height:72px !important;
+  }
+}
+
+
+/* Large progression icon behind the creature on revealed map tiles, echoing the existing green/yellow state glow. */
+.tile-progression-stamp {
+  position:absolute !important;
+  width:170px !important;
+  height:170px !important;
+  left:50% !important;
+  top:50% !important;
+  right:auto !important;
+  bottom:auto !important;
+  transform:translate(-50%,-50%);
+  object-fit:contain !important;
+  image-rendering:pixelated;
+  opacity:.20;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.38));
+  z-index:1 !important;
+  pointer-events:none;
+}
+
+/* Keep the creature clearly above the progression watermark and give it a stronger silhouette. */
+.map-tile-explored .creature-glyph-tile,
+.map-tile-frontier .creature-glyph-tile {
+  z-index:3 !important;
+}
+.map-tile-explored .creature-image,
+.map-tile-frontier .creature-image {
+  filter:drop-shadow(0 4px 5px rgba(0,0,0,.75)) drop-shadow(0 0 2px rgba(0,0,0,.65));
+  z-index:3 !important;
+}
+
+
+/* Quest and achievement diary rewards use the same large, prominent typography as skill rewards. */
+.tile-popup-quest .tile-popup-title,
+.tile-popup-diary .tile-popup-title {
+  font-family: var(--font-runescape) !important;
+  font-size: 34px !important;
+  line-height: 1 !important;
+  margin-bottom: 1px !important;
+  text-align: center !important;
+  white-space: nowrap;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.8);
+}
+
+.tile-popup-quest .tile-popup-subtitle,
+.tile-popup-diary .tile-popup-subtitle {
+  font-family: var(--font-runescape) !important;
+  font-size: 32px !important;
+  line-height: 1 !important;
+  margin-top: 0 !important;
+  font-weight: 700 !important;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  text-align: center !important;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.8);
+}
+
+@media (max-width:760px) {
+  .tile-popup-quest .tile-popup-title,
+  .tile-popup-diary .tile-popup-title {
+    font-size: 28px !important;
+  }
+  .tile-popup-quest .tile-popup-subtitle,
+  .tile-popup-diary .tile-popup-subtitle {
+    font-size: 26px !important;
+  }
+}
+
+@media (max-width:500px) {
+  .tile-popup-quest .tile-popup-title,
+  .tile-popup-diary .tile-popup-title {
+    font-size: 23px !important;
+  }
+  .tile-popup-quest .tile-popup-subtitle,
+  .tile-popup-diary .tile-popup-subtitle {
+    font-size: 21px !important;
+  }
+}
+
+/* Skill rewards make the level band the primary information in the popup. */
+.tile-popup-skill .tile-popup-reward-copy {
+  left: 4% !important;
+  right: 24% !important;
+  top: 50% !important;
+  transform: translateY(-50%);
+  text-align: center !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile-popup-skill .tile-popup-title {
+  font-family: var(--font-runescape) !important;
+  font-size: 34px !important;
+  line-height: 1 !important;
+  margin-bottom: 1px;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.8);
+}
+
+.tile-popup-skill .tile-popup-subtitle {
+  display: block;
+  font-family: var(--font-runescape) !important;
+  font-size: 32px !important;
+  line-height: 1 !important;
+  font-weight: 700 !important;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  text-align: center !important;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.8);
+}
+
+@media (max-width:760px) {
+  .tile-popup-skill .tile-popup-title {
+    font-size: 28px !important;
+  }
+  .tile-popup-skill .tile-popup-subtitle {
+    font-size: 26px !important;
+  }
+}
+@media (max-width:500px) {
+  .tile-popup-skill .tile-popup-title {
+    font-size: 23px !important;
+  }
+  .tile-popup-skill .tile-popup-subtitle {
+    font-size: 21px !important;
+  }
+}
+
+
+/* Authentic OSRS-style skills dropdown.
+   The panel uses the actual OSRS Skills-tab artwork as a texture, while the
+   skill cells remain HTML so Zoologist can change levels/locked states dynamically. */
+.skills-dropdown-anchor {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 310px;
+  pointer-events: none;
+}
+
+.skills-dropdown-panel {
+  width: 100%;
+  padding: 6px;
+  box-sizing: border-box;
+  pointer-events: auto;
+  border: 3px solid #51483d;
+  border-radius: 1px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.06), transparent 24%, rgba(0,0,0,.08) 80%),
+    #5b554b;
+  box-shadow:
+    inset 0 0 0 1px #928879,
+    inset 0 0 0 3px #3d3831,
+    0 7px 18px rgba(0,0,0,.72);
+}
+
+.skills-dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 48px;
+  gap: 0;
+  padding: 2px;
+  background: #3b362f;
+  border: 2px solid #2d2924;
+  box-shadow: inset 0 1px rgba(255,255,255,.10);
+}
+
+.osrs-skill-slot {
+  position: relative;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1px 4px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #5d574c;
+  border-right: 1px solid rgba(39,35,30,.42);
+  border-bottom: 1px solid rgba(39,35,30,.42);
+}
+
+.osrs-skill-slot:nth-child(3n) {
+  border-right: 0;
+}
+
+.osrs-skill-slot.is-unlocked {
+  filter: none;
+}
+
+.osrs-skill-slot.is-locked {
+  background: #514c44;
+}
+
+.osrs-skill-box {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  margin-right: 2px;
+  flex: 0 0 32px;
+  display: block;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.osrs-skill-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 30px !important;
+  height: 30px !important;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(1px 1px 0 #161411);
+}
+
+.osrs-skill-lock-asset {
+  position: absolute;
+  inset: 0;
+  width: 27px;
+  height: 27px;
+  margin: 0;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(1px 1px 0 #161411);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.osrs-skill-level {
+  position: relative;
+  z-index: 3;
+  margin-left: auto;
+  margin-right: 4px;
+  min-width: 31px;
+  text-align: right;
+  white-space: nowrap;
+  color: #f4e72b;
+  font-family: 'RuneScape', sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-shadow: 1px 1px 0 #17130b;
+}
+
+.osrs-skill-slot.is-locked .osrs-skill-level {
+  color: #aaa59a;
+  text-shadow: 1px 1px 0 #22201d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.osrs-total-level {
+  grid-column: 1 / -1;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  box-sizing: border-box;
+  color: #f4e72b;
+  background: #0b0b0b;
+  border: 1px solid #2a2722;
+  font-family: 'RuneScape', sans-serif;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 1px 1px 0 #000;
+}
+
+@media (max-width:760px) {
+  .skills-dropdown-anchor {
+    top: 64px;
+    width: min(310px, calc(100vw - 16px));
+  }
+  .skills-dropdown-grid {
+    grid-auto-rows: 44px;
+  }
+  .osrs-skill-slot {
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+  .osrs-skill-box {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+  }
+  .osrs-skill-icon {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  .osrs-skill-level {
+    font-size: 14px;
+    min-width: 28px;
+  }
+}
+/* Tile completion method label shown directly below the creature name. */
+.tile-completion-method {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 28px;
+  z-index: 3;
+  text-align: center;
+  font-size: 17px;
+  line-height: 1;
+  font-weight: 700;
+  white-space: nowrap;
+  text-shadow: 2px 2px 0 rgba(0,0,0,.78), -1px -1px 0 rgba(0,0,0,.55);
+}
+.tile-completion-method:empty { display:none; }
+.tile-completion-method { color: #2bd34f; }
+.tile-completion-method.tile-method-slay { color: #d83a3a; }
+.tile-completion-method.tile-method-examine { color: #39c85a; }
+.tile-completion-method.tile-method-catch { color: #29d8df; }
+.tile-completion-method.tile-method-shear { color: #29d8df; }
+.tile-completion-method.tile-method-pet { color: #ffd700; }
+.tile-completion-method + .tile-name { z-index: 3; }
+
+/* Match the three completion methods to their OSRS-style activity colours. */
+.map-tile .tile-completion-method:has(+ .tile-name) { }
+
+
+/* Account / cloud-save UI */
+.account-button-signed-in { border-color:#3f5d4a; color:#d5e1d9; }
+.account-status-dot { width:7px; height:7px; margin-left:1px; border-radius:50%; background:#6fcf7b; box-shadow:0 0 8px rgba(111,207,123,.45); }
+.account-modal-backdrop { position:fixed; inset:0; z-index:100; display:grid; place-items:center; padding:20px; background:rgba(3,7,9,.72); backdrop-filter:blur(7px); }
+.account-modal { position:relative; width:min(410px,100%); padding:25px; border:1px solid #394952; border-radius:14px; background:#10191f; box-shadow:0 28px 90px rgba(0,0,0,.65); }
+.account-modal-close { position:absolute; top:12px; right:12px; width:30px; height:30px; display:grid; place-items:center; border:1px solid #2d3b43; border-radius:7px; background:#121b20; color:#82919a; cursor:pointer; }
+.account-modal-heading { display:flex; align-items:center; gap:12px; padding-right:35px; }
+.account-modal-icon { width:42px; height:42px; display:grid; place-items:center; border:1px solid #5d492b; border-radius:10px; color:#d5aa63; background:#191710; }
+.account-modal-heading strong { display:block; font-size:18px; font-family:var(--font-runescape); color:#eee5d4; }
+.account-modal-heading span { display:block; margin-top:4px; color:#73828a; font:9px 'Space Mono',monospace; word-break:break-all; }
+.account-modal-copy { margin:18px 0; color:#8b999f; font-size:11px; line-height:1.55; }
+.account-form { display:grid; gap:12px; margin-top:20px; }
+.account-form label { display:grid; gap:6px; color:#9aa7ad; font-size:10px; }
+.account-form input { width:100%; border:1px solid #2c3b43; border-radius:8px; padding:10px 11px; outline:none; background:#0b1216; color:#e7edef; font:12px 'DM Sans',sans-serif; }
+.account-form input:focus { border-color:#6c5835; box-shadow:0 0 0 2px rgba(213,170,99,.08); }
+.account-modal-primary { width:100%; min-height:40px; margin-top:4px; display:flex; align-items:center; justify-content:center; gap:7px; border:1px solid #5e4826; border-radius:8px; background:linear-gradient(#8a6d3c,#624a29); color:#f2e4c6; font-weight:700; cursor:pointer; }
+.account-modal-primary:hover:not(:disabled) { background:linear-gradient(#987b48,#6c522e); }
+.account-modal-primary:disabled { opacity:.55; cursor:wait; }
+.account-modal-switch { width:100%; margin-top:12px; padding:7px; border:0; background:transparent; color:#9c8a68; cursor:pointer; font-size:10px; }
+.account-modal-switch:hover { color:#d5aa63; }
+.account-modal-message { margin:0; padding:9px 10px; border:1px solid #4b3e2c; border-radius:7px; background:#19150f; color:#d9bc88; font-size:10px; line-height:1.45; }
+.account-loading { min-height:100vh; display:grid; place-items:center; color:#9da9ae; font:12px 'Space Mono',monospace; background:#0a1014; }
+.account-loading-spinner { width:22px; height:22px; margin-bottom:-55px; border:2px solid #29373e; border-top-color:#d5aa63; border-radius:50%; animation:account-spin .7s linear infinite; }
+@keyframes account-spin { to { transform:rotate(360deg); } }
+
+/* Full-screen authentication landing page. Logged-out users cannot see the map. */
+.login-page {
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  box-sizing:border-box;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(52,72,59,.28), transparent 42%),
+    #070d10;
+}
+.account-modal-backdrop-standalone {
+  position:static;
+  inset:auto;
+  width:100%;
+  min-height:100vh;
+  padding:24px;
+  box-sizing:border-box;
+  background:transparent;
+  backdrop-filter:none;
+}
+.account-modal-standalone {
+  width:min(430px,100%);
+  box-shadow:0 28px 110px rgba(0,0,0,.72), 0 0 0 1px rgba(213,170,99,.05);
+}
+.account-modal-standalone::before {
+  content:"ZOOLOGIST";
+  display:block;
+  margin-bottom:8px;
+  color:#d5aa63;
+  font-family:var(--font-runescape);
+  font-size:32px;
+  line-height:1;
+  letter-spacing:.04em;
+  text-align:center;
+  text-shadow:0 2px 0 #000;
+}
+.account-modal-standalone .account-modal-heading { margin-top:6px; }
+@media (max-width:500px) {
+  .login-page { padding:12px; }
+  .account-modal-backdrop-standalone { padding:12px; }
+}

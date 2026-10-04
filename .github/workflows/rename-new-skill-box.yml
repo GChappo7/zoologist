@@ -1,0 +1,35 @@
+name: Rename new skill box asset
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Rename IMG_0159 to Blank skill.png
+        shell: bash
+        run: |
+          set -e
+          src="public/assets/ui/skills/IMG_0159.png"
+          dest="public/assets/ui/skills/Blank skill.png"
+          old="public/assets/ui/skills/Blank Skill.png"
+
+          test -f "$src"
+          rm -f "$old"
+          rm -f "$dest"
+          git mv "$src" "$dest"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A public/assets/ui/skills
+          git commit -m "Use new blank skill box asset"
+          git push origin main

@@ -531,11 +531,9 @@
    skill cells remain HTML so Zoologist can change levels/locked states dynamically. */
 .skills-dropdown-anchor {
   position: fixed;
-  top: 70px;
-  left: 50%;
-  transform: translateX(-50%);
   z-index: 1000;
   width: 310px;
+  transform: translateX(-50%);
   pointer-events: none;
 }
 

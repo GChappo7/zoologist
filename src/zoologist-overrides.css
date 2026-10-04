@@ -902,3 +902,41 @@
   background: url('/zoologist/assets/ui/skills/Blank%20skill.png') center / 100% 100% no-repeat !important;
   filter: brightness(1.08);
 }
+
+
+/* Compact COMPLETE control: a small OSRS skill-box button tucked into the popup's top-right corner. */
+.tile-popup .tile-popup-actions {
+  position: static !important;
+  margin: 0 !important;
+  display: block !important;
+}
+.tile-popup .tile-popup-complete {
+  position: absolute !important;
+  top: 8% !important;
+  right: 5% !important;
+  min-width: 78px !important;
+  width: 78px !important;
+  min-height: 30px !important;
+  height: 30px !important;
+  padding: 3px 7px !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  letter-spacing: .02em !important;
+  white-space: nowrap !important;
+  z-index: 5 !important;
+}
+.tile-popup .tile-popup-more {
+  position: absolute !important;
+  left: 25% !important;
+  right: 5% !important;
+  bottom: 24% !important;
+}
+@media (max-width:760px) {
+  .tile-popup .tile-popup-complete {
+    min-width: 68px !important;
+    width: 68px !important;
+    min-height: 27px !important;
+    height: 27px !important;
+    font-size: 11px !important;
+  }
+}

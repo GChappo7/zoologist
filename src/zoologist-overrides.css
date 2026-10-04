@@ -592,6 +592,14 @@
   background: #514c44;
 }
 
+/* Locked skills are visibly greyed out, including the shared box artwork and icon. */
+.osrs-skill-slot.is-locked .osrs-skill-box {
+  filter: grayscale(1) brightness(.62);
+}
+.osrs-skill-slot.is-locked .osrs-skill-icon {
+  filter: grayscale(1) brightness(.62) drop-shadow(1px 1px 0 #161411);
+}
+
 .osrs-skill-box {
   position: relative;
   width: 32px;
@@ -642,7 +650,7 @@
   white-space: nowrap;
   color: #f4e72b;
   font-family: 'RuneScape', sans-serif;
-  font-size: 16px;
+  font-size: 19px;
   line-height: 1;
   font-weight: 700;
   letter-spacing: 0;
@@ -652,7 +660,7 @@
 .osrs-skill-slot.is-locked .osrs-skill-level {
   color: #aaa59a;
   text-shadow: 1px 1px 0 #22201d;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
 }
 
@@ -697,8 +705,8 @@
     height: 28px !important;
   }
   .osrs-skill-level {
-    font-size: 14px;
-    min-width: 28px;
+    font-size: 17px;
+    min-width: 30px;
   }
 }
 /* Tile completion method label shown directly below the creature name. */

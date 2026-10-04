@@ -61,7 +61,7 @@ button { font: inherit; }
   .top-tabs button { padding: 0 5px; }
 }
 @media (max-width: 760px) {
-  .top-tabs { position:fixed; top:0; right:8px; height:64px; }
+  .top-tabs { position:static; height:42px; }
   .top-tabs button { padding:0 6px; gap:4px; }
   .top-tabs button span { display:none; }
   .osrs-top-tab-icon { width:22px; height:22px; }
@@ -220,7 +220,7 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
   .map-footer-bar { position: relative; left: auto; bottom: auto; border-radius: 0; border-left: 0; border-right: 0; border-bottom: 0; }
 }
 @media (max-width: 760px) {
-  .topbar { display: flex; flex-wrap: wrap; gap: 8px 12px; padding: 10px 14px; }.brand-block { flex: 1; }.header-actions { margin-left: auto; }.header-progress { display: none; }.top-tabs { order: 3; width: 100%; height: 42px; justify-content: space-between; } .top-tabs button { flex: 1; justify-content: center; padding: 0 4px; gap:4px; }.account-button { padding: 8px 10px; }.account-button svg { display: none; }
+  .topbar { display: flex; flex-wrap: wrap; gap: 8px 12px; padding: 10px 14px; }.brand-block { flex: 1; }.header-actions { margin-left: auto; }.header-progress { display: none; }.top-tabs { order: 3; width: 100%; height: 42px; justify-content: space-between; } .top-tabs button { flex: 1; justify-content: center; padding: 0 4px; gap:4px; }.account-button { width:34px; height:34px; flex:0 0 34px; padding:0; }.account-button svg { display: none; }
   .app-main { width: 100%; }.map-toolbar { align-items: flex-start; flex-direction: column; }.map-legend { white-space: normal; flex-wrap: wrap; }.map-stage { min-height: 620px; }.creature-glyph-tile { width: 44px; height: 44px; font-size: 36px; }.tile-name { font-size: 32px; bottom: 8px; }.map-key { left: 11px; bottom: 12px; }.map-position { right: 11px; bottom: 12px; }.map-stage { overflow: hidden; }.skills-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }.footer { flex-direction: column; }
 }
 @media (max-width: 500px) {

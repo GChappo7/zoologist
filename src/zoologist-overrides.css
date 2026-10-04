@@ -721,14 +721,16 @@
     height: 28px !important;
   }
   .osrs-skill-level {
-    margin-left: 2px;
+    margin-left: 5px;
     margin-right: 0;
     min-width: 34px;
     text-align: left;
     font-size: 21px;
+    transform: translateY(2px);
   }
   .osrs-skill-slot.is-locked .osrs-skill-level {
     font-size: 18px;
+    transform: translateY(2px);
   }
 }
 /* Tile completion method label shown directly below the creature name. */

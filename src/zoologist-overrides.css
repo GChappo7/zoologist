@@ -399,8 +399,8 @@
 /* Completed tiles show the tick-circle asset behind the creature. */
 .tile-completed-tick {
   position:absolute !important;
-  width:132px !important;
-  height:132px !important;
+  width:190px !important;
+  height:190px !important;
   left:50% !important;
   top:50% !important;
   transform:translate(-50%,-50%);

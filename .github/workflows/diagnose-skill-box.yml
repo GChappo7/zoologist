@@ -112,3 +112,5 @@ jobs:
           fi
           git commit -m "Remove black slash from OSRS skill box assets"
           git push
+
+# Trigger repair workflow after installation.

@@ -473,6 +473,12 @@
   }
 }
 
+/* Quest reward text sits immediately to the right of the large quest watermark. */
+.tile-popup-quest .tile-popup-reward-copy {
+  left: 25% !important;
+  right: 6% !important;
+}
+
 /* Skill rewards make the level band the primary information in the popup. */
 .tile-popup-skill .tile-popup-reward-copy {
   left: 4% !important;

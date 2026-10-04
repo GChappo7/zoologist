@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 import { createRoot } from 'react-dom/client'
 import {
   BookOpen, ChevronLeft, ChevronRight, Compass, Eye, Flag, Gamepad2, Gem,
-  LayoutGrid, Lock, MousePointer2, PawPrint, ScrollText, ShieldCheck,
+  LayoutGrid, MousePointer2, PawPrint, ScrollText, ShieldCheck,
   Sparkles, Users, Search, ShoppingBag, Skull, MapPinned
 } from 'lucide-react'
 import './styles.css'
@@ -349,7 +349,7 @@ function SkillsDropdown({open,onClose,skillProgress}) {
           return <div className={`osrs-skill-slot ${unlocked?'is-unlocked':'is-locked'}`} key={name} title={unlocked?`${name}: ${value}`:`${name}: locked`}>
             {unlocked
               ? <ProgressionIcon type="skill" skill={name} className="osrs-skill-icon"/>
-              : <img className="osrs-skill-lock-asset" src="/assets/ui/lock_asset.png" alt="" aria-hidden="true" draggable="false"/>}
+              : <img className="osrs-skill-lock-asset" src={`${import.meta.env.BASE_URL}assets/ui/lock_asset.png`} alt="" aria-hidden="true" draggable="false"/>}
             <span className="osrs-skill-level" aria-label={value}>{value}</span>
           </div>
         }))}

@@ -912,8 +912,8 @@
 }
 .tile-popup .tile-popup-complete {
   position: absolute !important;
-  top: 8% !important;
-  right: 5% !important;
+  top: 16% !important;
+  right: 8% !important;
   min-width: 78px !important;
   width: 78px !important;
   min-height: 30px !important;
@@ -927,9 +927,11 @@
 }
 .tile-popup .tile-popup-more {
   position: absolute !important;
-  left: 25% !important;
-  right: 5% !important;
-  bottom: 24% !important;
+  top: 29% !important;
+  right: 8% !important;
+  left: auto !important;
+  bottom: auto !important;
+  font-size: 9px !important;
 }
 @media (max-width:760px) {
   .tile-popup .tile-popup-complete {

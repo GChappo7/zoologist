@@ -348,7 +348,6 @@ function SkillsDropdown({open,onClose,skillProgress}) {
           const value=getDisplay(name)
           return <div className={`osrs-skill-slot ${unlocked?'is-unlocked':'is-locked'}`} key={name} title={unlocked?`${name}: ${value}`:`${name}: locked`}>
             <span className="osrs-skill-box" aria-hidden="true">
-              <img className="osrs-skill-box-background" src={`${import.meta.env.BASE_URL}assets/ui/${SKILL_BOX_ASSETS[name] || ""}`} alt="" draggable="false"/>
               <ProgressionIcon type="skill" skill={name} className="osrs-skill-icon"/>
               {!unlocked&&<img className="osrs-skill-lock-asset" src={`${import.meta.env.BASE_URL}assets/ui/lock_asset.png`} alt="" draggable="false"/>}
             </span>

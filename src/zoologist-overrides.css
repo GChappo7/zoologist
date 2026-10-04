@@ -796,12 +796,19 @@
   text-shadow: 2px 2px 0 rgba(0,0,0,.78), -1px -1px 0 rgba(0,0,0,.55);
 }
 .tile-completion-method:empty { display:none; }
-.tile-completion-method { color: #2bd34f; }
-.tile-completion-method.tile-method-slay { color: #d83a3a; }
-.tile-completion-method.tile-method-examine { color: #39c85a; }
-.tile-completion-method.tile-method-catch { color: #29d8df; }
-.tile-completion-method.tile-method-shear { color: #29d8df; }
-.tile-completion-method.tile-method-pet { color: #ffd700; }
+.tile-completion-method {
+  color: #eee5d4 !important;
+  text-shadow: 1px 1px 0 #15120e, 0 0 2px rgba(0,0,0,.8);
+}
+.tile-completion-method.tile-method-slay,
+.tile-completion-method.tile-method-examine,
+.tile-completion-method.tile-method-catch,
+.tile-completion-method.tile-method-shear {
+  color: #eee5d4 !important;
+}
+.tile-completion-method.tile-method-pet {
+  color: #eee5d4 !important;
+}
 .tile-completion-method + .tile-name { z-index: 3; }
 
 /* Match the three completion methods to their OSRS-style activity colours. */

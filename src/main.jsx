@@ -284,12 +284,31 @@ function getRandomSkillReward(creature,skillProgress){
   const reward=getNextSkillBand(skillProgress??getInitialSkillProgress(),skill)
   return reward?{...reward,type:'skill',skill}:null
 }
-function SkillsDropdown({open,onClose,skillProgress}) {
+function SkillsDropdown({open,onClose,skillProgress,anchorRef}) {
   const panelRef=useRef(null)
+  const [anchorPosition,setAnchorPosition]=useState(null)
+  useLayoutEffect(()=>{
+    if(!open)return
+    const updatePosition=()=>{
+      const anchor=anchorRef?.current
+      if(!anchor)return
+      const rect=anchor.getBoundingClientRect()
+      setAnchorPosition({top:rect.bottom+2,left:rect.left+rect.width/2})
+    }
+    updatePosition()
+    window.addEventListener('resize',updatePosition)
+    window.addEventListener('scroll',updatePosition,true)
+    return()=>{
+      window.removeEventListener('resize',updatePosition)
+      window.removeEventListener('scroll',updatePosition,true)
+    }
+  },[open,anchorRef])
   useEffect(()=>{
     if(!open)return
     const handlePointerDown=e=>{
-      if(panelRef.current&&!panelRef.current.contains(e.target))onClose?.()
+      const insidePanel=panelRef.current?.contains(e.target)
+      const insideAnchor=anchorRef?.current?.contains(e.target)
+      if(!insidePanel&&!insideAnchor)onClose?.()
     }
     const handleKeyDown=e=>{
       if(e.key==='Escape')onClose?.()
@@ -310,7 +329,7 @@ function SkillsDropdown({open,onClose,skillProgress}) {
     const completedIndex=Math.max(0,Math.min(9,Number(progress.nextRewardIndex)-1))
     return getSkillRewardSequence(name)[completedIndex]?.band??'91–99'
   }
-  return <div className="skills-dropdown-anchor" ref={panelRef} role="dialog" aria-label="Skills">
+  return <div className="skills-dropdown-anchor" ref={panelRef} role="dialog" aria-label="Skills" style={anchorPosition?{top:anchorPosition.top,left:anchorPosition.left}:undefined}>
     <div className="skills-dropdown-panel">
       <div className="skills-dropdown-grid">
         {SKILL_TAB_LAYOUT.flatMap(row=>row.map(name=>{
@@ -699,6 +718,7 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
 function App(){
   const [tab,setTab]=useState('map')
   const [skillsOpen,setSkillsOpen]=useState(false)
+  const skillsButtonRef=useRef(null)
   const [accountOpen,setAccountOpen]=useState(false)
   const [session,setSession]=useState(null)
   const [accountReady,setAccountReady]=useState(false)
@@ -856,13 +876,13 @@ function App(){
   return <div className="app-shell">
     <header className="topbar">
       <div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration</div></div></div>
-      <nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} className={`top-tab-${id} ${id==='skills'&&skillsOpen||tab===id?'active':''}`} onClick={()=>handleTabClick(id)} aria-expanded={id==='skills'?skillsOpen:undefined}>{OSRS_TAB_ICONS[id]?<img className="osrs-top-tab-icon" src={OSRS_TAB_ICONS[id]} alt="" aria-hidden="true" draggable="false"/>:<Icon size={16}/>}<span>{label}</span></button>)}</nav>
+      <nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} ref={id==='skills'?skillsButtonRef:undefined} className={`top-tab-${id} ${id==='skills'&&skillsOpen||tab===id?'active':''}`} onClick={()=>handleTabClick(id)} aria-expanded={id==='skills'?skillsOpen:undefined}>{OSRS_TAB_ICONS[id]?<img className="osrs-top-tab-icon" src={OSRS_TAB_ICONS[id]} alt="" aria-hidden="true" draggable="false"/>:<Icon size={16}/>}<span>{label}</span></button>)}</nav>
       <div className="header-actions">
         <div className="header-progress"><div className="progress-label"><span>EXPLORED <b>{progress.explored}</b> · REVEALED <b>{progress.revealed}</b></span><strong>{progress.explored} / {creatureCount}</strong></div><div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,progress.explored/creatureCount*100)}%`}}/></div></div>
         <button className={`account-button ${session?'account-button-signed-in':''}`} onClick={()=>setAccountOpen(true)} aria-label="Account" title="Account"><img className="account-button-icon" src="https://oldschool.runescape.wiki/images/Account_Management_-_Name_Changer_icon.png" alt="" aria-hidden="true" draggable="false"/>{session&&<i className="account-status-dot" aria-label="Cloud save connected"/>}</button>
       </div>
     </header>
-    <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress}/>{page}</main>
+    <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}</main>
     <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
     <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession}/>
   </div>

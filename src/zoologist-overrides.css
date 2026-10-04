@@ -701,7 +701,7 @@
 
 @media (max-width:760px) {
   .skills-dropdown-anchor {
-    top: 64px;
+    left: 50vw !important;
     width: min(310px, calc(100vw - 16px));
   }
   .skills-dropdown-grid {
@@ -721,8 +721,14 @@
     height: 28px !important;
   }
   .osrs-skill-level {
-    font-size: 17px;
-    min-width: 30px;
+    margin-left: 2px;
+    margin-right: 0;
+    min-width: 34px;
+    text-align: left;
+    font-size: 21px;
+  }
+  .osrs-skill-slot.is-locked .osrs-skill-level {
+    font-size: 18px;
   }
 }
 /* Tile completion method label shown directly below the creature name. */

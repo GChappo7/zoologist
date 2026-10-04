@@ -786,7 +786,7 @@
   position: absolute;
   left: 24px;
   right: 24px;
-  bottom: 28px;
+  bottom: 38px;
   z-index: 3;
   text-align: center;
   font-size: 17px;
@@ -798,7 +798,7 @@
 .tile-completion-method:empty { display:none; }
 .tile-completion-method {
   color: #eee5d4 !important;
-  text-shadow: 1px 1px 0 #15120e, 0 0 2px rgba(0,0,0,.8);
+  text-shadow: 2px 2px 0 #15120e, -1px -1px 0 #15120e, 0 0 3px rgba(0,0,0,.95), 0 2px 5px rgba(0,0,0,.75);
 }
 .tile-completion-method.tile-method-slay,
 .tile-completion-method.tile-method-examine,

@@ -1,4 +1,4 @@
-name: Export OSRS skill box assets for repair
+name: Repair OSRS skill box slashes
 
 on:
   push:
@@ -6,18 +6,92 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  export:
+  repair:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Upload skill box assets
-        uses: actions/upload-artifact@v4
-        with:
-          name: skill-box-assets-for-repair
-          path: public/assets/ui/skills/
-          retention-days: 3
+      - name: Install image tools
+        run: python -m pip install --disable-pip-version-check pillow numpy
+
+      - name: Remove slash using the edited Attack JPG as the reference
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import numpy as np
+          import cv2
+
+          root = Path("public/assets/ui/skills")
+          reference_png = root / "Attack Box.png"
+          reference_jpg = root / "Attack Box.jpg"
+
+          png = np.array(Image.open(reference_png).convert("RGBA"))
+          jpg = np.array(Image.open(reference_jpg).convert("RGB"))
+
+          if png.shape[:2] != jpg.shape[:2]:
+              raise SystemExit(f"Reference dimensions differ: {png.shape[:2]} vs {jpg.shape[:2]}")
+
+          # The edited JPG contains the user's clean version of the slash area.
+          # Locate the one large changed component in the right-hand side of the box.
+          p = png[:, :, :3].astype(np.int16)
+          j = jpg.astype(np.int16)
+          difference = np.abs(p - j).mean(axis=2)
+          yy, xx = np.indices(difference.shape)
+          changed = ((difference > 40) & (xx > 600) & (yy > 80) & (yy < 620)).astype(np.uint8) * 255
+
+          n, labels, stats, _ = cv2.connectedComponentsWithStats(changed, 8)
+          if n <= 1:
+              raise SystemExit("Could not find the edited slash region.")
+
+          best = 1 + int(np.argmax(stats[1:, 4]))
+          area = int(stats[best, 4])
+          x, y, w, h = map(int, stats[best, :4])
+          print(f"Reference slash region: x={x}, y={y}, w={w}, h={h}, area={area}")
+
+          if area < 5000 or w < 200 or h < 200:
+              raise SystemExit("Detected slash region does not look like the expected diagonal edit.")
+
+          patch_mask = labels == best
+          alpha = png[:, :, 3]
+          if int(alpha[patch_mask].min()) == 0:
+              raise SystemExit("Slash edit overlaps transparent pixels; refusing to flatten transparency.")
+
+          changed_files = []
+          for path in sorted(root.glob("* Box.png")):
+              image = np.array(Image.open(path).convert("RGBA"))
+              if image.shape != png.shape:
+                  print(f"Skipping different-sized asset: {path.name} {image.shape}")
+                  continue
+
+              out = image.copy()
+
+              # All skill boxes share the same right-side stone background layout.
+              # Copy only the clean reference pixels inside the detected slash edit,
+              # while retaining each asset's original alpha channel.
+              out[patch_mask, :3] = jpg[patch_mask]
+              out[:, :, 3] = image[:, :, 3]
+
+              Image.fromarray(out, "RGBA").save(path, optimize=True)
+              changed_files.append(path.name)
+
+          print(f"Repaired {len(changed_files)} skill box PNGs.")
+          for name in changed_files:
+              print(" ", name)
+          PY
+
+      - name: Commit repaired assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "public/assets/ui/skills/"*.png
+          if git diff --cached --quiet; then
+            echo "No PNG changes required."
+            exit 0
+          fi
+          git commit -m "Remove black slash from OSRS skill box assets"
+          git push

@@ -549,7 +549,7 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[dismissingTileKey,setDismissingTileKey]=useState(null),[startCreature]=useState(()=>creatureById[initialTiles?.[keyFor(0,0)]?.creatureId]??pickStartingCreature(creatures))
   const [tiles,setTiles]=useState(()=>initialTiles&&Object.keys(initialTiles).length?initialTiles:createInitialTiles(creatures,startCreature,skillProgress)),[fogVisible,setFogVisible]=useState(true),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false)
-  const stageRef=useRef(null),zoomRef=useRef(zoom),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0}),edgeFrameRef=useRef(null)
+  const stageRef=useRef(null),zoomRef=useRef(zoom),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0,pointerType:null}),touchPointersRef=useRef(new Map()),pinchRef=useRef(null),suppressClickRef=useRef(false),edgeFrameRef=useRef(null)
   useEffect(()=>{zoomRef.current=zoom},[zoom])
   useEffect(()=>{onTilesChange?.(tiles)},[tiles,onTilesChange])
 
@@ -581,10 +581,89 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
     setPan(p=>({x:ox-(ox-p.x)*ratio,y:oy-(oy-p.y)*ratio}));setZoom(target)
   }
   const handleWheel=e=>{e.preventDefault();zoomAtPoint(zoomRef.current+(e.deltaY>0?-1:1)*(e.ctrlKey?.05:.11),e.clientX,e.clientY)}
-  const handlePointerMove=e=>{pointerRef.current={x:e.clientX,y:e.clientY,inside:true};if(!dragRef.current.active)return;const dx=e.clientX-dragRef.current.x,dy=e.clientY-dragRef.current.y;dragRef.current.x=e.clientX;dragRef.current.y=e.clientY;updatePan(dx,dy)}
-  const handlePointerDown=e=>{if(e.button!==1)return;e.preventDefault();dragRef.current={active:true,x:e.clientX,y:e.clientY};setDragging(true);stageRef.current?.setPointerCapture(e.pointerId)}
-  const stopDrag=e=>{if(!dragRef.current.active)return;dragRef.current.active=false;setDragging(false);try{stageRef.current?.releasePointerCapture(e.pointerId)}catch{}}
+  const handlePointerMove=e=>{
+    pointerRef.current={x:e.clientX,y:e.clientY,inside:true}
+    if(e.pointerType==='touch'){
+      const pointers=touchPointersRef.current
+      if(pointers.has(e.pointerId))pointers.set(e.pointerId,{x:e.clientX,y:e.clientY})
+      if(pointers.size>=2){
+        const entries=[...pointers.values()]
+        const a=entries[0],b=entries[1]
+        const distance=Math.hypot(b.x-a.x,b.y-a.y)
+        const midpoint={x:(a.x+b.x)/2,y:(a.y+b.y)/2}
+        const pinch=pinchRef.current
+        if(pinch){
+          const nextZoom=Math.min(MAX_ZOOM,Math.max(MIN_ZOOM,pinch.zoom*(distance/pinch.distance)))
+          const rect=stageRef.current?.getBoundingClientRect()
+          if(rect){
+            const currentMidpoint={x:rect.left+rect.width/2,y:rect.top+rect.height/2}
+            const dx=midpoint.x-pinch.midpoint.x
+            const dy=midpoint.y-pinch.midpoint.y
+            zoomAtPoint(nextZoom,midpoint.x,midpoint.y)
+            setPan(p=>({x:p.x+dx,y:p.y+dy}))
+          }
+          dragRef.current.active=false
+          setDragging(false)
+        } else {
+          pinchRef.current={distance,midpoint,zoom:zoomRef.current}
+        }
+        return
+      }
+    }
+    if(!dragRef.current.active)return
+    const dx=e.clientX-dragRef.current.x,dy=e.clientY-dragRef.current.y
+    if(Math.abs(dx)+Math.abs(dy)>3)suppressClickRef.current=true
+    dragRef.current.x=e.clientX
+    dragRef.current.y=e.clientY
+    updatePan(dx,dy)
+  }
+  const handlePointerDown=e=>{
+    if(e.pointerType==='touch'){
+      e.preventDefault()
+      touchPointersRef.current.set(e.pointerId,{x:e.clientX,y:e.clientY})
+      if(touchPointersRef.current.size>=2){
+        const entries=[...touchPointersRef.current.values()]
+        const a=entries[0],b=entries[1]
+        pinchRef.current={
+          distance:Math.max(1,Math.hypot(b.x-a.x,b.y-a.y)),
+          midpoint:{x:(a.x+b.x)/2,y:(a.y+b.y)/2},
+          zoom:zoomRef.current
+        }
+        dragRef.current.active=false
+        setDragging(false)
+      } else {
+        dragRef.current={active:true,x:e.clientX,y:e.clientY,pointerType:'touch'}
+        suppressClickRef.current=false
+        setDragging(true)
+      }
+      stageRef.current?.setPointerCapture(e.pointerId)
+      return
+    }
+    if(e.pointerType==='mouse'&&e.button!==1)return
+    e.preventDefault()
+    dragRef.current={active:true,x:e.clientX,y:e.clientY,pointerType:e.pointerType}
+    suppressClickRef.current=false
+    setDragging(true)
+    stageRef.current?.setPointerCapture(e.pointerId)
+  }
+  const stopDrag=e=>{
+    if(e.pointerType==='touch'){
+      touchPointersRef.current.delete(e.pointerId)
+      if(touchPointersRef.current.size<2)pinchRef.current=null
+    }
+    if(!dragRef.current.active)return
+    dragRef.current.active=false
+    setDragging(false)
+    try{stageRef.current?.releasePointerCapture(e.pointerId)}catch{}
+  }
   const handlePointerLeave=()=>{if(!dragRef.current.active)pointerRef.current.inside=false}
+  const handleStageClickCapture=e=>{
+    if(suppressClickRef.current){
+      e.preventDefault()
+      e.stopPropagation()
+      suppressClickRef.current=false
+    }
+  }
   const centreTileX=Math.round(-pan.x/(TILE_STEP*zoom)),centreTileY=Math.round(-pan.y/(TILE_STEP*zoom))
   const knownTiles=Object.values(tiles)
   const nearestKnownDistance=(x,y)=>knownTiles.reduce((best,t)=>Math.min(best,Math.abs(x-t.x)+Math.abs(y-t.y)),Infinity)
@@ -635,7 +714,7 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
     onProgressChange?.({explored:1, revealed:frontierCount})
   }
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
-    <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
+    <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onClickCapture={handleStageClickCapture} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
   <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress}/>)}{selectedTile&&<TilePopup selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+TILE_SIZE-64,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-25}}/>}</div></div>
       <div className="map-zoom-controls" onPointerDown={e=>e.stopPropagation()}><button onClick={()=>zoomAtPoint(zoom-ZOOM_STEP,innerWidth/2,innerHeight/2)}>−</button><button className="zoom-readout" onClick={()=>{setPan({x:0,y:0});setZoom(1)}}>{Math.round(zoom*100)}%</button><button onClick={()=>zoomAtPoint(zoom+ZOOM_STEP,innerWidth/2,innerHeight/2)}>+</button></div>
       <div className="map-control-hint"><div><MousePointer2 size={13}/> Move to edge to pan</div><div>↑ ↓ ← → <span>Arrow keys</span></div><div>MMB <span>Drag to pan</span></div><div>Wheel <span>Zoom</span></div></div>

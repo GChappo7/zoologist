@@ -912,7 +912,7 @@
 }
 .tile-popup .tile-popup-complete {
   position: absolute !important;
-  top: 23% !important;
+  top: 27% !important;
   right: 8% !important;
   min-width: 78px !important;
   width: 78px !important;
@@ -927,7 +927,7 @@
 }
 .tile-popup .tile-popup-more {
   position: absolute !important;
-  top: 35% !important;
+  top: 39% !important;
   right: 8% !important;
   left: auto !important;
   bottom: auto !important;

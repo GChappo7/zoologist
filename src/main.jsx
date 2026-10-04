@@ -323,7 +323,7 @@ function SkillsDropdown({open,onClose,skillProgress,anchorRef}) {
   if(!open)return null
   const unrestricted=new Set(['Attack','Hitpoints','Hunter'])
   const getDisplay=name=>{
-    if(unrestricted.has(name))return '1–99'
+    if(unrestricted.has(name))return '1-99'
     const progress=skillProgress?.[name]??{unlocked:false,maxLevel:0,nextRewardIndex:0}
     if(!progress.unlocked)return 'Locked'
     const completedIndex=Math.max(0,Math.min(9,Number(progress.nextRewardIndex)-1))
@@ -532,7 +532,7 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,sk
       <div className="detail-stats"><div><span>Accessibility</span><strong>Score {creature.score}</strong></div><div><span>Status</span><strong>{selectedTile.completed?'Complete':'Not complete'}</strong></div></div>
       <div className="reward-box"><div className="reward-heading"><Sparkles size={15}/> Reward</div><strong>{reward.type}</strong><p>{reward.label??reward.name}</p></div>
       {selectedTile.bossId&&<button className="boss-button side-boss-button" type="button"><Skull size={15}/> Boss</button>}
-      {!selectedTile.completed&&<button className="complete-button" onClick={()=>onComplete(selectedTile)}><Flag size={15}/> Mark complete</button>}
+      {!selectedTile.completed&&<button className="complete-button" onClick={()=>onComplete(selectedTile)}>Mark complete</button>}
     </div>}
   </aside>
 }

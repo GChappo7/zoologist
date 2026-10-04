@@ -514,7 +514,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
       </div>
       <div className="tile-popup-actions">
         {!selectedTile.completed&&<button className="tile-popup-complete" onClick={()=>{if(isDismissing)return;setIsDismissing(true);onComplete(selectedTile);window.setTimeout(()=>onShowMore?.(false),180)}}>COMPLETE</button>}
-        <button className="tile-popup-more" onClick={onShowMore}>More details <ChevronRight size={13}/></button>
+        <button className="tile-popup-more" onClick={onShowMore}>Details <ChevronRight size={13}/></button>
       </div>
     </div>
   </section>

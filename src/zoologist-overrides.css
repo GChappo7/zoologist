@@ -860,3 +860,45 @@
   .login-page { padding:12px; }
   .account-modal-backdrop-standalone { padding:12px; }
 }
+
+
+/* Final popup positioning: the quest title sits immediately beside its watermark. */
+.tile-popup.tile-popup-quest .tile-popup-reward-copy {
+  left: 25% !important;
+  right: 5% !important;
+  top: 15% !important;
+  bottom: 35% !important;
+  text-align: left !important;
+  align-items: flex-start !important;
+}
+.tile-popup.tile-popup-quest .tile-popup-title {
+  text-align: left !important;
+}
+
+/* Use the actual blank OSRS skill box for the popup completion control. */
+.tile-popup .tile-popup-complete {
+  min-height: 48px !important;
+  min-width: 150px !important;
+  padding: 8px 16px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: url('/zoologist/assets/ui/skills/Blank%20skill.png') center / 100% 100% no-repeat !important;
+  color: #35d65b !important;
+  font-family: var(--font-runescape) !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+  font-weight: 700 !important;
+  text-shadow: 1px 1px 0 #102015, 0 0 2px #07120a !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+}
+.tile-popup .tile-popup-complete svg {
+  display: none !important;
+}
+.tile-popup .tile-popup-complete:hover {
+  background: url('/zoologist/assets/ui/skills/Blank%20skill.png') center / 100% 100% no-repeat !important;
+  filter: brightness(1.08);
+}

@@ -593,6 +593,11 @@
     #484640;
 }
 
+.osrs-skill-slot.is-locked .osrs-skill-icon {
+  filter: grayscale(1) brightness(.58) contrast(.9) drop-shadow(1px 1px 0 #161411);
+  opacity: .72;
+}
+
 .osrs-skill-icon-wrap {
   position: relative;
   width: 31px;

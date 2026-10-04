@@ -931,7 +931,9 @@
   right: 8% !important;
   left: auto !important;
   bottom: auto !important;
-  font-size: 9px !important;
+  font-size: 7px !important;
+  color: #d5aa63 !important;
+  text-decoration-color: #d5aa63 !important;
 }
 @media (max-width:760px) {
   .tile-popup .tile-popup-complete {

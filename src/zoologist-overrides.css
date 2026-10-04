@@ -600,6 +600,15 @@
   filter: grayscale(1) brightness(.62) drop-shadow(1px 1px 0 #161411);
 }
 
+/* Keep the padlock bright and centred over the skill icon. */
+.osrs-skill-slot.is-locked .osrs-skill-lock-asset {
+  inset: 50% auto auto 50%;
+  width: 31px;
+  height: 31px;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(1px 1px 0 #161411);
+}
+
 .osrs-skill-box {
   position: relative;
   width: 32px;
@@ -627,11 +636,11 @@
   filter: drop-shadow(1px 1px 0 #161411);
 }
 
-.osrs-skill-lock-asset {
+ .osrs-skill-lock-asset {
   position: absolute;
   inset: 0;
-  width: 27px;
-  height: 27px;
+  width: 31px;
+  height: 31px;
   margin: 0;
   object-fit: contain;
   image-rendering: pixelated;

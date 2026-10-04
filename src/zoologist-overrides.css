@@ -733,6 +733,36 @@
     transform: translateY(2px);
   }
 }
+/* OSRS-style completion button: use the blank skill box artwork with green centred text. */
+.complete-button {
+  min-height: 48px;
+  margin-top: 14px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  background-image: url("${import.meta.env.BASE_URL}assets/ui/skills/Blank%20skill.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  color: #35d65b;
+  font-family: 'RuneScape', sans-serif;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 700;
+  text-shadow: 1px 1px 0 #102015, 0 0 2px #07120a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  cursor: pointer;
+}
+.complete-button:hover {
+  filter: brightness(1.08);
+}
+.complete-button:active {
+  transform: translateY(1px);
+}
+
 /* Tile completion method label shown directly below the creature name. */
 .tile-completion-method {
   position: absolute;

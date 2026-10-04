@@ -310,10 +310,6 @@ function SkillsDropdown({open,onClose,skillProgress}) {
     const completedIndex=Math.max(0,Math.min(9,Number(progress.nextRewardIndex)-1))
     return getSkillRewardSequence(name)[completedIndex]?.band??'91–99'
   }
-  const totalLevel=Object.keys(skillProgress??{}).reduce((sum,name)=>{
-    const progress=skillProgress[name]
-    return sum+(progress?.unlocked?Number(progress.maxLevel)||0:0)
-  },0)+3
   return <div className="skills-dropdown-anchor" ref={panelRef} role="dialog" aria-label="Skills">
     <div className="skills-dropdown-panel">
       <div className="skills-dropdown-grid">
@@ -329,7 +325,6 @@ function SkillsDropdown({open,onClose,skillProgress}) {
             <span className="osrs-skill-level" aria-label={value}>{value}</span>
           </div>
         }))}
-        <div className="osrs-total-level">Total level: {totalLevel}</div>
       </div>
     </div>
   </div>

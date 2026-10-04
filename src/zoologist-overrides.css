@@ -740,10 +740,7 @@
   padding: 8px 14px;
   border: 0;
   border-radius: 0;
-  background-color: transparent;
-  background-image: url("${import.meta.env.BASE_URL}assets/ui/skills/Blank%20skill.png");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
+  background: url("./assets/ui/skills/Blank%20skill.png") center / 100% 100% no-repeat !important;
   color: #35d65b;
   font-family: 'RuneScape', sans-serif;
   font-size: 20px;

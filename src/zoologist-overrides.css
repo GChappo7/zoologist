@@ -407,7 +407,7 @@
   object-fit:contain !important;
   image-rendering:pixelated;
   opacity:.95;
-  z-index:1 !important;
+  z-index: 4 !important;
   pointer-events:none;
 }
 

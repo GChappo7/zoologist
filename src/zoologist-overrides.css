@@ -598,17 +598,33 @@
   opacity: .72;
 }
 
-.osrs-skill-icon-wrap {
+.osrs-skill-box {
   position: relative;
-  width: 31px;
-  height: 31px;
+  width: 36px;
+  height: 36px;
   margin-right: 6px;
   flex: 0 0 auto;
+  display: block;
+  overflow: hidden;
+}
+
+.osrs-skill-box-background {
+  position: absolute;
+  inset: 0;
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  pointer-events: none;
 }
 
 .osrs-skill-icon {
-  width: 31px !important;
-  height: 31px !important;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 27px !important;
+  height: 27px !important;
+  transform: translate(-50%, -50%);
   margin: 0;
   object-fit: contain;
   image-rendering: pixelated;
@@ -618,8 +634,8 @@
 .osrs-skill-lock-asset {
   position: absolute;
   inset: 0;
-  width: 31px;
-  height: 31px;
+  width: 36px;
+  height: 36px;
   margin: 0;
   object-fit: contain;
   image-rendering: pixelated;

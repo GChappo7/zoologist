@@ -852,6 +852,7 @@ function App(){
     map: 'https://oldschool.runescape.wiki/images/World_map_icon.png',
     skills: 'https://oldschool.runescape.wiki/images/Skills_icon.png',
     quests: 'https://oldschool.runescape.wiki/images/Quests.png',
+    diaries: 'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',
   }
   const tabs=[
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText},

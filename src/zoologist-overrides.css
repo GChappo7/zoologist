@@ -592,9 +592,17 @@
   background: #514c44;
 }
 
-/* Locked skills are visibly greyed out, including the shared box artwork and icon. */
-.osrs-skill-slot.is-locked .osrs-skill-box {
+/* Locked skill artwork is greyed without ever applying a filter to the padlock. */
+.osrs-skill-slot.is-locked::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: inherit;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   filter: grayscale(1) brightness(.62);
+  pointer-events: none;
 }
 .osrs-skill-slot.is-locked .osrs-skill-icon {
   filter: grayscale(1) brightness(.62) drop-shadow(1px 1px 0 #161411);
@@ -621,6 +629,7 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+  z-index: 2;
 }
 
 .osrs-skill-icon {
@@ -646,7 +655,7 @@
   image-rendering: pixelated;
   filter: drop-shadow(1px 1px 0 #161411);
   pointer-events: none;
-  z-index: 2;
+  z-index: 3;
 }
 
 .osrs-skill-level {

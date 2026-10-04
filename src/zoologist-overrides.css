@@ -863,8 +863,8 @@
 
 
 /* Final popup positioning: the quest title sits immediately beside its watermark. */
-.tile-popup.tile-popup-quest .tile-popup-reward-copy {
-  left: 25% !important;
+ .tile-popup.tile-popup-quest .tile-popup-reward-copy {
+  left: 28% !important;
   right: 5% !important;
   top: 15% !important;
   bottom: 35% !important;

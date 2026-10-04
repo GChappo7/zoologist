@@ -558,7 +558,7 @@
 .skills-dropdown-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: 32px;
+  grid-auto-rows: 48px;
   gap: 0;
   padding: 2px;
   background: #3b362f;
@@ -681,7 +681,7 @@
     width: min(310px, calc(100vw - 16px));
   }
   .skills-dropdown-grid {
-    grid-auto-rows: 32px;
+    grid-auto-rows: 44px;
   }
   .osrs-skill-slot {
     padding-left: 3px;

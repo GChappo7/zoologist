@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { LogIn, LogOut, UserPlus, X } from 'lucide-react'
 import { supabase } from './supabase'
 
-export default function AccountModal({ open, onClose, session, onAuthChange }) {
+export default function AccountModal({ open, onClose, session, onAuthChange, standalone=false }) {
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -66,9 +66,9 @@ export default function AccountModal({ open, onClose, session, onAuthChange }) {
     setBusy(false)
   }
 
-  return <div className="account-modal-backdrop" onMouseDown={e => e.target === e.currentTarget && onClose?.()}>
-    <section className="account-modal" role="dialog" aria-modal="true" aria-label="Account">
-      <button className="account-modal-close" type="button" onClick={onClose} aria-label="Close"><X size={17}/></button>
+  return <div className={`account-modal-backdrop ${standalone ? "account-modal-backdrop-standalone" : ""}`} onMouseDown={e => !standalone && e.target === e.currentTarget && onClose?.()}>
+    <section className={`account-modal ${standalone ? "account-modal-standalone" : ""}`} role="dialog" aria-modal="true" aria-label="Account">
+      {!standalone && <button className="account-modal-close" type="button" onClick={onClose} aria-label="Close"><X size={17}/></button>}
       {session ? <>
         <div className="account-modal-heading"><div className="account-modal-icon"><LogIn size={20}/></div><div><strong>Account</strong><span>{session.user.email}</span></div></div>
         <p className="account-modal-copy">Your Zoologist progress is linked to this account and can be loaded on another device.</p>

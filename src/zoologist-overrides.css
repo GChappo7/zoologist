@@ -593,24 +593,34 @@
     #484640;
 }
 
-.osrs-skill-icon {
-  width: 31px !important;
-  height: 31px !important;
-  margin-right: 6px;
-  object-fit: contain;
-  image-rendering: pixelated;
-  filter: drop-shadow(1px 1px 0 #161411);
-  flex: 0 0 auto;
-}
-
-.osrs-skill-lock-asset {
+.osrs-skill-icon-wrap {
+  position: relative;
   width: 31px;
   height: 31px;
   margin-right: 6px;
+  flex: 0 0 auto;
+}
+
+.osrs-skill-icon {
+  width: 31px !important;
+  height: 31px !important;
+  margin: 0;
   object-fit: contain;
   image-rendering: pixelated;
   filter: drop-shadow(1px 1px 0 #161411);
-  flex: 0 0 auto;
+}
+
+.osrs-skill-lock-asset {
+  position: absolute;
+  inset: 0;
+  width: 31px;
+  height: 31px;
+  margin: 0;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(1px 1px 0 #161411);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .osrs-skill-level {

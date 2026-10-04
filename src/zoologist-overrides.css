@@ -866,7 +866,7 @@
  .tile-popup.tile-popup-quest .tile-popup-reward-copy {
   left: 28% !important;
   right: 5% !important;
-  top: 15% !important;
+  top: 19% !important;
   bottom: 35% !important;
   text-align: left !important;
   align-items: flex-start !important;
@@ -927,7 +927,7 @@
 }
 .tile-popup .tile-popup-more {
   position: absolute !important;
-  top: 29% !important;
+  top: 31% !important;
   right: 8% !important;
   left: auto !important;
   bottom: auto !important;

@@ -1,4 +1,4 @@
-name: Verify repaired OSRS skill boxes
+name: Repair OSRS skill box slashes
 
 on:
   push:
@@ -6,20 +6,84 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  verify:
+  repair:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Export repaired skill boxes
-        uses: actions/upload-artifact@v4
         with:
-          name: repaired-skill-box-assets
-          path: |
-            public/assets/ui/skills/Attack Box.png
-            public/assets/ui/skills/Cooking Box.png
-          retention-days: 3
+          fetch-depth: 2
+
+      - name: Install image tools
+        run: python -m pip install --disable-pip-version-check pillow numpy
+
+      - name: Restore original boxes and remove slash
+        run: |
+          git checkout 8a10f8f25e0094ee4a8db97238b563596d7d61f6 -- "public/assets/ui/skills/"*.png
+
+          python <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import numpy as np
+
+          root = Path("public/assets/ui/skills")
+          reference_jpg = root / "Attack Box.jpg"
+
+          # The edited Attack JPG is used to establish the exact diagonal slash
+          # geometry. The repair itself copies a nearby parallel strip from each
+          # PNG so every skill retains its own native stone texture.
+          jpg = np.array(Image.open(reference_jpg).convert("RGB"))
+          h, w = jpg.shape[:2]
+          Y, X = np.indices((h, w))
+          distance = np.abs(X + Y - 1260) / (2 ** 0.5)
+
+          changed = []
+          for path in sorted(root.glob("* Box.png")):
+              image = np.array(Image.open(path).convert("RGBA"))
+              if image.shape[:2] != (h, w):
+                  print(f"Skipping different-sized asset: {path.name} {image.shape}")
+                  continue
+
+              gray = image[:, :, :3].mean(axis=2)
+              mask = (
+                  (distance < 30) &
+                  (X > 680) & (X < 1140) &
+                  (Y > 120) & (Y < 590) &
+                  (gray < 50) &
+                  (image[:, :, 3] > 0)
+              )
+
+              yy, xx = np.where(mask)
+              shift = 50
+              valid = (yy + shift < h) & (xx + shift < w)
+
+              out = image.copy()
+              out[yy[valid], xx[valid], :3] = image[
+                  yy[valid] + shift,
+                  xx[valid] + shift,
+                  :3
+              ]
+              out[:, :, 3] = image[:, :, 3]
+
+              Image.fromarray(out, "RGBA").save(path, optimize=True)
+              changed.append((path.name, int(mask.sum())))
+
+          print(f"Repaired {len(changed)} skill box PNGs.")
+          for name, count in changed:
+              print(f"  {name}: {count} pixels")
+          PY
+
+      - name: Commit repaired assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "public/assets/ui/skills/"*.png
+          if git diff --cached --quiet; then
+            echo "No PNG changes required."
+            exit 0
+          fi
+          git commit -m "Remove black slash from skill box PNGs cleanly"
+          git push

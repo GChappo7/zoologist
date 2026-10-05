@@ -971,3 +971,7 @@
     font-size: 11px !important;
   }
 }
+
+.account-modal-reset { width:100%; min-height:36px; margin-top:9px; display:flex; align-items:center; justify-content:center; gap:7px; border:1px solid #59383a; border-radius:8px; background:#241719; color:#c99a9a; font-weight:700; cursor:pointer; }
+.account-modal-reset:hover:not(:disabled) { background:#321d20; color:#e1b1b1; }
+.account-modal-reset:disabled { opacity:.55; cursor:wait; }

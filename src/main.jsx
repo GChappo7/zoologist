@@ -878,6 +878,7 @@ function App(){
 
   const confirmResetProgress=async()=>{
     setResetConfirmOpen(false)
+    setAccountOpen(false)
 
     const resetState={...EMPTY_GAME_STATE,worldId:createWorldId()}
     const resetGeneration=++saveGenerationRef.current

@@ -718,6 +718,7 @@ function App(){
   const [skillsOpen,setSkillsOpen]=useState(false)
   const skillsButtonRef=useRef(null)
   const [accountOpen,setAccountOpen]=useState(false)
+  const [resetConfirmOpen,setResetConfirmOpen]=useState(false)
   const [session,setSession]=useState(null)
   const [accountReady,setAccountReady]=useState(false)
   const [cloudSaveStatus,setCloudSaveStatus]=useState('disconnected')
@@ -831,9 +832,11 @@ function App(){
   },[session?.user?.id,accountReady,gameState,skillProgress,rewardAssignments,questStatuses])
 
   const handleResetProgress=async()=>{
-    const newline=String.fromCharCode(10)
-    const confirmed=window.confirm(['Reset all Zoologist progress?','','This will clear your map, skills, quests and reward assignments, but your account will remain logged in.'].join(newline))
-    if(!confirmed)return
+    setResetConfirmOpen(true)
+  }
+
+  const confirmResetProgress=async()=>{
+    setResetConfirmOpen(false)
 
     const resetState={...EMPTY_GAME_STATE}
     const resetGeneration=++saveGenerationRef.current
@@ -957,6 +960,16 @@ function App(){
     <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}</main>
     <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
     <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession} onResetProgress={handleResetProgress}/>
+    {resetConfirmOpen&&<div className="reset-confirm-overlay" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget)setResetConfirmOpen(false)}}>
+      <div className="reset-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="reset-confirm-title">
+        <div className="reset-confirm-title" id="reset-confirm-title">Reset all Zoologist progress?</div>
+        <div className="reset-confirm-message">This will clear your map, skills, quests and reward assignments, but your account will remain logged in.</div>
+        <div className="reset-confirm-actions">
+          <button type="button" className="reset-confirm-cancel" onClick={()=>setResetConfirmOpen(false)}>Cancel</button>
+          <button type="button" className="reset-confirm-danger" onClick={confirmResetProgress}>Reset Progress</button>
+        </div>
+      </div>
+    </div>}
   </div>
 }
 createRoot(document.getElementById('root')).render(<App />)

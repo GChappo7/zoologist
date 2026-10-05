@@ -764,9 +764,10 @@ function App(){
         await ensureProfile(session.user)
         const cloud=await loadCloudGameState(session.user.id)
 
-        // Cloud state is authoritative once an account has one. Only migrate
-        // the legacy local save into the first account that claims it.
-        let next=cloud&&typeof cloud==='object' ? cloud : null
+        // A reset marker is authoritative on the first load after a reset.
+        // This prevents an old cloud snapshot from ever resurrecting progress.
+        const resetPending=localStorage.getItem('zoologist-reset-pending')===session.user.id
+        let next=resetPending ? {...EMPTY_GAME_STATE} : (cloud&&typeof cloud==='object' ? cloud : null)
         if(!next){
           const localOwner=localStorage.getItem('zoologist-local-save-owner')
           const local=readLocalGameState()
@@ -778,6 +779,15 @@ function App(){
             next=local
           } else {
             next={...EMPTY_GAME_STATE}
+          }
+        }
+
+        if(resetPending && loadGeneration===accountLoadGenerationRef.current){
+          try{
+            await saveCloudGameState(session.user.id,{...EMPTY_GAME_STATE})
+            localStorage.removeItem('zoologist-reset-pending')
+          }catch(error){
+            console.error('Could not persist reset state:',error)
           }
         }
 
@@ -852,6 +862,7 @@ function App(){
     localStorage.removeItem('zoologist-reward-assignments')
     localStorage.removeItem('zoologist-quest-statuses')
     localStorage.setItem('zoologist-local-save-owner',session.user.id)
+    localStorage.setItem('zoologist-reset-pending',session.user.id)
     setCloudSaveStatus('saving')
 
     // Wait for any older save to finish, then write the empty state with a

@@ -16,7 +16,7 @@ import { isValidQuestRewardAssignment, isValidSkillRewardAssignment } from './pr
 import { buildRewardAssignments, getAssignedReward } from './rewardAssignments'
 import AccountModal from './lib/accountModal'
 import { supabase } from './lib/supabase'
-import { ensureProfile, loadCloudGameState, readLocalGameState, saveCloudGameState } from './lib/gameState'
+import { createWorldId, ensureProfile, loadCloudGameState, readLocalGameState, saveCloudGameState } from './lib/gameState'
 
 const TILE_SIZE = 256
 const TILE_GAP = 0
@@ -767,7 +767,7 @@ function App(){
         // A reset marker is authoritative on the first load after a reset.
         // This prevents an old cloud snapshot from ever resurrecting progress.
         const resetPending=localStorage.getItem('zoologist-reset-pending')===session.user.id
-        let next=resetPending ? {...EMPTY_GAME_STATE} : (cloud&&typeof cloud==='object' ? cloud : null)
+        let next=resetPending ? {...EMPTY_GAME_STATE,worldId:createWorldId()} : (cloud&&typeof cloud==='object' ? cloud : null)
         if(!next){
           const localOwner=localStorage.getItem('zoologist-local-save-owner')
           const local=readLocalGameState()
@@ -778,13 +778,16 @@ function App(){
           } else if(localOwner===session.user.id){
             next=local
           } else {
-            next={...EMPTY_GAME_STATE}
+            next={...EMPTY_GAME_STATE,worldId:createWorldId()}
           }
         }
 
+        if(!next.worldId)next={...next,worldId:createWorldId()}
+        localStorage.setItem('zoologist-world-id',next.worldId)
+
         if(resetPending && loadGeneration===accountLoadGenerationRef.current){
           try{
-            await saveCloudGameState(session.user.id,{...EMPTY_GAME_STATE})
+            await saveCloudGameState(session.user.id,next)
             localStorage.removeItem('zoologist-reset-pending')
           }catch(error){
             console.error('Could not persist reset state:',error)
@@ -850,7 +853,7 @@ function App(){
   const confirmResetProgress=async()=>{
     setResetConfirmOpen(false)
 
-    const resetState={...EMPTY_GAME_STATE}
+    const resetState={...EMPTY_GAME_STATE,worldId:createWorldId()}
     const resetGeneration=++saveGenerationRef.current
     // Invalidate any account-load request that started before the reset.
     // Otherwise a late response can put the old cloud state back into React.
@@ -863,6 +866,7 @@ function App(){
     localStorage.removeItem('zoologist-quest-statuses')
     localStorage.setItem('zoologist-local-save-owner',session.user.id)
     localStorage.setItem('zoologist-reset-pending',session.user.id)
+    localStorage.setItem('zoologist-world-id',resetState.worldId)
     setCloudSaveStatus('saving')
 
     // Wait for any older save to finish, then write the empty state with a
@@ -922,7 +926,7 @@ function App(){
     :tab==='shop'?<ShopView/>
     :tab==='bosses'?<BossView/>
     :<MapView
-      key={`${session?.user?.id??'local'}-${resetVersion}`}
+      key={`${session?.user?.id??'local'}-${gameState.worldId??'legacy'}-${resetVersion}`}
       creatures={creatures}
       onProgressChange={setProgress}
       skillProgress={skillProgress}

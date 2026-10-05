@@ -866,19 +866,10 @@ function App(){
       return
     }
 
-    // The cloud reset has succeeded, so replace the live React state directly.
-    // Avoid a full page reload: reloading can race the account-load effect and
-    // resurrect an older state before the reset has propagated everywhere.
-    setGameState(resetState)
-    setSkillProgress(normalizeSkillProgress({}))
-    setRewardAssignments(null)
-    setQuestStatuses({})
-    setProgress({explored:0,revealed:1})
-    setResetVersion(value=>value+1)
-    setTab('map')
-    setSkillsOpen(false)
-    setAccountOpen(false)
-    setCloudSaveStatus('connected')
+    // The cloud reset has succeeded. Reload the app from a completely
+    // clean state so every mounted component is recreated from the empty
+    // cloud save. The account session itself remains intact.
+    window.location.reload()
   }
 
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{

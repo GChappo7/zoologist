@@ -894,6 +894,15 @@ function App(){
     localStorage.setItem('zoologist-local-save-owner',session.user.id)
     localStorage.setItem('zoologist-reset-pending',session.user.id)
     localStorage.setItem('zoologist-world-id',resetState.worldId)
+
+    // Replace the in-memory world immediately as well as the persisted copy.
+    // This guarantees the old MapView state cannot survive the reset.
+    setGameState(resetState)
+    setSkillProgress(normalizeSkillProgress({}))
+    setRewardAssignments(null)
+    setQuestStatuses({})
+    setProgress({explored:0,revealed:1})
+    setResetVersion(current=>current+1)
     setCloudSaveStatus('saving')
 
     // Wait for any older save to finish, then write the empty state with a

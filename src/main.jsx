@@ -728,6 +728,8 @@ function App(){
   const [rewardAssignments,setRewardAssignments]=useState(()=>gameState.rewardAssignments||null)
   const [questStatuses,setQuestStatuses]=useState(gameState.questStatuses||{})
   const [resetVersion,setResetVersion]=useState(0)
+  const saveGenerationRef=useRef(0)
+  const queuedSaveRef=useRef(Promise.resolve())
 
   useEffect(()=>{
     if(!supabase){setAccountReady(true);return}
@@ -806,16 +808,24 @@ function App(){
   useEffect(()=>{
     if(!session||!accountReady)return
     const payload={...gameState,skillProgress,rewardAssignments,questStatuses}
-    const timer=window.setTimeout(async()=>{
+    const generation=saveGenerationRef.current
+    const timer=window.setTimeout(()=>{
+      if(generation!==saveGenerationRef.current)return
       setCloudSaveStatus('saving')
-      try{
-        await saveCloudGameState(session.user.id,payload)
-        localStorage.setItem('zoologist-local-save-owner',session.user.id)
-        setCloudSaveStatus('connected')
-      }catch(error){
-        console.error('Could not save Zoologist cloud save:',error)
-        setCloudSaveStatus('error')
+      const save=async()=>{
+        if(generation!==saveGenerationRef.current)return
+        try{
+          await saveCloudGameState(session.user.id,payload)
+          if(generation!==saveGenerationRef.current)return
+          localStorage.setItem('zoologist-local-save-owner',session.user.id)
+          setCloudSaveStatus('connected')
+        }catch(error){
+          if(generation!==saveGenerationRef.current)return
+          console.error('Could not save Zoologist cloud save:',error)
+          setCloudSaveStatus('error')
+        }
       }
+      queuedSaveRef.current=queuedSaveRef.current.catch(()=>{}).then(save)
     },500)
     return()=>window.clearTimeout(timer)
   },[session?.user?.id,accountReady,gameState,skillProgress,rewardAssignments,questStatuses])
@@ -825,11 +835,25 @@ function App(){
     if(!confirmed)return
 
     const resetState={...EMPTY_GAME_STATE}
+    const resetGeneration=++saveGenerationRef.current
     localStorage.removeItem('zoologist-skill-progress')
     localStorage.removeItem('zoologist-map-tiles')
     localStorage.removeItem('zoologist-reward-assignments')
     localStorage.removeItem('zoologist-quest-statuses')
     localStorage.setItem('zoologist-local-save-owner',session.user.id)
+    setCloudSaveStatus('saving')
+
+    // Let any save that was already in flight finish before writing the reset.
+    // Newer autosaves are blocked by the generation check above.
+    try{
+      await queuedSaveRef.current.catch(()=>{})
+      if(resetGeneration!==saveGenerationRef.current)return
+      await saveCloudGameState(session.user.id,resetState)
+    }catch(error){
+      console.error('Could not reset Zoologist cloud save:',error)
+      setCloudSaveStatus('error')
+      return
+    }
 
     setGameState(resetState)
     setSkillProgress(normalizeSkillProgress({}))
@@ -840,15 +864,7 @@ function App(){
     setTab('map')
     setSkillsOpen(false)
     setAccountOpen(false)
-    setCloudSaveStatus('saving')
-
-    try{
-      await saveCloudGameState(session.user.id,resetState)
-      setCloudSaveStatus('connected')
-    }catch(error){
-      console.error('Could not reset Zoologist cloud save:',error)
-      setCloudSaveStatus('error')
-    }
+    setCloudSaveStatus('connected')
   }
 
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{

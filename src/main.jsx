@@ -334,7 +334,8 @@ function SkillsDropdown({open,onClose,skillProgress,anchorRef}) {
     const progress=skillProgress?.[name]??{unlocked:false,maxLevel:0,nextRewardIndex:0}
     if(!progress.unlocked)return 'Locked'
     const completedIndex=Math.max(0,Math.min(9,Number(progress.nextRewardIndex)-1))
-    return getSkillRewardSequence(name)[completedIndex]?.band??'91–99'
+    const band=getSkillRewardSequence(name)[completedIndex]?.band??'91–99'
+    return Number(String(band).split('-').pop().trim())||99
   }
   return <div className="skills-dropdown-anchor" ref={panelRef} role="dialog" aria-label="Skills" style={anchorPosition?{top:anchorPosition.top,left:anchorPosition.left}:undefined}>
     <div className="skills-dropdown-panel">

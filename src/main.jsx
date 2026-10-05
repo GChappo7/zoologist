@@ -815,6 +815,32 @@ function App(){
   },[session?.user?.id])
 
   useEffect(()=>localStorage.setItem('zoologist-skill-progress',JSON.stringify(skillProgress)),[skillProgress])
+
+  // Quest rewards become "Revealed" as soon as their reward tile is revealed.
+  // Map tiles are the authoritative source here, so this also catches quests
+  // revealed automatically when the frontier expands after completing a tile.
+  useEffect(()=>{
+    const revealedQuestIds=new Set(
+      Object.values(gameState.mapTiles||{})
+        .filter(tile=>tile?.faceDown===false)
+        .map(tile=>tile?.reward)
+        .filter(reward=>String(reward?.type??'').toLowerCase()==='quest')
+        .map(reward=>String(reward?.questId??'').trim())
+        .filter(Boolean)
+    )
+    if(!revealedQuestIds.size)return
+    setQuestStatuses(current=>{
+      let changed=false
+      const next={...current}
+      revealedQuestIds.forEach(id=>{
+        if((next[id]||'unrevealed')==='unrevealed'){
+          next[id]='revealed'
+          changed=true
+        }
+      })
+      return changed?next:current
+    })
+  },[gameState.mapTiles])
   useEffect(()=>{
     if(gameState.mapTiles) localStorage.setItem('zoologist-map-tiles',JSON.stringify(gameState.mapTiles))
   },[gameState.mapTiles])

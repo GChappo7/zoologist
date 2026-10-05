@@ -831,7 +831,8 @@ function App(){
   },[session?.user?.id,accountReady,gameState,skillProgress,rewardAssignments,questStatuses])
 
   const handleResetProgress=async()=>{
-    const confirmed=window.confirm('Reset all Zoologist progress?\n\nThis will clear your map, skills, quests and reward assignments, but your account will remain logged in.')
+    const newline=String.fromCharCode(10)
+    const confirmed=window.confirm(['Reset all Zoologist progress?','','This will clear your map, skills, quests and reward assignments, but your account will remain logged in.'].join(newline))
     if(!confirmed)return
 
     const resetState={...EMPTY_GAME_STATE}

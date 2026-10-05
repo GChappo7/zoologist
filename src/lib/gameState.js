@@ -45,6 +45,12 @@ export async function saveCloudGameState(userId, gameState) {
   if (error) throw error
 }
 
+export async function deleteCloudGameState(userId) {
+  if (!supabase || !userId) return
+  const { error } = await supabase.from('game_states').delete().eq('user_id', userId)
+  if (error) throw error
+}
+
 export async function ensureProfile(user) {
   if (!supabase || !user) return
   const displayName = user.user_metadata?.display_name || user.email?.split('@')[0] || 'Zoologist'

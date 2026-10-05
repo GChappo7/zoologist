@@ -33,7 +33,7 @@ function isCompatible(creature, reward) {
   return false
 }
 
-function buildUnits() {
+function buildUnits(activeCreatureCount) {
   const skills = rewardCatalog.lockedSkills.flatMap(skill =>
     Array.from({ length: 10 }, (_, index) => ({
       type: 'skill',
@@ -45,15 +45,33 @@ function buildUnits() {
   const quests = rewardCatalog.mandatory
     .filter(reward => String(reward.type).toLowerCase() === 'quest')
     .map(reward => ({ ...reward }))
-  return [...skills, ...quests]
-}
 
+  // Spare creature slots are deliberately kept useful as bonus skill tiles.
+  // When new quests are added, the mandatory quest count grows and these
+  // bonus slots are consumed first.
+  const spareCount = Math.max(0, activeCreatureCount - skills.length - quests.length)
+  const bonusSkills = []
+  if (spareCount > 0 && rewardCatalog.lockedSkills.length > 0) {
+    const skillOrder = shuffle(rewardCatalog.lockedSkills)
+    for (let index = 0; index < spareCount; index += 1) {
+      const skill = skillOrder[index % skillOrder.length]
+      bonusSkills.push({
+        type: 'skill',
+        skill,
+        bonus: true,
+        id: `bonus-${skill.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${index + 1}`,
+      })
+    }
+  }
+
+  return [...skills, ...quests, ...bonusSkills]
+}
 function isEarlyCreature(creature) {
   return Number(creature?.score) <= 1
 }
 
 function makeAssignment(creatures, startCreature) {
-  const units = shuffle(buildUnits())
+  const units = shuffle(buildUnits(creatures.length))
   const adjacency = units.map(unit =>
     creatures.map((creature, creatureIndex) => {
       if (!isCompatible(creature, unit)) return -1
@@ -116,7 +134,7 @@ function makeAssignment(creatures, startCreature) {
 
 export function buildRewardAssignments(creatures, startCreature) {
   const active = (creatures ?? []).filter(c => String(c?.status ?? 'Active').toLowerCase() === 'active')
-  const units = buildUnits()
+  const units = buildUnits(active.length)
 
   if (units.length > active.length) {
     throw new Error(`Not enough active creatures for mandatory rewards: ${units.length} rewards / ${active.length} creatures.`)

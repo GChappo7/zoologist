@@ -730,6 +730,7 @@ function App(){
   const [questStatuses,setQuestStatuses]=useState(gameState.questStatuses||{})
   const [resetVersion,setResetVersion]=useState(0)
   const saveGenerationRef=useRef(0)
+  const accountLoadGenerationRef=useRef(0)
   const queuedSaveRef=useRef(Promise.resolve())
 
   useEffect(()=>{
@@ -746,6 +747,7 @@ function App(){
 
   useEffect(()=>{
     let active=true
+    const loadGeneration=++accountLoadGenerationRef.current
     const load=async()=>{
       if(!session){
         if(active){
@@ -779,7 +781,7 @@ function App(){
           }
         }
 
-        if(active){
+        if(active && loadGeneration===accountLoadGenerationRef.current){
           setGameState(next)
           setSkillProgress(normalizeSkillProgress(next.skillProgress||{}))
           setRewardAssignments(next.rewardAssignments||null)
@@ -789,7 +791,7 @@ function App(){
         }
       }catch(error){
         console.error('Could not load Zoologist cloud save:',error)
-        if(active){
+        if(active && loadGeneration===accountLoadGenerationRef.current){
           setAccountReady(true)
           setCloudSaveStatus('error')
         }
@@ -840,6 +842,9 @@ function App(){
 
     const resetState={...EMPTY_GAME_STATE}
     const resetGeneration=++saveGenerationRef.current
+    // Invalidate any account-load request that started before the reset.
+    // Otherwise a late response can put the old cloud state back into React.
+    accountLoadGenerationRef.current+=1
 
     // Clear every local progression key immediately.
     localStorage.removeItem('zoologist-skill-progress')

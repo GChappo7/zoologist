@@ -726,6 +726,7 @@ function App(){
   const [skillProgress,setSkillProgress]=useState(()=>normalizeSkillProgress(gameState.skillProgress||{}))
   const [rewardAssignments,setRewardAssignments]=useState(()=>gameState.rewardAssignments||null)
   const [questStatuses,setQuestStatuses]=useState(gameState.questStatuses||{})
+  const [resetVersion,setResetVersion]=useState(0)
 
   useEffect(()=>{
     if(!supabase){setAccountReady(true);return}
@@ -818,6 +819,37 @@ function App(){
     return()=>window.clearTimeout(timer)
   },[session?.user?.id,accountReady,gameState,skillProgress,rewardAssignments,questStatuses])
 
+  const handleResetProgress=async()=>{
+    const confirmed=window.confirm('Reset all Zoologist progress? This will clear your map, skills, quests and reward assignments, but your account will remain logged in.')
+    if(!confirmed)return
+
+    const resetState={...EMPTY_GAME_STATE}
+    localStorage.removeItem('zoologist-skill-progress')
+    localStorage.removeItem('zoologist-map-tiles')
+    localStorage.removeItem('zoologist-reward-assignments')
+    localStorage.removeItem('zoologist-quest-statuses')
+    localStorage.setItem('zoologist-local-save-owner',session.user.id)
+
+    setGameState(resetState)
+    setSkillProgress(normalizeSkillProgress({}))
+    setRewardAssignments(null)
+    setQuestStatuses({})
+    setProgress({explored:0,revealed:1})
+    setResetVersion(value=>value+1)
+    setTab('map')
+    setSkillsOpen(false)
+    setAccountOpen(false)
+    setCloudSaveStatus('saving')
+
+    try{
+      await saveCloudGameState(session.user.id,resetState)
+      setCloudSaveStatus('connected')
+    }catch(error){
+      console.error('Could not reset Zoologist cloud save:',error)
+      setCloudSaveStatus('error')
+    }
+  }
+
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{
     const skill=reward?.skill
     if(!skill)return current
@@ -856,7 +888,7 @@ function App(){
     :tab==='shop'?<ShopView/>
     :tab==='bosses'?<BossView/>
     :<MapView
-      key={session?.user?.id??'local'}
+      key={`${session?.user?.id??'local'}-${resetVersion}`
       creatures={creatures}
       onProgressChange={setProgress}
       skillProgress={skillProgress}
@@ -886,7 +918,7 @@ function App(){
     </header>
     <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}</main>
     <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
-    <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession}/>
+    <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession} onResetProgress={handleResetProgress}/>
   </div>
 }
 createRoot(document.getElementById('root')).render(<App />)

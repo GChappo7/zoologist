@@ -330,7 +330,7 @@ function SkillsDropdown({open,onClose,skillProgress,anchorRef}) {
   if(!open)return null
   const unrestricted=new Set(['Attack','Hitpoints','Hunter'])
   const getDisplay=name=>{
-    if(unrestricted.has(name))return '1-99'
+    if(unrestricted.has(name))return '99'
     const progress=skillProgress?.[name]??{unlocked:false,maxLevel:0,nextRewardIndex:0}
     if(!progress.unlocked)return 'Locked'
     const completedIndex=Math.max(0,Math.min(9,Number(progress.nextRewardIndex)-1))

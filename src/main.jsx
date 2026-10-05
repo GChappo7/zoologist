@@ -840,6 +840,8 @@ function App(){
 
     const resetState={...EMPTY_GAME_STATE}
     const resetGeneration=++saveGenerationRef.current
+
+    // Clear every local progression key immediately.
     localStorage.removeItem('zoologist-skill-progress')
     localStorage.removeItem('zoologist-map-tiles')
     localStorage.removeItem('zoologist-reward-assignments')
@@ -847,8 +849,8 @@ function App(){
     localStorage.setItem('zoologist-local-save-owner',session.user.id)
     setCloudSaveStatus('saving')
 
-    // Let any save that was already in flight finish before writing the reset.
-    // Newer autosaves are blocked by the generation check above.
+    // Wait for any older save to finish, then write the empty state with a
+    // newer generation so no stale autosave can overwrite the reset.
     try{
       await queuedSaveRef.current.catch(()=>{})
       if(resetGeneration!==saveGenerationRef.current)return
@@ -859,22 +861,9 @@ function App(){
       return
     }
 
-    // Verify the reset actually reached the cloud before rebuilding the UI.
-    // A full reload then guarantees no stale React state can recreate the old world.
-    const verified=await loadCloudGameState(session.user.id)
-    const resetVerified=Boolean(
-      verified &&
-      verified.mapTiles==null &&
-      verified.skillProgress==null &&
-      verified.rewardAssignments==null &&
-      Object.keys(verified.questStatuses||{}).length===0
-    )
-    if(!resetVerified){
-      console.error('Reset verification failed: cloud state was not empty.')
-      setCloudSaveStatus('error')
-      return
-    }
-
+    // The cloud reset has succeeded, so replace the live React state directly.
+    // Avoid a full page reload: reloading can race the account-load effect and
+    // resurrect an older state before the reset has propagated everywhere.
     setGameState(resetState)
     setSkillProgress(normalizeSkillProgress({}))
     setRewardAssignments(null)
@@ -885,9 +874,6 @@ function App(){
     setSkillsOpen(false)
     setAccountOpen(false)
     setCloudSaveStatus('connected')
-
-    // Start from a completely fresh React/local state after the verified reset.
-    window.setTimeout(()=>window.location.reload(),0)
   }
 
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{

@@ -72,7 +72,8 @@ export default function AccountModal({ open, onClose, session, onAuthChange, onR
       {session ? <>
         <div className="account-modal-heading"><div className="account-modal-icon"><LogIn size={20}/></div><div><strong>Account</strong><span>{session.user.email}</span></div></div>
         <p className="account-modal-copy">Your Zoologist progress is linked to this account and can be loaded on another device.</p>
-        <button className="account-modal-primary" type="button" onClick={logout} disabled={busy}><LogOut size={15}/> {busy ? 'Signing out…' : 'Sign out'}</button>\n        {onResetProgress && <button className="account-modal-reset" type="button" onClick={onResetProgress} disabled={busy}><RotateCcw size={15}/> Reset progress</button>}
+        <button className="account-modal-primary" type="button" onClick={logout} disabled={busy}><LogOut size={15}/> {busy ? 'Signing out…' : 'Sign out'}</button>
+        {onResetProgress && <button className="account-modal-reset" type="button" onClick={onResetProgress} disabled={busy}><RotateCcw size={15}/> Reset progress</button>}
       </> : <>
         <div className="account-modal-heading"><div className="account-modal-icon"><UserPlus size={20}/></div><div><strong>{mode === 'login' ? 'Log in' : 'Create account'}</strong><span>Zoologist cloud save</span></div></div>
         <form onSubmit={submit} className="account-form">

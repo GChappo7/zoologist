@@ -762,12 +762,23 @@ function App(){
 
       try{
         await ensureProfile(session.user)
-        const cloud=await loadCloudGameState(session.user.id)
 
-        // A reset marker is authoritative on the first load after a reset.
-        // This prevents an old cloud snapshot from ever resurrecting progress.
+        // A pending reset is checked before reading the cloud save. The reset
+        // snapshot is authoritative for this load, so an old cloud snapshot
+        // can never be selected as the source of truth during a reset.
         const resetPending=localStorage.getItem('zoologist-reset-pending')===session.user.id
-        let next=resetPending ? {...EMPTY_GAME_STATE,worldId:createWorldId()} : (cloud&&typeof cloud==='object' ? cloud : null)
+        let resetSnapshot=null
+        if(resetPending){
+          try{
+            resetSnapshot=JSON.parse(localStorage.getItem('zoologist-reset-state')||'null')
+          }catch{}
+        }
+        const cloud=resetPending ? null : await loadCloudGameState(session.user.id)
+        let next=resetPending && resetSnapshot
+          ? {...EMPTY_GAME_STATE,...resetSnapshot,skillProgress:null,mapTiles:null,rewardAssignments:null,questStatuses:{}}
+          : resetPending
+            ? {...EMPTY_GAME_STATE,worldId:createWorldId()}
+            : (cloud&&typeof cloud==='object' ? cloud : null)
         if(!next){
           const localOwner=localStorage.getItem('zoologist-local-save-owner')
           const local=readLocalGameState()
@@ -789,6 +800,7 @@ function App(){
           try{
             await saveCloudGameState(session.user.id,next)
             localStorage.removeItem('zoologist-reset-pending')
+            localStorage.removeItem('zoologist-reset-state')
           }catch(error){
             console.error('Could not persist reset state:',error)
           }
@@ -882,6 +894,8 @@ function App(){
 
     const resetState={...EMPTY_GAME_STATE,worldId:createWorldId()}
     const resetGeneration=++saveGenerationRef.current
+    // Stop normal autosaves while the reset is being committed.
+    setAccountReady(false)
     // Invalidate any account-load request that started before the reset.
     // Otherwise a late response can put the old cloud state back into React.
     accountLoadGenerationRef.current+=1
@@ -892,6 +906,8 @@ function App(){
     localStorage.removeItem('zoologist-reward-assignments')
     localStorage.removeItem('zoologist-quest-statuses')
     localStorage.setItem('zoologist-local-save-owner',session.user.id)
+    // Persist the exact blank world so reload cannot fall back to an old cloud snapshot.
+    localStorage.setItem('zoologist-reset-state',JSON.stringify(resetState))
     localStorage.setItem('zoologist-reset-pending',session.user.id)
     localStorage.setItem('zoologist-world-id',resetState.worldId)
 

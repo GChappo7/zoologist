@@ -507,7 +507,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
 }
 function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,skillProgress,rewardAssignments}){
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
-  const reward=selectedTile&&creature?getTileReward(selectedTile,creature,skillProgress):null
+  const reward=selectedTile&&creature?getTileReward(selectedTile,creature,skillProgress,rewardAssignments):null
   if(!open)return null
   return <aside className="side-panel side-panel-open">
     <div className="side-panel-header"><div><div className="eyebrow"><Compass size={13}/> EXPEDITION LOG</div><strong>Animal details</strong></div><button className="icon-button" onClick={()=>setOpen(false)}><ChevronRight size={17}/></button></div>
@@ -523,12 +523,12 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,sk
     </div>}
   </aside>
 }
-function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete,initialTiles,onTilesChange,activeRewardAssignments,onRewardAssignmentsChange}){
+function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete,initialTiles,onTilesChange,rewardAssignments,onRewardAssignmentsChange}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[dismissingTileKey,setDismissingTileKey]=useState(null),[startCreature]=useState(()=>creatureById[initialTiles?.[keyFor(0,0)]?.creatureId]??pickStartingCreature(creatures))
-  const [generatedRewardAssignments]=useState(()=>activeRewardAssignments??buildRewardAssignments(creatures,startCreature))
-  const activeRewardAssignments=activeRewardAssignments??generatedRewardAssignments
-  const [tiles,setTiles]=useState(()=>initialTiles&&Object.keys(initialTiles).length?initialTiles:createInitialTiles(creatures,startCreature,skillProgress,activeRewardAssignments)),[fogVisible,setFogVisible]=useState(true),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false), [mapHelpOpen,setMapHelpOpen]=useState(false)
+  const [generatedRewardAssignments]=useState(()=>rewardAssignments??buildRewardAssignments(creatures,startCreature))
+  const effectiveRewardAssignments=rewardAssignments??generatedRewardAssignments
+  const [tiles,setTiles]=useState(()=>initialTiles&&Object.keys(initialTiles).length?initialTiles:createInitialTiles(creatures,startCreature,skillProgress,effectiveRewardAssignments)),[fogVisible,setFogVisible]=useState(true),[pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false), [mapHelpOpen,setMapHelpOpen]=useState(false)
   const stageRef=useRef(null),zoomRef=useRef(zoom),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0,pointerType:null}),touchPointersRef=useRef(new Map()),pinchRef=useRef(null),suppressClickRef=useRef(false),edgeFrameRef=useRef(null)
   useEffect(()=>{zoomRef.current=zoom},[zoom])
   useEffect(()=>{onTilesChange?.(tiles)},[tiles,onTilesChange])
@@ -688,13 +688,13 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
   }
   const handleComplete=tile=>{
     if(!tile||tile.state!=='frontier'||tile.completed||tile.faceDown)return
-    const reward=getTileReward(tile,creatureById[tile.creatureId],skillProgress)
+    const reward=getTileReward(tile,creatureById[tile.creatureId],skillProgress,effectiveRewardAssignments)
     const completed={...tile,state:'explored',completed:true,faceDown:false,reward}
     const nextSkillProgress=String(reward?.type).toLowerCase()==='skill'
       ?getSkillProgressAfterReward(skillProgress,reward)
       :skillProgress
     if(String(reward?.type).toLowerCase()==='skill')onSkillRewardComplete?.(reward)
-    setTiles(current=>recomputeFrontier({...current,[keyFor(tile.x,tile.y)]:completed},creatures,nextSkillProgress,activeRewardAssignments))
+    setTiles(current=>recomputeFrontier({...current,[keyFor(tile.x,tile.y)]:completed},creatures,nextSkillProgress,effectiveRewardAssignments))
     setSelectedTile(completed)
     setDismissingTileKey(keyFor(completed.x,completed.y))
     setPanelOpen(false)
@@ -703,13 +703,13 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
   }
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onClickCapture={handleStageClickCapture} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
-  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} activeRewardAssignments={activeRewardAssignments}/>)}{selectedTile&&<TilePopup selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+TILE_SIZE-64,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-25}}/>}</div></div>
+  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} effectiveRewardAssignments={effectiveRewardAssignments}/>)}{selectedTile&&<TilePopup selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+TILE_SIZE-64,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-25}}/>}</div></div>
       <div className="map-zoom-controls" onPointerDown={e=>e.stopPropagation()}><button onClick={()=>zoomAtPoint(zoom-ZOOM_STEP,innerWidth/2,innerHeight/2)}>−</button><button className="zoom-readout" onClick={()=>{setPan({x:0,y:0});setZoom(1)}}>{Math.round(zoom*100)}%</button><button onClick={()=>zoomAtPoint(zoom+ZOOM_STEP,innerWidth/2,innerHeight/2)}>+</button></div>
       <div className={`map-help ${mapHelpOpen?'is-open':''}`}><button type="button" className="map-help-toggle" onClick={e=>{e.stopPropagation();setMapHelpOpen(open=>!open)}} aria-label={mapHelpOpen?'Hide map controls':'Show map controls'} aria-expanded={mapHelpOpen} title="Map controls"><img src="https://oldschool.runescape.wiki/images/Lumbridge_Guide_icon.png" alt="" draggable="false"/></button><div className="map-help-panel"><div><MousePointer2 size={13}/> Move to edge to pan</div><div>↑ ↓ ← → <span>Arrow keys</span></div><div>MMB <span>Drag to pan</span></div><div>Wheel <span>Zoom</span></div></div></div>
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
     </div>
   </section>
-  <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} activeRewardAssignments={activeRewardAssignments}/>
+  <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} effectiveRewardAssignments={effectiveRewardAssignments}/>
 </div>
 }
 function App(){

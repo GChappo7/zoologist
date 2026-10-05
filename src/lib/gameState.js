@@ -1,7 +1,13 @@
 import { supabase } from './supabase'
 
+export function createWorldId() {
+  if(typeof crypto!=='undefined'&&typeof crypto.randomUUID==='function')return crypto.randomUUID()
+  return `world-${Date.now()}-${Math.random().toString(36).slice(2)}`
+}
+
 export const EMPTY_GAME_STATE = {
   version: 1,
+  worldId: null,
   skillProgress: null,
   mapTiles: null,
   rewardAssignments: null,
@@ -13,11 +19,13 @@ export function readLocalGameState() {
   let mapTiles = null
   let rewardAssignments = null
   let questStatuses = {}
+  let worldId = null
   try { skillProgress = JSON.parse(localStorage.getItem('zoologist-skill-progress') || 'null') } catch {}
   try { mapTiles = JSON.parse(localStorage.getItem('zoologist-map-tiles') || 'null') } catch {}
   try { rewardAssignments = JSON.parse(localStorage.getItem('zoologist-reward-assignments') || 'null') } catch {}
   try { questStatuses = JSON.parse(localStorage.getItem('zoologist-quest-statuses') || '{}') } catch {}
-  return { ...EMPTY_GAME_STATE, skillProgress, mapTiles, rewardAssignments, questStatuses }
+  try { worldId = localStorage.getItem('zoologist-world-id') || null } catch {}
+  return { ...EMPTY_GAME_STATE, worldId, skillProgress, mapTiles, rewardAssignments, questStatuses }
 }
 
 export async function loadCloudGameState(userId) {

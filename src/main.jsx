@@ -855,6 +855,22 @@ function App(){
       return
     }
 
+    // Verify the reset actually reached the cloud before rebuilding the UI.
+    // A full reload then guarantees no stale React state can recreate the old world.
+    const verified=await loadCloudGameState(session.user.id)
+    const resetVerified=Boolean(
+      verified &&
+      verified.mapTiles==null &&
+      verified.skillProgress==null &&
+      verified.rewardAssignments==null &&
+      Object.keys(verified.questStatuses||{}).length===0
+    )
+    if(!resetVerified){
+      console.error('Reset verification failed: cloud state was not empty.')
+      setCloudSaveStatus('error')
+      return
+    }
+
     setGameState(resetState)
     setSkillProgress(normalizeSkillProgress({}))
     setRewardAssignments(null)
@@ -865,6 +881,9 @@ function App(){
     setSkillsOpen(false)
     setAccountOpen(false)
     setCloudSaveStatus('connected')
+
+    // Start from a completely fresh React/local state after the verified reset.
+    window.setTimeout(()=>window.location.reload(),0)
   }
 
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{

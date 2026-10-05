@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { LogIn, LogOut, UserPlus, X } from 'lucide-react'
+import { LogIn, LogOut, RotateCcw, UserPlus, X } from 'lucide-react'
 import { supabase } from './supabase'
 
-export default function AccountModal({ open, onClose, session, onAuthChange, standalone=false }) {
+export default function AccountModal({ open, onClose, session, onAuthChange, onResetProgress, standalone=false }) {
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -72,7 +72,7 @@ export default function AccountModal({ open, onClose, session, onAuthChange, sta
       {session ? <>
         <div className="account-modal-heading"><div className="account-modal-icon"><LogIn size={20}/></div><div><strong>Account</strong><span>{session.user.email}</span></div></div>
         <p className="account-modal-copy">Your Zoologist progress is linked to this account and can be loaded on another device.</p>
-        <button className="account-modal-primary" type="button" onClick={logout} disabled={busy}><LogOut size={15}/> {busy ? 'Signing out…' : 'Sign out'}</button>
+        <button className="account-modal-primary" type="button" onClick={logout} disabled={busy}><LogOut size={15}/> {busy ? 'Signing out…' : 'Sign out'}</button>\n        {onResetProgress && <button className="account-modal-reset" type="button" onClick={onResetProgress} disabled={busy}><RotateCcw size={15}/> Reset progress</button>}
       </> : <>
         <div className="account-modal-heading"><div className="account-modal-icon"><UserPlus size={20}/></div><div><strong>{mode === 'login' ? 'Log in' : 'Create account'}</strong><span>Zoologist cloud save</span></div></div>
         <form onSubmit={submit} className="account-form">

@@ -889,7 +889,7 @@ function App(){
     :tab==='shop'?<ShopView/>
     :tab==='bosses'?<BossView/>
     :<MapView
-      key={`${session?.user?.id??'local'}-${resetVersion}`
+      key={`${session?.user?.id??'local'}-${resetVersion}`}
       creatures={creatures}
       onProgressChange={setProgress}
       skillProgress={skillProgress}

@@ -207,12 +207,17 @@ function getAdjacentPositions(tiles){
 }
 function recomputeFrontier(tiles,creatures,skillProgress){
   const next={...tiles},used=new Set(Object.values(next).map(t=>t.creatureId).filter(Boolean))
+  const usedQuestRewards=getUsedQuestRewardKeys(tiles)
   getAdjacentPositions(tiles).forEach(({x,y})=>{
     const creature=pickUnusedCreature(creatures,used,preferredScoreForDistance(x,y))
     if(creature){
       used.add(creature.id)
       const distance=Math.abs(x)+Math.abs(y)
-      const reward=createTileReward(creature,skillProgress,distance)
+      const reward=createTileReward(creature,skillProgress,distance,usedQuestRewards)
+      if(String(reward?.type??'').toLowerCase()==='quest'){
+        const questKey=String(reward.label??reward.name??'').trim().toLowerCase()
+        if(questKey)usedQuestRewards.add(questKey)
+      }
       next[keyFor(x,y)]={x,y,state:'frontier',creatureId:creature.id,completed:false,faceDown:false,revealAnimation:true,...(reward?{reward}:{})}
     }
   })
@@ -412,7 +417,17 @@ function getDiaryTierWeight(tier,distance){
   return weightsByDistance[tier]??0
 }
 
-function createTileReward(creature,skillProgress,distance=Infinity){
+function getUsedQuestRewardKeys(tiles){
+  return new Set(
+    Object.values(tiles??{})
+      .map(tile=>tile?.reward)
+      .filter(reward=>String(reward?.type??'').toLowerCase()==='quest')
+      .map(reward=>String(reward?.label??reward?.name??'').trim().toLowerCase())
+      .filter(Boolean)
+  )
+}
+
+function createTileReward(creature,skillProgress,distance=Infinity,usedQuestRewards=new Set()){
   // Achievement diaries should be uncommon near the centre so early
   // progression is driven more by skills and quests.
   const diaryChance=distance<=4?0.03:distance<=8?0.07:distance<=12?0.15:0.25
@@ -428,6 +443,9 @@ function createTileReward(creature,skillProgress,distance=Infinity){
     )
     const validRewards=rewards.filter(reward=>{
       if(!canAssignQuestReward(creature,reward))return false
+
+      const rewardQuest=String(reward.label??reward.name??'').trim().toLowerCase()
+      if(usedQuestRewards.has(rewardQuest))return false
 
       // A quest required to access a creature is also a progression deadlock,
       // so never place it on that creature even if it was not duplicated in

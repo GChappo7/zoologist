@@ -16,7 +16,7 @@ import { isValidQuestRewardAssignment, isValidSkillRewardAssignment } from './pr
 import { buildRewardAssignments, getAssignedReward } from './rewardAssignments'
 import AccountModal from './lib/accountModal'
 import { supabase } from './lib/supabase'
-import { createWorldId, deleteCloudGameState, ensureProfile, loadCloudGameState, readLocalGameState, saveCloudGameState } from './lib/gameState'
+import { createWorldId, deleteCloudGameState, ensureProfile, loadCloudGameState, readLocalGameState, saveCloudGameState, verifyCloudGameState } from './lib/gameState'
 
 const TILE_SIZE = 256
 const TILE_GAP = 0
@@ -921,25 +921,26 @@ function App(){
     setResetVersion(current=>current+1)
     setCloudSaveStatus('saving')
 
-    // The local reset snapshot is already authoritative. Reload even if the
-    // immediate cloud write fails, so an old cloud snapshot cannot keep the
-    // old world mounted in the current session.
+    // The reset is only considered successful if Supabase accepts the blank
+    // snapshot and immediately returns that same world when we read it back.
     try{
       await queuedSaveRef.current.catch(()=>{})
       if(resetGeneration!==saveGenerationRef.current)return
-      // Try to replace the cloud snapshot with the blank reset state.
-      await saveCloudGameState(session.user.id,resetState)
+      await verifyCloudGameState(session.user.id,resetState)
+      localStorage.removeItem('zoologist-reset-pending')
+      localStorage.removeItem('zoologist-reset-state')
       setCloudSaveStatus('connected')
     }catch(error){
-      // Keep the reset marker/snapshot intact. The next account load will use
-      // that blank state first and retry the cloud write instead of restoring
-      // an older world.
-      console.error('Could not immediately persist Zoologist cloud reset:',error)
+      // Do not reload into an apparently successful reset when the cloud
+      // snapshot could not be written or verified. Keep the reset marker so
+      // the blank state remains authoritative on the next load.
+      console.error('Zoologist reset verification failed:',error)
       setCloudSaveStatus('error')
+      window.alert(`Reset could not be confirmed in the cloud. Your old progress has not been overwritten.\\n\\n${error?.message||error}`)
+      return
     }
 
-    // Always reload after a reset attempt. The reset-pending marker and blank
-    // snapshot make the empty world authoritative on the next load.
+    // Only reload after the blank cloud snapshot has been verified.
     window.location.reload()
   }
 

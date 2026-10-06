@@ -902,10 +902,10 @@ function App(){
     const resetGeneration=++saveGenerationRef.current
 
     // Invalidate autosaves/account loads that were created before this reset.
-    setAccountReady(false)
     accountLoadGenerationRef.current+=1
 
-    // Replace the in-memory world immediately and force a fresh MapView.
+    // Replace the in-memory world immediately. Keep accountReady=true so the
+    // map remains visible while the cloud reset is being confirmed.
     setGameState(resetState)
     setSkillProgress(normalizeSkillProgress({}))
     setRewardAssignments(null)

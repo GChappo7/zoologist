@@ -868,7 +868,9 @@ function App(){
   const updateGameState=patch=>setGameState(current=>({...current,...patch}))
 
   useEffect(()=>{
-    if(!session||!accountReady)return
+    // During a reset the new MapView may generate its fresh starting tile immediately.
+    // Do not autosave that in-memory world until the blank cloud reset has been verified.
+    if(!session||!accountReady||resetInProgress)return
     const payload={...gameState,skillProgress,rewardAssignments,questStatuses}
     const generation=saveGenerationRef.current
     const timer=window.setTimeout(()=>{
@@ -890,7 +892,7 @@ function App(){
       queuedSaveRef.current=queuedSaveRef.current.catch(()=>{}).then(save)
     },500)
     return()=>window.clearTimeout(timer)
-  },[session?.user?.id,accountReady,gameState,skillProgress,rewardAssignments,questStatuses])
+  },[session?.user?.id,accountReady,resetInProgress,gameState,skillProgress,rewardAssignments,questStatuses])
 
   const handleResetProgress=async()=>{
     setResetConfirmOpen(true)
@@ -1005,9 +1007,9 @@ function App(){
       skillProgress={skillProgress}
       onSkillRewardComplete={handleSkillRewardComplete}
       initialTiles={gameState.mapTiles}
-      onTilesChange={mapTiles=>updateGameState({mapTiles})}
+      onTilesChange={resetInProgress?undefined:mapTiles=>updateGameState({mapTiles})}
       rewardAssignments={rewardAssignments}
-      onRewardAssignmentsChange={assignments=>{setRewardAssignments(assignments);updateGameState({rewardAssignments:assignments})}}
+      onRewardAssignmentsChange={resetInProgress?undefined:assignments=>{setRewardAssignments(assignments);updateGameState({rewardAssignments:assignments})}}
     />
   const handleTabClick=id=>{
     if(id==='skills'){

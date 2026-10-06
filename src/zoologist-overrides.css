@@ -993,3 +993,338 @@
 @media (max-width:700px) {
   .deployment-indicator { font-size:8px; margin-left:4px; padding:1px 4px; }
 }
+
+/* Pokédex-style creature collection */
+.header-collection {
+  width: 220px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.header-collection-label {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  color:var(--muted);
+  font:9px 'Space Mono',monospace;
+  letter-spacing:.12em;
+}
+.header-collection-label strong {
+  color:#cfd7db;
+  font-size:11px;
+  letter-spacing:0;
+}
+.header-collection-track {
+  height:5px;
+  margin-top:6px;
+  background:#26323a;
+  border-radius:99px;
+  overflow:hidden;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.35);
+}
+.header-collection-fill {
+  height:100%;
+  min-width:2px;
+  background:linear-gradient(90deg,#4f9b62,#75bd7e);
+  border-radius:inherit;
+  transition:width .25s ease;
+}
+.header-collection:hover .header-collection-label strong,
+.header-collection.active .header-collection-label strong { color:#e8d29f; }
+.header-collection.active .header-collection-fill { background:#d5aa63; }
+
+.collection-log-page {
+  min-height:calc(100vh - 76px);
+  padding:20px;
+  background:#0b1115;
+}
+.collection-log-shell {
+  max-width:1280px;
+  min-height:calc(100vh - 116px);
+  margin:0 auto;
+  background:#111a20;
+  color:var(--text);
+  border:1px solid #33434c;
+  border-radius:14px;
+  box-shadow:0 20px 70px rgba(0,0,0,.42);
+  overflow:hidden;
+}
+.collection-log-header {
+  min-height:70px;
+  display:grid;
+  grid-template-columns:90px 1fr auto;
+  align-items:center;
+  gap:16px;
+  padding:12px 18px;
+  background:linear-gradient(180deg,#1b282f,#121b21);
+  border-bottom:1px solid #35464f;
+}
+.collection-back-button {
+  justify-self:start;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  border:0;
+  background:transparent;
+  color:#8f9da4;
+  cursor:pointer;
+  font:11px 'Space Mono',monospace;
+  padding:8px 4px;
+}
+.collection-back-button:hover { color:#e7d29d; }
+.collection-log-title {
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.collection-log-icon {
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border:1px solid #5b492f;
+  border-radius:9px;
+  background:#1d1b15;
+  color:#d5aa63;
+}
+.collection-log-title > div:last-child {
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.collection-log-title strong {
+  font:700 22px var(--font-runescape);
+  color:#eadfc7;
+}
+.collection-log-title span {
+  color:#87959c;
+  font:9px 'Space Mono',monospace;
+  letter-spacing:.05em;
+}
+.collection-log-stat {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:1px;
+}
+.collection-log-stat b {
+  color:#75bd7e;
+  font:700 22px var(--font-runescape);
+}
+.collection-log-stat span {
+  color:#77868d;
+  font:8px 'Space Mono',monospace;
+  letter-spacing:.12em;
+}
+.collection-log-progress {
+  padding:13px 18px 11px;
+  background:#0e171c;
+  border-bottom:1px solid #26363e;
+}
+.collection-log-progress-label {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  color:#84939a;
+  font:9px 'Space Mono',monospace;
+  letter-spacing:.12em;
+}
+.collection-log-progress-label strong { color:#d6dde0; letter-spacing:0; }
+.collection-log-progress-track {
+  height:7px;
+  margin-top:7px;
+  background:#202d34;
+  border-radius:99px;
+  overflow:hidden;
+}
+.collection-log-progress-fill {
+  height:100%;
+  min-width:2px;
+  background:linear-gradient(90deg,#4f9b62,#75bd7e);
+  border-radius:inherit;
+}
+.collection-log-legend {
+  display:flex;
+  justify-content:flex-end;
+  gap:14px;
+  margin-top:8px;
+  color:#7c8a91;
+  font-size:9px;
+}
+.collection-log-legend span { display:inline-flex; align-items:center; gap:5px; }
+.collection-swatch {
+  width:7px;
+  height:7px;
+  display:inline-block;
+  border-radius:50%;
+}
+.collection-swatch.complete { background:#63ad71; }
+.collection-swatch.revealed { background:#d1a35b; }
+.collection-swatch.unknown { background:#59656b; }
+.collection-log-controls {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  background:#151f26;
+  border-bottom:1px solid #28363f;
+}
+.collection-filters {
+  display:flex;
+  gap:4px;
+  flex-wrap:wrap;
+}
+.collection-filters button {
+  border:1px solid #35454e;
+  background:#1a252c;
+  color:#89979d;
+  padding:7px 10px;
+  border-radius:5px;
+  cursor:pointer;
+  font:700 10px 'Space Mono',monospace;
+}
+.collection-filters button:hover { color:#d6dde0; border-color:#53636c; }
+.collection-filters button.active {
+  background:#3b3121;
+  border-color:#806b42;
+  color:#ead7a9;
+}
+.collection-filters button span { opacity:.65; margin-left:4px; }
+.collection-search {
+  margin-left:auto;
+  width:220px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 9px;
+  border:1px solid #35454e;
+  border-radius:5px;
+  background:#0e171c;
+  color:#728189;
+}
+.collection-search input {
+  width:100%;
+  min-width:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#d9e0e3;
+  font:11px 'DM Sans',sans-serif;
+}
+.collection-grid {
+  padding:14px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(126px,1fr));
+  gap:9px;
+  max-height:calc(100vh - 285px);
+  overflow:auto;
+}
+.collection-card {
+  position:relative;
+  min-width:0;
+  height:150px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-end;
+  padding:7px 6px 8px;
+  border:1px solid #303d44;
+  border-radius:9px;
+  overflow:hidden;
+  background:#182229;
+  box-shadow:inset 0 1px rgba(255,255,255,.025);
+}
+.collection-card-art {
+  position:absolute;
+  inset:8px 8px 34px;
+  display:grid;
+  place-items:center;
+}
+.collection-card .creature-glyph-collection {
+  width:100px;
+  height:88px;
+  display:grid;
+  place-items:center;
+}
+.collection-card .creature-glyph-collection .creature-image {
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+.collection-card-name {
+  position:relative;
+  z-index:2;
+  width:100%;
+  min-height:18px;
+  text-align:center;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font:700 14px var(--font-runescape);
+  text-shadow:2px 2px 0 #111,0 2px 5px rgba(0,0,0,.9);
+}
+.collection-card-status {
+  position:relative;
+  z-index:2;
+  margin-top:2px;
+  font:7px 'Space Mono',monospace;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.72;
+}
+.collection-card-completed {
+  border-color:#42684d;
+  background:linear-gradient(180deg,#182a20,#111d18);
+  box-shadow:inset 0 0 0 1px rgba(99,173,113,.12),0 0 12px rgba(79,155,98,.08);
+}
+.collection-card-completed .collection-card-name { color:#74c680; }
+.collection-card-completed .collection-card-status { color:#73bd7e; }
+.collection-card-revealed {
+  border-color:#715d35;
+  background:linear-gradient(180deg,#2b2518,#181b19);
+  box-shadow:inset 0 0 0 1px rgba(209,163,91,.10),0 0 12px rgba(209,163,91,.05);
+}
+.collection-card-revealed .collection-card-name { color:#e6bd61; }
+.collection-card-revealed .collection-card-status { color:#d1a35b; }
+.collection-card-unknown {
+  border-color:#273238;
+  background:#11181d;
+  filter:grayscale(.72);
+}
+.collection-card-unknown .collection-card-name,
+.collection-card-unknown .collection-card-status { color:#5f6b71; }
+.collection-question {
+  color:#58646a;
+  font:700 58px var(--font-runescape);
+  line-height:1;
+  text-shadow:2px 2px 0 #0a0f12;
+  opacity:.7;
+}
+.collection-empty {
+  padding:50px 20px;
+  text-align:center;
+  color:#77858c;
+  font-size:12px;
+}
+
+@media (max-width:900px) {
+  .header-collection { width:180px; }
+  .collection-grid { grid-template-columns:repeat(auto-fill,minmax(112px,1fr)); }
+}
+@media (max-width:600px) {
+  .header-collection { width:130px; }
+  .header-collection-label span { font-size:7px; }
+  .header-collection-label strong { font-size:9px; }
+  .collection-log-page { padding:8px; }
+  .collection-log-header { grid-template-columns:1fr auto; }
+  .collection-back-button { grid-column:1 / -1; }
+  .collection-log-stat { display:none; }
+  .collection-log-title strong { font-size:19px; }
+  .collection-log-controls { align-items:stretch; flex-direction:column; }
+  .collection-search { width:100%; margin-left:0; }
+  .collection-grid { grid-template-columns:repeat(2,minmax(0,1fr)); max-height:none; }
+}

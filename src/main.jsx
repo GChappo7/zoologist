@@ -29,6 +29,9 @@ const MAX_ZOOM = 2.25
 const ZOOM_STEP = 0.12
 const CARDINAL_DIRECTIONS = [[0,-1],[1,0],[0,1],[-1,0]]
 const QUEST_FILTERS = ['all','revealed','completed']
+const DEPLOYMENT_SHA = String(import.meta.env.VITE_DEPLOYMENT_SHA || 'local')
+const DEPLOYMENT_RUN = String(import.meta.env.VITE_DEPLOYMENT_RUN || '')
+const DEPLOYMENT_LABEL = DEPLOYMENT_SHA === 'local' ? 'LOCAL BUILD' : `DEPLOY #${DEPLOYMENT_RUN || '?'} • ${DEPLOYMENT_SHA.slice(0,7)}`
 
 const PROGRESSION_ASSETS = {
   quest: 'https://oldschool.runescape.wiki/images/Quests.png',
@@ -719,6 +722,7 @@ function App(){
   const skillsButtonRef=useRef(null)
   const [accountOpen,setAccountOpen]=useState(false)
   const [resetConfirmOpen,setResetConfirmOpen]=useState(false)
+  const [resetInProgress,setResetInProgress]=useState(false)
   const [session,setSession]=useState(null)
   const [accountReady,setAccountReady]=useState(false)
   const [cloudSaveStatus,setCloudSaveStatus]=useState('disconnected')
@@ -893,6 +897,8 @@ function App(){
   }
 
   const confirmResetProgress=async()=>{
+    if(resetInProgress)return
+    setResetInProgress(true)
     // Do the UI reset first. Nothing that touches Supabase/localStorage is
     // allowed to block the user-visible reset or leave the old MapView mounted.
     setResetConfirmOpen(false)
@@ -947,6 +953,7 @@ function App(){
     }catch(error){
       console.error('Zoologist reset verification failed:',error)
       setCloudSaveStatus('error')
+      setResetInProgress(false)
       // Keep the blank in-memory/local state visible rather than restoring the
       // old progress. The reset marker remains for the next successful load.
       window.alert(`Reset could not be confirmed in the cloud. The map has been reset on this device, but the cloud reset still needs attention.\\n\\n${error?.message||error}`)
@@ -1013,7 +1020,7 @@ function App(){
   }
   return <div className="app-shell">
     <header className="topbar">
-      <div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration</div></div></div>
+      <div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist <span className="deployment-indicator" title={`GitHub deployment ${DEPLOYMENT_SHA}`}>{DEPLOYMENT_LABEL}</span></div><div className="brand-subtitle">OSRS creature exploration</div></div></div>
       <nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} ref={id==='skills'?skillsButtonRef:undefined} className={`top-tab-${id} ${id==='skills'&&skillsOpen||tab===id?'active':''}`} onClick={()=>handleTabClick(id)} aria-expanded={id==='skills'?skillsOpen:undefined}>{OSRS_TAB_ICONS[id]?<img className="osrs-top-tab-icon" src={OSRS_TAB_ICONS[id]} alt="" aria-hidden="true" draggable="false"/>:<Icon size={16}/>}<span>{label}</span></button>)}</nav>
       <div className="header-actions">
         <div className="header-progress"><div className="progress-label"><span>EXPLORED <b>{progress.explored}</b> · REVEALED <b>{progress.revealed}</b></span><strong>{progress.explored} / {creatureCount}</strong></div><div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,progress.explored/creatureCount*100)}%`}}/></div></div>
@@ -1029,7 +1036,7 @@ function App(){
         <div className="reset-confirm-message">This will clear your map, skills, quests and reward assignments, but your account will remain logged in.</div>
         <div className="reset-confirm-actions">
           <button type="button" className="reset-confirm-cancel" onClick={()=>setResetConfirmOpen(false)}>Cancel</button>
-          <button type="button" className="reset-confirm-danger" onClick={confirmResetProgress}>Reset Progress</button>
+          <button type="button" className="reset-confirm-danger" onClick={confirmResetProgress} disabled={resetInProgress}>{resetInProgress ? "Resetting…" : "Reset Progress"}</button>
         </div>
       </div>
     </div>}

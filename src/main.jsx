@@ -938,14 +938,24 @@ function App(){
       console.error('Could not write local reset marker:',error)
     }
 
-    // Commit the exact blank world to the account. A stale queued save is
-    // allowed to finish first, but it cannot overwrite the reset because the
-    // reset generation invalidates it and verification happens afterwards.
+    // Do not wait for the normal autosave queue here. If an older Supabase
+    // request is stalled, waiting on the queue can leave the Reset button on
+    // "Resetting…" forever. The reset is a separate, authoritative save.
     try{
-      await queuedSaveRef.current.catch(()=>{})
       if(resetGeneration!==saveGenerationRef.current)return
-      await verifyCloudGameState(session.user.id,resetState)
+      const verifyWithTimeout=async()=>{
+        const timeout=new Promise((_,reject)=>window.setTimeout(()=>reject(new Error('Cloud reset timed out after 10 seconds.')),10000))
+        return await Promise.race([verifyCloudGameState(session.user.id,resetState),timeout])
+      }
+      await verifyWithTimeout()
       if(resetGeneration!==saveGenerationRef.current)return
+
+      // Give any stale in-flight autosave a moment to settle, then verify the
+      // blank snapshot once more before allowing the reload.
+      await new Promise(resolve=>window.setTimeout(resolve,500))
+      await verifyWithTimeout()
+      if(resetGeneration!==saveGenerationRef.current)return
+
       try{
         localStorage.removeItem('zoologist-reset-pending')
         localStorage.removeItem('zoologist-reset-state')

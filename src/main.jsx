@@ -938,38 +938,13 @@ function App(){
       console.error('Could not write local reset marker:',error)
     }
 
-    // Do not wait for the normal autosave queue here. If an older Supabase
-    // request is stalled, waiting on the queue can leave the Reset button on
-    // "Resetting…" forever. The reset is a separate, authoritative save.
-    try{
-      if(resetGeneration!==saveGenerationRef.current)return
-      const verifyWithTimeout=async()=>{
-        const timeout=new Promise((_,reject)=>window.setTimeout(()=>reject(new Error('Cloud reset timed out after 10 seconds.')),10000))
-        return await Promise.race([verifyCloudGameState(session.user.id,resetState),timeout])
-      }
-      await verifyWithTimeout()
-      if(resetGeneration!==saveGenerationRef.current)return
-
-      // Give any stale in-flight autosave a moment to settle, then verify the
-      // blank snapshot once more before allowing the reload.
-      await new Promise(resolve=>window.setTimeout(resolve,500))
-      await verifyWithTimeout()
-      if(resetGeneration!==saveGenerationRef.current)return
-
-      try{
-        localStorage.removeItem('zoologist-reset-pending')
-        localStorage.removeItem('zoologist-reset-state')
-      }catch{}
-      setCloudSaveStatus('connected')
-      window.location.reload()
-    }catch(error){
-      console.error('Zoologist reset verification failed:',error)
-      setCloudSaveStatus('error')
-      setResetInProgress(false)
-      // Keep the blank in-memory/local state visible rather than restoring the
-      // old progress. The reset marker remains for the next successful load.
-      window.alert(`Reset could not be confirmed in the cloud. The map has been reset on this device, but the cloud reset still needs attention.\\n\\n${error?.message||error}`)
-    }
+    // The reset marker is now the hand-off between the current page and the
+    // next account load. Reload immediately instead of waiting on Supabase:
+    // a stalled request must never leave the Reset button stuck on
+    // "Resetting…". The next load will render the blank world first, then
+    // persist it to the cloud in the background.
+    if(resetGeneration!==saveGenerationRef.current)return
+    window.location.reload()
   }
 
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{

@@ -112,10 +112,10 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 .map-tile:focus-visible { outline: 2px solid rgba(238,225,198,.85); outline-offset: -2px; z-index: 4; }
 .map-tile-explored { background: var(--explored-bg); border-color: #385146; }
 .map-tile-explored:hover { border-color: #5b7e6b; box-shadow: 0 0 0 2px rgba(112,151,131,.08); }
-.map-tile.is-completed { box-shadow: inset 0 0 0 2px rgba(93, 177, 111, .24), 0 0 12px rgba(93, 177, 111, .10); }
+.map-tile.is-completed { background: #24382c; border-color: #4d7759; box-shadow: inset 0 0 0 2px rgba(93, 177, 111, .22), 0 0 12px rgba(93, 177, 111, .10); }
 .map-tile.is-completed .map-card-content { filter: grayscale(.72); opacity: .68; transition: filter .15s ease, opacity .15s ease; }
-.map-tile.is-completed .tile-completed-tick { filter: drop-shadow(0 0 5px rgba(105, 210, 126, .45)); transform: scale(1.08); }
-.map-tile.is-completed:hover { box-shadow: inset 0 0 0 2px rgba(105, 210, 126, .38), 0 0 16px rgba(93, 177, 111, .16); }
+.map-tile.is-completed .tile-completed-tick { filter: drop-shadow(0 0 5px rgba(105, 210, 126, .45)); }
+.map-tile.is-completed:hover { background: #2b4935; box-shadow: inset 0 0 0 2px rgba(105, 210, 126, .38), 0 0 16px rgba(93, 177, 111, .16); }
 .map-tile.is-completed:hover .map-card-content { opacity: .76; }
 .map-tile-frontier { background: var(--frontier-bg); border-color: #765b32; box-shadow: inset 0 0 0 1px rgba(213,170,99,.04); }
 .map-tile-frontier:hover { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(213,170,99,.10), 0 0 22px rgba(213,170,99,.08); }

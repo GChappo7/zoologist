@@ -2,6 +2,11 @@ import rewardCatalog from '../data/reward-catalog.json'
 import { isValidQuestRewardAssignment, isValidSkillRewardAssignment } from './progressionRules'
 
 const EARLY_RISKY_SKILLS = new Set(['Fishing', 'Slayer', 'Sailing'])
+const EARLY_REWARD_IDS = new Set(['fishing-1-10', 'quest-novice-5'])
+
+function isForcedEarlyReward(unit) {
+  return EARLY_REWARD_IDS.has(String(unit?.id ?? ''))
+}
 
 function shuffle(values) {
   const result = [...values]
@@ -91,6 +96,14 @@ function makeAssignment(creatures, startCreature) {
         isEarlyCreature(creature) &&
         String(unit.type).toLowerCase() === 'skill' &&
         EARLY_RISKY_SKILLS.has(unit.skill)
+      ) return -1
+
+      // Reserve the first Fishing unlock and Children of the Sun for genuinely
+      // accessible creatures. The map generator can then enforce that these
+      // rewards are encountered early without making the early game impossible.
+      if (
+        isForcedEarlyReward(unit) &&
+        Number(creature.score) > 2
       ) return -1
 
       if (

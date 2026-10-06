@@ -23,7 +23,6 @@ const TILE_GAP = 0
 const TILE_STEP = TILE_SIZE + TILE_GAP
 const RENDER_RADIUS = 20
 const RENDER_DIAMETER = RENDER_RADIUS * 2 + 1
-const EDGE_ZONE = 70
 const MIN_ZOOM = 0.5
 const MAX_ZOOM = 2.25
 const ZOOM_STEP = 0.12
@@ -560,10 +559,7 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
     }
     window.addEventListener('keydown',handleKeyDown);return()=>window.removeEventListener('keydown',handleKeyDown)
   },[])
-  useEffect(()=>{
-    const tick=()=>{const stage=stageRef.current,p=pointerRef.current;if(stage&&p.inside&&!dragRef.current.active){const r=stage.getBoundingClientRect(),x=p.x-r.left,y=p.y-r.top,z=EDGE_ZONE;let dx=0,dy=0;if(x<=z)dx=5+(1-x/z)*10;if(x>=r.width-z)dx=-(5+(1-(r.width-x)/z)*10);if(y<=z)dy=5+(1-y/z)*10;if(y>=r.height-z)dy=-(5+(1-(r.height-y)/z)*10);if(dx||dy)updatePan(dx,dy)}edgeFrameRef.current=requestAnimationFrame(tick)}
-    edgeFrameRef.current=requestAnimationFrame(tick);return()=>cancelAnimationFrame(edgeFrameRef.current)
-  },[])
+
   const zoomAtPoint=(nextZoom,clientX,clientY)=>{
     const stage=stageRef.current;if(!stage)return
     const rect=stage.getBoundingClientRect(),ox=clientX-(rect.left+rect.width/2),oy=clientY-(rect.top+rect.height/2),current=zoomRef.current,target=Math.min(MAX_ZOOM,Math.max(MIN_ZOOM,nextZoom))
@@ -571,7 +567,7 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
     const ratio=target/current
     setPan(p=>({x:ox-(ox-p.x)*ratio,y:oy-(oy-p.y)*ratio}));setZoom(target)
   }
-  const handleWheel=e=>{e.preventDefault();zoomAtPoint(zoomRef.current+(e.deltaY>0?-1:1)*(e.ctrlKey?.05:.11),e.clientX,e.clientY)}
+  const handleWheel=e=>{e.preventDefault();zoomAtPoint(zoomRef.current+(e.deltaY>0?-1:1)*.11,e.clientX,e.clientY)}
   const handlePointerMove=e=>{
     pointerRef.current={x:e.clientX,y:e.clientY,inside:true}
     if(e.pointerType==='touch'){

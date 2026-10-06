@@ -891,12 +891,15 @@ function App(){
     setAccountOpen(false)
     setCloudSaveStatus('saving')
 
-    // Invalidate every autosave created before this point. An already-running
-    // save will clean itself up when it finishes instead of resurrecting data.
+    // Invalidate every autosave created before this point, then wait for
+    // the existing save queue to drain. This prevents a save that was already
+    // in flight from writing the old world back over the reset.
     saveGenerationRef.current+=1
     accountLoadGenerationRef.current+=1
 
     try{
+      await queuedSaveRef.current.catch(()=>{})
+
       // Replace the account's progression snapshot with a completely blank
       // world. This is the reliable factory-reset operation: it does not
       // depend on DELETE RLS permissions, while still removing all saved

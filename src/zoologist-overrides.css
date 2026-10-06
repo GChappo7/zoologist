@@ -1328,3 +1328,42 @@
   .collection-search { width:100%; margin-left:0; }
   .collection-grid { grid-template-columns:repeat(2,minmax(0,1fr)); max-height:none; }
 }
+
+
+/* Compact header creature counter: keep the deployment/account controls on one line. */
+.header-actions {
+  gap: 9px;
+  flex-wrap: nowrap;
+}
+.header-collection {
+  width: 155px;
+  flex: 0 1 155px;
+}
+.header-collection-label {
+  font-family: var(--font-runescape);
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: .02em;
+}
+.header-collection-label strong {
+  font-family: var(--font-runescape);
+  font-size: 15px;
+  line-height: 1;
+  color: #e8dfc8;
+}
+.header-collection-track {
+  height: 3px;
+  margin-top: 4px;
+}
+@media (max-width: 980px) {
+  .header-actions { gap: 6px; }
+  .header-collection { width: 135px; flex-basis: 135px; }
+  .header-collection-label { font-size: 11px; }
+  .header-collection-label strong { font-size: 13px; }
+}
+@media (max-width: 760px) {
+  .header-collection { width: 118px; flex-basis: 118px; }
+  .header-collection-label { font-size: 10px; }
+  .header-collection-label strong { font-size: 12px; }
+  .header-collection-track { height: 3px; margin-top: 3px; }
+}

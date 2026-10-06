@@ -16,7 +16,7 @@ import { isValidQuestRewardAssignment, isValidSkillRewardAssignment } from './pr
 import { buildRewardAssignments, getAssignedReward } from './rewardAssignments'
 import AccountModal from './lib/accountModal'
 import { supabase } from './lib/supabase'
-import { createWorldId, deleteCloudGameState, ensureProfile, loadCloudGameState, readLocalGameState, saveCloudGameState, verifyCloudGameState } from './lib/gameState'
+import { createWorldId, deleteCloudGameState, ensureProfile, loadCloudGameState, readLocalGameState, saveCloudGameState } from './lib/gameState'
 
 const TILE_SIZE = 256
 const TILE_GAP = 0
@@ -767,22 +767,10 @@ function App(){
       try{
         await ensureProfile(session.user)
 
-        // A pending reset is checked before reading the cloud save. The reset
-        // snapshot is authoritative for this load, so an old cloud snapshot
-        // can never be selected as the source of truth during a reset.
-        const resetPending=localStorage.getItem('zoologist-reset-pending')===session.user.id
-        let resetSnapshot=null
-        if(resetPending){
-          try{
-            resetSnapshot=JSON.parse(localStorage.getItem('zoologist-reset-state')||'null')
-          }catch{}
-        }
-        const cloud=resetPending ? null : await loadCloudGameState(session.user.id)
-        let next=resetPending && resetSnapshot
-          ? {...EMPTY_GAME_STATE,...resetSnapshot,skillProgress:null,mapTiles:null,rewardAssignments:null,questStatuses:{}}
-          : resetPending
-            ? {...EMPTY_GAME_STATE,worldId:createWorldId()}
-            : (cloud&&typeof cloud==='object' ? cloud : null)
+        // The cloud row is the only persistent account save. A factory reset
+        // deletes that row, so a subsequent load simply starts a new world.
+        const cloud=await loadCloudGameState(session.user.id)
+        let next=cloud&&typeof cloud==='object' ? cloud : null
         if(!next){
           const localOwner=localStorage.getItem('zoologist-local-save-owner')
           const local=readLocalGameState()
@@ -809,24 +797,6 @@ function App(){
           setCloudSaveStatus('connected')
         }
 
-        // A reset must never block the account UI on Supabase. Persist the
-        // blank snapshot in the background and keep the marker if the request
-        // fails, so a later load will continue to treat the reset as
-        // authoritative rather than resurrecting the old cloud world.
-        if(resetPending && loadGeneration===accountLoadGenerationRef.current){
-          void (async()=>{
-            try{
-              const timeout=new Promise((_,reject)=>window.setTimeout(()=>reject(new Error('Reset cloud save timed out after 10 seconds.')),10000))
-              await Promise.race([saveCloudGameState(session.user.id,next),timeout])
-              localStorage.removeItem('zoologist-reset-pending')
-              localStorage.removeItem('zoologist-reset-state')
-              if(active)setCloudSaveStatus('connected')
-            }catch(error){
-              console.error('Could not persist reset state:',error)
-              if(active)setCloudSaveStatus('error')
-            }
-          })()
-        }
       }catch(error){
         console.error('Could not load Zoologist cloud save:',error)
         if(active && loadGeneration===accountLoadGenerationRef.current){
@@ -877,9 +847,13 @@ function App(){
   const updateGameState=patch=>setGameState(current=>({...current,...patch}))
 
   useEffect(()=>{
-    // During a reset the new MapView may generate its fresh starting tile immediately.
-    // Do not autosave that in-memory world until the blank cloud reset has been verified.
-    if(!session||!accountReady||resetInProgress)return
+    // A factory-reset account has no cloud row until the player actually
+    // makes progress. Do not recreate a save just because the fresh map
+    // generated its initial starting tile.
+    const hasCompletedTile=Object.values(gameState.mapTiles||{}).some(tile=>tile?.completed===true)
+    const hasUnlockedSkill=Object.values(skillProgress||{}).some(value=>Number(value?.maxLevel)>0)
+    const hasQuestProgress=Object.keys(questStatuses||{}).length>0
+    if(!session||!accountReady||resetInProgress||(!hasCompletedTile&&!hasUnlockedSkill&&!hasQuestProgress))return
     const payload={...gameState,skillProgress,rewardAssignments,questStatuses}
     const generation=saveGenerationRef.current
     const timer=window.setTimeout(()=>{
@@ -908,67 +882,47 @@ function App(){
   }
 
   const confirmResetProgress=async()=>{
-    if(resetInProgress)return
+    if(resetInProgress||!session?.user?.id)return
     setResetInProgress(true)
-    // Do the UI reset first. Nothing that touches Supabase/localStorage is
-    // allowed to block the user-visible reset or leave the old MapView mounted.
     setResetConfirmOpen(false)
     setAccountOpen(false)
-
-    const resetState={...EMPTY_GAME_STATE,worldId:createWorldId()}
-    const resetGeneration=++saveGenerationRef.current
-
-    // Invalidate autosaves/account loads that were created before this reset.
-    accountLoadGenerationRef.current+=1
-
-    // Replace the in-memory world immediately. Keep accountReady=true so the
-    // map remains visible while the cloud reset is being confirmed.
-    setGameState(resetState)
-    setSkillProgress(normalizeSkillProgress({}))
-    setRewardAssignments(null)
-    setQuestStatuses({})
-    setProgress({explored:0,revealed:1})
-    setResetVersion(current=>current+1)
     setCloudSaveStatus('saving')
 
-    // Keep a local reset marker so a reload can never resurrect the old world.
-    // Storage is best-effort: the actual React state above is the source of
-    // truth for the current screen.
     try{
+      // Factory reset means exactly this: remove the account's persistent
+      // progression row from Supabase. Do not replace it with a blank row.
+      await deleteCloudGameState(session.user.id)
+
+      // Clear every client-side progression value too, so this browser cannot
+      // resurrect the previous world after the cloud row has been deleted.
       localStorage.removeItem('zoologist-skill-progress')
       localStorage.removeItem('zoologist-map-tiles')
       localStorage.removeItem('zoologist-reward-assignments')
       localStorage.removeItem('zoologist-quest-statuses')
-      localStorage.setItem('zoologist-local-save-owner',session.user.id)
-      localStorage.setItem('zoologist-reset-state',JSON.stringify(resetState))
-      localStorage.setItem('zoologist-reset-pending',session.user.id)
-      localStorage.setItem('zoologist-world-id',resetState.worldId)
+      localStorage.removeItem('zoologist-local-save-owner')
+      localStorage.removeItem('zoologist-world-id')
+      localStorage.removeItem('zoologist-reset-state')
+      localStorage.removeItem('zoologist-reset-pending')
+
+      // Start a completely new in-memory world. The account/login itself is
+      // untouched.
+      saveGenerationRef.current+=1
+      accountLoadGenerationRef.current+=1
+      const freshState={...EMPTY_GAME_STATE,worldId:createWorldId()}
+      setGameState(freshState)
+      setSkillProgress(normalizeSkillProgress({}))
+      setRewardAssignments(null)
+      setQuestStatuses({})
+      setProgress({explored:0,revealed:1})
+      setResetVersion(current=>current+1)
+      setCloudSaveStatus('connected')
     }catch(error){
-      console.error('Could not write local reset marker:',error)
+      console.error('Could not factory reset Zoologist account:',error)
+      setCloudSaveStatus('error')
+      setResetConfirmOpen(true)
+    }finally{
+      setResetInProgress(false)
     }
-
-    // The reset is already complete from the UI's point of view. Do not
-    // wait for a reload or for Supabase: either can be stalled on iOS Safari
-    // and leave the confirmation state looking permanently busy.
-    if(resetGeneration!==saveGenerationRef.current)return
-    setResetInProgress(false)
-    setCloudSaveStatus('saving')
-
-    // Persist the blank snapshot in the background. The reset marker remains
-    // until this succeeds, so a later account load cannot resurrect the old
-    // cloud world if this request fails.
-    void (async()=>{
-      try{
-        const timeout=new Promise((_,reject)=>window.setTimeout(()=>reject(new Error('Reset cloud save timed out after 10 seconds.')),10000))
-        await Promise.race([saveCloudGameState(session.user.id,resetState),timeout])
-        localStorage.removeItem('zoologist-reset-pending')
-        localStorage.removeItem('zoologist-reset-state')
-        setCloudSaveStatus('connected')
-      }catch(error){
-        console.error('Could not persist reset state:',error)
-        setCloudSaveStatus('error')
-      }
-    })()
   }
 
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{

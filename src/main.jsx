@@ -800,16 +800,6 @@ function App(){
         if(!next.worldId)next={...next,worldId:createWorldId()}
         localStorage.setItem('zoologist-world-id',next.worldId)
 
-        if(resetPending && loadGeneration===accountLoadGenerationRef.current){
-          try{
-            await saveCloudGameState(session.user.id,next)
-            localStorage.removeItem('zoologist-reset-pending')
-            localStorage.removeItem('zoologist-reset-state')
-          }catch(error){
-            console.error('Could not persist reset state:',error)
-          }
-        }
-
         if(active && loadGeneration===accountLoadGenerationRef.current){
           setGameState(next)
           setSkillProgress(normalizeSkillProgress(next.skillProgress||{}))
@@ -817,6 +807,25 @@ function App(){
           setQuestStatuses(next.questStatuses||{})
           setAccountReady(true)
           setCloudSaveStatus('connected')
+        }
+
+        // A reset must never block the account UI on Supabase. Persist the
+        // blank snapshot in the background and keep the marker if the request
+        // fails, so a later load will continue to treat the reset as
+        // authoritative rather than resurrecting the old cloud world.
+        if(resetPending && loadGeneration===accountLoadGenerationRef.current){
+          void (async()=>{
+            try{
+              const timeout=new Promise((_,reject)=>window.setTimeout(()=>reject(new Error('Reset cloud save timed out after 10 seconds.')),10000))
+              await Promise.race([saveCloudGameState(session.user.id,next),timeout])
+              localStorage.removeItem('zoologist-reset-pending')
+              localStorage.removeItem('zoologist-reset-state')
+              if(active)setCloudSaveStatus('connected')
+            }catch(error){
+              console.error('Could not persist reset state:',error)
+              if(active)setCloudSaveStatus('error')
+            }
+          })()
         }
       }catch(error){
         console.error('Could not load Zoologist cloud save:',error)

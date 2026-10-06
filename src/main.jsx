@@ -215,11 +215,36 @@ function getAdjacentPositions(tiles){
   }))
   return[...positions.values()]
 }
+function getCompletedTileCount(tiles){
+  return Object.values(tiles??{}).filter(tile=>tile?.completed===true).length
+}
+
+function getEarlyRewardCandidate(creatures,used,rewardAssignments,completedCount){
+  const targetIds = []
+  if(completedCount < 10) targetIds.push('fishing-1-10')
+  if(completedCount < 20) targetIds.push('quest-novice-5')
+
+  for(const targetId of targetIds){
+    const candidates=creatures.filter(creature=>{
+      if(used.has(creature.id))return false
+      const reward=getAssignedReward(rewardAssignments,creature)
+      return String(reward?.id??'')===targetId && Number(creature.score)<=2
+    })
+    if(candidates.length){
+      return candidates.sort((a,b)=>Number(a.score)-Number(b.score))[0]
+    }
+  }
+  return null
+}
+
 function recomputeFrontier(tiles,creatures,skillProgress,rewardAssignments){
   const next={...tiles},used=new Set(Object.values(next).map(t=>t.creatureId).filter(Boolean))
   const usedQuestRewards=getUsedQuestRewardKeys(tiles)
+  const completedCount=getCompletedTileCount(tiles)
+  let earlyRewardCandidate=getEarlyRewardCandidate(creatures,used,rewardAssignments,completedCount)
+
   getAdjacentPositions(tiles).forEach(({x,y})=>{
-    const creature=pickUnusedCreature(creatures,used,preferredScoreForDistance(x,y))
+    const creature=earlyRewardCandidate ?? pickUnusedCreature(creatures,used,preferredScoreForDistance(x,y))
     if(creature){
       used.add(creature.id)
       const distance=Math.abs(x)+Math.abs(y)
@@ -229,6 +254,7 @@ function recomputeFrontier(tiles,creatures,skillProgress,rewardAssignments){
         if(questKey)usedQuestRewards.add(questKey)
       }
       next[keyFor(x,y)]={x,y,state:'frontier',creatureId:creature.id,completed:false,faceDown:false,revealAnimation:true,...(reward?{reward}:{})}
+      earlyRewardCandidate=null
     }
   })
   return next

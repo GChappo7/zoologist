@@ -45,6 +45,21 @@ export async function saveCloudGameState(userId, gameState) {
   if (error) throw error
 }
 
+export async function verifyCloudGameState(userId, expectedState) {
+  if (!supabase || !userId) throw new Error('Cloud save is not available.')
+  await saveCloudGameState(userId, expectedState)
+  const saved = await loadCloudGameState(userId)
+  const expectedWorldId = String(expectedState?.worldId ?? '')
+  const actualWorldId = String(saved?.worldId ?? '')
+  if (!expectedWorldId || actualWorldId !== expectedWorldId) {
+    throw new Error(`Cloud reset verification failed: expected world ${expectedWorldId || '(none)'}, but Supabase returned ${actualWorldId || '(none)'}.`)
+  }
+  if (saved?.mapTiles != null || saved?.skillProgress != null || saved?.rewardAssignments != null || Object.keys(saved?.questStatuses ?? {}).length > 0) {
+    throw new Error('Cloud reset verification failed: Supabase returned progression data instead of a blank world.')
+  }
+  return saved
+}
+
 export async function deleteCloudGameState(userId) {
   if (!supabase || !userId) return
   const { error } = await supabase.from('game_states').delete().eq('user_id', userId)

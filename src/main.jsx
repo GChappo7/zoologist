@@ -897,22 +897,20 @@ function App(){
     accountLoadGenerationRef.current+=1
 
     try{
-      // First attempt the literal factory reset: remove the account save row.
-      // The login/profile remains untouched.
-      await deleteCloudGameState(session.user.id)
+      // Replace the account's progression snapshot with a completely blank
+      // world. This is the reliable factory-reset operation: it does not
+      // depend on DELETE RLS permissions, while still removing all saved
+      // map/skill/reward/quest progress from the account.
+      const freshState={...EMPTY_GAME_STATE,worldId:createWorldId()}
+      await saveCloudGameState(session.user.id,freshState)
 
-      // Confirm the row is actually gone. If the live Supabase project has
-      // DELETE blocked by an older/missing RLS policy, fall back to replacing
-      // the row with a completely blank world so the player still gets a true
-      // fresh start rather than being trapped in the reset dialog.
-      let remaining=await loadCloudGameState(session.user.id)
-      if(remaining!==null){
-        const freshState={...EMPTY_GAME_STATE,worldId:createWorldId()}
-        await saveCloudGameState(session.user.id,freshState)
-        remaining=await loadCloudGameState(session.user.id)
-        if(remaining?.worldId!==freshState.worldId){
-          throw new Error('Factory reset could not clear the account save from Supabase.')
-        }
+      const remaining=await loadCloudGameState(session.user.id)
+      if(remaining?.worldId!==freshState.worldId ||
+         remaining?.mapTiles!=null ||
+         remaining?.skillProgress!=null ||
+         remaining?.rewardAssignments!=null ||
+         Object.keys(remaining?.questStatuses??{}).length>0){
+        throw new Error('Factory reset could not replace the account save with a blank world.')
       }
 
       // Clear every browser-side copy of progression.
@@ -937,11 +935,10 @@ function App(){
     }catch(error){
       console.error('Could not factory reset Zoologist account:',error)
       setCloudSaveStatus('error')
-      // Never reopen the confirmation dialog from the error path. If the
-      // backend reset fails, leave the account modal available so the user
-      // can retry manually without a render/error loop.
+      // Never reopen either reset UI from the error path. Leave both
+      // dialogs closed so a backend failure cannot create a modal loop.
       setResetConfirmOpen(false)
-      setAccountOpen(true)
+      setAccountOpen(false)
     }finally{
       setResetInProgress(false)
     }

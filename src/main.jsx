@@ -897,14 +897,22 @@ function App(){
     accountLoadGenerationRef.current+=1
 
     try{
-      // Factory reset means exactly this: delete the account's persistent
-      // progression row. The login/profile remains untouched.
+      // First attempt the literal factory reset: remove the account save row.
+      // The login/profile remains untouched.
       await deleteCloudGameState(session.user.id)
 
-      // Confirm that Supabase really no longer has a save for this account.
-      const remaining=await loadCloudGameState(session.user.id)
+      // Confirm the row is actually gone. If the live Supabase project has
+      // DELETE blocked by an older/missing RLS policy, fall back to replacing
+      // the row with a completely blank world so the player still gets a true
+      // fresh start rather than being trapped in the reset dialog.
+      let remaining=await loadCloudGameState(session.user.id)
       if(remaining!==null){
-        throw new Error('Factory reset could not delete the account save from Supabase.')
+        const freshState={...EMPTY_GAME_STATE,worldId:createWorldId()}
+        await saveCloudGameState(session.user.id,freshState)
+        remaining=await loadCloudGameState(session.user.id)
+        if(remaining?.worldId!==freshState.worldId){
+          throw new Error('Factory reset could not clear the account save from Supabase.')
+        }
       }
 
       // Clear every browser-side copy of progression.
@@ -929,6 +937,8 @@ function App(){
     }catch(error){
       console.error('Could not factory reset Zoologist account:',error)
       setCloudSaveStatus('error')
+      // Keep the confirmation dialog open so a failed reset does not flicker
+      // closed/reopened in a loop.
       setResetConfirmOpen(true)
     }finally{
       setResetInProgress(false)

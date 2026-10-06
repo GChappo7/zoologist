@@ -13,7 +13,7 @@ import rewardCatalog from '../data/reward-catalog.json'
 import shop from '../data/shop.json'
 import bossSystem from '../data/boss-system.json'
 import { isValidQuestRewardAssignment, isValidSkillRewardAssignment } from './progressionRules'
-import { buildRewardAssignments, getAssignedReward } from './rewardAssignments'
+import { buildRewardAssignments, getAssignedReward, hasValidRewardAssignments } from './rewardAssignments'
 import AccountModal from './lib/accountModal'
 import { supabase } from './lib/supabase'
 import { EMPTY_GAME_STATE, createWorldId, deleteCloudGameState, ensureProfile, loadCloudGameState, readLocalGameState, saveCloudGameState } from './lib/gameState'
@@ -449,7 +449,7 @@ function createTileReward(creature,skillProgress,distance=Infinity,usedQuestRewa
 }
 
 function getTileReward(tile,creature,skillProgress,rewardAssignments){
-  if(tile?.reward)return resolveReservedReward(tile.reward,skillProgress)
+  if(tile?.completed&&tile?.reward)return resolveReservedReward(tile.reward,skillProgress)
   return resolveReservedReward(createTileReward(creature,skillProgress,Infinity,new Set(),rewardAssignments),skillProgress)
 }
 
@@ -729,7 +729,7 @@ function App(){
   const [creatures]=useState(()=>{try{return loadCreatureCatalog()}catch{return[]}})
   const [progress,setProgress]=useState({explored:0,revealed:1})
   const [skillProgress,setSkillProgress]=useState(()=>normalizeSkillProgress(gameState.skillProgress||{}))
-  const [rewardAssignments,setRewardAssignments]=useState(()=>gameState.rewardAssignments||null)
+  const [rewardAssignments,setRewardAssignments]=useState(()=>hasValidRewardAssignments(gameState.rewardAssignments)?gameState.rewardAssignments:null)
   const [questStatuses,setQuestStatuses]=useState(gameState.questStatuses||{})
   const [resetVersion,setResetVersion]=useState(0)
   const saveGenerationRef=useRef(0)

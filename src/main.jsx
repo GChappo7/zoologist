@@ -947,13 +947,28 @@ function App(){
       console.error('Could not write local reset marker:',error)
     }
 
-    // The reset marker is now the hand-off between the current page and the
-    // next account load. Reload immediately instead of waiting on Supabase:
-    // a stalled request must never leave the Reset button stuck on
-    // "Resetting…". The next load will render the blank world first, then
-    // persist it to the cloud in the background.
+    // The reset is already complete from the UI's point of view. Do not
+    // wait for a reload or for Supabase: either can be stalled on iOS Safari
+    // and leave the confirmation state looking permanently busy.
     if(resetGeneration!==saveGenerationRef.current)return
-    window.location.reload()
+    setResetInProgress(false)
+    setCloudSaveStatus('saving')
+
+    // Persist the blank snapshot in the background. The reset marker remains
+    // until this succeeds, so a later account load cannot resurrect the old
+    // cloud world if this request fails.
+    void (async()=>{
+      try{
+        const timeout=new Promise((_,reject)=>window.setTimeout(()=>reject(new Error('Reset cloud save timed out after 10 seconds.')),10000))
+        await Promise.race([saveCloudGameState(session.user.id,resetState),timeout])
+        localStorage.removeItem('zoologist-reset-pending')
+        localStorage.removeItem('zoologist-reset-state')
+        setCloudSaveStatus('connected')
+      }catch(error){
+        console.error('Could not persist reset state:',error)
+        setCloudSaveStatus('error')
+      }
+    })()
   }
 
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{

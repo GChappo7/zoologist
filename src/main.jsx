@@ -387,6 +387,65 @@ function QuestsView({initialStatuses={},onStatusesChange}){
     </div>
   </div>
 }
+function CollectionLog({creatures,mapTiles,onBack}){
+  const [filter,setFilter]=useState('all')
+  const [search,setSearch]=useState('')
+  const statusByCreature=useMemo(()=>{
+    const statuses={}
+    Object.values(mapTiles||{}).forEach(tile=>{
+      if(!tile?.creatureId)return
+      const id=String(tile.creatureId)
+      if(tile.completed)statuses[id]='completed'
+      else if(tile.faceDown===false&&statuses[id]!=='completed')statuses[id]='revealed'
+    })
+    return statuses
+  },[mapTiles])
+  const counts=useMemo(()=>{
+    const complete=creatures.filter(c=>statusByCreature[String(c.id)]==='completed').length
+    const recorded=creatures.filter(c=>statusByCreature[String(c.id)]==='completed'||statusByCreature[String(c.id)]==='revealed').length
+    return {all:creatures.length,recorded,complete,unknown:creatures.length-recorded}
+  },[creatures,statusByCreature])
+  const filtered=creatures.filter(creature=>{
+    const status=statusByCreature[String(creature.id)]||'unknown'
+    const matchesFilter=filter==='all'||(filter==='recorded'&&status!=='unknown')||(filter===status)
+    const matchesSearch=creature.name.toLowerCase().includes(search.toLowerCase())
+    return matchesFilter&&matchesSearch
+  })
+  const filters=[['all','All',counts.all],['recorded','Recorded',counts.recorded],['completed','Complete',counts.complete],['unknown','Unknown',counts.unknown]]
+  return <div className="collection-log-page">
+    <div className="collection-log-shell">
+      <div className="collection-log-header">
+        <button type="button" className="collection-back-button" onClick={onBack} aria-label="Back to map"><ChevronLeft size={18}/><span>Map</span></button>
+        <div className="collection-log-title">
+          <div className="collection-log-icon"><PawPrint size={22}/></div>
+          <div><strong>Creature Collection</strong><span>Pokédex • {counts.recorded} / {counts.all} recorded</span></div>
+        </div>
+        <div className="collection-log-stat"><b>{counts.complete}</b><span>COMPLETE</span></div>
+      </div>
+      <div className="collection-log-progress">
+        <div className="collection-log-progress-label"><span>CREATURES RECORDED</span><strong>{counts.recorded} / {counts.all}</strong></div>
+        <div className="collection-log-progress-track"><div className="collection-log-progress-fill" style={{width:`${counts.all?Math.min(100,counts.recorded/counts.all*100):0}%`}}/></div>
+        <div className="collection-log-legend"><span><i className="collection-swatch complete"/> Complete</span><span><i className="collection-swatch revealed"/> Revealed</span><span><i className="collection-swatch unknown"/> Unknown</span></div>
+      </div>
+      <div className="collection-log-controls">
+        <div className="collection-filters">{filters.map(([id,label,count])=><button type="button" key={id} className={filter===id?'active':''} onClick={()=>setFilter(id)}>{label} <span>{count}</span></button>)}</div>
+        <label className="collection-search"><Search size={14}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search creatures"/></label>
+      </div>
+      <div className="collection-grid">
+        {filtered.map(creature=>{
+          const status=statusByCreature[String(creature.id)]||'unknown'
+          return <div className={'collection-card collection-card-'+status} key={creature.id}>
+            <div className="collection-card-art">{status==='unknown'?<span className="collection-question">?</span>:<CreatureGlyph creature={creature} size="collection"/>}</div>
+            <div className="collection-card-name">{status==='unknown'?'???':creature.name}</div>
+            <div className="collection-card-status">{status==='completed'?'Recorded':status==='revealed'?'Revealed':'Unknown'}</div>
+          </div>
+        })}
+      </div>
+      {!filtered.length&&<div className="collection-empty">No creatures match that search.</div>}
+    </div>
+  </div>
+}
+
 function DiariesView(){
   const regions=['Ardougne','Desert','Falador','Fremennik','Kandarin','Karamja','Kourend & Kebos','Lumbridge & Draynor','Morytania','Varrock','Western Provinces','Wilderness']
   return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><BookOpen size={14}/> ACCOUNT PROGRESSION</div><h1>Achievement Diaries</h1><p>Every region has Easy, Medium, Hard and Elite reward milestones.</p></div><div className="diary-grid">{regions.map(region=><div className="diary-card" key={region}><ProgressionIcon type="diary" background/><strong>{region}</strong><div>{['Easy','Medium','Hard','Elite'].map(t=><span key={t}><i/> {t}</span>)}</div></div>)}</div></div>
@@ -974,6 +1033,7 @@ function App(){
   }
 
   const creatureCount=creatures.length
+  const recordedCreatureCount=new Set(Object.values(gameState.mapTiles||{}).filter(tile=>tile?.creatureId&&tile?.faceDown===false).map(tile=>String(tile.creatureId))).size
   const OSRS_TAB_ICONS = {
     map: 'https://oldschool.runescape.wiki/images/World_map_icon.png',
     skills: 'https://oldschool.runescape.wiki/images/Skills_icon.png',
@@ -986,7 +1046,9 @@ function App(){
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText},
     {id:'diaries',label:'Diaries',icon:BookOpen},{id:'shop',label:'Shop',icon:ShoppingBag},{id:'bosses',label:'Bosses',icon:Skull}
   ]
-  const page=tab==='quests'
+  const page=tab==='collection'
+    ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>
+    :tab==='quests'
     ?<QuestsView initialStatuses={questStatuses} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/>
     :tab==='diaries'?<DiariesView/>
     :tab==='shop'?<ShopView/>
@@ -1016,10 +1078,12 @@ function App(){
       <div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist <span className="deployment-indicator" title={`GitHub deployment ${DEPLOYMENT_SHA}`}>{DEPLOYMENT_LABEL}</span></div><div className="brand-subtitle">OSRS creature exploration</div></div></div>
       <nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} ref={id==='skills'?skillsButtonRef:undefined} className={`top-tab-${id} ${id==='skills'&&skillsOpen||tab===id?'active':''}`} onClick={()=>handleTabClick(id)} aria-expanded={id==='skills'?skillsOpen:undefined}>{OSRS_TAB_ICONS[id]?<img className="osrs-top-tab-icon" src={OSRS_TAB_ICONS[id]} alt="" aria-hidden="true" draggable="false"/>:<Icon size={16}/>}<span>{label}</span></button>)}</nav>
       <div className="header-actions">
-        <div className="header-progress"><div className="progress-label"><span>EXPLORED <b>{progress.explored}</b> · REVEALED <b>{progress.revealed}</b></span><strong>{progress.explored} / {creatureCount}</strong></div><div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,progress.explored/creatureCount*100)}%`}}/></div></div>
+        <button type="button" className={`header-collection ${tab==='collection'?'active':''}`} onClick={()=>{setSkillsOpen(false);setTab('collection')}} aria-label="Open creature collection" title="Open Creature Collection">
+          <div className="header-collection-label"><span>CREATURES RECORDED</span><strong>{recordedCreatureCount} / {creatureCount}</strong></div>
+          <div className="header-collection-track"><div className="header-collection-fill" style={{width:`${creatureCount?Math.min(100,recordedCreatureCount/creatureCount*100):0}%`}}/></div>
+        </button>
         <button className={`account-button ${session?'account-button-signed-in':''}`} onClick={()=>setAccountOpen(true)} aria-label="Account" title="Account"><img className="account-button-icon" src="https://oldschool.runescape.wiki/images/Account_Management_-_Name_Changer_icon.png" alt="" aria-hidden="true" draggable="false"/>{session&&<i className="account-status-dot" aria-label="Cloud save connected"/>}</button>
-      </div>
-    </header>
+      </div>   </header>
     <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}</main>
     <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
     <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession} onResetProgress={handleResetProgress}/>

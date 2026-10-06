@@ -43,6 +43,8 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          VITE_DEPLOYMENT_SHA: ${{ github.sha }}
+          VITE_DEPLOYMENT_RUN: ${{ github.run_number }}
         run: npm run build
 
       - name: Setup Pages

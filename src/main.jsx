@@ -223,6 +223,7 @@ function getEarlyRewardCandidate(creatures,used,rewardAssignments,completedCount
   const targetIds = []
   if(completedCount < 10) targetIds.push('fishing-1-10')
   if(completedCount < 20) targetIds.push('quest-novice-5')
+  if(completedCount < 40) targetIds.push('quest-novice-29')
 
   for(const targetId of targetIds){
     const candidates=creatures.filter(creature=>{

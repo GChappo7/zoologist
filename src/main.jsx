@@ -923,8 +923,7 @@ function App(){
       localStorage.removeItem('zoologist-reset-state')
       localStorage.removeItem('zoologist-reset-pending')
 
-      // Start a genuinely new world. The account/session itself is unchanged.
-      const freshState={...EMPTY_GAME_STATE,worldId:createWorldId()}
+      // Apply the same fresh world we just stored in the cloud.
       setGameState(freshState)
       setSkillProgress(normalizeSkillProgress({}))
       setRewardAssignments(null)

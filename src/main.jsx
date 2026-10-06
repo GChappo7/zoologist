@@ -863,7 +863,10 @@ function App(){
         if(generation!==saveGenerationRef.current)return
         try{
           await saveCloudGameState(session.user.id,payload)
-          if(generation!==saveGenerationRef.current)return
+          if(generation!==saveGenerationRef.current){
+            try{await deleteCloudGameState(session.user.id)}catch(error){console.error('Could not remove stale pre-reset save:',error)}
+            return
+          }
           localStorage.setItem('zoologist-local-save-owner',session.user.id)
           setCloudSaveStatus('connected')
         }catch(error){
@@ -888,13 +891,23 @@ function App(){
     setAccountOpen(false)
     setCloudSaveStatus('saving')
 
+    // Invalidate every autosave created before this point. An already-running
+    // save will clean itself up when it finishes instead of resurrecting data.
+    saveGenerationRef.current+=1
+    accountLoadGenerationRef.current+=1
+
     try{
-      // Factory reset means exactly this: remove the account's persistent
-      // progression row from Supabase. Do not replace it with a blank row.
+      // Factory reset means exactly this: delete the account's persistent
+      // progression row. The login/profile remains untouched.
       await deleteCloudGameState(session.user.id)
 
-      // Clear every client-side progression value too, so this browser cannot
-      // resurrect the previous world after the cloud row has been deleted.
+      // Confirm that Supabase really no longer has a save for this account.
+      const remaining=await loadCloudGameState(session.user.id)
+      if(remaining!==null){
+        throw new Error('Factory reset could not delete the account save from Supabase.')
+      }
+
+      // Clear every browser-side copy of progression.
       localStorage.removeItem('zoologist-skill-progress')
       localStorage.removeItem('zoologist-map-tiles')
       localStorage.removeItem('zoologist-reward-assignments')
@@ -904,10 +917,7 @@ function App(){
       localStorage.removeItem('zoologist-reset-state')
       localStorage.removeItem('zoologist-reset-pending')
 
-      // Start a completely new in-memory world. The account/login itself is
-      // untouched.
-      saveGenerationRef.current+=1
-      accountLoadGenerationRef.current+=1
+      // Start a genuinely new world. The account/session itself is unchanged.
       const freshState={...EMPTY_GAME_STATE,worldId:createWorldId()}
       setGameState(freshState)
       setSkillProgress(normalizeSkillProgress({}))

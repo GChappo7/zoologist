@@ -854,7 +854,11 @@ function App(){
     })
   },[gameState.mapTiles])
   useEffect(()=>{
-    if(gameState.mapTiles) localStorage.setItem('zoologist-map-tiles',JSON.stringify(gameState.mapTiles))
+    if(gameState.mapTiles){
+      localStorage.setItem('zoologist-map-tiles',JSON.stringify(gameState.mapTiles))
+    }else{
+      localStorage.removeItem('zoologist-map-tiles')
+    }
   },[gameState.mapTiles])
 
   const updateGameState=patch=>setGameState(current=>({...current,...patch}))
@@ -889,30 +893,19 @@ function App(){
   }
 
   const confirmResetProgress=async()=>{
+    // Do the UI reset first. Nothing that touches Supabase/localStorage is
+    // allowed to block the user-visible reset or leave the old MapView mounted.
     setResetConfirmOpen(false)
     setAccountOpen(false)
 
     const resetState={...EMPTY_GAME_STATE,worldId:createWorldId()}
     const resetGeneration=++saveGenerationRef.current
-    // Stop normal autosaves while the reset is being committed.
+
+    // Invalidate autosaves/account loads that were created before this reset.
     setAccountReady(false)
-    // Invalidate any account-load request that started before the reset.
-    // Otherwise a late response can put the old cloud state back into React.
     accountLoadGenerationRef.current+=1
 
-    // Clear every local progression key immediately.
-    localStorage.removeItem('zoologist-skill-progress')
-    localStorage.removeItem('zoologist-map-tiles')
-    localStorage.removeItem('zoologist-reward-assignments')
-    localStorage.removeItem('zoologist-quest-statuses')
-    localStorage.setItem('zoologist-local-save-owner',session.user.id)
-    // Persist the exact blank world so reload cannot fall back to an old cloud snapshot.
-    localStorage.setItem('zoologist-reset-state',JSON.stringify(resetState))
-    localStorage.setItem('zoologist-reset-pending',session.user.id)
-    localStorage.setItem('zoologist-world-id',resetState.worldId)
-
-    // Replace the in-memory world immediately as well as the persisted copy.
-    // This guarantees the old MapView state cannot survive the reset.
+    // Replace the in-memory world immediately and force a fresh MapView.
     setGameState(resetState)
     setSkillProgress(normalizeSkillProgress({}))
     setRewardAssignments(null)
@@ -921,27 +914,43 @@ function App(){
     setResetVersion(current=>current+1)
     setCloudSaveStatus('saving')
 
-    // The reset is only considered successful if Supabase accepts the blank
-    // snapshot and immediately returns that same world when we read it back.
+    // Keep a local reset marker so a reload can never resurrect the old world.
+    // Storage is best-effort: the actual React state above is the source of
+    // truth for the current screen.
+    try{
+      localStorage.removeItem('zoologist-skill-progress')
+      localStorage.removeItem('zoologist-map-tiles')
+      localStorage.removeItem('zoologist-reward-assignments')
+      localStorage.removeItem('zoologist-quest-statuses')
+      localStorage.setItem('zoologist-local-save-owner',session.user.id)
+      localStorage.setItem('zoologist-reset-state',JSON.stringify(resetState))
+      localStorage.setItem('zoologist-reset-pending',session.user.id)
+      localStorage.setItem('zoologist-world-id',resetState.worldId)
+    }catch(error){
+      console.error('Could not write local reset marker:',error)
+    }
+
+    // Commit the exact blank world to the account. A stale queued save is
+    // allowed to finish first, but it cannot overwrite the reset because the
+    // reset generation invalidates it and verification happens afterwards.
     try{
       await queuedSaveRef.current.catch(()=>{})
       if(resetGeneration!==saveGenerationRef.current)return
       await verifyCloudGameState(session.user.id,resetState)
-      localStorage.removeItem('zoologist-reset-pending')
-      localStorage.removeItem('zoologist-reset-state')
+      if(resetGeneration!==saveGenerationRef.current)return
+      try{
+        localStorage.removeItem('zoologist-reset-pending')
+        localStorage.removeItem('zoologist-reset-state')
+      }catch{}
       setCloudSaveStatus('connected')
+      window.location.reload()
     }catch(error){
-      // Do not reload into an apparently successful reset when the cloud
-      // snapshot could not be written or verified. Keep the reset marker so
-      // the blank state remains authoritative on the next load.
       console.error('Zoologist reset verification failed:',error)
       setCloudSaveStatus('error')
-      window.alert(`Reset could not be confirmed in the cloud. Your old progress has not been overwritten.\\n\\n${error?.message||error}`)
-      return
+      // Keep the blank in-memory/local state visible rather than restoring the
+      // old progress. The reset marker remains for the next successful load.
+      window.alert(`Reset could not be confirmed in the cloud. The map has been reset on this device, but the cloud reset still needs attention.\\n\\n${error?.message||error}`)
     }
-
-    // Only reload after the blank cloud snapshot has been verified.
-    window.location.reload()
   }
 
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{

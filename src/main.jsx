@@ -926,9 +926,7 @@ function App(){
     try{
       await queuedSaveRef.current.catch(()=>{})
       if(resetGeneration!==saveGenerationRef.current)return
-      // Delete the existing cloud row first so reset is a true wipe,
-      // rather than relying on an upsert to replace the old snapshot.
-      await deleteCloudGameState(session.user.id)
+      // Replace the cloud snapshot with the blank reset state.
       await saveCloudGameState(session.user.id,resetState)
     }catch(error){
       console.error('Could not reset Zoologist cloud save:',error)

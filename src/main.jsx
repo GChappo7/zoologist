@@ -723,6 +723,7 @@ function App(){
   const [accountOpen,setAccountOpen]=useState(false)
   const [resetConfirmOpen,setResetConfirmOpen]=useState(false)
   const [resetInProgress,setResetInProgress]=useState(false)
+  const [resetStatus,setResetStatus]=useState(null)
   const [session,setSession]=useState(null)
   const [accountReady,setAccountReady]=useState(false)
   const [cloudSaveStatus,setCloudSaveStatus]=useState('disconnected')
@@ -889,24 +890,23 @@ function App(){
     setResetInProgress(true)
     setResetConfirmOpen(false)
     setAccountOpen(false)
+    setResetStatus({step:1,status:'active',message:'Preparing the factory reset…'})
     setCloudSaveStatus('saving')
 
-    // Invalidate every autosave created before this point, then wait for
-    // the existing save queue to drain. This prevents a save that was already
-    // in flight from writing the old world back over the reset.
     saveGenerationRef.current+=1
     accountLoadGenerationRef.current+=1
 
     try{
+      setResetStatus({step:2,status:'active',message:'Waiting for any pending cloud save to finish…'})
       await queuedSaveRef.current.catch(()=>{})
+      setResetStatus({step:2,status:'complete',message:'Pending saves cleared.'})
 
-      // Replace the account's progression snapshot with a completely blank
-      // world. This is the reliable factory-reset operation: it does not
-      // depend on DELETE RLS permissions, while still removing all saved
-      // map/skill/reward/quest progress from the account.
+      setResetStatus({step:3,status:'active',message:'Replacing your account save with a blank world…'})
       const freshState={...EMPTY_GAME_STATE,worldId:createWorldId()}
       await saveCloudGameState(session.user.id,freshState)
+      setResetStatus({step:3,status:'complete',message:'Blank world saved to the cloud.'})
 
+      setResetStatus({step:4,status:'active',message:'Verifying the cloud save is actually blank…'})
       const remaining=await loadCloudGameState(session.user.id)
       if(remaining?.worldId!==freshState.worldId ||
          remaining?.mapTiles!=null ||
@@ -915,8 +915,9 @@ function App(){
          Object.keys(remaining?.questStatuses??{}).length>0){
         throw new Error('Factory reset could not replace the account save with a blank world.')
       }
+      setResetStatus({step:4,status:'complete',message:'Cloud verification passed.'})
 
-      // Clear every browser-side copy of progression.
+      setResetStatus({step:5,status:'active',message:'Clearing saved progression from this device…'})
       localStorage.removeItem('zoologist-skill-progress')
       localStorage.removeItem('zoologist-map-tiles')
       localStorage.removeItem('zoologist-reward-assignments')
@@ -925,8 +926,9 @@ function App(){
       localStorage.removeItem('zoologist-world-id')
       localStorage.removeItem('zoologist-reset-state')
       localStorage.removeItem('zoologist-reset-pending')
+      setResetStatus({step:5,status:'complete',message:'Local progression cleared.'})
 
-      // Apply the same fresh world we just stored in the cloud.
+      setResetStatus({step:6,status:'active',message:'Starting your new Zoologist world…'})
       setGameState(freshState)
       setSkillProgress(normalizeSkillProgress({}))
       setRewardAssignments(null)
@@ -934,18 +936,15 @@ function App(){
       setProgress({explored:0,revealed:1})
       setResetVersion(current=>current+1)
       setCloudSaveStatus('connected')
+      setResetStatus({step:6,status:'complete',message:'New world ready. Your account is still logged in.'})
     }catch(error){
       console.error('Could not factory reset Zoologist account:',error)
       setCloudSaveStatus('error')
-      // Never reopen either reset UI from the error path. Leave both
-      // dialogs closed so a backend failure cannot create a modal loop.
-      setResetConfirmOpen(false)
-      setAccountOpen(false)
+      setResetStatus(current=>({...(current||{}),status:'error',message:`Reset failed: ${error?.message||'Unknown error'}`}))
     }finally{
       setResetInProgress(false)
     }
   }
-
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{
     const skill=reward?.skill
     if(!skill)return current
@@ -1016,7 +1015,7 @@ function App(){
     <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}</main>
     <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
     <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession} onResetProgress={handleResetProgress}/>
-    {resetConfirmOpen&&<div className="reset-confirm-overlay" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget)setResetConfirmOpen(false)}}>
+    {resetConfirmOpen&&<div className="reset-confirm-overlay" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget&&!resetInProgress)setResetConfirmOpen(false)}}>
       <div className="reset-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="reset-confirm-title">
         <div className="reset-confirm-title" id="reset-confirm-title">Reset all Zoologist progress?</div>
         <div className="reset-confirm-message">This will clear your map, skills, quests and reward assignments, but your account will remain logged in.</div>
@@ -1024,6 +1023,27 @@ function App(){
           <button type="button" className="reset-confirm-cancel" onClick={()=>setResetConfirmOpen(false)}>Cancel</button>
           <button type="button" className="reset-confirm-danger" onClick={confirmResetProgress} disabled={resetInProgress}>{resetInProgress ? "Resetting…" : "Reset Progress"}</button>
         </div>
+      </div>
+    </div>}
+    {resetStatus&&<div className="reset-confirm-overlay" role="presentation">
+      <div className="reset-status-dialog" role="dialog" aria-modal="true" aria-labelledby="reset-status-title" aria-live="polite">
+        <div className="reset-status-title" id="reset-status-title">{resetStatus.status==='error'?'Factory reset failed':resetStatus.step===6&&resetStatus.status==='complete'?'Factory reset complete':'Resetting Zoologist…'}</div>
+        <div className="reset-status-message">{resetStatus.message}</div>
+        <div className="reset-status-steps">
+          {['Prepare reset','Clear pending saves','Replace cloud save','Verify cloud save','Clear device save','Start new world'].map((label,index)=>{
+            const step=index+1
+            const complete=resetStatus.status==='complete'&&step<=resetStatus.step
+            const active=resetStatus.status==='active'&&step===resetStatus.step
+            const failed=resetStatus.status==='error'&&step===resetStatus.step
+            return <div className={`reset-status-step ${complete?'is-complete':''} ${active?'is-active':''} ${failed?'is-failed':''}`} key={label}>
+              <span className="reset-status-indicator">{complete?'✓':failed?'!':active?'…':step}</span>
+              <span>{label}</span>
+            </div>
+          })}
+        </div>
+        {resetStatus.status==='error'&&<div className="reset-status-error-detail">The reset stopped before it could finish. The error above shows exactly which operation failed.</div>}
+        {resetStatus.status==='complete'&&<div className="reset-status-success-detail">You can now play from the beginning. Your login and account are unchanged.</div>}
+        {(resetStatus.status==='complete'||resetStatus.status==='error')&&<div className="reset-status-actions"><button type="button" className="reset-confirm-danger" onClick={()=>setResetStatus(null)}>Close</button></div>}
       </div>
     </div>}
   </div>

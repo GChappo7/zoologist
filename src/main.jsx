@@ -921,22 +921,25 @@ function App(){
     setResetVersion(current=>current+1)
     setCloudSaveStatus('saving')
 
-    // Wait for any older save to finish, then write the empty state with a
-    // newer generation so no stale autosave can overwrite the reset.
+    // The local reset snapshot is already authoritative. Reload even if the
+    // immediate cloud write fails, so an old cloud snapshot cannot keep the
+    // old world mounted in the current session.
     try{
       await queuedSaveRef.current.catch(()=>{})
       if(resetGeneration!==saveGenerationRef.current)return
-      // Replace the cloud snapshot with the blank reset state.
+      // Try to replace the cloud snapshot with the blank reset state.
       await saveCloudGameState(session.user.id,resetState)
+      setCloudSaveStatus('connected')
     }catch(error){
-      console.error('Could not reset Zoologist cloud save:',error)
+      // Keep the reset marker/snapshot intact. The next account load will use
+      // that blank state first and retry the cloud write instead of restoring
+      // an older world.
+      console.error('Could not immediately persist Zoologist cloud reset:',error)
       setCloudSaveStatus('error')
-      return
     }
 
-    // The cloud reset has succeeded. Reload the app from a completely
-    // clean state so every mounted component is recreated from the empty
-    // cloud save. The account session itself remains intact.
+    // Always reload after a reset attempt. The reset-pending marker and blank
+    // snapshot make the empty world authoritative on the next load.
     window.location.reload()
   }
 

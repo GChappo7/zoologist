@@ -456,7 +456,10 @@ function createTileReward(creature,skillProgress,distance=Infinity,usedQuestRewa
 }
 
 function getTileReward(tile,creature,skillProgress,rewardAssignments){
-  if(tile?.completed&&tile?.reward)return resolveReservedReward(tile.reward,skillProgress)
+  // Once a tile has been assigned a reward, that reward is permanent.
+  // This is important for revealed frontier tiles: recalculating their
+  // reward on every render can make a quest appear to change or duplicate.
+  if(tile?.reward)return resolveReservedReward(tile.reward,skillProgress)
   return resolveReservedReward(createTileReward(creature,skillProgress,Infinity,new Set(),rewardAssignments),skillProgress)
 }
 

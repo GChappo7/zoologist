@@ -16,7 +16,7 @@ import { isValidQuestRewardAssignment, isValidSkillRewardAssignment } from './pr
 import { buildRewardAssignments, getAssignedReward } from './rewardAssignments'
 import AccountModal from './lib/accountModal'
 import { supabase } from './lib/supabase'
-import { createWorldId, deleteCloudGameState, ensureProfile, loadCloudGameState, readLocalGameState, saveCloudGameState } from './lib/gameState'
+import { EMPTY_GAME_STATE, createWorldId, deleteCloudGameState, ensureProfile, loadCloudGameState, readLocalGameState, saveCloudGameState } from './lib/gameState'
 
 const TILE_SIZE = 256
 const TILE_GAP = 0

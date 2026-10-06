@@ -937,9 +937,11 @@ function App(){
     }catch(error){
       console.error('Could not factory reset Zoologist account:',error)
       setCloudSaveStatus('error')
-      // Keep the confirmation dialog open so a failed reset does not flicker
-      // closed/reopened in a loop.
-      setResetConfirmOpen(true)
+      // Never reopen the confirmation dialog from the error path. If the
+      // backend reset fails, leave the account modal available so the user
+      // can retry manually without a render/error loop.
+      setResetConfirmOpen(false)
+      setAccountOpen(true)
     }finally{
       setResetInProgress(false)
     }

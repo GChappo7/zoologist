@@ -13,7 +13,18 @@ function shuffle(values) {
 }
 
 function rewardKey(reward) {
-  return String(reward?.label ?? reward?.name ?? reward?.id ?? '').trim().toLowerCase()
+  return String(reward?.questId ?? reward?.label ?? reward?.name ?? reward?.id ?? '').trim().toLowerCase()
+}
+
+function hasUniqueQuestRewards(assignments) {
+  const seen = new Set()
+  for (const reward of Object.values(assignments ?? {})) {
+    if (String(reward?.type ?? '').toLowerCase() !== 'quest') continue
+    const key = rewardKey(reward)
+    if (!key || seen.has(key)) return false
+    seen.add(key)
+  }
+  return true
 }
 
 function isCompatible(creature, reward) {
@@ -129,6 +140,7 @@ function makeAssignment(creatures, startCreature) {
     }
   }
 
+  if (!hasUniqueQuestRewards(assignments)) return null
   return assignments
 }
 
@@ -146,6 +158,10 @@ export function buildRewardAssignments(creatures, startCreature) {
   }
 
   throw new Error('Could not construct a valid unique reward assignment.')
+}
+
+export function hasValidRewardAssignments(assignments) {
+  return hasUniqueQuestRewards(assignments)
 }
 
 export function getAssignedReward(assignments, creature) {

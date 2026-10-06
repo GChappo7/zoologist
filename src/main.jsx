@@ -32,6 +32,13 @@ const DEPLOYMENT_SHA = String(import.meta.env.VITE_DEPLOYMENT_SHA || 'local')
 const DEPLOYMENT_RUN = String(import.meta.env.VITE_DEPLOYMENT_RUN || '')
 const DEPLOYMENT_LABEL = DEPLOYMENT_SHA === 'local' ? 'LOCAL BUILD' : `DEPLOY #${DEPLOYMENT_RUN || '?'} • ${DEPLOYMENT_SHA.slice(0,7)}`
 
+function withTimeout(promise,ms=10000){
+  return Promise.race([
+    promise,
+    new Promise((_,reject)=>window.setTimeout(()=>reject(new Error('Cloud account load timed out.')),ms)),
+  ])
+}
+
 const PROGRESSION_ASSETS = {
   quest: 'https://oldschool.runescape.wiki/images/Quests.png',
   diary: 'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',
@@ -764,11 +771,11 @@ function App(){
       setCloudSaveStatus('loading')
 
       try{
-        await ensureProfile(session.user)
+        await withTimeout(ensureProfile(session.user))
 
         // The cloud row is the only persistent account save. A factory reset
         // deletes that row, so a subsequent load simply starts a new world.
-        const cloud=await loadCloudGameState(session.user.id)
+        const cloud=await withTimeout(loadCloudGameState(session.user.id))
         let next=cloud&&typeof cloud==='object' ? cloud : null
         if(!next){
           const localOwner=localStorage.getItem('zoologist-local-save-owner')

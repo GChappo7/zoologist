@@ -396,6 +396,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
   const [filter,setFilter]=useState('all')
   const [statuses,setStatuses]=useState(initialStatuses||{})
   const [search,setSearch]=useState('')
+  const questListRef=useRef(null)
 
   useEffect(()=>{
     setStatuses(initialStatuses||{})
@@ -474,7 +475,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
       </div>
 
       <div className="quest-log-body">
-        <div className="quest-list">
+        <div className="quest-list" ref={questListRef}>
           {grouped.map(([difficulty,rows])=>
             <section key={difficulty}>
               <h3><span>{difficulty}</span><i>{rows.length}</i></h3>
@@ -485,7 +486,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
                   key={q.id}
                   className={`quest-row quest-${status}`}
                   onClick={()=>status!=='unrevealed'&&cycleStatus(q.id)}
-                  aria-label={status==='unrevealed'?'${q.name}, quest not revealed':`${q.name}, ${statusLabel[status]}`}
+                  aria-label={status==='unrevealed'?`${q.name}, quest not revealed`:`${q.name}, ${statusLabel[status]}`}
                 >
                   <span className="quest-status-dot" aria-hidden="true"/>
                   <span className="quest-name">{status==='unrevealed'?'???':q.name}</span>
@@ -495,6 +496,14 @@ function QuestsView({initialStatuses={},onStatusesChange}){
             </section>
           )}
           {!filtered.length&&<div className="quest-empty">No quests match your search.</div>}
+        </div>
+        <div className="quest-scroll-arrows" aria-label="Quest list scroll controls">
+          <button type="button" className="quest-scroll-arrow quest-scroll-up" onClick={()=>questListRef.current?.scrollBy({top:-260,behavior:'smooth'})} aria-label="Scroll quest list up">
+            <img src={`${import.meta.env.BASE_URL}assets/ui/up%20arrow.png`} alt="" draggable="false"/>
+          </button>
+          <button type="button" className="quest-scroll-arrow quest-scroll-down" onClick={()=>questListRef.current?.scrollBy({top:260,behavior:'smooth'})} aria-label="Scroll quest list down">
+            <img src={`${import.meta.env.BASE_URL}assets/ui/down%20arrow.png`} alt="" draggable="false"/>
+          </button>
         </div>
       </div>
     </div>

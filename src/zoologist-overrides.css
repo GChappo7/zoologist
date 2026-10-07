@@ -1548,3 +1548,223 @@
   .tile-popup.tile-popup-skill .tile-popup-title { font-size: 28px !important; }
   .tile-popup.tile-popup-skill .tile-popup-subtitle { font-size: 26px !important; }
 }
+
+
+/* OSRS-style quest tab overhaul. */
+.quest-log-page {
+  min-height: calc(100vh - 76px) !important;
+  padding: 14px !important;
+  background: #0b0e0f !important;
+  font-family: var(--font-runescape) !important;
+}
+.quest-log-shell {
+  max-width: 620px !important;
+  min-height: calc(100vh - 104px) !important;
+  margin: 0 auto !important;
+  background: #171c1f !important;
+  color: #d7d0bc !important;
+  border: 2px solid #39444a !important;
+  box-shadow: 0 12px 35px rgba(0,0,0,.55), inset 0 0 0 1px #0b0e10 !important;
+  font-family: var(--font-runescape) !important;
+}
+.quest-log-title {
+  min-height: 58px !important;
+  box-sizing: border-box !important;
+  padding: 8px 14px !important;
+  gap: 10px !important;
+  background: linear-gradient(#20282d,#141a1d) !important;
+  color: #f1e8d2 !important;
+  border-bottom: 1px solid #465158 !important;
+}
+.quest-log-title > img {
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.8)) !important;
+}
+.quest-log-title strong {
+  font: 22px/1 var(--font-runescape) !important;
+  color: #e9dfc6 !important;
+  text-shadow: 2px 2px 0 #070909 !important;
+}
+.quest-log-title span {
+  margin-top: 4px !important;
+  font: 11px/1 var(--font-runescape) !important;
+  color: #8f9ba0 !important;
+}
+.quest-log-summary {
+  display: flex !important;
+  align-items: baseline !important;
+  justify-content: space-between !important;
+  padding: 7px 14px !important;
+  background: #101518 !important;
+  border-bottom: 1px solid #2c363b !important;
+  color: #8e999d !important;
+  font: 12px var(--font-runescape) !important;
+}
+.quest-log-summary strong {
+  color: #d6c59b !important;
+  font: 18px var(--font-runescape) !important;
+  text-shadow: 1px 1px 0 #050606 !important;
+}
+.quest-log-controls {
+  display: flex !important;
+  gap: 7px !important;
+  align-items: center !important;
+  padding: 7px !important;
+  background: #12181b !important;
+  border-bottom: 1px solid #354046 !important;
+}
+.quest-filters {
+  display: flex !important;
+  gap: 3px !important;
+  flex-wrap: wrap !important;
+}
+.quest-filters button {
+  border: 1px solid #354047 !important;
+  background: #1c2428 !important;
+  color: #aeb7b9 !important;
+  padding: 5px 8px !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.04) !important;
+  font: 11px var(--font-runescape) !important;
+  cursor: pointer !important;
+}
+.quest-filters button.active {
+  background: #39474d !important;
+  border-color: #69767a !important;
+  color: #f0e6ca !important;
+}
+.quest-filters span {
+  margin-left: 3px !important;
+  color: #78858a !important;
+}
+.quest-search {
+  margin-left: auto !important;
+  min-width: 150px !important;
+  padding: 5px 7px !important;
+  gap: 5px !important;
+  background: #0c1113 !important;
+  border: 1px solid #303b40 !important;
+  color: #7f8a8e !important;
+}
+.quest-search input {
+  font: 11px var(--font-runescape) !important;
+  color: #d8d0bd !important;
+}
+.quest-log-body {
+  display: block !important;
+  min-height: 0 !important;
+}
+.quest-list {
+  padding: 7px 9px 20px !important;
+  max-height: calc(100vh - 215px) !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #56636a #111619 !important;
+}
+.quest-list section {
+  margin: 0 !important;
+}
+.quest-list section h3 {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin: 8px 3px 3px !important;
+  padding: 5px 6px 4px !important;
+  border-bottom: 1px solid #303b40 !important;
+  color: #c9c0a9 !important;
+  font: 15px var(--font-runescape) !important;
+  text-shadow: 1px 1px 0 #060808 !important;
+}
+.quest-list section h3 i {
+  font-style: normal !important;
+  color: #68757a !important;
+  font-size: 10px !important;
+}
+.quest-row {
+  position: relative !important;
+  width: 100% !important;
+  min-height: 27px !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: 9px minmax(0,1fr) auto !important;
+  gap: 7px !important;
+  align-items: center !important;
+  padding: 3px 7px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(255,255,255,.035) !important;
+  background: transparent !important;
+  text-align: left !important;
+  font: 13px/1.15 var(--font-runescape) !important;
+  text-shadow: 1px 1px 0 #050606, 0 0 2px #050606 !important;
+  cursor: pointer !important;
+}
+.quest-row:hover {
+  background: rgba(255,255,255,.055) !important;
+}
+.quest-status-dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: #555f63 !important;
+  border: 1px solid #171b1d !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,.8) !important;
+}
+.quest-row.quest-revealed {
+  color: #e1b84b !important;
+}
+.quest-row.quest-revealed .quest-status-dot {
+  background: #e1b84b !important;
+}
+.quest-row.quest-in_progress {
+  color: #e1b84b !important;
+}
+.quest-row.quest-in_progress .quest-status-dot {
+  background: #e1b84b !important;
+}
+.quest-row.quest-completed {
+  color: #63b96e !important;
+}
+.quest-row.quest-completed .quest-status-dot {
+  background: #63b96e !important;
+}
+.quest-row.quest-unrevealed {
+  color: #5c6669 !important;
+  cursor: default !important;
+}
+.quest-name {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+.quest-status-label {
+  font: 9px var(--font-runescape) !important;
+  color: #707b80 !important;
+  opacity: 1 !important;
+}
+.quest-row.quest-revealed .quest-status-label,
+.quest-row.quest-in_progress .quest-status-label {
+  color: #a98d4b !important;
+}
+.quest-row.quest-completed .quest-status-label {
+  color: #5c9e66 !important;
+}
+.quest-empty {
+  padding: 35px 12px !important;
+  text-align: center !important;
+  color: #687378 !important;
+  font: 13px var(--font-runescape) !important;
+}
+@media (max-width: 600px) {
+  .quest-log-page { padding: 6px !important; }
+  .quest-log-shell { min-height: calc(100vh - 88px) !important; }
+  .quest-log-controls { flex-direction: column !important; align-items: stretch !important; }
+  .quest-search { margin-left: 0 !important; min-width: 0 !important; }
+  .quest-filters { width: 100% !important; }
+  .quest-filters button { flex: 1 1 auto !important; }
+  .quest-list { max-height: calc(100vh - 255px) !important; }
+  .quest-row { min-height: 29px !important; font-size: 12px !important; }
+  .quest-status-label { font-size: 8px !important; }
+}

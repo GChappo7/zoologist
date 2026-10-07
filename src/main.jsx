@@ -645,9 +645,10 @@ function CollectionLog({creatures,mapTiles,onBack}){
   </div>
 }
 
-function DiariesView(){
+function DiariesView({statuses={},onStatusClick}){
   const regions=['Ardougne','Desert','Falador','Fremennik','Kandarin','Karamja','Kourend & Kebos','Lumbridge & Draynor','Morytania','Varrock','Western Provinces','Wilderness']
-  return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><BookOpen size={14}/> ACCOUNT PROGRESSION</div><h1>Achievement Diaries</h1><p>Every region has Easy, Medium, Hard and Elite reward milestones.</p></div><div className="diary-grid">{regions.map(region=><div className="diary-card" key={region}><ProgressionIcon type="diary" background/><strong>{region}</strong><div>{['Easy','Medium','Hard','Elite'].map(t=><span key={t}><i/> {t}</span>)}</div></div>)}</div></div>
+  const tiers=['Easy','Medium','Hard','Elite']
+  return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><BookOpen size={14}/> ACCOUNT PROGRESSION</div><h1>Achievement Diaries</h1><p>Each diary is one bar split into Easy, Medium, Hard and Elite reward tiers.</p></div><div className="diary-grid">{regions.map(region=><div className="diary-card" key={region}><div className="diary-card-header"><ProgressionIcon type="diary" background/><strong>{region}</strong></div><div className="diary-tier-labels">{tiers.map(tier=><span key={tier}>{tier}</span>)}</div><button className="diary-progress-bar" type="button" onClick={()=>onStatusClick?.(region)} aria-label={`Mark ${region} diary progress complete`}>{tiers.map(tier=>{const key=`${region}|${tier}`;const status=statuses[key]||'locked';return <span key={tier} className={`diary-quadrant diary-quadrant-${status}`}><i>{status!=='locked'?'Completed':''}</i></span>})}</button></div>)}</div></div>
 }
 function ShopView(){
   return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><ShoppingBag size={14}/> ZOOLOGIST POINTS</div><h1>Shop</h1><p>Boss tasks will award Zoologist Points. Costs remain configurable until the progression rules are finalized.</p></div><div className="shop-grid">{shop.items.map(item=><div className="shop-card" key={item.id}><div className="shop-card-icon"><Sparkles size={17}/></div><strong>{item.name}</strong><p>{item.description}</p><span>Cost: TBD</span></div>)}</div></div>
@@ -794,7 +795,7 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,sk
     </div>}
   </aside>
 }
-function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete,initialTiles,onTilesChange,rewardAssignments,onRewardAssignmentsChange}){
+function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete,onDiaryRewardComplete,initialTiles,onTilesChange,rewardAssignments,onRewardAssignmentsChange}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[dismissingTileKey,setDismissingTileKey]=useState(null),[startCreature]=useState(()=>creatureById[initialTiles?.[keyFor(0,0)]?.creatureId]??pickStartingCreature(creatures))
   const [generatedRewardAssignments]=useState(()=>rewardAssignments??buildRewardAssignments(creatures,startCreature))
@@ -964,6 +965,7 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
       ?getSkillProgressAfterReward(skillProgress,reward)
       :skillProgress
     if(String(reward?.type).toLowerCase()==='skill')onSkillRewardComplete?.(reward)
+    if(String(reward?.type).toLowerCase()==='diary')onDiaryRewardComplete?.(reward)
     setTiles(current=>recomputeFrontier({...current,[keyFor(tile.x,tile.y)]:completed},creatures,nextSkillProgress,effectiveRewardAssignments))
     setSelectedTile(completed)
     setDismissingTileKey(keyFor(completed.x,completed.y))
@@ -999,6 +1001,7 @@ function App(){
   const [skillProgress,setSkillProgress]=useState(()=>normalizeSkillProgress(gameState.skillProgress||{}))
   const [rewardAssignments,setRewardAssignments]=useState(()=>hasValidRewardAssignments(gameState.rewardAssignments)?gameState.rewardAssignments:null)
   const [questStatuses,setQuestStatuses]=useState(gameState.questStatuses||{})
+  const [diaryStatuses,setDiaryStatuses]=useState(gameState.diaryStatuses||{})
   const [resetVersion,setResetVersion]=useState(0)
   const saveGenerationRef=useRef(0)
   const accountLoadGenerationRef=useRef(0)
@@ -1060,6 +1063,7 @@ function App(){
           setSkillProgress(normalizeSkillProgress(next.skillProgress||{}))
           setRewardAssignments(next.rewardAssignments||null)
           setQuestStatuses(next.questStatuses||{})
+          setDiaryStatuses(next.diaryStatuses||{})
           setAccountReady(true)
           setCloudSaveStatus('connected')
         }
@@ -1077,6 +1081,7 @@ function App(){
   },[session?.user?.id])
 
   useEffect(()=>localStorage.setItem('zoologist-skill-progress',JSON.stringify(skillProgress)),[skillProgress])
+  useEffect(()=>localStorage.setItem('zoologist-diary-statuses',JSON.stringify(diaryStatuses)),[diaryStatuses])
 
   // Quest rewards become "Revealed" as soon as their reward tile is revealed.
   // Map tiles are the authoritative source here, so this also catches quests
@@ -1120,8 +1125,9 @@ function App(){
     const hasCompletedTile=Object.values(gameState.mapTiles||{}).some(tile=>tile?.completed===true)
     const hasUnlockedSkill=Object.values(skillProgress||{}).some(value=>Number(value?.maxLevel)>0)
     const hasQuestProgress=Object.keys(questStatuses||{}).length>0
-    if(!session||!accountReady||resetInProgress||(!hasCompletedTile&&!hasUnlockedSkill&&!hasQuestProgress))return
-    const payload={...gameState,skillProgress,rewardAssignments,questStatuses}
+    const hasDiaryProgress=Object.keys(diaryStatuses||{}).length>0
+    if(!session||!accountReady||resetInProgress||(!hasCompletedTile&&!hasUnlockedSkill&&!hasQuestProgress&&!hasDiaryProgress))return
+    const payload={...gameState,skillProgress,rewardAssignments,questStatuses,diaryStatuses}
     const generation=saveGenerationRef.current
     const timer=window.setTimeout(()=>{
       if(generation!==saveGenerationRef.current)return
@@ -1145,7 +1151,7 @@ function App(){
       queuedSaveRef.current=queuedSaveRef.current.catch(()=>{}).then(save)
     },500)
     return()=>window.clearTimeout(timer)
-  },[session?.user?.id,accountReady,resetInProgress,gameState,skillProgress,rewardAssignments,questStatuses])
+  },[session?.user?.id,accountReady,resetInProgress,gameState,skillProgress,rewardAssignments,questStatuses,diaryStatuses])
 
   const handleResetProgress=async()=>{
     setResetConfirmOpen(true)
@@ -1199,6 +1205,7 @@ function App(){
       setSkillProgress(normalizeSkillProgress({}))
       setRewardAssignments(null)
       setQuestStatuses({})
+      setDiaryStatuses({})
       setProgress({explored:0,revealed:1})
       setResetVersion(current=>current+1)
       setCloudSaveStatus('connected')
@@ -1211,6 +1218,22 @@ function App(){
       setResetInProgress(false)
     }
   }
+  const handleDiaryRewardComplete=reward=>setDiaryStatuses(current=>{
+    const region=String(reward?.region??reward?.location??'').trim()
+    const tier=String(reward?.tier??'').trim()
+    if(!region||!tier)return current
+    const key=`${region}|${tier}`
+    if(current[key])return current
+    return {...current,[key]:'rewarded'}
+  })
+  const handleDiaryStatusClick=region=>setDiaryStatuses(current=>{
+    const next={...current}
+    ;['Easy','Medium','Hard','Elite'].forEach(tier=>{
+      const key=`${region}|${tier}`
+      if(next[key]==='rewarded')next[key]='completed'
+    })
+    return next
+  })
   const handleSkillRewardComplete=reward=>setSkillProgress(current=>{
     const skill=reward?.skill
     if(!skill)return current
@@ -1249,7 +1272,7 @@ function App(){
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>
     :tab==='quests'
     ?<QuestsView initialStatuses={questStatuses} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/>
-    :tab==='diaries'?<DiariesView/>
+    :tab==='diaries'?<DiariesView statuses={diaryStatuses} onStatusClick={handleDiaryStatusClick}/>
     :tab==='shop'?<ShopView/>
     :tab==='bosses'?<BossView/>
     :<MapView
@@ -1258,6 +1281,7 @@ function App(){
       onProgressChange={setProgress}
       skillProgress={skillProgress}
       onSkillRewardComplete={handleSkillRewardComplete}
+      onDiaryRewardComplete={handleDiaryRewardComplete}
       initialTiles={gameState.mapTiles}
       onTilesChange={resetInProgress?undefined:mapTiles=>updateGameState({mapTiles})}
       rewardAssignments={rewardAssignments}

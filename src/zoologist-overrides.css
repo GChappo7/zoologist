@@ -152,7 +152,7 @@
 .diary-tier-labels { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:2px; margin-bottom:2px; }
 .diary-tier-labels span { font:9px var(--font-runescape); color:#c7b98d; text-align:center; text-transform:uppercase; }
 .diary-progress-bar { width:100%; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:2px; padding:0; border:1px solid #574a36; background:#080b0d; cursor:pointer; }
-.diary-quadrant { min-height:48px; display:flex; align-items:center; justify-content:center; background:linear-gradient(#252b2d,#151a1c); border-right:1px solid #0a0c0d; }
+.diary-quadrant { min-height:28px; display:flex; align-items:center; justify-content:center; background:linear-gradient(#252b2d,#151a1c); border-right:1px solid #0a0c0d; }
 .diary-quadrant:last-child { border-right:0; }
 .diary-quadrant i { font:12px var(--font-runescape); font-style:normal; color:#777f82; text-shadow:1px 1px #000; }
 .diary-quadrant-rewarded { background:linear-gradient(#c7a64f,#8d702f); }

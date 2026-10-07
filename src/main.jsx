@@ -397,6 +397,9 @@ function QuestsView({initialStatuses={},onStatusesChange}){
   const [statuses,setStatuses]=useState(initialStatuses||{})
   const [search,setSearch]=useState('')
   const questListRef=useRef(null)
+  const questScrollbarRef=useRef(null)
+  const [questScroll,setQuestScroll]=useState({top:0,height:54})
+  const questDragRef=useRef(null)
 
   useEffect(()=>{
     setStatuses(initialStatuses||{})
@@ -406,6 +409,76 @@ function QuestsView({initialStatuses={},onStatusesChange}){
     localStorage.setItem('zoologist-quest-statuses',JSON.stringify(statuses))
     onStatusesChange?.(statuses)
   },[statuses,onStatusesChange])
+
+  useEffect(()=>{
+    const list=questListRef.current
+    const scrollbar=questScrollbarRef.current
+    if(!list||!scrollbar)return
+    const updateScrollBar=()=>{
+      const maxScroll=Math.max(0,list.scrollHeight-list.clientHeight)
+      const trackHeight=Math.max(1,scrollbar.clientHeight-48)
+      const thumbHeight=maxScroll>0
+        ? Math.max(28,Math.min(trackHeight,trackHeight*(list.clientHeight/list.scrollHeight)))
+        : trackHeight
+      const maxThumbTop=Math.max(0,trackHeight-thumbHeight)
+      const top=maxScroll>0 ? (list.scrollTop/maxScroll)*maxThumbTop : 0
+      setQuestScroll({top,height:thumbHeight})
+    }
+    updateScrollBar()
+    list.addEventListener('scroll',updateScrollBar,{passive:true})
+    window.addEventListener('resize',updateScrollBar)
+    return ()=>{
+      list.removeEventListener('scroll',updateScrollBar)
+      window.removeEventListener('resize',updateScrollBar)
+    }
+  },[filtered.length,filter,search])
+
+  const dragQuestScrollbar=(event)=>{
+    const scrollbar=questScrollbarRef.current
+    const list=questListRef.current
+    if(!scrollbar||!list||list.scrollHeight<=list.clientHeight)return
+    event.preventDefault()
+    const trackHeight=Math.max(1,scrollbar.clientHeight-48)
+    const maxThumbTop=Math.max(0,trackHeight-questScroll.height)
+    const rect=scrollbar.getBoundingClientRect()
+    const pointerTop=event.clientY-rect.top-24
+    const nextTop=Math.max(0,Math.min(maxThumbTop,pointerTop-questScroll.height/2))
+    const maxScroll=list.scrollHeight-list.clientHeight
+    list.scrollTop=maxThumbTop ? (nextTop/maxThumbTop)*maxScroll : 0
+  }
+
+  const startQuestScrollbarDrag=(event)=>{
+    if(event.button!==0)return
+    const scrollbar=questScrollbarRef.current
+    const list=questListRef.current
+    if(!scrollbar||!list||list.scrollHeight<=list.clientHeight)return
+    const rect=scrollbar.getBoundingClientRect()
+    const thumbTop=questScroll.top+24
+    if(event.clientY<rect.top+thumbTop || event.clientY>rect.top+thumbTop+questScroll.height){
+      const trackHeight=Math.max(1,scrollbar.clientHeight-48)
+      const maxThumbTop=Math.max(0,trackHeight-questScroll.height)
+      const clickTop=Math.max(0,Math.min(maxThumbTop,event.clientY-rect.top-24-questScroll.height/2))
+      const maxScroll=list.scrollHeight-list.clientHeight
+      list.scrollTop=maxThumbTop ? (clickTop/maxThumbTop)*maxScroll : 0
+      return
+    }
+    questDragRef.current={startY:event.clientY,startScroll:list.scrollTop}
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+  }
+
+  const moveQuestScrollbar=(event)=>{
+    const drag=questDragRef.current
+    const scrollbar=questScrollbarRef.current
+    const list=questListRef.current
+    if(!drag||!scrollbar||!list)return
+    const trackHeight=Math.max(1,scrollbar.clientHeight-48)
+    const maxThumbTop=Math.max(0,trackHeight-questScroll.height)
+    const maxScroll=list.scrollHeight-list.clientHeight
+    if(maxThumbTop<=0)return
+    list.scrollTop=Math.max(0,Math.min(maxScroll,drag.startScroll+(event.clientY-drag.startY)*(maxScroll/maxThumbTop)))
+  }
+
+  const endQuestScrollbarDrag=()=>{ questDragRef.current=null }
 
   const counts=useMemo(()=>({
     all:quests.length,
@@ -497,13 +570,17 @@ function QuestsView({initialStatuses={},onStatusesChange}){
           )}
           {!filtered.length&&<div className="quest-empty">No quests match your search.</div>}
         </div>
-        <div className="quest-scroll-arrows" aria-label="Quest list scroll controls">
+        <div className="quest-scroll-arrows" ref={questScrollbarRef} aria-label="Quest list scroll controls"
+          onPointerMove={moveQuestScrollbar} onPointerUp={endQuestScrollbarDrag} onPointerCancel={endQuestScrollbarDrag} onPointerDown={startQuestScrollbarDrag}>
           <button type="button" className="quest-scroll-arrow quest-scroll-up" onClick={()=>questListRef.current?.scrollBy({top:-260,behavior:'smooth'})} aria-label="Scroll quest list up">
             <img src={`${import.meta.env.BASE_URL}assets/ui/down%20arrow.png`} alt="" draggable="false"/>
           </button>
           <button type="button" className="quest-scroll-arrow quest-scroll-down" onClick={()=>questListRef.current?.scrollBy({top:260,behavior:'smooth'})} aria-label="Scroll quest list down">
             <img src={`${import.meta.env.BASE_URL}assets/ui/up%20arrow.png`} alt="" draggable="false"/>
           </button>
+          <div className="quest-scroll-track" aria-hidden="true">
+            <div className="quest-scroll-thumb" style={{transform:`translateY(${questScroll.top}px)`,height:`${questScroll.height}px`}} />
+          </div>
         </div>
       </div>
     </div>

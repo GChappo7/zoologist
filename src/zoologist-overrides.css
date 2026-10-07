@@ -1393,9 +1393,9 @@
   text-shadow: 0 3px 5px rgba(0,0,0,.9) !important;
 }
 
-.tile-popup-progression-icon {
-  width: 150px !important;
-  height: 150px !important;
+ .tile-popup-progression-icon {
+  width: 125px !important;
+  height: 125px !important;
   left: 16% !important;
   top: 50% !important;
   filter: drop-shadow(0 4px 5px rgba(0,0,0,.92)) !important;
@@ -1430,8 +1430,8 @@
     font-size: 12px !important;
   }
   .tile-popup-progression-icon {
-    width: 110px !important;
-    height: 110px !important;
+    width: 95px !important;
+    height: 95px !important;
   }
   .tile-popup .tile-popup-complete {
     min-width: 88px !important;

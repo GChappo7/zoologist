@@ -1372,3 +1372,75 @@
 /* Completed tiles keep the normal tile background; completion is shown by the green border only. */
 .map-tile.is-completed { background: #0d151a !important; }
 .map-tile.is-completed:hover { background: #0d151a !important; }
+
+
+/* Larger reward popups: overlap the selected tile more while keeping the OSRS reward-frame structure intact. */
+.tile-popup {
+  width: min(600px, calc(100% - 20px)) !important;
+  box-shadow:
+    0 24px 55px rgba(0,0,0,.78),
+    0 8px 18px rgba(0,0,0,.62),
+    0 0 14px rgba(0,0,0,.34) !important;
+}
+
+.tile-popup-title {
+  font-size: clamp(21px, 1.7vw, 28px) !important;
+  text-shadow: 0 3px 5px rgba(0,0,0,.9), 0 0 3px rgba(0,0,0,.7) !important;
+}
+
+.tile-popup-subtitle {
+  margin-top: 6px !important;
+  font-size: clamp(13px, 1vw, 16px) !important;
+  line-height: 1.12 !important;
+  text-shadow: 0 3px 5px rgba(0,0,0,.9) !important;
+}
+
+.tile-popup-skill-icon {
+  width: 64px !important;
+  height: 64px !important;
+  filter: drop-shadow(0 4px 5px rgba(0,0,0,.9)) !important;
+}
+
+.tile-popup-actions {
+  gap: 14px !important;
+}
+
+.tile-popup .tile-popup-complete {
+  min-width: 112px !important;
+  width: 112px !important;
+  min-height: 40px !important;
+  height: 40px !important;
+  font-size: 17px !important;
+}
+
+.tile-popup .tile-popup-more {
+  font-size: 11px !important;
+  min-height: 36px !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,.9) !important;
+}
+
+@media (max-width:760px) {
+  .tile-popup {
+    width: min(430px, calc(100% - 12px)) !important;
+  }
+  .tile-popup-title {
+    font-size: 18px !important;
+  }
+  .tile-popup-subtitle {
+    font-size: 12px !important;
+  }
+  .tile-popup-skill-icon {
+    width: 50px !important;
+    height: 50px !important;
+  }
+  .tile-popup .tile-popup-complete {
+    min-width: 88px !important;
+    width: 88px !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    font-size: 14px !important;
+  }
+  .tile-popup .tile-popup-more {
+    font-size: 9px !important;
+  }
+}

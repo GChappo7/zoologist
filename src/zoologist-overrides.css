@@ -906,6 +906,9 @@
 /* Use the actual blank OSRS skill box for the popup completion control. */
 .tile-popup .tile-popup-complete {
   min-height: 48px !important;
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
   min-width: 150px !important;
   padding: 8px 16px !important;
   border: 0 !important;

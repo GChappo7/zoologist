@@ -1378,8 +1378,7 @@
 .tile-popup {
   width: min(600px, calc(100% - 20px)) !important;
   box-shadow: none !important;
-  filter: drop-shadow(0 12px 10px rgba(0,0,0,.78))
-          drop-shadow(0 4px 5px rgba(0,0,0,.62)) !important;
+  filter: drop-shadow(-3px 3px 4px rgba(0,0,0,.58)) !important;
 }
 
 .tile-popup-title {

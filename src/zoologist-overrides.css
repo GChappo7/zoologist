@@ -1837,3 +1837,40 @@
     height: 15px !important;
   }
 }
+
+/* Connect the quest scroll arrows with an OSRS-style scrollbar track and thumb. */
+.quest-scroll-arrows::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 24px !important;
+  bottom: 24px !important;
+  left: 10px !important;
+  width: 4px !important;
+  background: linear-gradient(90deg,#171a1b,#555044,#171a1b) !important;
+  border-left: 1px solid #0a0d0e !important;
+  border-right: 1px solid #77705e !important;
+  box-shadow: inset 0 0 0 1px #292725, 0 0 2px rgba(0,0,0,.9) !important;
+  pointer-events: none !important;
+}
+.quest-scroll-arrows::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 27px !important;
+  left: 7px !important;
+  width: 10px !important;
+  height: 54px !important;
+  background: linear-gradient(90deg,#625c4c,#a69b7c,#625c4c) !important;
+  border: 1px solid #1a1b1a !important;
+  box-shadow: inset 0 0 0 1px #d0c49d, 0 1px 3px rgba(0,0,0,.8) !important;
+  pointer-events: none !important;
+}
+.quest-scroll-arrow {
+  position: relative !important;
+  z-index: 2 !important;
+  border-color: #776f5b !important;
+  background: linear-gradient(#5b5649,#292923) !important;
+  box-shadow: inset 0 1px rgba(220,210,175,.22), inset 0 -1px rgba(0,0,0,.65), 0 1px 3px rgba(0,0,0,.8) !important;
+}
+.quest-scroll-arrow:hover {
+  background: linear-gradient(#77705e,#36342c) !important;
+}

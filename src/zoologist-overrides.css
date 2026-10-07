@@ -1374,14 +1374,12 @@
 .map-tile.is-completed:hover { background: #0d151a !important; }
 
 
-/* Larger reward popups: overlap the selected tile more while keeping the OSRS reward-frame structure intact. */
+/* Larger reward popups: overlap the selected tile more. Use a true alpha-shaped shadow, not a rectangular box shadow. */
 .tile-popup {
   width: min(600px, calc(100% - 20px)) !important;
-  box-shadow:
-    0 24px 55px rgba(0,0,0,.82),
-    0 8px 18px rgba(0,0,0,.68),
-    0 0 14px rgba(0,0,0,.42) !important;
-  filter: drop-shadow(0 12px 10px rgba(0,0,0,.72)) drop-shadow(0 3px 4px rgba(0,0,0,.65)) !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 12px 10px rgba(0,0,0,.78))
+          drop-shadow(0 4px 5px rgba(0,0,0,.62)) !important;
 }
 
 .tile-popup-title {

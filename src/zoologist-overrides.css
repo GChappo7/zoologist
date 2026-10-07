@@ -1506,3 +1506,16 @@
   font-weight: 700 !important;
   letter-spacing: .03em !important;
 }
+
+
+/* Final popup control alignment. */
+.tile-popup .tile-popup-complete {
+  padding-top: 5px !important;
+  padding-left: 10px !important;
+}
+.tile-popup .tile-popup-more {
+  top: 54% !important;
+}
+@media (max-width:760px) {
+  .tile-popup .tile-popup-more { top: 54% !important; }
+}

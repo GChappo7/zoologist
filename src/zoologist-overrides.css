@@ -146,11 +146,21 @@
 .diary-card,.shop-card {
   padding:15px; border:1px solid var(--border); background:#111a20; border-radius:10px;
 }
-.diary-card strong { display:block; margin-bottom:10px; }
-.diary-card div { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-.diary-card span { font-size:10px; color:#8d9a9f; }
-.diary-card i { display:inline-block; width:6px; height:6px; border-radius:50%; background:#64727a; }
-.shop-card { min-height:150px; }
+.diary-card-header { display:flex; align-items:center; gap:9px; margin-bottom:10px; }
+.diary-card-header .progression-icon { position:static; width:30px; height:30px; opacity:.85; }
+.diary-card-header strong { display:block; margin:0; }
+.diary-tier-labels { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:2px; margin-bottom:2px; }
+.diary-tier-labels span { font:9px var(--font-runescape); color:#c7b98d; text-align:center; text-transform:uppercase; }
+.diary-progress-bar { width:100%; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:2px; padding:0; border:1px solid #574a36; background:#080b0d; cursor:pointer; }
+.diary-quadrant { min-height:48px; display:flex; align-items:center; justify-content:center; background:linear-gradient(#252b2d,#151a1c); border-right:1px solid #0a0c0d; }
+.diary-quadrant:last-child { border-right:0; }
+.diary-quadrant i { font:12px var(--font-runescape); font-style:normal; color:#777f82; text-shadow:1px 1px #000; }
+.diary-quadrant-rewarded { background:linear-gradient(#c7a64f,#8d702f); }
+.diary-quadrant-rewarded i { color:#fff0a8; }
+.diary-quadrant-completed { background:linear-gradient(#397d4b,#245b32); }
+.diary-quadrant-completed i { color:#e8ffe8; }
+.diary-progress-bar:hover { filter:brightness(1.08); }
+.diary-progress-bar:focus-visible { outline:2px solid #d8b86a; outline-offset:2px; }
 .shop-card-icon { color:var(--accent); margin-bottom:10px; }
 .shop-card p { color:var(--muted); font-size:11px; line-height:1.45; min-height:34px; }
 .shop-card span { color:#d3ae6e; font:9px 'Space Mono',monospace; }

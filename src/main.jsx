@@ -591,7 +591,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
   >
     <img className="tile-popup-frame" src={rewardAsset} alt="" aria-hidden="true" draggable="false"/>
     <div className="tile-popup-content">
-      <ProgressionIcon type={presentation.type} skill={presentation.iconName} className={`tile-popup-progression-icon tile-popup-${presentation.type}-icon`}/>
+      <ProgressionIcon type={presentation.type} skill={presentation.iconName} className={`tile-popup-progression-icon tile-popup-${presentation.type}-icon ${presentation.type === 'skill' ? `tile-popup-skill-${String(presentation.iconName || '').toLowerCase().replace(/\\s+/g, '-')}` : ''}`}/>
 
       <div className="tile-popup-reward-copy">
         <strong className="tile-popup-title">{presentation.title}</strong>

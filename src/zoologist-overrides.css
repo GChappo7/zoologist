@@ -1468,6 +1468,12 @@
   box-shadow: none !important;
 }
 
+/* Agility reward popup: make the ability icon much more visible without overpowering the text. */
+.tile-popup.tile-popup-skill.tile-popup-skill-agility .tile-popup-progression-icon {
+  opacity: .52 !important;
+  filter: saturate(1.05) brightness(.92) drop-shadow(0 4px 5px rgba(0,0,0,.88)) !important;
+}
+
 /* Completed tiles: remove all remaining explored-state green styling. */
 .map-tile.is-completed,
 .map-tile.map-tile-explored.is-completed {

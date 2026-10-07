@@ -453,8 +453,8 @@ function QuestsView({initialStatuses={},onStatusesChange}){
       </div>
 
       <div className="quest-log-summary">
-        <span>Quest Points</span>
-        <strong>{counts.completed}</strong>
+        <span>Quests complete</span>
+        <strong>{counts.completed} / {counts.all}</strong>
       </div>
 
       <div className="quest-log-controls">

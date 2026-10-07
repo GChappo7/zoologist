@@ -1416,14 +1416,20 @@
   min-height: 40px !important;
   height: 40px !important;
   font-size: 17px !important;
-  padding-top: 8px !important;
+  padding-top: 10px !important;
+  padding-left: 5px !important;
   filter: drop-shadow(0 2px 2px rgba(0,0,0,.58)) !important;
 }
 
 .tile-popup .tile-popup-more {
+  font-family: var(--font-runescape) !important;
   font-size: 11px !important;
+  font-weight: 700 !important;
   min-height: 36px !important;
-  text-shadow: 0 2px 4px rgba(0,0,0,.9) !important;
+  color: #f1d36b !important;
+  text-decoration-color: #f1d36b !important;
+  letter-spacing: .03em !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.7) !important;
 }
 
 @media (max-width:760px) {
@@ -1489,4 +1495,14 @@
 .map-tile.map-tile-explored.is-completed .map-card-front::after {
   display: none !important;
   background: none !important;
+}
+
+
+/* Final popup label treatment: DETAILS uses the RuneScape font and yellow UI colour. */
+.tile-popup .tile-popup-more {
+  font-family: var(--font-runescape) !important;
+  color: #f1d36b !important;
+  text-decoration-color: #f1d36b !important;
+  font-weight: 700 !important;
+  letter-spacing: .03em !important;
 }

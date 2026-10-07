@@ -1367,3 +1367,8 @@
   .header-collection-label strong { font-size: 12px; }
   .header-collection-track { height: 3px; margin-top: 3px; }
 }
+
+
+/* Completed tiles keep the normal tile background; completion is shown by the green border only. */
+.map-tile.is-completed { background: #0d151a !important; }
+.map-tile.is-completed:hover { background: #0d151a !important; }

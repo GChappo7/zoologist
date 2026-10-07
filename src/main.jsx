@@ -410,7 +410,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
     all:quests.length,
     revealed:quests.filter(q=>(statuses[q.id]||'unrevealed')!=='unrevealed').length,
     completed:quests.filter(q=>statuses[q.id]==='completed').length,
-    inProgress:quests.filter(q=>statuses[q.id]==='in_progress').length,
+    inProgress:0,
   }),[statuses])
 
   const filtered=useMemo(()=>quests.filter(q=>{
@@ -428,17 +428,15 @@ function QuestsView({initialStatuses={},onStatusesChange}){
     .map(difficulty=>[difficulty,filtered.filter(q=>q.difficulty===difficulty)])
     .filter(([,rows])=>rows.length)
 
-  const cycleStatus=id=>setStatuses(s=>({
-    ...s,
-    [id]:s[id]==='unrevealed'?'revealed':
-      s[id]==='revealed'?'in_progress':
-      s[id]==='in_progress'?'completed':'unrevealed'
-  }))
+  const cycleStatus=id=>setStatuses(s=>{
+    const current=s[id]||'unrevealed'
+    if(current==='unrevealed') return s
+    return {...s,[id]:current==='completed'?'revealed':'completed'}
+  })
 
   const statusLabel={
     unrevealed:'???',
-    revealed:'Not started',
-    in_progress:'In progress',
+    revealed:'Revealed',
     completed:'Complete'
   }
 
@@ -462,7 +460,6 @@ function QuestsView({initialStatuses={},onStatusesChange}){
           {[
             ['all','All',counts.all],
             ['revealed','Revealed',counts.revealed],
-            ['in_progress','In progress',counts.inProgress],
             ['completed','Completed',counts.completed],
           ].map(([id,label,count])=>
             <button type="button" key={id} className={filter===id?'active':''} onClick={()=>setFilter(id)}>

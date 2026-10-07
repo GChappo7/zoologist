@@ -1527,3 +1527,24 @@
   text-decoration-color: #ffe066 !important;
   text-shadow: 0 2px 4px rgba(0,0,0,.95), 0 0 2px rgba(0,0,0,.85) !important;
 }
+
+
+/* Make skill reward popup typography larger and more prominent. */
+.tile-popup.tile-popup-skill .tile-popup-title {
+  font-size: 42px !important;
+  line-height: .95 !important;
+  text-shadow: 0 3px 5px rgba(0,0,0,.95), 0 0 3px rgba(0,0,0,.85) !important;
+}
+.tile-popup.tile-popup-skill .tile-popup-subtitle {
+  font-size: 38px !important;
+  line-height: .95 !important;
+  text-shadow: 0 3px 5px rgba(0,0,0,.95), 0 0 3px rgba(0,0,0,.85) !important;
+}
+@media (max-width:760px) {
+  .tile-popup.tile-popup-skill .tile-popup-title { font-size: 34px !important; }
+  .tile-popup.tile-popup-skill .tile-popup-subtitle { font-size: 31px !important; }
+}
+@media (max-width:500px) {
+  .tile-popup.tile-popup-skill .tile-popup-title { font-size: 28px !important; }
+  .tile-popup.tile-popup-skill .tile-popup-subtitle { font-size: 26px !important; }
+}

@@ -1519,3 +1519,11 @@
 @media (max-width:760px) {
   .tile-popup .tile-popup-more { top: 54% !important; }
 }
+
+
+/* Make the popup DETAILS label a stronger OSRS-style yellow. */
+.tile-popup .tile-popup-more {
+  color: #ffe066 !important;
+  text-decoration-color: #ffe066 !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,.95), 0 0 2px rgba(0,0,0,.85) !important;
+}

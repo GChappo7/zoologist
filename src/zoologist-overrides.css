@@ -1394,8 +1394,8 @@
 }
 
 .tile-popup-progression-icon {
-  width: 180px !important;
-  height: 180px !important;
+  width: 150px !important;
+  height: 150px !important;
   left: 16% !important;
   top: 50% !important;
   filter: drop-shadow(0 4px 5px rgba(0,0,0,.92)) !important;
@@ -1430,8 +1430,8 @@
     font-size: 12px !important;
   }
   .tile-popup-progression-icon {
-    width: 128px !important;
-    height: 128px !important;
+    width: 110px !important;
+    height: 110px !important;
   }
   .tile-popup .tile-popup-complete {
     min-width: 88px !important;

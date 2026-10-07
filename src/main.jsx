@@ -396,21 +396,110 @@ function QuestsView({initialStatuses={},onStatusesChange}){
   const [filter,setFilter]=useState('all')
   const [statuses,setStatuses]=useState(initialStatuses||{})
   const [search,setSearch]=useState('')
-  useEffect(()=>{localStorage.setItem('zoologist-quest-statuses',JSON.stringify(statuses));onStatusesChange?.(statuses)},[statuses,onStatusesChange])
-  const filtered=quests.filter(q=>{
+
+  useEffect(()=>{
+    setStatuses(initialStatuses||{})
+  },[initialStatuses])
+
+  useEffect(()=>{
+    localStorage.setItem('zoologist-quest-statuses',JSON.stringify(statuses))
+    onStatusesChange?.(statuses)
+  },[statuses,onStatusesChange])
+
+  const counts=useMemo(()=>({
+    all:quests.length,
+    revealed:quests.filter(q=>(statuses[q.id]||'unrevealed')!=='unrevealed').length,
+    completed:quests.filter(q=>statuses[q.id]==='completed').length,
+    inProgress:quests.filter(q=>statuses[q.id]==='in_progress').length,
+  }),[statuses])
+
+  const filtered=useMemo(()=>quests.filter(q=>{
     const status=statuses[q.id]||'unrevealed'
-    const matches=filter==='all'||(filter==='revealed'&&status!=='unrevealed')||(filter==='completed'&&status==='completed')
-    return matches&&q.name.toLowerCase().includes(search.toLowerCase())
-  })
-  const grouped=Object.entries(filtered.reduce((acc,q)=>{(acc[q.difficulty]??=[]).push(q);return acc},{}))
-  const counts={all:quests.length,revealed:quests.filter(q=>(statuses[q.id]||'unrevealed')!=='unrevealed').length,completed:quests.filter(q=>statuses[q.id]==='completed').length}
-  const cycleStatus=id=>setStatuses(s=>({...s,[id]:s[id]==='unrevealed'?'revealed':s[id]==='revealed'?'in_progress':s[id]==='in_progress'?'completed':'unrevealed'}))
-  const statusLabel={unrevealed:'Unrevealed',revealed:'Not started',in_progress:'In progress',completed:'Complete'}
+    const matchesFilter=
+      filter==='all' ||
+      (filter==='revealed'&&status!=='unrevealed') ||
+      (filter==='completed'&&status==='completed') ||
+      (filter==='in_progress'&&status==='in_progress')
+    return matchesFilter&&q.name.toLowerCase().includes(search.toLowerCase())
+  }),[statuses,filter,search])
+
+  const difficultyOrder=['Novice','Intermediate','Experienced','Master','Grandmaster']
+  const grouped=difficultyOrder
+    .map(difficulty=>[difficulty,filtered.filter(q=>q.difficulty===difficulty)])
+    .filter(([,rows])=>rows.length)
+
+  const cycleStatus=id=>setStatuses(s=>({
+    ...s,
+    [id]:s[id]==='unrevealed'?'revealed':
+      s[id]==='revealed'?'in_progress':
+      s[id]==='in_progress'?'completed':'unrevealed'
+  }))
+
+  const statusLabel={
+    unrevealed:'???',
+    revealed:'Not started',
+    in_progress:'In progress',
+    completed:'Complete'
+  }
+
   return <div className="quest-log-page">
     <div className="quest-log-shell">
-      <div className="quest-log-title"><ProgressionIcon type="quest"/><div><strong>Quest Log</strong><span>184 quests</span></div></div>
-      <div className="quest-log-controls"><div className="quest-filters">{QUEST_FILTERS.map(f=><button key={f} className={filter===f?'active':''} onClick={()=>setFilter(f)}>{f[0].toUpperCase()+f.slice(1)} <span>{counts[f]}</span></button>)}</div><label className="quest-search"><Search size={14}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search quests"/></label></div>
-      <div className="quest-log-body"><div className="quest-list">{grouped.map(([difficulty,rows])=><section key={difficulty}><h3>{difficulty}</h3>{rows.map(q=>{const status=statuses[q.id]||'unrevealed';return <button key={q.id} className={`quest-row quest-${status}`} onClick={()=>status!=='unrevealed'&&cycleStatus(q.id)}><span className="quest-status-dot"/><span className="quest-name">{status==='unrevealed'?'???':q.name}</span><span className="quest-status-label">{statusLabel[status]}</span></button>})}</section>)}</div><div className="quest-info"><ScrollText size={30}/><h2>Quest Log</h2><p>Quest rewards reveal individual quests. Revealed quests are shown in red until started and green when complete.</p><small>For testing, click a revealed quest to cycle its local prototype status.</small></div></div>
+      <div className="quest-log-title">
+        <ProgressionIcon type="quest"/>
+        <div>
+          <strong>Quest Log</strong>
+          <span>{counts.completed} / {counts.all} quests complete</span>
+        </div>
+      </div>
+
+      <div className="quest-log-summary">
+        <span>Quest Points</span>
+        <strong>{counts.completed}</strong>
+      </div>
+
+      <div className="quest-log-controls">
+        <div className="quest-filters">
+          {[
+            ['all','All',counts.all],
+            ['revealed','Revealed',counts.revealed],
+            ['in_progress','In progress',counts.inProgress],
+            ['completed','Completed',counts.completed],
+          ].map(([id,label,count])=>
+            <button type="button" key={id} className={filter===id?'active':''} onClick={()=>setFilter(id)}>
+              {label} <span>{count}</span>
+            </button>
+          )}
+        </div>
+        <label className="quest-search">
+          <Search size={14}/>
+          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search quests"/>
+        </label>
+      </div>
+
+      <div className="quest-log-body">
+        <div className="quest-list">
+          {grouped.map(([difficulty,rows])=>
+            <section key={difficulty}>
+              <h3><span>{difficulty}</span><i>{rows.length}</i></h3>
+              {rows.map(q=>{
+                const status=statuses[q.id]||'unrevealed'
+                return <button
+                  type="button"
+                  key={q.id}
+                  className={`quest-row quest-${status}`}
+                  onClick={()=>status!=='unrevealed'&&cycleStatus(q.id)}
+                  aria-label={status==='unrevealed'?'${q.name}, quest not revealed':`${q.name}, ${statusLabel[status]}`}
+                >
+                  <span className="quest-status-dot" aria-hidden="true"/>
+                  <span className="quest-name">{status==='unrevealed'?'???':q.name}</span>
+                  <span className="quest-status-label">{statusLabel[status]}</span>
+                </button>
+              })}
+            </section>
+          )}
+          {!filtered.length&&<div className="quest-empty">No quests match your search.</div>}
+        </div>
+      </div>
     </div>
   </div>
 }

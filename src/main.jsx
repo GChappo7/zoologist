@@ -410,29 +410,6 @@ function QuestsView({initialStatuses={},onStatusesChange}){
     onStatusesChange?.(statuses)
   },[statuses,onStatusesChange])
 
-  useEffect(()=>{
-    const list=questListRef.current
-    const scrollbar=questScrollbarRef.current
-    if(!list||!scrollbar)return
-    const updateScrollBar=()=>{
-      const maxScroll=Math.max(0,list.scrollHeight-list.clientHeight)
-      const trackHeight=Math.max(1,scrollbar.clientHeight-48)
-      const thumbHeight=maxScroll>0
-        ? Math.max(28,Math.min(trackHeight,trackHeight*(list.clientHeight/list.scrollHeight)))
-        : trackHeight
-      const maxThumbTop=Math.max(0,trackHeight-thumbHeight)
-      const top=maxScroll>0 ? (list.scrollTop/maxScroll)*maxThumbTop : 0
-      setQuestScroll({top,height:thumbHeight})
-    }
-    updateScrollBar()
-    list.addEventListener('scroll',updateScrollBar,{passive:true})
-    window.addEventListener('resize',updateScrollBar)
-    return ()=>{
-      list.removeEventListener('scroll',updateScrollBar)
-      window.removeEventListener('resize',updateScrollBar)
-    }
-  },[filtered.length,filter,search])
-
   const dragQuestScrollbar=(event)=>{
     const scrollbar=questScrollbarRef.current
     const list=questListRef.current
@@ -496,6 +473,29 @@ function QuestsView({initialStatuses={},onStatusesChange}){
       (filter==='in_progress'&&status==='in_progress')
     return matchesFilter&&q.name.toLowerCase().includes(search.toLowerCase())
   }),[statuses,filter,search])
+
+  useEffect(()=>{
+    const list=questListRef.current
+    const scrollbar=questScrollbarRef.current
+    if(!list||!scrollbar)return
+    const updateScrollBar=()=>{
+      const maxScroll=Math.max(0,list.scrollHeight-list.clientHeight)
+      const trackHeight=Math.max(1,scrollbar.clientHeight-48)
+      const thumbHeight=maxScroll>0
+        ? Math.max(28,Math.min(trackHeight,trackHeight*(list.clientHeight/list.scrollHeight)))
+        : trackHeight
+      const maxThumbTop=Math.max(0,trackHeight-thumbHeight)
+      const top=maxScroll>0 ? (list.scrollTop/maxScroll)*maxThumbTop : 0
+      setQuestScroll({top,height:thumbHeight})
+    }
+    updateScrollBar()
+    list.addEventListener('scroll',updateScrollBar,{passive:true})
+    window.addEventListener('resize',updateScrollBar)
+    return ()=>{
+      list.removeEventListener('scroll',updateScrollBar)
+      window.removeEventListener('resize',updateScrollBar)
+    }
+  },[filtered.length,filter,search])
 
   const difficultyOrder=['Novice','Intermediate','Experienced','Master','Grandmaster']
   const grouped=difficultyOrder

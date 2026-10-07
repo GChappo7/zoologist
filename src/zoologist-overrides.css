@@ -1768,3 +1768,72 @@
   .quest-row { min-height: 29px !important; font-size: 12px !important; }
   .quest-status-label { font-size: 8px !important; }
 }
+
+/* OSRS-style quest list scroll arrows. */
+.quest-log-body {
+  position: relative !important;
+}
+.quest-list {
+  scrollbar-width: none !important;
+  padding-right: 34px !important;
+}
+.quest-list::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+}
+.quest-scroll-arrows {
+  position: absolute !important;
+  top: 10px !important;
+  right: 5px !important;
+  bottom: 10px !important;
+  width: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  pointer-events: none !important;
+  z-index: 5 !important;
+}
+.quest-scroll-arrow {
+  width: 24px !important;
+  height: 24px !important;
+  padding: 2px !important;
+  margin: 0 !important;
+  border: 1px solid #4a5559 !important;
+  background: linear-gradient(#293237,#171d20) !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.08), 0 2px 4px rgba(0,0,0,.55) !important;
+}
+.quest-scroll-arrow:hover {
+  background: linear-gradient(#3a4448,#20272a) !important;
+  border-color: #737d80 !important;
+}
+.quest-scroll-arrow:active {
+  transform: translateY(1px) !important;
+}
+.quest-scroll-arrow img {
+  width: 17px !important;
+  height: 17px !important;
+  object-fit: contain !important;
+  image-rendering: pixelated !important;
+  display: block !important;
+  pointer-events: none !important;
+  filter: drop-shadow(1px 1px 0 #090b0c) !important;
+}
+@media (max-width:600px) {
+  .quest-scroll-arrows {
+    right: 3px !important;
+    width: 22px !important;
+  }
+  .quest-scroll-arrow {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  .quest-scroll-arrow img {
+    width: 15px !important;
+    height: 15px !important;
+  }
+}

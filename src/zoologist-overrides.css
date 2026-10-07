@@ -1786,7 +1786,7 @@
   top: 10px !important;
   right: 5px !important;
   bottom: 10px !important;
-  width: 24px !important;
+  width: 22px !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
@@ -1794,8 +1794,8 @@
   pointer-events: none !important;
   z-index: 5 !important;
 }
-.quest-scroll-arrow {
-  width: 24px !important;
+ .quest-scroll-arrow {
+  width: 22px !important;
   height: 24px !important;
   padding: 2px !important;
   margin: 0 !important;
@@ -1844,12 +1844,12 @@
   position: absolute !important;
   top: 24px !important;
   bottom: 24px !important;
-  left: 10px !important;
+  left: 9px !important;
   width: 4px !important;
-  background: linear-gradient(90deg,#171a1b,#555044,#171a1b) !important;
-  border-left: 1px solid #0a0d0e !important;
-  border-right: 1px solid #77705e !important;
-  box-shadow: inset 0 0 0 1px #292725, 0 0 2px rgba(0,0,0,.9) !important;
+  background: linear-gradient(90deg,#302619,#6e5a3c,#302619) !important;
+  border-left: 1px solid #1c160e !important;
+  border-right: 1px solid #806b4a !important;
+  box-shadow: inset 0 0 0 1px #443722, 0 0 2px rgba(0,0,0,.9) !important;
   pointer-events: none !important;
 }
 .quest-scroll-track {
@@ -1857,18 +1857,18 @@
   top: 24px !important;
   bottom: 24px !important;
   left: 0 !important;
-  width: 24px !important;
+  width: 22px !important;
   pointer-events: none !important;
 }
 .quest-scroll-thumb {
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
-  width: 24px !important;
+  width: 22px !important;
   min-height: 28px !important;
-  background: linear-gradient(90deg,#625c4c,#a69b7c,#625c4c) !important;
-  border: 1px solid #1a1b1a !important;
-  box-shadow: inset 0 0 0 1px #d0c49d, 0 1px 3px rgba(0,0,0,.8) !important;
+  background: linear-gradient(90deg,#51452f,#8f7650,#51452f) !important;
+  border: 1px solid #332817 !important;
+  box-shadow: inset 0 0 0 1px #b49a70, 0 1px 3px rgba(0,0,0,.8) !important;
   pointer-events: none !important;
   box-sizing: border-box !important;
 }

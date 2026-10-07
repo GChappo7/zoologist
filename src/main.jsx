@@ -499,10 +499,10 @@ function QuestsView({initialStatuses={},onStatusesChange}){
         </div>
         <div className="quest-scroll-arrows" aria-label="Quest list scroll controls">
           <button type="button" className="quest-scroll-arrow quest-scroll-up" onClick={()=>questListRef.current?.scrollBy({top:-260,behavior:'smooth'})} aria-label="Scroll quest list up">
-            <img src={`${import.meta.env.BASE_URL}assets/ui/up%20arrow.png`} alt="" draggable="false"/>
+            <img src={`${import.meta.env.BASE_URL}assets/ui/down%20arrow.png`} alt="" draggable="false"/>
           </button>
           <button type="button" className="quest-scroll-arrow quest-scroll-down" onClick={()=>questListRef.current?.scrollBy({top:260,behavior:'smooth'})} aria-label="Scroll quest list down">
-            <img src={`${import.meta.env.BASE_URL}assets/ui/down%20arrow.png`} alt="" draggable="false"/>
+            <img src={`${import.meta.env.BASE_URL}assets/ui/up%20arrow.png`} alt="" draggable="false"/>
           </button>
         </div>
       </div>

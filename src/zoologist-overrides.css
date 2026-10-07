@@ -1464,3 +1464,20 @@
   border-color: #385146 !important;
   box-shadow: none !important;
 }
+
+/* Completed tiles: remove all remaining explored-state green styling. */
+.map-tile.is-completed,
+.map-tile.map-tile-explored.is-completed {
+  background: #0d151a !important;
+  border: 1px solid #23313a !important;
+  border-color: #23313a !important;
+  box-shadow: none !important;
+}
+
+.map-tile.is-completed::after,
+.map-tile.map-tile-explored.is-completed::after,
+.map-tile.is-completed .map-card-front::after,
+.map-tile.map-tile-explored.is-completed .map-card-front::after {
+  display: none !important;
+  background: none !important;
+}

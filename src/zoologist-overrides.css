@@ -1444,3 +1444,19 @@
     font-size: 9px !important;
   }
 }
+
+
+/* Completed tiles: no green fill, glow, or inset/pseudo-element outline. Keep only the subtle green completion border. */
+.map-tile.is-completed {
+  background: #0d151a !important;
+  border: 1px solid #385146 !important;
+  box-shadow: none !important;
+}
+.map-tile.is-completed::after {
+  display: none !important;
+}
+.map-tile.is-completed:hover {
+  background: #0d151a !important;
+  border-color: #385146 !important;
+  box-shadow: none !important;
+}

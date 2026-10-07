@@ -1378,9 +1378,10 @@
 .tile-popup {
   width: min(600px, calc(100% - 20px)) !important;
   box-shadow:
-    0 24px 55px rgba(0,0,0,.78),
-    0 8px 18px rgba(0,0,0,.62),
-    0 0 14px rgba(0,0,0,.34) !important;
+    0 24px 55px rgba(0,0,0,.82),
+    0 8px 18px rgba(0,0,0,.68),
+    0 0 14px rgba(0,0,0,.42) !important;
+  filter: drop-shadow(0 12px 10px rgba(0,0,0,.72)) drop-shadow(0 3px 4px rgba(0,0,0,.65)) !important;
 }
 
 .tile-popup-title {
@@ -1395,10 +1396,12 @@
   text-shadow: 0 3px 5px rgba(0,0,0,.9) !important;
 }
 
-.tile-popup-skill-icon {
-  width: 64px !important;
-  height: 64px !important;
-  filter: drop-shadow(0 4px 5px rgba(0,0,0,.9)) !important;
+.tile-popup-progression-icon {
+  width: 180px !important;
+  height: 180px !important;
+  left: 16% !important;
+  top: 50% !important;
+  filter: drop-shadow(0 4px 5px rgba(0,0,0,.92)) !important;
 }
 
 .tile-popup-actions {
@@ -1429,9 +1432,9 @@
   .tile-popup-subtitle {
     font-size: 12px !important;
   }
-  .tile-popup-skill-icon {
-    width: 50px !important;
-    height: 50px !important;
+  .tile-popup-progression-icon {
+    width: 128px !important;
+    height: 128px !important;
   }
   .tile-popup .tile-popup-complete {
     min-width: 88px !important;

@@ -943,7 +943,7 @@
 }
 .tile-popup .tile-popup-complete {
   position: absolute !important;
-  top: 36% !important;
+  top: 50% !important;
   right: 8% !important;
   min-width: 78px !important;
   width: 78px !important;
@@ -955,6 +955,7 @@
   letter-spacing: .02em !important;
   white-space: nowrap !important;
   z-index: 5 !important;
+  transform: translateY(-50%) !important;
 }
 .tile-popup .tile-popup-more {
   position: absolute !important;

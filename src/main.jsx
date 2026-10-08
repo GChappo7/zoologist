@@ -43,18 +43,21 @@ const PROGRESSION_ASSETS = {
   quest: 'https://oldschool.runescape.wiki/images/Quests.png',
   diary: 'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',
   diaryRegions: {
-    'Ardougne': 'https://oldschool.runescape.wiki/images/Ardougne_icon.png',
-    'Desert': 'https://oldschool.runescape.wiki/images/Desert_icon.png',
-    'Falador': 'https://oldschool.runescape.wiki/images/Falador_icon.png',
-    'Fremennik': 'https://oldschool.runescape.wiki/images/Fremennik_icon.png',
-    'Kandarin': 'https://oldschool.runescape.wiki/images/Kandarin_icon.png',
-    'Karamja': 'https://oldschool.runescape.wiki/images/Karamja_icon.png',
-    'Kourend & Kebos': 'https://oldschool.runescape.wiki/images/Kourend_%26_Kebos_icon.png',
-    'Lumbridge & Draynor': 'https://oldschool.runescape.wiki/images/Lumbridge_%26_Draynor_icon.png',
-    'Morytania': 'https://oldschool.runescape.wiki/images/Morytania_icon.png',
-    'Varrock': 'https://oldschool.runescape.wiki/images/Varrock_icon.png',
-    'Western Provinces': 'https://oldschool.runescape.wiki/images/Western_Provinces_icon.png',
-    'Wilderness': 'https://oldschool.runescape.wiki/images/Wilderness_icon.png',
+    // Use the local League-area badges added to the repository.
+    // Ardougne sits within Kandarin, while Varrock/Lumbridge are both represented
+    // by the Misthalin/Lumbridge badge supplied for this UI.
+    'Ardougne': `${import.meta.env.BASE_URL}assets/ui/Areas/2737_0%20Kandarin.png`,
+    'Desert': `${import.meta.env.BASE_URL}assets/ui/Areas/2734_0%20Desert.png`,
+    'Falador': `${import.meta.env.BASE_URL}assets/ui/Areas/2733_0%20Falador.png`,
+    'Fremennik': `${import.meta.env.BASE_URL}assets/ui/Areas/2738_0%20Fremennik.png`,
+    'Kandarin': `${import.meta.env.BASE_URL}assets/ui/Areas/2737_0%20Kandarin.png`,
+    'Karamja': `${import.meta.env.BASE_URL}assets/ui/Areas/2732_0%20Karamja.png`,
+    'Kourend & Kebos': 'https://oldschool.runescape.wiki/images/Kourend_Area_Badge.png',
+    'Lumbridge & Draynor': `${import.meta.env.BASE_URL}assets/ui/Areas/2731_0%20Lumbridge.png`,
+    'Morytania': `${import.meta.env.BASE_URL}assets/ui/Areas/2735_0%20Morytania.png`,
+    'Varrock': `${import.meta.env.BASE_URL}assets/ui/Areas/2731_0%20Lumbridge.png`,
+    'Western Provinces': `${import.meta.env.BASE_URL}assets/ui/Areas/2739_0%20Western%20Provinces.png`,
+    'Wilderness': `${import.meta.env.BASE_URL}assets/ui/Areas/2736_0%20Wilderness.png`,
   },
   skills: {},
 }
@@ -86,7 +89,10 @@ function skillBoxUrl() {
 function ProgressionIcon({type,skill,region,background=false,className=''}) {
   const src=type==='skill' ? skillIconUrl(skill) : type==='diaryRegion' ? PROGRESSION_ASSETS.diaryRegions[region] : PROGRESSION_ASSETS[type]
   if(!src)return null
-  return <img className={`progression-icon ${background?'progression-icon-background':''} ${className}`} src={src} alt="" aria-hidden="true" draggable="false"/>
+  const regionStyle = type==='diaryRegion' && (region==='Lumbridge & Draynor' || region==='Varrock')
+    ? {filter:'hue-rotate(150deg) saturate(1.15) brightness(1.05)'}
+    : undefined
+  return <img className={`progression-icon ${background?'progression-icon-background':''} ${className}`} style={regionStyle} src={src} alt="" aria-hidden="true" draggable="false"/>
 }
 
 function keyFor(x,y){ return `${x}:${y}` }

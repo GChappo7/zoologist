@@ -569,7 +569,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
   const cycleStatus=id=>setStatuses(s=>{
     const current=s[id]||'unrevealed'
     if(current==='unrevealed') return s
-    return {...s,[id]:current==='completed'?'revealed':'completed'}
+    return {...s,[id]:current==='revealed'?'completed':'revealed'}
   })
 
   const statusLabel={

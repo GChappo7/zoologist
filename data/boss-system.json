@@ -183,6 +183,14 @@
       "kcRequired": 100
     },
     {
+      "id": "shellbane-gryphon",
+      "name": "Shellbane Gryphon",
+      "category": "Slayer",
+      "creature": "Gryphon",
+      "status": "not_slain",
+      "kcRequired": 100
+    },
+    {
       "id": "zulrah",
       "name": "Zulrah",
       "category": "Boss",

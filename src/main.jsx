@@ -761,7 +761,11 @@ function ShopView(){
 }
 function BossView({creatures=[]}){
   const creatureByName=useMemo(()=>new Map(creatures.map(c=>[String(c.name||'').trim().toLowerCase(),c])),[creatures])
-  return <div className="full-tab-page boss-page"><div className="tab-page-heading"><div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div><h1>Boss Tasks</h1><p>Bosses that will need to be slain. Creature tiles are shown where a direct association exists.</p></div><div className="boss-grid">{bossSystem.tasks.map(boss=>{const creature=boss.creature?creatureByName.get(String(boss.creature).trim().toLowerCase()):null;return <div className="boss-card" key={boss.id}><div className="boss-card-main"><div className="boss-icon"><Skull size={20}/></div><div><strong>{boss.name}</strong><span>{boss.category}</span></div></div><div className="boss-association"><span className="boss-association-label">Creature tile</span>{creature?<><span className="boss-creature-name">{creature.name}</span><span className="boss-creature-status">Creature not recorded</span></>:<span className="boss-no-association">No associated creature tile</span>}</div><div className="boss-status">Boss: <b>Not slain</b></div></div>})}</div></div>
+  return <div className="full-tab-page boss-page"><div className="tab-page-heading"><div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div><h1>Boss Tasks</h1><p>Bosses that will need to be slain. Creature tiles are shown where a direct association exists.</p></div><div className="boss-grid">{bossSystem.tasks.map(boss=>{
+    const associationNames=Array.isArray(boss.creatures)?boss.creatures:(boss.creature?[boss.creature]:[])
+    const associatedCreatures=associationNames.map(name=>creatureByName.get(String(name).trim().toLowerCase())).filter(Boolean)
+    return <div className="boss-card" key={boss.id}><div className="boss-card-main"><div className="boss-icon"><Skull size={20}/></div><div><strong>{boss.name}</strong><span>{boss.category}</span></div></div><div className="boss-association"><span className="boss-association-label">Creature tile</span>{associatedCreatures.length?associatedCreatures.map(creature=><span className="boss-creature-name" key={creature.id}>{creature.name}</span>):<span className="boss-no-association">No associated creature tile</span>}</div><div className="boss-status">Boss: <b>Not slain</b></div></div>
+  })}</div></div>
 }
 function resolveReservedReward(reward,skillProgress){
   if(!reward)return null

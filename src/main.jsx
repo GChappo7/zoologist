@@ -822,6 +822,7 @@ const BOSS_LOCAL_IMAGE_FILENAMES = {
   'the-leviathan':'5633_0 Leviathon.png',
   'shellbane-gryphon':'6349_0 Shellbane Gryphon.png',
   'kalphite-queen':'4310_0 Kalphite Queen.png',
+  'scorpia':'5628_0 Scorpia.png',
 }
 
 function bossImageCandidates(boss){

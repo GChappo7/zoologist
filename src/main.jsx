@@ -704,7 +704,6 @@ function DiariesView({statuses={},onStatusClick}){
   const regions=['Ardougne','Desert','Falador','Fremennik','Kandarin','Karamja','Kourend & Kebos','Lumbridge & Draynor','Morytania','Varrock','Western Provinces','Wilderness']
   const tiers=['Easy','Medium','Hard','Elite']
   return <div className="quest-log-shell diary-log-shell">
-    <div className="quest-log-title"><strong>Achievement Diaries</strong></div>
     <div className="quest-log-body diary-log-body">
       <div className="diary-grid">
         {regions.map(region=><div className="diary-card" key={region}>
@@ -1364,10 +1363,9 @@ function App(){
     {id:'diaries',label:'Diaries',icon:BookOpen,ref:diariesButtonRef},{id:'shop',label:'Shop',icon:ShoppingBag},{id:'bosses',label:'Bosses',icon:Skull}
   ]
   const questView=<ProgressionDropdown open={tab==='quests'} onClose={()=>setTab('map')} anchorRef={questsButtonRef} ariaLabel="Quests" className="quest-header-dropdown"><QuestsView initialStatuses={questStatuses} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/></ProgressionDropdown>
-  const diaryView=<HeaderDropdown open={tab==='diaries'} onClose={()=>setTab('map')} anchorRef={diariesButtonRef} ariaLabel="Achievement Diaries" className="diary-header-dropdown"><DiariesView statuses={diaryStatuses} onStatusClick={handleDiaryStatusClick}/></HeaderDropdown>
+  const diaryView=<ProgressionDropdown open={tab==='diaries'} onClose={()=>setTab('map')} anchorRef={diariesButtonRef} ariaLabel="Achievement Diaries" className="diary-header-dropdown"><DiariesView statuses={diaryStatuses} onStatusClick={handleDiaryStatusClick}/></ProgressionDropdown>
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>
-    :tab==='diaries'?<DiariesView statuses={diaryStatuses} onStatusClick={handleDiaryStatusClick}/>
     :tab==='shop'?<ShopView/>
     :tab==='bosses'?<BossView/>
     :<MapView

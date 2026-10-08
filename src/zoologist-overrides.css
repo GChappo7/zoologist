@@ -1748,8 +1748,14 @@
   background: #63b96e !important;
 }
 .quest-row.quest-unrevealed {
-  color: #5c6669 !important;
+  color: #ff0000 !important;
   cursor: default !important;
+}
+.quest-row.quest-unrevealed .quest-status-dot {
+  background: #ff0000 !important;
+}
+.quest-row.quest-unrevealed .quest-status-label {
+  color: #b80000 !important;
 }
 .quest-name {
   min-width: 0 !important;

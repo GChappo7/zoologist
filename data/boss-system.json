@@ -45,13 +45,6 @@
       "status": "not_slain"
     },
     {
-      "id": "barrows",
-      "name": "Barrows Brothers",
-      "category": "Minigame Bosses",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
       "id": "dagannoth-kings",
       "name": "Dagannoth Kings",
       "category": "Dagannoth",
@@ -63,27 +56,6 @@
       "name": "King Black Dragon",
       "category": "Dragon",
       "creature": "Black Dragon",
-      "status": "not_slain"
-    },
-    {
-      "id": "chaos-elemental",
-      "name": "Chaos Elemental",
-      "category": "Wilderness",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
-      "id": "crazy-archaeologist",
-      "name": "Crazy Archaeologist",
-      "category": "Wilderness",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
-      "id": "chaos-fanatic",
-      "name": "Chaos Fanatic",
-      "category": "Wilderness",
-      "creature": null,
       "status": "not_slain"
     },
     {
@@ -122,20 +94,6 @@
       "status": "not_slain"
     },
     {
-      "id": "vetion",
-      "name": "Vet'ion",
-      "category": "Wilderness",
-      "creature": "Skeleton",
-      "status": "not_slain"
-    },
-    {
-      "id": "calvarion",
-      "name": "Calvar'ion",
-      "category": "Wilderness",
-      "creature": "Skeleton",
-      "status": "not_slain"
-    },
-    {
       "id": "corporeal-beast",
       "name": "Corporeal Beast",
       "category": "Wilderness",
@@ -152,13 +110,6 @@
     {
       "id": "kreearra",
       "name": "Kree'arra",
-      "category": "God Wars Dungeon",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
-      "id": "commander-zilyana",
-      "name": "Commander Zilyana",
       "category": "God Wars Dungeon",
       "creature": null,
       "status": "not_slain"
@@ -234,58 +185,9 @@
       "status": "not_slain"
     },
     {
-      "id": "phantom-muspah",
-      "name": "Phantom Muspah",
-      "category": "Boss",
-      "creature": "Muspah",
-      "status": "not_slain"
-    },
-    {
-      "id": "duke-sucellus",
-      "name": "Duke Sucellus",
-      "category": "Desert Treasure II",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
       "id": "the-leviathan",
       "name": "The Leviathan",
       "category": "Desert Treasure II",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
-      "id": "vardorvis",
-      "name": "Vardorvis",
-      "category": "Desert Treasure II",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
-      "id": "the-whisperer",
-      "name": "The Whisperer",
-      "category": "Desert Treasure II",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
-      "id": "nex",
-      "name": "Nex",
-      "category": "God Wars Dungeon",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
-      "id": "the-nightmare",
-      "name": "The Nightmare",
-      "category": "Boss",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
-      "id": "phosanis-nightmare",
-      "name": "Phosani's Nightmare",
-      "category": "Boss",
       "creature": null,
       "status": "not_slain"
     },
@@ -311,20 +213,6 @@
       "status": "not_slain"
     },
     {
-      "id": "tztok-jad",
-      "name": "TzTok-Jad",
-      "category": "Combat Challenge",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
-      "id": "tzkal-zuk",
-      "name": "TzKal-Zuk",
-      "category": "Combat Challenge",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
       "id": "great-olm",
       "name": "Great Olm",
       "category": "Chambers of Xeric",
@@ -332,22 +220,8 @@
       "status": "not_slain"
     },
     {
-      "id": "verzik-vitur",
-      "name": "Verzik Vitur",
-      "category": "Theatre of Blood",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
       "id": "kephri",
       "name": "Kephri",
-      "category": "Tombs of Amascut",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
-      "id": "akkha",
-      "name": "Akkha",
       "category": "Tombs of Amascut",
       "creature": null,
       "status": "not_slain"
@@ -362,13 +236,6 @@
     {
       "id": "zebak",
       "name": "Zebak",
-      "category": "Tombs of Amascut",
-      "creature": null,
-      "status": "not_slain"
-    },
-    {
-      "id": "wardens",
-      "name": "The Wardens",
       "category": "Tombs of Amascut",
       "creature": null,
       "status": "not_slain"

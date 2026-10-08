@@ -1731,7 +1731,7 @@ function App(){
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>
     :tab==='shop'?<ShopView/>
-    :tab==='bosses'?<BossView creatures={creatures} mapTiles={gameState.mapTiles} bossProgress={bossProgress} bossRewards={bossRewards} questStatuses={questStatuses} diaryStatuses={diaryStatuses} skillProgress={skillProgress} rewardAssignments={rewardAssignments||{}} onBossProgressChange={setBossProgress} onRewardAssignmentsChange={assignments=>{setRewardAssignments(assignments);updateGameState({rewardAssignments:assignments})}} onMapTilesChange={resetInProgress?undefined:mapTiles=>updateGameState({mapTiles})} onBossRewardClaim={(boss,reward)=>{
+    :tab==='bosses'?<BossView creatures={creatures} mapTiles={gameState.mapTiles} bossProgress={bossProgress} bossRewards={bossRewards} questStatuses={questStatuses} diaryStatuses={diaryStatuses} skillProgress={skillProgress} rewardAssignments={rewardAssignments||{}} onBossProgressChange={setBossProgress} onRewardAssignmentsChange={assignments=>{setRewardAssignments(current=>{const next=typeof assignments==='function'?assignments(current):assignments;updateGameState({rewardAssignments:next});return next})}} onMapTilesChange={resetInProgress?undefined:mapTiles=>{updateGameState({mapTiles:typeof mapTiles==='function'?mapTiles(gameState.mapTiles||{}):mapTiles})}} onBossRewardClaim={(boss,reward)=>{
       setBossRewards(current=>({...current,[boss.id]:reward}))
       if(String(reward?.type).toLowerCase()==='skill')handleSkillRewardComplete(reward)
       if(String(reward?.type).toLowerCase()==='quest'&&reward.questId)setQuestStatuses(current=>({...current,[reward.questId]:'revealed'}))

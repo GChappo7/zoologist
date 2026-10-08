@@ -2869,3 +2869,25 @@
   bottom:22% !important;
   right:10% !important;
 }
+
+/* Completion prompt above the popup tick. */
+.tile-popup .tile-popup-complete::before {
+  content:"COMPLETE?";
+  position:absolute;
+  left:50%;
+  bottom:calc(100% + 5px);
+  transform:translateX(-50%);
+  color:#39d353;
+  font-family:var(--font-runescape) !important;
+  font-size:18px;
+  line-height:1;
+  white-space:nowrap;
+  text-shadow:2px 2px 0 #000, 0 0 3px #000;
+  pointer-events:none;
+}
+@media (max-width:760px) {
+  .tile-popup .tile-popup-complete::before { font-size:15px; }
+}
+@media (max-width:500px) {
+  .tile-popup .tile-popup-complete::before { font-size:13px; }
+}

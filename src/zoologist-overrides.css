@@ -1941,6 +1941,49 @@
   transform: translateX(-50%);
   pointer-events: none;
 }
+
+/* Subtle OSRS-style tab transition: panels grow out from the tab, then retract back into it. */
+.skills-dropdown-anchor.is-opening,
+.header-dropdown.is-opening {
+  animation: progression-tab-open 180ms cubic-bezier(.2,.8,.2,1) both;
+  transform-origin: top center;
+}
+
+.skills-dropdown-anchor.is-closing,
+.header-dropdown.is-closing {
+  animation: progression-tab-close 180ms cubic-bezier(.4,0,1,1) both;
+  transform-origin: top center;
+  pointer-events: none !important;
+}
+
+@keyframes progression-tab-open {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px) scale(.94);
+    filter: brightness(1.2);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(1px) scale(1.01);
+    filter: brightness(1.03);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+    filter: none;
+  }
+}
+
+@keyframes progression-tab-close {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-7px) scale(.95);
+  }
+}
 .header-dropdown > * { pointer-events: auto; }
 
 /* Quest and Skills use the exact same popup frame and anchor. */

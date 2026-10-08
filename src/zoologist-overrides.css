@@ -2819,7 +2819,8 @@
 /* Final reward popup completion circle: smaller and vertically aligned with the reward copy. */
 .tile-popup .tile-popup-complete {
   top:auto !important;
-  bottom:35% !important;
+  bottom:22% !important;
+  right:10% !important;
   width:72px !important;
   height:72px !important;
   min-width:72px !important;
@@ -2828,7 +2829,8 @@
 @media (max-width:760px) {
   .tile-popup .tile-popup-complete {
     top:auto !important;
-    bottom:35% !important;
+    bottom:22% !important;
+    right:9% !important;
     width:56px !important;
     height:56px !important;
     min-width:56px !important;
@@ -2838,7 +2840,8 @@
 @media (max-width:500px) {
   .tile-popup .tile-popup-complete {
     top:auto !important;
-    bottom:35% !important;
+    bottom:22% !important;
+    right:8% !important;
     width:48px !important;
     height:48px !important;
     min-width:48px !important;

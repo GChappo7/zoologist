@@ -1643,19 +1643,51 @@
   flex-wrap: wrap !important;
 }
 .quest-filters button {
-  border: 1px solid #354047 !important;
-  background: #1c2428 !important;
+  position: relative !important;
+  min-width: 0 !important;
+  height: 28px !important;
+  box-sizing: border-box !important;
+  border: 0 !important;
+  background: var(--box-mid) center / auto 100% repeat-x !important;
   color: #aeb7b9 !important;
-  padding: 5px 8px !important;
-  border-radius: 2px !important;
-  box-shadow: inset 0 1px rgba(255,255,255,.04) !important;
+  padding: 5px 9px !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
   font: 11px var(--font-runescape) !important;
   cursor: pointer !important;
+  text-shadow: 1px 1px 0 #17130f !important;
+  isolation: isolate !important;
+}
+.quest-filters button::before,
+.quest-filters button::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 6px !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+.quest-filters button::before {
+  left: 0 !important;
+  background-image: var(--box-left) !important;
+}
+.quest-filters button::after {
+  right: 0 !important;
+  background-image: var(--box-right) !important;
 }
 .quest-filters button.active {
-  background: #39474d !important;
-  border-color: #69767a !important;
   color: #f0e6ca !important;
+  filter: brightness(1.12) !important;
+}
+.quest-filters button:hover {
+  filter: brightness(1.08) !important;
+}
+.quest-filters span {
+  margin-left: 3px !important;
+  color: #78858a !important;
 }
 .quest-filters span {
   margin-left: 3px !important;

@@ -1025,15 +1025,32 @@ function App(){
   useEffect(()=>{
     if(!supabase){setAccountReady(true);return}
     let active=true
+    const isRecoveryRedirect=()=>{
+      const hash=new URLSearchParams(window.location.hash.replace(/^#/,'')).get('type')
+      const query=new URLSearchParams(window.location.search).get('type')
+      return hash==='recovery'||query==='recovery'
+    }
+
+    if(isRecoveryRedirect()){
+      setPasswordRecovery(true)
+      setSession(null)
+    }
+
     supabase.auth.getSession().then(({data})=>{
-      if(active)setSession(data.session||null)
+      if(!active)return
+      if(isRecoveryRedirect()){
+        setPasswordRecovery(true)
+        setSession(null)
+      }else{
+        setSession(data.session||null)
+      }
     })
     const {data:{subscription}}=supabase.auth.onAuthStateChange((event,nextSession)=>{
       if(!active)return
       if(event==='PASSWORD_RECOVERY'){
         setPasswordRecovery(true)
         setSession(null)
-      }else{
+      }else if(!isRecoveryRedirect()){
         setSession(nextSession||null)
       }
     })

@@ -341,6 +341,14 @@ function getRandomSkillReward(creature,skillProgress){
   const reward=getNextSkillBand(skillProgress??getInitialSkillProgress(),skill)
   return reward?{...reward,type:'skill',skill}:null
 }
+function HeaderDropdown({open,onClose,anchorRef,children,ariaLabel='Menu',className=''}) {
+  const panelRef=useRef(null),[position,setPosition]=useState(null)
+  useLayoutEffect(()=>{if(!open)return;const update=()=>{const rect=anchorRef?.current?.getBoundingClientRect();if(rect)setPosition({top:rect.bottom+8,left:rect.left+rect.width/2})};update();window.addEventListener('resize',update);window.addEventListener('scroll',update,true);return()=>{window.removeEventListener('resize',update);window.removeEventListener('scroll',update,true)}},[open,anchorRef])
+  useEffect(()=>{if(!open)return;const down=e=>{if(!panelRef.current?.contains(e.target)&&!anchorRef?.current?.contains(e.target))onClose?.()};const key=e=>{if(e.key==='Escape')onClose?.()};document.addEventListener('pointerdown',down);window.addEventListener('keydown',key);return()=>{document.removeEventListener('pointerdown',down);window.removeEventListener('keydown',key)}},[open,onClose,anchorRef])
+  if(!open)return null
+  return <div ref={panelRef} className={'header-dropdown '+className} role="dialog" aria-label={ariaLabel} style={position?{top:position.top,left:position.left}:undefined}>{children}</div>
+}
+
 function SkillsDropdown({open,onClose,skillProgress,anchorRef}) {
   const panelRef=useRef(null)
   const [anchorPosition,setAnchorPosition]=useState(null)
@@ -1303,11 +1311,14 @@ function App(){
     shop: 'https://oldschool.runescape.wiki/images/Inventory.png',
     bosses: 'https://oldschool.runescape.wiki/images/Artio.png',
   }
+  const questsButtonRef=useRef(null)
+  const diariesButtonRef=useRef(null)
   const tabs=[
-    {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText},
-    {id:'diaries',label:'Diaries',icon:BookOpen},{id:'shop',label:'Shop',icon:ShoppingBag},{id:'bosses',label:'Bosses',icon:Skull}
+    {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText,ref:questsButtonRef},
+    {id:'diaries',label:'Diaries',icon:BookOpen,ref:diariesButtonRef},{id:'shop',label:'Shop',icon:ShoppingBag},{id:'bosses',label:'Bosses',icon:Skull}
   ]
-  const questView=<QuestsView initialStatuses={questStatuses} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/>
+  const questView=<HeaderDropdown open={tab==='quests'} onClose={()=>setTab('map')} anchorRef={questsButtonRef} ariaLabel="Quests" className="quest-header-dropdown"><QuestsView initialStatuses={questStatuses} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/></HeaderDropdown>
+  const diaryView=<HeaderDropdown open={tab==='diaries'} onClose={()=>setTab('map')} anchorRef={diariesButtonRef} ariaLabel="Achievement Diaries" className="diary-header-dropdown"><DiariesView statuses={diaryStatuses} onStatusClick={handleDiaryStatusClick}/></HeaderDropdown>
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>
     :tab==='diaries'?<DiariesView statuses={diaryStatuses} onStatusClick={handleDiaryStatusClick}/>
@@ -1347,11 +1358,11 @@ function App(){
           <div className="header-collection-track"><div className="header-collection-fill" style={{width:`${creatureCount?Math.min(100,recordedCreatureCount/creatureCount*100):0}%`}}/></div>
         </button>
       </div>
-      <nav className="top-tabs">{tabs.map(({id,label,icon:Icon})=><button type="button" key={id} ref={id==='skills'?skillsButtonRef:undefined} className={`top-tab-${id} ${id==='skills'&&skillsOpen||tab===id?'active':''}`} onClick={()=>handleTabClick(id)} aria-expanded={id==='skills'?skillsOpen:undefined}>{OSRS_TAB_ICONS[id]?<img className="osrs-top-tab-icon" src={OSRS_TAB_ICONS[id]} alt="" aria-hidden="true" draggable="false"/>:<Icon size={16}/>}<span>{label}</span></button>)}</nav>
+      <nav className="top-tabs">{tabs.map(({id,label,icon:Icon,ref})=><button type="button" key={id} ref={ref|| (id==='skills'?skillsButtonRef:undefined) className={`top-tab-${id} ${id==='skills'&&skillsOpen||tab===id?'active':''}`} onClick={()=>handleTabClick(id)} aria-expanded={id==='skills'?skillsOpen:undefined}>{OSRS_TAB_ICONS[id]?<img className="osrs-top-tab-icon" src={OSRS_TAB_ICONS[id]} alt="" aria-hidden="true" draggable="false"/>:<Icon size={16}/>}<span>{label}</span></button>)}</nav>
       <div className="header-actions">
         <button className={`account-button ${session?'account-button-signed-in':''}`} onClick={()=>setAccountOpen(true)} aria-label="Account" title="Account"><img className="account-button-icon" src="https://oldschool.runescape.wiki/images/Account_Management_-_Name_Changer_icon.png" alt="" aria-hidden="true" draggable="false"/>{session&&<i className="account-status-dot" aria-label="Cloud save connected"/>}</button>
       </div>   </header>
-    <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}{tab==='quests'&&<div className="quest-popup-overlay">{questView}</div>}</main>
+    <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}{questView}{diaryView}</main>
     <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
     <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession} onResetProgress={handleResetProgress} passwordRecovery={passwordRecovery} onPasswordRecoveryComplete={()=>{
       setPasswordRecovery(false)

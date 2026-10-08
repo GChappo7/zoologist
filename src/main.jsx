@@ -626,6 +626,14 @@ function QuestsView({initialStatuses={},onStatusesChange}){
           {!filtered.length&&<div className="quest-empty">No quests match your search.</div>}
         </div>
         <div className="quest-scroll-arrows" ref={questScrollbarRef} aria-label="Quest list scroll controls"
+          style={{
+            '--scroll-up': `url("${import.meta.env.BASE_URL}assets/ui/scroll/773_0%20scrollUpArrow.png")`,
+            '--scroll-down': `url("${import.meta.env.BASE_URL}assets/ui/scroll/788_0%20scrollDownArrow.png")`,
+            '--scroll-top': `url("${import.meta.env.BASE_URL}assets/ui/scroll/789_0%20scrollTop.png")`,
+            '--scroll-middle': `url("${import.meta.env.BASE_URL}assets/ui/scroll/790_0%20scrollMiddle.png")`,
+            '--scroll-bottom': `url("${import.meta.env.BASE_URL}assets/ui/scroll/791_0%20scrollBottom.png")`,
+            '--scroll-back': `url("${import.meta.env.BASE_URL}assets/ui/scroll/792_0%20scrollBack.png")`,
+          }}
           onPointerMove={moveQuestScrollbar} onPointerUp={endQuestScrollbarDrag} onPointerCancel={endQuestScrollbarDrag} onPointerDown={startQuestScrollbarDrag}>
           <button type="button" className="quest-scroll-arrow quest-scroll-up" onClick={()=>questListRef.current?.scrollBy({top:-260,behavior:'smooth'})} aria-label="Scroll quest list up">
             <img src={`${import.meta.env.BASE_URL}assets/ui/scroll/773_0%20scrollUpArrow.png`} alt="" draggable="false"/>

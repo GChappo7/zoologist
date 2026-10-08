@@ -821,7 +821,12 @@ function BossView({creatures=[],mapTiles={},bossProgress={},onBossProgressChange
     const next=Math.max(0,Math.min(state.target,state.current+delta))
     onBossProgressChange?.(current=>({...current,[boss.id]:next}))
   }
-  return <div className="full-tab-page boss-page"><div className="tab-page-heading"><div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div><h1>Boss Tasks</h1><p>Complete the associated creature tile to unlock each boss, then track the required kill count.</p></div><div className="boss-grid">{[...bossSystem.tasks].sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'})).map(boss=>{
+  const bossTasks=[...bossSystem.tasks].sort((a,b)=>{
+    const aState=getBossState(a),bState=getBossState(b)
+    if(aState.unlocked!==bState.unlocked)return aState.unlocked?-1:1
+    return a.name.localeCompare(b.name,undefined,{sensitivity:'base'})
+  })
+  return <div className="full-tab-page boss-page"><div className="tab-page-heading"><div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div><h1>Boss Tasks</h1><p>Complete the associated creature tile to unlock each boss, then track the required kill count.</p></div><div className="boss-grid">{bossTasks.map(boss=>{
     const {target,current,associatedCreatures,unlocked}=getBossState(boss)
     const complete=unlocked&&current>=target
     const percent=target?Math.min(100,current/target*100):0

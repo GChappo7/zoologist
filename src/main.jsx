@@ -789,10 +789,10 @@ const BOSS_IMAGE_FILENAMES = {
   'grotesque-guardians':'Grotesque_Guardians.png',
   'alchemical-hydra':'Alchemical_Hydra.png',
   'araxxor':'Araxxor.png',
-  'shellbane-gryphon':'Shellbane_gryphon.png',
+  'shellbane-gryphon':'Shellbane gryphon.png',
   'zulrah':'Zulrah.png',
   'vorkath':'Vorkath.png',
-  'the-leviathan':'The_Leviathan.png',
+  'the-leviathan':'The Leviathan.png',
   'wintertodt':'Wintertodt.png',
   'great-olm':'Great_Olm.png',
   'kephri':'Kephri.png',
@@ -816,10 +816,15 @@ function bossImageCandidates(boss){
   const generatedMobile=filename.replace(/\.png$/i,'_icon_(mobile).png')
   const detailFilename=filename.replace(/\.png$/i,'_icon_(detail).png')
   const direct=[mobileFilename,generatedMobile,filename,detailFilename].filter(Boolean)
-  return [...new Set(direct.flatMap(name=>[
-    `https://oldschool.runescape.wiki/images/${encodeURIComponent(name)}`,
-    `https://oldschool.runescape.wiki/w/Special:Redirect/file/${encodeURIComponent(name)}`,
-  ]))]
+  return [...new Set(direct.flatMap(name=>{
+    const encoded=encodeURIComponent(name)
+    const thumbName=`120px-${name}`
+    return [
+      `https://oldschool.runescape.wiki/images/${encoded}`,
+      `https://oldschool.runescape.wiki/images/thumb/${encoded}/120px-${encodeURIComponent(name)}`,
+      `https://oldschool.runescape.wiki/w/Special:Redirect/file/${encoded}`,
+    ]
+  }))]
 }
 function BossPixelImage({boss}){
   const candidates=bossImageCandidates(boss)

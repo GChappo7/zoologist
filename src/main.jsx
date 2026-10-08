@@ -892,6 +892,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},onBossProgressChange
         {imageAvailable ? <BossPixelImage boss={boss}/> : <Skull size={46}/>} 
       </div>
       <div className="boss-association"><span className="boss-association-label">Associated creature</span>{associatedCreatures.length?boss.id==='callisto'?<span className="boss-creature-name boss-creature-name-inline">{<span>Bear(s)</span>}</span>:associatedCreatures.map(creature=><span className={`boss-creature-name${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id}>{creature.name}</span>):<span className="boss-no-association">No associated creature tile</span>}</div>
+      {!unlocked && <div className="boss-lock-overlay" aria-hidden="true"><img src={uiAssetUrl('lock_asset.png')} alt=""/></div>}
       {unlocked ? <div className="boss-progress-section">
         <div className="boss-progress-label"><span>{complete?'COMPLETE':'KILL COUNT'}</span><strong>{current} / {target} KC</strong></div>
         <div className="boss-progress-track"><div className="boss-progress-fill" style={{width:`${percent}%`}}/></div>

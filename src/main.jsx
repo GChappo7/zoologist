@@ -581,7 +581,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
   return <div className="quest-log-page">
     <div className="quest-log-shell">
       <div className="quest-log-title">
-        <strong>{counts.completed} / {counts.all} quest completed</strong>
+        <strong>{counts.completed}/{counts.all} Quest's Completed</strong>
       </div>
 
       <div className="quest-log-controls">

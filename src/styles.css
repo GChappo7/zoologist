@@ -1,15 +1,7 @@
 @font-face {
   font-family: 'RuneScape';
-  src: url('/fonts/RuneScape-Plain-12.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'RuneScape';
-  src: url('/fonts/RuneScape-Bold-12.ttf') format('truetype');
-  font-weight: 700;
+  src: url('/zoologist/fonts/RuneScape-Chat-Bold-07.ttf') format('truetype');
+  font-weight: 400 900;
   font-style: normal;
   font-display: swap;
 }

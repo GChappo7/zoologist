@@ -931,7 +931,7 @@
   padding: 8px 16px !important;
   border: 0 !important;
   border-radius: 0 !important;
-  background: url('/zoologist/assets/ui/skills/Blank%20skill.png') center / 100% 100% no-repeat !important;
+  background: var(--complete-box-image) center / 100% 100% no-repeat !important;
   color: #35d65b !important;
   font-family: var(--font-runescape) !important;
   font-size: 20px !important;
@@ -948,7 +948,7 @@
   display: none !important;
 }
 .tile-popup .tile-popup-complete:hover {
-  background: url('/zoologist/assets/ui/skills/Blank%20skill.png') center / 100% 100% no-repeat !important;
+  background: var(--complete-box-image) center / 100% 100% no-repeat !important;
   filter: brightness(1.08);
 }
 

@@ -2589,15 +2589,23 @@
   background-repeat: no-repeat !important;
   background-size: 100% 100% !important;
   pointer-events: none !important;
-  z-index: 1 !important;
+  z-index: 3 !important;
 }
 .quest-header-dropdown .quest-filters button::before {
   left: 0 !important;
   background-image: var(--box-left) !important;
+  background-position: left top !important;
 }
 .quest-header-dropdown .quest-filters button::after {
   right: 0 !important;
   background-image: var(--box-right) !important;
+  background-position: right top !important;
+}
+/* Keep the sprite corners above the repeated middle texture so their alpha
+   pixels remain transparent at the top and bottom corners. */
+.quest-header-dropdown .quest-filters button > * {
+  position: relative !important;
+  z-index: 4 !important;
 }
 .quest-header-dropdown .quest-filters button > * {
   position: relative !important;

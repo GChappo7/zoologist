@@ -859,7 +859,7 @@ function BossPixelImage({boss}){
   return <img src={candidates[index]} alt="" draggable="false" onError={()=>setIndex(current=>current+1)}/>
 }
 
-function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},questStatuses={},diaryStatuses={},skillProgress={},onBossProgressChange,onBossRewardClaim}){
+function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},questStatuses={},diaryStatuses={},skillProgress={},rewardAssignments={},onBossProgressChange,onRewardAssignmentsChange,onBossRewardClaim}){
   const creatureByName=useMemo(()=>new Map(creatures.map(c=>[String(c.name||'').trim().toLowerCase(),c])),[creatures])
   const completedCreatureIds=useMemo(()=>new Set(Object.values(mapTiles||{}).filter(tile=>tile?.completed&&tile?.creatureId).map(tile=>String(tile.creatureId))),[mapTiles])
   const [rewardModalBoss,setRewardModalBoss]=useState(null)
@@ -889,36 +889,76 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
 
   const claimBossReward=(reward)=>{
     if(!rewardModalBoss||!reward)return
+    const replacement=findReplacementReward(reward,reward.tileKey)
+    onRewardAssignmentsChange?.(current=>{
+      const next={...(current||{})}
+      const creatureId=String(reward.creatureId||'')
+      if(creatureId){
+        if(replacement)next[creatureId]=replacement
+        else delete next[creatureId]
+      }
+      return next
+    })
     onBossRewardClaim?.(rewardModalBoss,reward)
     setRewardModalBoss(null)
     setRewardCategory(null)
   }
 
+  const frontierRewards=useMemo(()=>{
+    const seen=new Set()
+    const result=[]
+    Object.entries(mapTiles||{}).forEach(([tileKey,tile])=>{
+      if(!tile||tile.completed||tile.faceDown||!tile.creatureId)return
+      const creature=creatureByName.size?creatures.find(item=>String(item.id)===String(tile.creatureId)):null
+      if(!creature)return
+      const reward=getTileReward(tile,creature,skillProgress,rewardAssignments)
+      if(!reward)return
+      const key=`${String(reward.type).toLowerCase()}|${String(reward.id??reward.questId??reward.label??reward.name??'').toLowerCase()}`
+      if(seen.has(key))return
+      seen.add(key)
+      result.push({...reward,tileKey,creatureId:creature.id})
+    })
+    return result
+  },[mapTiles,creatures,skillProgress,rewardAssignments,creatureByName])
+
   const getRewardOptions=(category)=>{
-    const usedQuestIds=new Set(Object.values(bossRewards||{}).filter(reward=>String(reward?.type).toLowerCase()==='quest').map(reward=>String(reward?.questId||'').trim()))
-    if(category==='quest'){
-      return rewardCatalog.mandatory
-        .filter(reward=>String(reward.type).toLowerCase()==='quest')
-        .filter(reward=>!usedQuestIds.has(String(reward.questId||'').trim()))
-        .filter(reward=>!['revealed','completed'].includes(String(questStatuses?.[reward.questId]||'').toLowerCase()))
+    return frontierRewards.filter(reward=>String(reward.type).toLowerCase()===category)
+  }
+
+  const findReplacementReward=(selectedReward,tileKey)=>{
+    const tile=mapTiles?.[tileKey]
+    const creature=creatures.find(item=>String(item.id)===String(tile?.creatureId))
+    if(!tile||!creature)return null
+
+    const usedKeys=new Set(Object.values(rewardAssignments||{}).map(reward=>String(reward?.id??reward?.questId??reward?.label??reward?.name??'').toLowerCase()).filter(Boolean))
+    const selectedKey=String(selectedReward?.id??selectedReward?.questId??selectedReward?.label??selectedReward?.name??'').toLowerCase()
+    usedKeys.delete(selectedKey)
+
+    const candidates=[]
+    const addCandidate=(reward)=>{
+      if(!reward||String(reward.id??'')===String(selectedReward.id??''))return
+      if(usedKeys.has(String(reward.id??reward.questId??reward.label??reward.name??'').toLowerCase()))return
+      if(String(reward.type).toLowerCase()==='skill'&&!isValidSkillRewardAssignment(creature,reward))return
+      if(String(reward.type).toLowerCase()==='quest'&&!isValidQuestRewardAssignment(creature,reward))return
+      if(String(reward.type).toLowerCase()==='quest'){
+        const required=new Set((creature.requiredQuests??[]).map(q=>String(q).trim().toLowerCase()))
+        const questKey=String(reward.questId??reward.label??reward.name??'').trim().toLowerCase()
+        if(required.has(questKey)||Object.values(rewardAssignments||{}).some(value=>String(value?.type).toLowerCase()==='quest'&&String(value?.questId??value?.label??value?.name??'').trim().toLowerCase()===questKey))return
+      }
+      candidates.push(reward)
     }
-    if(category==='skill'){
-      return rewardCatalog.lockedSkills
-        .map(skill=>{
-          const next=getNextSkillBand(skillProgress,skill)
-          return next?{...next,type:'skill',skill}:null
-        })
-        .filter(Boolean)
-    }
-    if(category==='diary'){
-      return rewardCatalog.mandatory
-        .filter(reward=>String(reward.type).toLowerCase()==='diary')
-        .filter(reward=>{
-          const key=`${reward.region}|${reward.tier}`
-          return !diaryStatuses?.[key]&&!Object.values(bossRewards||{}).some(value=>String(value?.id)===String(reward.id))
-        })
-    }
-    return []
+
+    // Prefer the next bracket of another skill, then eligible quests, then a diary.
+    rewardCatalog.lockedSkills.forEach(skill=>{
+      const next=getNextSkillBand(skillProgress,skill)
+      if(next) addCandidate({...next,type:'skill',skill})
+    })
+    rewardCatalog.mandatory.filter(reward=>String(reward.type).toLowerCase()==='quest').forEach(addCandidate)
+    rewardCatalog.mandatory.filter(reward=>String(reward.type).toLowerCase()==='diary').forEach(addCandidate)
+
+    if(!candidates.length)return null
+    const sameType=candidates.filter(candidate=>String(candidate.type).toLowerCase()===String(selectedReward.type).toLowerCase())
+    return (sameType.length?sameType:candidates)[0]??null
   }
 
   const bossTasks=[...bossSystem.tasks].sort((a,b)=>{
@@ -975,7 +1015,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
         <div className="boss-reward-header">
           <div className="eyebrow"><Sparkles size={14}/> BOSS REWARD</div>
           <h2 id="boss-reward-title">{rewardModalBoss.name} Complete</h2>
-          <p>Select and receive a Map Tile reward.</p>
+          <p>Select a reward currently sitting on a frontier tile. Claiming it will move that tile to a new eligible reward.</p>
         </div>
         {!rewardCategory
           ? <div className="boss-reward-category-grid">
@@ -1657,7 +1697,7 @@ function App(){
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>
     :tab==='shop'?<ShopView/>
-    :tab==='bosses'?<BossView creatures={creatures} mapTiles={gameState.mapTiles} bossProgress={bossProgress} bossRewards={bossRewards} questStatuses={questStatuses} diaryStatuses={diaryStatuses} skillProgress={skillProgress} onBossProgressChange={setBossProgress} onBossRewardClaim={(boss,reward)=>{
+    :tab==='bosses'?<BossView creatures={creatures} mapTiles={gameState.mapTiles} bossProgress={bossProgress} bossRewards={bossRewards} questStatuses={questStatuses} diaryStatuses={diaryStatuses} skillProgress={skillProgress} rewardAssignments={rewardAssignments||{}} onBossProgressChange={setBossProgress} onRewardAssignmentsChange={assignments=>{setRewardAssignments(assignments);updateGameState({rewardAssignments:assignments})}} onBossRewardClaim={(boss,reward)=>{
       setBossRewards(current=>({...current,[boss.id]:reward}))
       if(String(reward?.type).toLowerCase()==='skill')handleSkillRewardComplete(reward)
       if(String(reward?.type).toLowerCase()==='quest'&&reward.questId)setQuestStatuses(current=>({...current,[reward.questId]:'revealed'}))

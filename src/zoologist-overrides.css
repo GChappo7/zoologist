@@ -2165,9 +2165,11 @@
   height: 30px !important;
   min-width: 0 !important;
   padding: 4px 8px !important;
-  border: 1px solid #3d3831 !important;
-  border-radius: 1px !important;
-  background: #514c44 !important;
+  border: 0 !important;
+  border-right: 1px solid rgba(39,35,30,.42) !important;
+  border-bottom: 1px solid rgba(39,35,30,.42) !important;
+  border-radius: 0 !important;
+  background: #5d574c !important;
   color: #d9cfb8 !important;
   box-shadow: inset 0 1px rgba(255,255,255,.08), inset 0 -1px rgba(0,0,0,.22) !important;
   font: 10px/1 var(--font-runescape) !important;
@@ -2354,12 +2356,12 @@
   display: grid !important;
   grid-template-columns: 1fr !important;
   grid-template-rows: repeat(12,minmax(0,1fr)) !important;
-  gap: 1px !important;
-  padding: 6px !important;
+  gap: 0 !important;
+  padding: 2px !important;
   box-sizing: border-box !important;
-  background: #5d574c !important;
-  border: 0 !important;
-  box-shadow: none !important;
+  background: #3b362f !important;
+  border: 2px solid #2d2924 !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.10) !important;
   overflow: hidden !important;
 }
 

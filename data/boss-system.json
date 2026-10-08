@@ -207,22 +207,6 @@
       "kcRequired": 50
     },
     {
-      "id": "zalcano",
-      "name": "Zalcano",
-      "category": "Minigame Boss",
-      "creature": null,
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
-      "id": "tempoross",
-      "name": "Tempoross",
-      "category": "Minigame Boss",
-      "creature": null,
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
       "id": "wintertodt",
       "name": "Wintertodt",
       "category": "Minigame Boss",

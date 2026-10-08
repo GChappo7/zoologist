@@ -2862,7 +2862,7 @@
   pointer-events:auto !important;
 }
 .tile-popup .tile-popup-complete {
-  bottom:12% !important;
+  bottom:18% !important;
   right:15% !important;
 }
 .tile-popup .tile-popup-more {
@@ -2875,7 +2875,7 @@
   content:"COMPLETE";
   position:absolute;
   left:50%;
-  bottom:calc(100% + 5px);
+  top:calc(100% + 5px);
   transform:translateX(-50%);
   color:#39d353;
   font-family:var(--font-runescape) !important;
@@ -2890,4 +2890,13 @@
 }
 @media (max-width:500px) {
   .tile-popup .tile-popup-complete::before { font-size:13px; }
+}
+
+/* Strong OSRS-style shadowing for the completion control and label. */
+.tile-popup .tile-popup-complete {
+  filter:drop-shadow(0 3px 3px rgba(0,0,0,.85)) drop-shadow(0 0 2px rgba(0,0,0,.9));
+}
+.tile-popup .tile-popup-complete::before {
+  text-shadow:2px 2px 0 #000, 0 2px 4px rgba(0,0,0,.9), 0 0 3px #000;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.8));
 }

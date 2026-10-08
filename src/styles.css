@@ -809,7 +809,9 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
     0 0 14px rgba(213,170,99,.28),
     0 0 30px rgba(213,170,99,.18) !important;
 }
-/* The first fog layer is deliberately darker, making the frontier the clear visual edge. */
+/* Start the fog gradient at the first back-of-card layer, immediately beyond the frontier. */
+.map-tile-locked .map-fog-card { filter: brightness(.84) saturate(.88); }
+.map-tile-locked .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.08), rgba(5,9,12,.22)); }
 .map-tile-dark-fog-1 .map-fog-card { filter: brightness(.76) saturate(.82); }
 .map-tile-dark-fog-2 .map-fog-card { filter: brightness(.58) saturate(.68); }
 .map-tile-dark-fog-3 .map-fog-card { filter: brightness(.40) saturate(.52); }

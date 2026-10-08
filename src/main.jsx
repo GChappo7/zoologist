@@ -628,10 +628,10 @@ function QuestsView({initialStatuses={},onStatusesChange}){
         <div className="quest-scroll-arrows" ref={questScrollbarRef} aria-label="Quest list scroll controls"
           onPointerMove={moveQuestScrollbar} onPointerUp={endQuestScrollbarDrag} onPointerCancel={endQuestScrollbarDrag} onPointerDown={startQuestScrollbarDrag}>
           <button type="button" className="quest-scroll-arrow quest-scroll-up" onClick={()=>questListRef.current?.scrollBy({top:-260,behavior:'smooth'})} aria-label="Scroll quest list up">
-            <img src={`${import.meta.env.BASE_URL}assets/ui/down%20arrow.png`} alt="" draggable="false"/>
+            <img src={`${import.meta.env.BASE_URL}assets/ui/scroll/773_0%20scrollUpArrow.png`} alt="" draggable="false"/>
           </button>
           <button type="button" className="quest-scroll-arrow quest-scroll-down" onClick={()=>questListRef.current?.scrollBy({top:260,behavior:'smooth'})} aria-label="Scroll quest list down">
-            <img src={`${import.meta.env.BASE_URL}assets/ui/up%20arrow.png`} alt="" draggable="false"/>
+            <img src={`${import.meta.env.BASE_URL}assets/ui/scroll/788_0%20scrollDownArrow.png`} alt="" draggable="false"/>
           </button>
           <div className="quest-scroll-track" aria-hidden="true">
             <div className="quest-scroll-thumb" style={{transform:`translateY(${questScroll.top}px)`,height:`${questScroll.height}px`}} />

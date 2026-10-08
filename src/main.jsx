@@ -859,7 +859,7 @@ function BossPixelImage({boss}){
   return <img src={candidates[index]} alt="" draggable="false" onError={()=>setIndex(current=>current+1)}/>
 }
 
-function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},questStatuses={},diaryStatuses={},skillProgress={},rewardAssignments={},onBossProgressChange,onRewardAssignmentsChange,onBossRewardClaim}){
+function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},questStatuses={},diaryStatuses={},skillProgress={},rewardAssignments={},onBossProgressChange,onRewardAssignmentsChange,onMapTilesChange,onBossRewardClaim}){
   const creatureByName=useMemo(()=>new Map(creatures.map(c=>[String(c.name||'').trim().toLowerCase(),c])),[creatures])
   const completedCreatureIds=useMemo(()=>new Set(Object.values(mapTiles||{}).filter(tile=>tile?.completed&&tile?.creatureId).map(tile=>String(tile.creatureId))),[mapTiles])
   const [rewardModalBoss,setRewardModalBoss]=useState(null)
@@ -890,6 +890,25 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
   const claimBossReward=(reward)=>{
     if(!rewardModalBoss||!reward)return
     const replacement=findReplacementReward(reward,reward.tileKey)
+
+    // The map tile stores its current reward, so changing only the global
+    // reward assignment leaves the claimed reward visibly sitting on the tile.
+    // Reroll that exact tile to the replacement reward immediately.
+    if(reward.tileKey){
+      onMapTilesChange?.(current=>{
+        const next={...(current||{})}
+        const tile=next[reward.tileKey]
+        if(tile){
+          next[reward.tileKey]={
+            ...tile,
+            ...(replacement?{reward:replacement}:{reward:undefined}),
+          }
+          if(!replacement)delete next[reward.tileKey].reward
+        }
+        return next
+      })
+    }
+
     onRewardAssignmentsChange?.(current=>{
       const next={...(current||{})}
       const creatureId=String(reward.creatureId||'')
@@ -1712,7 +1731,7 @@ function App(){
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>
     :tab==='shop'?<ShopView/>
-    :tab==='bosses'?<BossView creatures={creatures} mapTiles={gameState.mapTiles} bossProgress={bossProgress} bossRewards={bossRewards} questStatuses={questStatuses} diaryStatuses={diaryStatuses} skillProgress={skillProgress} rewardAssignments={rewardAssignments||{}} onBossProgressChange={setBossProgress} onRewardAssignmentsChange={assignments=>{setRewardAssignments(assignments);updateGameState({rewardAssignments:assignments})}} onBossRewardClaim={(boss,reward)=>{
+    :tab==='bosses'?<BossView creatures={creatures} mapTiles={gameState.mapTiles} bossProgress={bossProgress} bossRewards={bossRewards} questStatuses={questStatuses} diaryStatuses={diaryStatuses} skillProgress={skillProgress} rewardAssignments={rewardAssignments||{}} onBossProgressChange={setBossProgress} onRewardAssignmentsChange={assignments=>{setRewardAssignments(assignments);updateGameState({rewardAssignments:assignments})}} onMapTilesChange={resetInProgress?undefined:mapTiles=>updateGameState({mapTiles})} onBossRewardClaim={(boss,reward)=>{
       setBossRewards(current=>({...current,[boss.id]:reward}))
       if(String(reward?.type).toLowerCase()==='skill')handleSkillRewardComplete(reward)
       if(String(reward?.type).toLowerCase()==='quest'&&reward.questId)setQuestStatuses(current=>({...current,[reward.questId]:'revealed'}))

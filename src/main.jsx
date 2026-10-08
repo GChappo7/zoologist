@@ -1197,7 +1197,6 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
       </div>
       <div className="tile-popup-actions">
         <button type="button" className={`tile-popup-complete ${selectedTile.completed?'is-completed':''} ${isDismissing?'is-ticking':''}`} onClick={()=>{if(isDismissing||selectedTile.completed)return;setIsDismissing(true);window.setTimeout(()=>onComplete(selectedTile),520);window.setTimeout(()=>onShowMore?.(false),760)}} aria-label={selectedTile.completed?'Completed':'Mark complete'} aria-pressed={selectedTile.completed} />
-        <button className="tile-popup-more" onClick={onShowMore}>DETAILS <ChevronRight size={13}/></button>
       </div>
     </div>
   </section>

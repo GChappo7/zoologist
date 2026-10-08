@@ -119,6 +119,14 @@
       "kcRequired": 25
     },
     {
+      "id": "kalphite-queen",
+      "name": "Kalphite Queen",
+      "category": "Boss",
+      "creature": "Kalphite",
+      "status": "not_slain",
+      "kcRequired": 100
+    },
+    {
       "id": "kril-tsutsaroth",
       "name": "K'ril Tsutsaroth",
       "category": "God Wars Dungeon",

@@ -2745,3 +2745,34 @@
 .boss-reward-choice-list::-webkit-scrollbar-button:single-button:vertical:increment{
   background-image:url("/zoologist/assets/ui/scroll/788_0%20scrollDownArrow.png");
 }
+
+
+/* Final map reward popup adjustments. */
+.tile-popup.tile-popup-skill .tile-popup-title {
+  font-size: 34px !important;
+  line-height: 1 !important;
+}
+@media (max-width:760px) {
+  .tile-popup.tile-popup-skill .tile-popup-title { font-size: 28px !important; }
+}
+@media (max-width:500px) {
+  .tile-popup.tile-popup-skill .tile-popup-title { font-size: 23px !important; }
+}
+
+/* Achievement diary reward copy sits on the left, matching the skill/quest composition. */
+.tile-popup.tile-popup-diary .tile-popup-reward-copy {
+  left: 4% !important;
+  right: 24% !important;
+  top: 50% !important;
+  bottom: auto !important;
+  transform: translateY(-50%) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* Make the completed map tile tick-circle substantially larger behind the creature. */
+.tile-completed-tick {
+  width: 240px !important;
+  height: 240px !important;
+}

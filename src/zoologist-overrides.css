@@ -2814,3 +2814,9 @@
 }
 @media (max-width:760px) { .tile-popup .tile-popup-complete { top:10% !important; } }
 @media (max-width:500px) { .tile-popup .tile-popup-complete { top:9% !important; } }
+
+
+/* Align the map reward completion circle vertically with the reward copy. */
+.tile-popup .tile-popup-complete { top:50% !important; }
+@media (max-width:760px) { .tile-popup .tile-popup-complete { top:50% !important; } }
+@media (max-width:500px) { .tile-popup .tile-popup-complete { top:50% !important; } }

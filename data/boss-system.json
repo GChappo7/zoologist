@@ -34,7 +34,7 @@
       "id": "sarachnis",
       "name": "Sarachnis",
       "category": "Boss",
-      "creature": "Spider",
+      "creature": "Temple Spider",
       "status": "not_slain"
     },
     {
@@ -69,15 +69,23 @@
       "id": "callisto",
       "name": "Callisto",
       "category": "Wilderness",
-      "creature": "Bear",
-      "status": "not_slain"
+      "status": "not_slain",
+      "creatures": [
+        "Bear",
+        "Black Bear",
+        "Grizzly Bear"
+      ]
     },
     {
       "id": "artio",
       "name": "Artio",
       "category": "Wilderness",
-      "creature": "Bear",
-      "status": "not_slain"
+      "status": "not_slain",
+      "creatures": [
+        "Bear",
+        "Black Bear",
+        "Grizzly Bear"
+      ]
     },
     {
       "id": "venenatis",
@@ -104,14 +112,14 @@
       "id": "general-graardor",
       "name": "General Graardor",
       "category": "God Wars Dungeon",
-      "creature": null,
+      "creature": "Goblin",
       "status": "not_slain"
     },
     {
       "id": "kreearra",
       "name": "Kree'arra",
       "category": "God Wars Dungeon",
-      "creature": null,
+      "creature": "Aviansie",
       "status": "not_slain"
     },
     {
@@ -167,28 +175,28 @@
       "id": "araxxor",
       "name": "Araxxor",
       "category": "Slayer",
-      "creature": null,
+      "creature": "Araxyte",
       "status": "not_slain"
     },
     {
       "id": "zulrah",
       "name": "Zulrah",
       "category": "Boss",
-      "creature": null,
+      "creature": "Swamp Snake",
       "status": "not_slain"
     },
     {
       "id": "vorkath",
       "name": "Vorkath",
       "category": "Boss",
-      "creature": null,
+      "creature": "Blue Dragon",
       "status": "not_slain"
     },
     {
       "id": "the-leviathan",
       "name": "The Leviathan",
       "category": "Desert Treasure II",
-      "creature": null,
+      "creature": "Sea Snake (Young/Hatchling)",
       "status": "not_slain"
     },
     {
@@ -216,14 +224,14 @@
       "id": "great-olm",
       "name": "Great Olm",
       "category": "Chambers of Xeric",
-      "creature": null,
+      "creature": "Lizard",
       "status": "not_slain"
     },
     {
       "id": "kephri",
       "name": "Kephri",
       "category": "Tombs of Amascut",
-      "creature": null,
+      "creature": "Scarab",
       "status": "not_slain"
     },
     {
@@ -237,7 +245,7 @@
       "id": "zebak",
       "name": "Zebak",
       "category": "Tombs of Amascut",
-      "creature": null,
+      "creature": "Crocodile",
       "status": "not_slain"
     }
   ],

@@ -2697,3 +2697,5 @@
   .boss-reward-category span{grid-column:2;text-align:left}
   .boss-reward-choice-list{grid-template-columns:1fr}
 }
+
+.boss-reward-associated-creature{color:#e6d38d!important;font-size:9px!important;margin-top:2px}

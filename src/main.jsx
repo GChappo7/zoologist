@@ -349,6 +349,48 @@ function HeaderDropdown({open,onClose,anchorRef,children,ariaLabel='Menu',classN
   return <div ref={panelRef} className={'header-dropdown '+className} role="dialog" aria-label={ariaLabel} style={position?{top:position.top,left:position.left}:undefined}>{children}</div>
 }
 
+function ProgressionDropdown({open,onClose,anchorRef,ariaLabel='Menu',children,className=''}) {
+  const panelRef=useRef(null)
+  const [anchorPosition,setAnchorPosition]=useState(null)
+  useLayoutEffect(()=>{
+    if(!open)return
+    const updatePosition=()=>{
+      const anchor=anchorRef?.current
+      if(!anchor)return
+      const rect=anchor.getBoundingClientRect()
+      const topbar=document.querySelector('.topbar')
+      const topbarRect=topbar?.getBoundingClientRect()
+      setAnchorPosition({top:topbarRect?.bottom??rect.bottom,left:rect.left+rect.width/2})
+    }
+    updatePosition()
+    window.addEventListener('resize',updatePosition)
+    window.addEventListener('scroll',updatePosition,true)
+    return()=>{
+      window.removeEventListener('resize',updatePosition)
+      window.removeEventListener('scroll',updatePosition,true)
+    }
+  },[open,anchorRef])
+  useEffect(()=>{
+    if(!open)return
+    const handlePointerDown=e=>{
+      const insidePanel=panelRef.current?.contains(e.target)
+      const insideAnchor=anchorRef?.current?.contains(e.target)
+      if(!insidePanel&&!insideAnchor)onClose?.()
+    }
+    const handleKeyDown=e=>{if(e.key==='Escape')onClose?.()}
+    document.addEventListener('pointerdown',handlePointerDown)
+    window.addEventListener('keydown',handleKeyDown)
+    return()=>{
+      document.removeEventListener('pointerdown',handlePointerDown)
+      window.removeEventListener('keydown',handleKeyDown)
+    }
+  },[open,onClose,anchorRef])
+  if(!open)return null
+  return <div className={`skills-dropdown-anchor ${className}`} ref={panelRef} role="dialog" aria-label={ariaLabel} style={anchorPosition?{top:anchorPosition.top,left:anchorPosition.left}:undefined}>
+    <div className="skills-dropdown-panel">{children}</div>
+  </div>
+}
+
 function SkillsDropdown({open,onClose,skillProgress,anchorRef}) {
   const panelRef=useRef(null)
   const [anchorPosition,setAnchorPosition]=useState(null)
@@ -397,8 +439,7 @@ function SkillsDropdown({open,onClose,skillProgress,anchorRef}) {
     const band=getSkillRewardSequence(name)[completedIndex]?.band??'91–99'
     return Number(String(band).split('-').pop().trim())||99
   }
-  return <div className="skills-dropdown-anchor" ref={panelRef} role="dialog" aria-label="Skills" style={anchorPosition?{top:anchorPosition.top,left:anchorPosition.left}:undefined}>
-    <div className="skills-dropdown-panel">
+  return <ProgressionDropdown open={open} onClose={onClose} anchorRef={anchorRef} ariaLabel="Skills">
       <div className="skills-dropdown-grid">
         {SKILL_TAB_LAYOUT.flatMap(row=>row.map(name=>{
           const unlocked=unrestricted.has(name)||(skillProgress?.[name]?.unlocked===true)
@@ -413,8 +454,7 @@ function SkillsDropdown({open,onClose,skillProgress,anchorRef}) {
           </div>
         }))}
       </div>
-    </div>
-  </div>
+  </ProgressionDropdown>
 }
 function QuestsView({initialStatuses={},onStatusesChange}){
   const [filter,setFilter]=useState('all')
@@ -1319,7 +1359,7 @@ function App(){
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText,ref:questsButtonRef},
     {id:'diaries',label:'Diaries',icon:BookOpen,ref:diariesButtonRef},{id:'shop',label:'Shop',icon:ShoppingBag},{id:'bosses',label:'Bosses',icon:Skull}
   ]
-  const questView=<HeaderDropdown open={tab==='quests'} onClose={()=>setTab('map')} anchorRef={questsButtonRef} ariaLabel="Quests" className="quest-header-dropdown"><QuestsView initialStatuses={questStatuses} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/></HeaderDropdown>
+  const questView=<ProgressionDropdown open={tab==='quests'} onClose={()=>setTab('map')} anchorRef={questsButtonRef} ariaLabel="Quests" className="quest-header-dropdown"><QuestsView initialStatuses={questStatuses} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/></ProgressionDropdown>
   const diaryView=<HeaderDropdown open={tab==='diaries'} onClose={()=>setTab('map')} anchorRef={diariesButtonRef} ariaLabel="Achievement Diaries" className="diary-header-dropdown"><DiariesView statuses={diaryStatuses} onStatusClick={handleDiaryStatusClick}/></HeaderDropdown>
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>

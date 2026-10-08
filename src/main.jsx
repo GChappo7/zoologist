@@ -789,6 +789,7 @@ const BOSS_IMAGE_FILENAMES = {
   'grotesque-guardians':'Grotesque_Guardians.png',
   'alchemical-hydra':'Alchemical_Hydra.png',
   'araxxor':'Araxxor.png',
+  'shellbane-gryphon':'Shellbane_Gryphon.png',
   'zulrah':'Zulrah.png',
   'vorkath':'Vorkath.png',
   'the-leviathan':'The_Leviathan.png',

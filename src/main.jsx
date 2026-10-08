@@ -531,7 +531,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
   })
 
   const statusLabel={
-    unrevealed:'???',
+    unrevealed:'Not revealed',
     revealed:'Revealed',
     completed:'Complete'
   }
@@ -584,7 +584,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
                   aria-label={status==='unrevealed'?`${q.name}, quest not revealed`:`${q.name}, ${statusLabel[status]}`}
                 >
                   <span className="quest-status-dot" aria-hidden="true"/>
-                  <span className="quest-name">{status==='unrevealed'?'???':q.name}</span>
+                  <span className="quest-name">{q.name}</span>
                   <span className="quest-status-label">{statusLabel[status]}</span>
                 </button>
               })}

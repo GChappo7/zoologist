@@ -703,7 +703,20 @@ function CollectionLog({creatures,mapTiles,onBack}){
 function DiariesView({statuses={},onStatusClick}){
   const regions=['Ardougne','Desert','Falador','Fremennik','Kandarin','Karamja','Kourend & Kebos','Lumbridge & Draynor','Morytania','Varrock','Western Provinces','Wilderness']
   const tiers=['Easy','Medium','Hard','Elite']
-  return <div className="full-tab-page"><div className="diary-log-title">Achievement Diaries</div><div className="diary-grid">{regions.map(region=><div className="diary-card" key={region}><div className="diary-card-header"><ProgressionIcon type="diaryRegion" region={region}/><strong>{region}</strong></div><div className="diary-tier-labels">{tiers.map(tier=><span key={tier}>{tier}</span>)}</div><button className="diary-progress-bar" type="button" onClick={()=>onStatusClick?.(region)} aria-label={`Mark ${region} diary progress complete`}>{tiers.map(tier=>{const key=`${region}|${tier}`;const status=statuses[key]||'locked';return <span key={tier} className={`diary-quadrant diary-quadrant-${status}`}><i>{status!=='locked'?'Completed':''}</i></span>})}</button></div>)}</div></div>
+  return <div className="quest-log-shell diary-log-shell">
+    <div className="quest-log-title"><strong>Achievement Diaries</strong></div>
+    <div className="quest-log-body diary-log-body">
+      <div className="diary-grid">
+        {regions.map(region=><div className="diary-card" key={region}>
+          <div className="diary-card-header"><ProgressionIcon type="diaryRegion" region={region}/><strong>{region}</strong></div>
+          <div className="diary-tier-labels">{tiers.map(tier=><span key={tier}>{tier}</span>)}</div>
+          <button className="diary-progress-bar" type="button" onClick={()=>onStatusClick?.(region)} aria-label={\`Mark \${region} diary progress complete\`}>
+            {tiers.map(tier=>{const key=\`\${region}|\${tier}\`;const status=statuses[key]||'locked';return <span key={tier} className={\`diary-quadrant diary-quadrant-\${status}\`}><i>{status!=='locked'?'Completed':''}</i></span>})}
+          </button>
+        </div>)}
+      </div>
+    </div>
+  </div>
 }
 function ShopView(){
   return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><ShoppingBag size={14}/> ZOOLOGIST POINTS</div><h1>Shop</h1><p>Boss tasks will award Zoologist Points. Costs remain configurable until the progression rules are finalized.</p></div><div className="shop-grid">{shop.items.map(item=><div className="shop-card" key={item.id}><div className="shop-card-icon"><Sparkles size={17}/></div><strong>{item.name}</strong><p>{item.description}</p><span>Cost: TBD</span></div>)}</div></div>

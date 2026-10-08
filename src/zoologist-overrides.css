@@ -2007,9 +2007,9 @@
 }
 
 .quest-header-dropdown .quest-log-body {
-  flex: 0 0 auto !important;
+  flex: 0 0 298px !important;
   min-height: 0 !important;
-  height: 252px !important;
+  height: 298px !important;
   display: grid !important;
   grid-template-columns: minmax(0,1fr) 22px !important;
   background: #3b362f !important;
@@ -2018,7 +2018,7 @@
 .quest-header-dropdown .quest-list {
   min-height: 0 !important;
   max-height: none !important;
-  height: 252px !important;
+  height: 298px !important;
   overflow-y: auto !important;
   padding: 6px 8px !important;
   background: #5d574c !important;
@@ -2091,5 +2091,5 @@
     max-width: calc(100vw - 12px) !important;
   }
   .diary-header-dropdown { width: calc(100vw - 12px); }
-   .quest-header-dropdown .quest-log-body { height: 252px !important; }
+   .quest-header-dropdown .quest-log-body { height: 298px !important; }
 }

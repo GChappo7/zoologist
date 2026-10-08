@@ -925,59 +925,46 @@
   line-height: 1.05 !important;
 }
 
-/* Use the actual blank OSRS skill box for the popup completion control. */
-.tile-popup .tile-popup-complete {
-  min-height: 48px !important;
-  position: absolute !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  min-width: 150px !important;
-  padding: 8px 16px !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: var(--complete-box-image) center / 100% 100% no-repeat !important;
-  color: #35d65b !important;
-  font-family: var(--font-runescape) !important;
-  font-size: 20px !important;
-  line-height: 1 !important;
-  font-weight: 700 !important;
-  text-shadow: 1px 1px 0 #102015, 0 0 2px #07120a !important;
-  box-shadow: none !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0 !important;
-}
-.tile-popup .tile-popup-complete svg {
-  display: none !important;
-}
-.tile-popup .tile-popup-complete:hover {
-  background: var(--complete-box-image) center / 100% 100% no-repeat !important;
-  filter: brightness(1.08);
-}
-
-
-/* Compact COMPLETE control: a small OSRS skill-box button tucked into the popup's top-right corner. */
-.tile-popup .tile-popup-actions {
-  position: static !important;
-  margin: 0 !important;
-  display: block !important;
-}
+/* Use the new OSRS completion circles for every tile reward popup. */
 .tile-popup .tile-popup-complete {
   position: absolute !important;
   top: 50% !important;
   right: 8% !important;
-  min-width: 78px !important;
-  width: 78px !important;
-  min-height: 30px !important;
-  height: 30px !important;
-  padding: 3px 7px !important;
-  font-size: 13px !important;
-  line-height: 1 !important;
-  letter-spacing: .02em !important;
-  white-space: nowrap !important;
-  z-index: 5 !important;
+  width: 58px !important;
+  height: 58px !important;
+  min-width: 58px !important;
+  min-height: 58px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: var(--complete-circle-image) center / contain no-repeat !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  box-shadow: none !important;
+  display: block !important;
   transform: translateY(-50%) !important;
+  cursor: pointer !important;
+  z-index: 5 !important;
+  transition: filter 120ms ease, transform 120ms ease !important;
+}
+.tile-popup .tile-popup-complete.is-completed {
+  background-image: var(--complete-circle-tick-image) !important;
+  cursor: default !important;
+}
+.tile-popup .tile-popup-complete:hover:not(.is-completed) {
+  filter: brightness(1.12) !important;
+  transform: translateY(-50%) scale(1.06) !important;
+}
+.tile-popup .tile-popup-complete:active:not(.is-completed) {
+  transform: translateY(-50%) scale(.98) !important;
+}
+.tile-popup .tile-popup-complete:focus-visible {
+  outline: 2px solid #ffe066 !important;
+  outline-offset: 3px !important;
+}
+.tile-popup .tile-popup-complete svg {
+  display: none !important;
 }
 .tile-popup .tile-popup-more {
   position: absolute !important;
@@ -991,11 +978,10 @@
 }
 @media (max-width:760px) {
   .tile-popup .tile-popup-complete {
-    min-width: 68px !important;
-    width: 68px !important;
-    min-height: 27px !important;
-    height: 27px !important;
-    font-size: 11px !important;
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
   }
 }
 

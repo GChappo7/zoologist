@@ -2368,6 +2368,9 @@
 }
 
 .quest-header-dropdown .quest-scroll-arrows {
+  pointer-events: auto !important;
+  touch-action: none !important;
+  user-select: none !important;
   position: relative !important;
   top: auto !important;
   right: auto !important;

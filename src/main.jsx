@@ -581,16 +581,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
   return <div className="quest-log-page">
     <div className="quest-log-shell">
       <div className="quest-log-title">
-        <ProgressionIcon type="quest"/>
-        <div>
-          <strong>Quest List</strong>
-          <span>{counts.completed} / {counts.all} quests complete</span>
-        </div>
-      </div>
-
-      <div className="quest-log-summary">
-        <span>Quests complete</span>
-        <strong>{counts.completed} / {counts.all}</strong>
+        <strong>{counts.completed} / {counts.all} quest completed</strong>
       </div>
 
       <div className="quest-log-controls">

@@ -790,40 +790,29 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 }
 
 
-/* Map atmosphere: make the frontier vibrant, deepen the first fog layer, and keep completion marks compact. */
+/* Map atmosphere: boost the actual creature-card artwork, deepen the first face-down layer, and keep completion marks compact. */
 .tile-completed-tick {
   width: 170px !important;
   height: 170px !important;
 }
-.map-tile-frontier {
-  background:
-    radial-gradient(circle at 50% 42%, rgba(126,91,38,.34) 0%, rgba(70,48,22,.20) 48%, rgba(41,33,22,.05) 100%),
-    linear-gradient(145deg, #4a371d 0%, #332716 52%, #241c12 100%) !important;
-  border-color: #b88946 !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,220,146,.24),
-    inset 0 0 24px rgba(213,170,99,.14),
-    0 0 12px rgba(213,170,99,.24),
-    0 0 28px rgba(213,170,99,.14) !important;
+
+/* Keep the underlying Map_tile.png design, but make its colours punchier on revealed frontier cards. */
+.map-tile-frontier .map-card-front > img {
+  filter: saturate(1.38) contrast(1.08) brightness(1.04);
 }
-.map-tile-frontier:hover {
-  background:
-    radial-gradient(circle at 50% 42%, rgba(158,119,54,.42) 0%, rgba(83,58,27,.24) 48%, rgba(43,33,20,.08) 100%),
-    linear-gradient(145deg, #5b431f 0%, #3c2d18 52%, #2a2013 100%) !important;
-  border-color: #d5aa63 !important;
-  box-shadow:
-    inset 0 0 0 2px rgba(255,225,157,.30),
-    inset 0 0 28px rgba(213,170,99,.18),
-    0 0 16px rgba(213,170,99,.34),
-    0 0 34px rgba(213,170,99,.20) !important;
+
+/* The first face-down card should start noticeably darker, while later fog layers continue to deepen. */
+.map-tile.is-face-down .map-card-back > img {
+  filter: brightness(.68) saturate(.78);
 }
-/* The first face-down fog layer should already feel dark; each further layer falls away harder. */
-.map-tile-locked .map-fog-card { filter: brightness(.68) saturate(.78); }
+.map-tile-locked .map-fog-card > img {
+  filter: brightness(.68) saturate(.78);
+}
 .map-tile-locked .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.18), rgba(5,9,12,.36)); }
-.map-tile-dark-fog-1 .map-fog-card { filter: brightness(.56) saturate(.68); }
-.map-tile-dark-fog-2 .map-fog-card { filter: brightness(.43) saturate(.58); }
-.map-tile-dark-fog-3 .map-fog-card { filter: brightness(.31) saturate(.46); }
-.map-tile-black-fog .map-fog-card { filter: brightness(.18) saturate(.30); }
+.map-tile-dark-fog-1 .map-fog-card > img { filter: brightness(.56) saturate(.68); }
+.map-tile-dark-fog-2 .map-fog-card > img { filter: brightness(.43) saturate(.58); }
+.map-tile-dark-fog-3 .map-fog-card > img { filter: brightness(.31) saturate(.46); }
+.map-tile-black-fog .map-fog-card > img { filter: brightness(.18) saturate(.30); }
 .map-tile-dark-fog-1 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.30), rgba(5,9,12,.48)); }
 .map-tile-dark-fog-2 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.44), rgba(5,9,12,.60)); }
 .map-tile-dark-fog-3 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.58), rgba(5,9,12,.74)); }

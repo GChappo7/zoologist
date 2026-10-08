@@ -859,53 +859,146 @@ function BossPixelImage({boss}){
   return <img src={candidates[index]} alt="" draggable="false" onError={()=>setIndex(current=>current+1)}/>
 }
 
-function BossView({creatures=[],mapTiles={},bossProgress={},onBossProgressChange}){
+function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},questStatuses={},diaryStatuses={},skillProgress={},onBossProgressChange,onBossRewardClaim}){
   const creatureByName=useMemo(()=>new Map(creatures.map(c=>[String(c.name||'').trim().toLowerCase(),c])),[creatures])
   const completedCreatureIds=useMemo(()=>new Set(Object.values(mapTiles||{}).filter(tile=>tile?.completed&&tile?.creatureId).map(tile=>String(tile.creatureId))),[mapTiles])
+  const [rewardModalBoss,setRewardModalBoss]=useState(null)
+  const [rewardCategory,setRewardCategory]=useState(null)
+
   const getBossState=(boss)=>{
     const target=Math.max(1,Number(boss.kcRequired)||100)
     const current=Math.max(0,Math.min(target,Number(bossProgress?.[boss.id])||0))
     const associationNames=Array.isArray(boss.creatures)?boss.creatures:(boss.creature?[boss.creature]:[])
     const associatedCreatures=associationNames.map(name=>creatureByName.get(String(name).trim().toLowerCase())).filter(Boolean)
     const unlocked=associatedCreatures.length>0&&associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id)))
-    return {target,current,associatedCreatures,unlocked}
+    const reward=bossRewards?.[boss.id]??null
+    return {target,current,associatedCreatures,unlocked,reward}
   }
+
   const changeBossKc=(boss,delta)=>{
     const state=getBossState(boss)
-    if(!state.unlocked)return
+    if(!state.unlocked||state.reward)return
     const next=Math.max(0,Math.min(state.target,state.current+delta))
     onBossProgressChange?.(current=>({...current,[boss.id]:next}))
   }
+
+  const openBossReward=(boss)=>{
+    setRewardModalBoss(boss)
+    setRewardCategory(null)
+  }
+
+  const claimBossReward=(reward)=>{
+    if(!rewardModalBoss||!reward)return
+    onBossRewardClaim?.(rewardModalBoss,reward)
+    setRewardModalBoss(null)
+    setRewardCategory(null)
+  }
+
+  const getRewardOptions=(category)=>{
+    const usedQuestIds=new Set(Object.values(bossRewards||{}).filter(reward=>String(reward?.type).toLowerCase()==='quest').map(reward=>String(reward?.questId||'').trim()))
+    if(category==='quest'){
+      return rewardCatalog.mandatory
+        .filter(reward=>String(reward.type).toLowerCase()==='quest')
+        .filter(reward=>!usedQuestIds.has(String(reward.questId||'').trim()))
+        .filter(reward=>!['revealed','completed'].includes(String(questStatuses?.[reward.questId]||'').toLowerCase()))
+    }
+    if(category==='skill'){
+      return rewardCatalog.lockedSkills
+        .map(skill=>{
+          const next=getNextSkillBand(skillProgress,skill)
+          return next?{...next,type:'skill',skill}:null
+        })
+        .filter(Boolean)
+    }
+    if(category==='diary'){
+      return rewardCatalog.mandatory
+        .filter(reward=>String(reward.type).toLowerCase()==='diary')
+        .filter(reward=>{
+          const key=`${reward.region}|${reward.tier}`
+          return !diaryStatuses?.[key]&&!Object.values(bossRewards||{}).some(value=>String(value?.id)===String(reward.id))
+        })
+    }
+    return []
+  }
+
   const bossTasks=[...bossSystem.tasks].sort((a,b)=>{
     const aState=getBossState(a),bState=getBossState(b)
     if(aState.unlocked!==bState.unlocked)return aState.unlocked?-1:1
     return a.name.localeCompare(b.name,undefined,{sensitivity:'base'})
   })
-  return <div className="full-tab-page boss-page"><div className="tab-page-heading"><div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div><h1>Boss Tasks</h1><p>Complete the associated creature tile to unlock each boss, then track the required kill count.</p></div><div className="boss-grid">{bossTasks.map(boss=>{
-    const {target,current,associatedCreatures,unlocked}=getBossState(boss)
-    const complete=unlocked&&current>=target
-    const percent=target?Math.min(100,current/target*100):0
-    const imageAvailable=bossImageCandidates(boss).length
-    return <div className={`boss-card${!unlocked?' is-locked':''}${complete?' is-complete':''}`} key={boss.id}>
-      <div className="boss-card-title"><strong>{boss.name}</strong></div>
-      <div className="boss-image-space">
-        {imageAvailable ? <BossPixelImage boss={boss}/> : <Skull size={46}/>} 
-      </div>
-      <div className="boss-association"><span className="boss-association-label">Associated creature</span>{associatedCreatures.length?boss.id==='callisto'?<span className="boss-creature-name boss-creature-name-inline">{<span>Bear(s)</span>}</span>:associatedCreatures.map(creature=><span className={`boss-creature-name${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id}>{creature.name}</span>):<span className="boss-no-association">No associated creature tile</span>}</div>
-      {!unlocked && <div className="boss-lock-overlay" aria-hidden="true"><img src={uiAssetUrl('lock_asset.png')} alt=""/></div>}
-      {unlocked ? <div className="boss-progress-section">
-        <div className="boss-progress-label"><span>{complete?'COMPLETE':'KILL COUNT'}</span><strong>{current} / {target} KC</strong></div>
-        <div className="boss-progress-track"><div className="boss-progress-fill" style={{width:`${percent}%`}}/></div>
-        <div className="boss-kc-controls">
-          <button type="button" className="boss-kc-button" onClick={()=>changeBossKc(boss,-1)} disabled={current<=0} aria-label={`Decrease ${boss.name} kill count`}><img src={uiAssetUrl('1116_0 Minus Button.png')} alt=""/></button>
-          <span className={`boss-kc-count${complete?' is-complete':''}`}>{current}</span>
-          <button type="button" className="boss-kc-button" onClick={()=>changeBossKc(boss,1)} disabled={current>=target} aria-label={`Increase ${boss.name} kill count`}><img src={uiAssetUrl('1117_0 Plus Button.png')} alt=""/></button>
-        </div>
-      </div> : <div className="boss-locked-message"><img src={uiAssetUrl('lock_asset.png')} alt=""/> Complete the associated creature tile to unlock</div>}
-    </div>
-  })}</div></div>
-}
 
+  const rewardOptions=rewardCategory?getRewardOptions(rewardCategory):[]
+
+  return <div className="full-tab-page boss-page">
+    <div className="tab-page-heading">
+      <div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div>
+      <h1>Boss Tasks</h1>
+      <p>Complete the associated creature tile to unlock each boss, then track the required kill count.</p>
+    </div>
+    <div className="boss-grid">
+      {bossTasks.map(boss=>{
+        const {target,current,associatedCreatures,unlocked,reward}=getBossState(boss)
+        const complete=unlocked&&current>=target
+        const percent=target?Math.min(100,current/target*100):0
+        const imageAvailable=bossImageCandidates(boss).length
+        return <div className={`boss-card${!unlocked?' is-locked':''}${reward?' is-complete':''}`} key={boss.id}>
+          <div className="boss-card-title"><strong>{boss.name}</strong></div>
+          <div className="boss-image-space">
+            {imageAvailable ? <BossPixelImage boss={boss}/> : <Skull size={46}/>}
+          </div>
+          <div className="boss-association">
+            <span className="boss-association-label">Associated creature</span>
+            {associatedCreatures.length
+              ? boss.id==='callisto'
+                ? <span className="boss-creature-name boss-creature-name-inline"><span>Bear(s)</span></span>
+                : associatedCreatures.map(creature=><span className={`boss-creature-name${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id}>{creature.name}</span>)
+              : <span className="boss-no-association">No associated creature tile</span>}
+          </div>
+          {!unlocked && <div className="boss-lock-overlay" aria-hidden="true"><img src={uiAssetUrl('lock_asset.png')} alt=""/></div>}
+          {unlocked ? <div className="boss-progress-section">
+            {complete&&!reward&&<button type="button" className="boss-complete-button" onClick={()=>openBossReward(boss)}>COMPLETE BOSS</button>}
+            {reward&&<div className="boss-reward-claimed"><span>REWARD CLAIMED</span><strong>{reward.label??reward.name}</strong></div>}
+            <div className="boss-progress-label"><span>{complete?'COMPLETE':'KILL COUNT'}</span><strong>{current} / {target} KC</strong></div>
+            <div className="boss-progress-track"><div className="boss-progress-fill" style={{width:`${percent}%`}}/></div>
+            <div className="boss-kc-controls">
+              <button type="button" className="boss-kc-button" onClick={()=>changeBossKc(boss,-1)} disabled={current<=0||Boolean(reward)} aria-label={`Decrease ${boss.name} kill count`}><img src={uiAssetUrl('1116_0 Minus Button.png')} alt=""/></button>
+              <span className={`boss-kc-count${complete?' is-complete':''}`}>{current}</span>
+              <button type="button" className="boss-kc-button" onClick={()=>changeBossKc(boss,1)} disabled={current>=target||Boolean(reward)} aria-label={`Increase ${boss.name} kill count`}><img src={uiAssetUrl('1117_0 Plus Button.png')} alt=""/></button>
+            </div>
+          </div> : <div className="boss-locked-message"><img src={uiAssetUrl('lock_asset.png')} alt=""/> Complete the associated creature tile to unlock</div>}
+        </div>
+      })}
+    </div>
+
+    {rewardModalBoss&&<div className="boss-reward-overlay" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget){setRewardModalBoss(null);setRewardCategory(null)}}}>
+      <div className="boss-reward-dialog" role="dialog" aria-modal="true" aria-labelledby="boss-reward-title">
+        <div className="boss-reward-header">
+          <div className="eyebrow"><Sparkles size={14}/> BOSS REWARD</div>
+          <h2 id="boss-reward-title">{rewardModalBoss.name} Complete</h2>
+          <p>Select and receive a Map Tile reward.</p>
+        </div>
+        {!rewardCategory
+          ? <div className="boss-reward-category-grid">
+              <button type="button" className="boss-reward-category" onClick={()=>setRewardCategory('quest')}><ProgressionIcon type="quest"/><strong>Quest</strong><span>Receive a quest reward</span></button>
+              <button type="button" className="boss-reward-category" onClick={()=>setRewardCategory('skill')}><ProgressionIcon type="skill" skill="Fishing"/><strong>Skill</strong><span>Unlock your next skill level band</span></button>
+              <button type="button" className="boss-reward-category" onClick={()=>setRewardCategory('diary')}><ProgressionIcon type="diary"/><strong>Diary</strong><span>Receive an achievement diary reward</span></button>
+            </div>
+          : <div className="boss-reward-choice-view">
+              <button type="button" className="boss-reward-back" onClick={()=>setRewardCategory(null)}>← Back to reward types</button>
+              <div className="boss-reward-choice-list">
+                {rewardOptions.length
+                  ? rewardOptions.map(option=><button type="button" className="boss-reward-choice" key={option.id} onClick={()=>claimBossReward(option)}>
+                      <ProgressionIcon type={option.type} skill={option.skill} region={option.region}/>
+                      <span><strong>{option.label??option.name}</strong>{option.type==='skill'&&<small>{option.skill}</small>}{option.type==='diary'&&<small>{option.region} • {option.tier}</small>}</span>
+                    </button>)
+                  : <div className="boss-reward-empty">No unclaimed rewards of this type are currently available.</div>}
+              </div>
+            </div>}
+        <button type="button" className="boss-reward-cancel" onClick={()=>{setRewardModalBoss(null);setRewardCategory(null)}}>CLOSE</button>
+      </div>
+    </div>}
+  </div>
+}
 function resolveReservedReward(reward,skillProgress){
   if(!reward)return null
   if(String(reward.type).toLowerCase()!=='skill'||reward.band)return reward
@@ -1257,6 +1350,7 @@ function App(){
   const [questStatuses,setQuestStatuses]=useState(gameState.questStatuses||{})
   const [diaryStatuses,setDiaryStatuses]=useState(gameState.diaryStatuses||{})
   const [bossProgress,setBossProgress]=useState(gameState.bossProgress||{})
+  const [bossRewards,setBossRewards]=useState(gameState.bossRewards||{})
   const [resetVersion,setResetVersion]=useState(0)
   const [passwordRecovery,setPasswordRecovery]=useState(false)
   const saveGenerationRef=useRef(0)
@@ -1342,6 +1436,7 @@ function App(){
           setQuestStatuses(next.questStatuses||{})
           setDiaryStatuses(next.diaryStatuses||{})
           setBossProgress(next.bossProgress||{})
+          setBossRewards(next.bossRewards||{})
           setAccountReady(true)
           setCloudSaveStatus('connected')
         }
@@ -1361,6 +1456,7 @@ function App(){
   useEffect(()=>localStorage.setItem('zoologist-skill-progress',JSON.stringify(skillProgress)),[skillProgress])
   useEffect(()=>localStorage.setItem('zoologist-diary-statuses',JSON.stringify(diaryStatuses)),[diaryStatuses])
   useEffect(()=>localStorage.setItem('zoologist-boss-progress',JSON.stringify(bossProgress)),[bossProgress])
+  useEffect(()=>localStorage.setItem('zoologist-boss-rewards',JSON.stringify(bossRewards)),[bossRewards])
 
   // Quest rewards become "Revealed" as soon as their reward tile is revealed.
   // Map tiles are the authoritative source here, so this also catches quests
@@ -1406,8 +1502,9 @@ function App(){
     const hasQuestProgress=Object.keys(questStatuses||{}).length>0
     const hasDiaryProgress=Object.keys(diaryStatuses||{}).length>0
     const hasBossProgress=Object.keys(bossProgress||{}).length>0
-    if(!session||!accountReady||resetInProgress||(!hasCompletedTile&&!hasUnlockedSkill&&!hasQuestProgress&&!hasDiaryProgress&&!hasBossProgress))return
-    const payload={...gameState,skillProgress,rewardAssignments,questStatuses,diaryStatuses,bossProgress}
+    const hasBossRewards=Object.keys(bossRewards||{}).length>0
+    if(!session||!accountReady||resetInProgress||(!hasCompletedTile&&!hasUnlockedSkill&&!hasQuestProgress&&!hasDiaryProgress&&!hasBossProgress&&!hasBossRewards))return
+    const payload={...gameState,skillProgress,rewardAssignments,questStatuses,diaryStatuses,bossProgress,bossRewards}
     const generation=saveGenerationRef.current
     const timer=window.setTimeout(()=>{
       if(generation!==saveGenerationRef.current)return
@@ -1475,6 +1572,7 @@ function App(){
       localStorage.removeItem('zoologist-reward-assignments')
       localStorage.removeItem('zoologist-quest-statuses')
       localStorage.removeItem('zoologist-boss-progress')
+      localStorage.removeItem('zoologist-boss-rewards')
       localStorage.removeItem('zoologist-local-save-owner')
       localStorage.removeItem('zoologist-world-id')
       localStorage.removeItem('zoologist-reset-state')
@@ -1488,6 +1586,7 @@ function App(){
       setQuestStatuses({})
       setDiaryStatuses({})
       setBossProgress({})
+      setBossRewards({})
       setProgress({explored:0,revealed:1})
       setResetVersion(current=>current+1)
       setCloudSaveStatus('connected')
@@ -1558,7 +1657,12 @@ function App(){
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>
     :tab==='shop'?<ShopView/>
-    :tab==='bosses'?<BossView creatures={creatures} mapTiles={gameState.mapTiles} bossProgress={bossProgress} onBossProgressChange={setBossProgress}/>
+    :tab==='bosses'?<BossView creatures={creatures} mapTiles={gameState.mapTiles} bossProgress={bossProgress} bossRewards={bossRewards} questStatuses={questStatuses} diaryStatuses={diaryStatuses} skillProgress={skillProgress} onBossProgressChange={setBossProgress} onBossRewardClaim={(boss,reward)=>{
+      setBossRewards(current=>({...current,[boss.id]:reward}))
+      if(String(reward?.type).toLowerCase()==='skill')handleSkillRewardComplete(reward)
+      if(String(reward?.type).toLowerCase()==='quest'&&reward.questId)setQuestStatuses(current=>({...current,[reward.questId]:'revealed'}))
+      if(String(reward?.type).toLowerCase()==='diary')handleDiaryRewardComplete(reward)
+    }}/>
     :<MapView
       key={`${session?.user?.id??'local'}-${gameState.worldId??'legacy'}-${resetVersion}`}
       creatures={creatures}

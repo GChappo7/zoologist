@@ -1307,10 +1307,9 @@ function App(){
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText},
     {id:'diaries',label:'Diaries',icon:BookOpen},{id:'shop',label:'Shop',icon:ShoppingBag},{id:'bosses',label:'Bosses',icon:Skull}
   ]
+  const questView=<QuestsView initialStatuses={questStatuses} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/>
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>
-    :tab==='quests'
-    ?<QuestsView initialStatuses={questStatuses} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/>
     :tab==='diaries'?<DiariesView statuses={diaryStatuses} onStatusClick={handleDiaryStatusClick}/>
     :tab==='shop'?<ShopView/>
     :tab==='bosses'?<BossView/>
@@ -1327,6 +1326,10 @@ function App(){
       onRewardAssignmentsChange={resetInProgress?undefined:assignments=>{setRewardAssignments(assignments);updateGameState({rewardAssignments:assignments})}}
     />
   const handleTabClick=id=>{
+    if(id==='quests'&&tab==='quests'){
+      setTab('map')
+      return
+    }
     if(id==='skills'){
       setTab('map')
       setSkillsOpen(current=>!current)
@@ -1346,7 +1349,7 @@ function App(){
         </button>
         <button className={`account-button ${session?'account-button-signed-in':''}`} onClick={()=>setAccountOpen(true)} aria-label="Account" title="Account"><img className="account-button-icon" src="https://oldschool.runescape.wiki/images/Account_Management_-_Name_Changer_icon.png" alt="" aria-hidden="true" draggable="false"/>{session&&<i className="account-status-dot" aria-label="Cloud save connected"/>}</button>
       </div>   </header>
-    <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}</main>
+    <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}{tab==='quests'&&<div className="quest-popup-overlay">{questView}</div>}</main>
     <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
     <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession} onResetProgress={handleResetProgress} passwordRecovery={passwordRecovery} onPasswordRecoveryComplete={()=>{
       setPasswordRecovery(false)

@@ -574,8 +574,8 @@
   z-index: 1000;
   width: 310px;
   left: auto !important;
-  right: 0 !important;
-  transform: none !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
   pointer-events: none;
 }
 

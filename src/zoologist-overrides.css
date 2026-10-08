@@ -2315,7 +2315,7 @@
 }
 
 
-/* Achievement Diaries header popup: use the exact shared Skills/Quest frame and a single row per region. */
+/* Achievement Diaries: shared Skills/Quest popup frame, without a redundant title. */
 .diary-header-dropdown {
   width: 310px !important;
   max-width: 310px !important;
@@ -2330,14 +2330,15 @@
   padding: 0 !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
+  background: #5d574c !important;
 }
 
 .diary-header-dropdown .diary-log-body {
-  flex: 0 0 344px !important;
   width: 100% !important;
-  height: 344px !important;
-  min-height: 344px !important;
-  max-height: 344px !important;
+  height: 392px !important;
+  min-height: 392px !important;
+  max-height: 392px !important;
+  margin: 0 !important;
   padding: 0 !important;
   display: block !important;
   box-sizing: border-box !important;
@@ -2347,14 +2348,14 @@
 
 .diary-header-dropdown .diary-grid {
   width: 100% !important;
-  height: 344px !important;
-  min-height: 344px !important;
-  max-height: 344px !important;
+  height: 392px !important;
+  min-height: 392px !important;
+  max-height: 392px !important;
   display: grid !important;
   grid-template-columns: 1fr !important;
   grid-template-rows: repeat(12,minmax(0,1fr)) !important;
   gap: 1px !important;
-  padding: 5px 6px !important;
+  padding: 6px !important;
   box-sizing: border-box !important;
   background: #5d574c !important;
   border: 0 !important;
@@ -2369,12 +2370,13 @@
   padding: 2px 6px !important;
   box-sizing: border-box !important;
   display: grid !important;
-  grid-template-columns: 22px 1fr 180px !important;
+  grid-template-columns: 22px minmax(0,1fr) 180px !important;
   align-items: center !important;
   gap: 5px !important;
   border: 1px solid #3d3831 !important;
-  border-radius: 0 !important;
+  border-radius: 1px !important;
   background: #514c44 !important;
+  color: #d9cfb8 !important;
   overflow: hidden !important;
 }
 
@@ -2420,6 +2422,7 @@
   gap: 1px !important;
   padding: 0 !important;
   border: 1px solid #574a36 !important;
+  background: #080b0d !important;
 }
 
 .diary-header-dropdown .diary-quadrant {
@@ -2442,16 +2445,12 @@
   .diary-header-dropdown .diary-log-body,
   .diary-header-dropdown .diary-grid {
     height: 392px !important;
-  }
-
-  .diary-header-dropdown .diary-log-body,
-  .diary-header-dropdown .diary-grid {
-    min-height: 344px !important;
-    max-height: 344px !important;
+    min-height: 392px !important;
+    max-height: 392px !important;
   }
 
   .diary-header-dropdown .diary-card {
-    grid-template-columns: 20px 1fr 150px !important;
+    grid-template-columns: 20px minmax(0,1fr) 150px !important;
     padding-left: 4px !important;
     padding-right: 4px !important;
   }

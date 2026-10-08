@@ -1175,6 +1175,7 @@ function getRewardPresentation(reward){
 }
 function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,skillProgress,rewardAssignments,closing=false}){
   const [isDismissing,setIsDismissing]=useState(false)
+  const [isCompletingClose,setIsCompletingClose]=useState(false)
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null
   const reward=getTileReward(selectedTile,creature,skillProgress,rewardAssignments)
@@ -1183,7 +1184,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
   const completeCircleUrl=`${import.meta.env.BASE_URL}assets/ui/box/1211_0%20CircleNoTick.png`
   const completeCircleTickUrl=`${import.meta.env.BASE_URL}assets/ui/box/1213_0%20CircleTick.png`
   return <section
-    className={`tile-popup tile-popup-${presentation.type} ${closing?'is-closing':''}`}
+    className={`tile-popup tile-popup-${presentation.type} ${closing||isCompletingClose?'is-closing':''}`}
     style={{...(position?{left:position.left,top:position.top}:{}), '--complete-circle-image': `url("${completeCircleUrl}")`, '--complete-circle-tick-image': `url("${completeCircleTickUrl}")`}}
     aria-label="Reward details"
   >
@@ -1196,7 +1197,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
         {presentation.subtitle&&<span className="tile-popup-subtitle">{presentation.subtitle}</span>}
       </div>
       <div className="tile-popup-actions">
-        <button type="button" className={`tile-popup-complete ${selectedTile.completed?'is-completed':''} ${isDismissing?'is-ticking':''}`} onClick={()=>{if(isDismissing||selectedTile.completed)return;setIsDismissing(true);window.setTimeout(()=>onComplete(selectedTile),520);window.setTimeout(()=>onShowMore?.(false),5000)}} aria-label={selectedTile.completed?'Completed':'Mark complete'} aria-pressed={selectedTile.completed} />
+        <button type="button" className={`tile-popup-complete ${selectedTile.completed?'is-completed':''} ${isDismissing?'is-ticking':''}`} onClick={()=>{if(isDismissing||selectedTile.completed)return;setIsDismissing(true);window.setTimeout(()=>onComplete(selectedTile),520);window.setTimeout(()=>{setIsCompletingClose(true);window.setTimeout(()=>onShowMore?.(false),280)},5000)}} aria-label={selectedTile.completed?'Completed':'Mark complete'} aria-pressed={selectedTile.completed} />
       </div>
     </div>
   </section>

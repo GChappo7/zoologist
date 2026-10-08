@@ -13,6 +13,7 @@ export const EMPTY_GAME_STATE = {
   rewardAssignments: null,
   questStatuses: {},
   bossProgress: {},
+  bossRewards: {},
 }
 
 export function readLocalGameState() {
@@ -22,6 +23,7 @@ export function readLocalGameState() {
   let questStatuses = {}
   let diaryStatuses = {}
   let bossProgress = {}
+  let bossRewards = {}
   let worldId = null
   try { skillProgress = JSON.parse(localStorage.getItem('zoologist-skill-progress') || 'null') } catch {}
   try { mapTiles = JSON.parse(localStorage.getItem('zoologist-map-tiles') || 'null') } catch {}
@@ -29,8 +31,9 @@ export function readLocalGameState() {
   try { questStatuses = JSON.parse(localStorage.getItem('zoologist-quest-statuses') || '{}') } catch {}
   try { diaryStatuses = JSON.parse(localStorage.getItem('zoologist-diary-statuses') || '{}') } catch {}
   try { bossProgress = JSON.parse(localStorage.getItem('zoologist-boss-progress') || '{}') } catch {}
+  try { bossRewards = JSON.parse(localStorage.getItem('zoologist-boss-rewards') || '{}') } catch {}
   try { worldId = localStorage.getItem('zoologist-world-id') || null } catch {}
-  return { ...EMPTY_GAME_STATE, worldId, skillProgress, mapTiles, rewardAssignments, questStatuses, diaryStatuses, bossProgress }
+  return { ...EMPTY_GAME_STATE, worldId, skillProgress, mapTiles, rewardAssignments, questStatuses, diaryStatuses, bossProgress, bossRewards }
 }
 
 export async function loadCloudGameState(userId) {
@@ -59,7 +62,7 @@ export async function verifyCloudGameState(userId, expectedState) {
   if (!expectedWorldId || actualWorldId !== expectedWorldId) {
     throw new Error(`Cloud reset verification failed: expected world ${expectedWorldId || '(none)'}, but Supabase returned ${actualWorldId || '(none)'}.`)
   }
-  if (saved?.mapTiles != null || saved?.skillProgress != null || saved?.rewardAssignments != null || Object.keys(saved?.questStatuses ?? {}).length > 0) {
+  if (saved?.mapTiles != null || saved?.skillProgress != null || saved?.rewardAssignments != null || Object.keys(saved?.questStatuses ?? {}).length > 0 || Object.keys(saved?.diaryStatuses ?? {}).length > 0 || Object.keys(saved?.bossProgress ?? {}).length > 0 || Object.keys(saved?.bossRewards ?? {}).length > 0) {
     throw new Error('Cloud reset verification failed: Supabase returned progression data instead of a blank world.')
   }
   return saved

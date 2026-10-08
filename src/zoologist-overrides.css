@@ -2315,13 +2315,13 @@
 }
 
 
-/* Achievement Diaries header popup: use the exact shared Skills/Quest frame dimensions. */
+/* Achievement Diaries header popup: use the exact shared Skills/Quest frame and a single row per region. */
 .diary-header-dropdown {
   width: 310px !important;
   max-width: 310px !important;
 }
 
-.diary-header-dropdown .full-tab-page {
+.diary-header-dropdown .diary-log-shell {
   width: 100% !important;
   height: 392px !important;
   min-height: 392px !important;
@@ -2329,25 +2329,20 @@
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box !important;
-  background: transparent !important;
   overflow: hidden !important;
 }
 
-.diary-header-dropdown .diary-log-title {
+.diary-header-dropdown .diary-log-body {
+  flex: 0 0 344px !important;
   width: 100% !important;
-  height: 48px !important;
-  min-height: 48px !important;
+  height: 344px !important;
+  min-height: 344px !important;
+  max-height: 344px !important;
+  padding: 0 !important;
+  display: block !important;
   box-sizing: border-box !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 10px !important;
   background: #5d574c !important;
-  border-bottom: 2px solid #3d3831 !important;
-  color: #f1e8d2 !important;
-  font: 20px/1 var(--font-runescape) !important;
-  text-align: center !important;
-  text-shadow: 2px 2px 0 #2a261f, 0 2px 3px rgba(0,0,0,.65) !important;
+  overflow: hidden !important;
 }
 
 .diary-header-dropdown .diary-grid {
@@ -2355,12 +2350,12 @@
   height: 344px !important;
   min-height: 344px !important;
   max-height: 344px !important;
-  box-sizing: border-box !important;
   display: grid !important;
-  grid-template-columns: repeat(3,minmax(0,1fr)) !important;
-  grid-template-rows: repeat(4,minmax(0,1fr)) !important;
-  gap: 2px !important;
-  padding: 6px !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: repeat(12,minmax(0,1fr)) !important;
+  gap: 1px !important;
+  padding: 5px 6px !important;
+  box-sizing: border-box !important;
   background: #5d574c !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -2370,8 +2365,13 @@
 .diary-header-dropdown .diary-card {
   min-width: 0 !important;
   min-height: 0 !important;
-  padding: 5px !important;
+  height: auto !important;
+  padding: 2px 6px !important;
   box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: 22px 1fr 180px !important;
+  align-items: center !important;
+  gap: 5px !important;
   border: 1px solid #3d3831 !important;
   border-radius: 0 !important;
   background: #514c44 !important;
@@ -2380,19 +2380,21 @@
 
 .diary-header-dropdown .diary-card-header {
   min-width: 0 !important;
-  height: 23px !important;
-  margin: 0 0 3px !important;
-  gap: 5px !important;
+  height: 18px !important;
+  margin: 0 !important;
+  gap: 4px !important;
+  display: contents !important;
 }
 
 .diary-header-dropdown .diary-card-header .progression-icon {
-  flex: 0 0 20px !important;
-  width: 20px !important;
-  height: 20px !important;
+  grid-column: 1 !important;
+  width: 18px !important;
+  height: 18px !important;
   opacity: .9 !important;
 }
 
 .diary-header-dropdown .diary-card-header strong {
+  grid-column: 2 !important;
   min-width: 0 !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
@@ -2403,37 +2405,31 @@
 }
 
 .diary-header-dropdown .diary-tier-labels {
-  height: 11px !important;
-  margin: 0 0 2px !important;
-  gap: 1px !important;
-}
-
-.diary-header-dropdown .diary-tier-labels span {
-  min-width: 0 !important;
-  color: #c7b98d !important;
-  font: 7px/1 var(--font-runescape) !important;
-  white-space: nowrap !important;
-  text-align: center !important;
+  display: none !important;
 }
 
 .diary-header-dropdown .diary-progress-bar {
+  grid-column: 3 !important;
   width: 100% !important;
-  height: 19px !important;
-  min-height: 19px !important;
+  height: 8px !important;
+  min-height: 8px !important;
+  max-height: 8px !important;
   box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: repeat(4,minmax(0,1fr)) !important;
   gap: 1px !important;
+  padding: 0 !important;
   border: 1px solid #574a36 !important;
 }
 
 .diary-header-dropdown .diary-quadrant {
   min-width: 0 !important;
-  min-height: 17px !important;
-  height: 17px !important;
+  min-height: 6px !important;
+  height: 6px !important;
 }
 
 .diary-header-dropdown .diary-quadrant i {
-  font: 7px/1 var(--font-runescape) !important;
-  white-space: nowrap !important;
+  display: none !important;
 }
 
 @media (max-width:600px) {
@@ -2442,9 +2438,21 @@
     max-width: calc(100vw - 12px) !important;
   }
 
-  .diary-header-dropdown .full-tab-page {
+  .diary-header-dropdown .diary-log-shell,
+  .diary-header-dropdown .diary-log-body,
+  .diary-header-dropdown .diary-grid {
     height: 392px !important;
-    min-height: 392px !important;
-    max-height: 392px !important;
+  }
+
+  .diary-header-dropdown .diary-log-body,
+  .diary-header-dropdown .diary-grid {
+    min-height: 344px !important;
+    max-height: 344px !important;
+  }
+
+  .diary-header-dropdown .diary-card {
+    grid-template-columns: 20px 1fr 150px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
   }
 }

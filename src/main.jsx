@@ -1176,6 +1176,10 @@ function getRewardPresentation(reward){
 function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,skillProgress,rewardAssignments,closing=false}){
   const [isDismissing,setIsDismissing]=useState(false)
   const [isCompletingClose,setIsCompletingClose]=useState(false)
+  useEffect(()=>{
+    setIsDismissing(false)
+    setIsCompletingClose(false)
+  },[selectedTile?.x,selectedTile?.y])
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null
   const reward=getTileReward(selectedTile,creature,skillProgress,rewardAssignments)

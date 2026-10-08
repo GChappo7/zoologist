@@ -545,7 +545,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
 
   const counts=useMemo(()=>({
     all:quests.length,
-    revealed:quests.filter(q=>(statuses[q.id]||'unrevealed')!=='unrevealed').length,
+    revealed:quests.filter(q=>(statuses[q.id]||'unrevealed')==='revealed').length,
     completed:quests.filter(q=>statuses[q.id]==='completed').length,
     inProgress:0,
   }),[statuses])
@@ -554,7 +554,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
     const status=statuses[q.id]||'unrevealed'
     const matchesFilter=
       filter==='all' ||
-      (filter==='revealed'&&status!=='unrevealed') ||
+      (filter==='revealed'&&status==='revealed') ||
       (filter==='completed'&&status==='completed') ||
       (filter==='in_progress'&&status==='in_progress')
     return matchesFilter&&q.name.toLowerCase().includes(search.toLowerCase())

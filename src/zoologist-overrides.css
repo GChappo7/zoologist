@@ -2785,3 +2785,32 @@
 }
 @media (max-width:760px) { .tile-popup .tile-popup-complete { width:68px !important; height:68px !important; min-width:68px !important; min-height:68px !important; top:17% !important; right:4% !important; } }
 @media (max-width:500px) { .tile-popup .tile-popup-complete { width:58px !important; height:58px !important; min-width:58px !important; min-height:58px !important; top:16% !important; right:3% !important; } }
+
+
+/* Map reward completion animation: reveal the tick after the click. */
+.tile-popup .tile-popup-complete {
+  top:11% !important;
+  background-image:var(--complete-circle-image) !important;
+}
+.tile-popup .tile-popup-complete::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:var(--complete-circle-tick-image) center / contain no-repeat;
+  opacity:0;
+  transform:scale(.55) rotate(-12deg);
+  transform-origin:center;
+  pointer-events:none;
+}
+.tile-popup .tile-popup-complete.is-ticking::after {
+  animation:tile-completion-tick .52s cubic-bezier(.2,.9,.25,1) forwards;
+}
+@keyframes tile-completion-tick {
+  0% { opacity:0; transform:scale(.55) rotate(-12deg); }
+  55% { opacity:1; transform:scale(1.08) rotate(2deg); }
+  78% { opacity:1; transform:scale(.96) rotate(-1deg); }
+  100% { opacity:1; transform:scale(1) rotate(0deg); }
+}
+@media (max-width:760px) { .tile-popup .tile-popup-complete { top:10% !important; } }
+@media (max-width:500px) { .tile-popup .tile-popup-complete { top:9% !important; } }

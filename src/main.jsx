@@ -1010,6 +1010,8 @@ function App(){
   const [tab,setTab]=useState('map')
   const [skillsOpen,setSkillsOpen]=useState(false)
   const skillsButtonRef=useRef(null)
+  const questsButtonRef=useRef(null)
+  const diariesButtonRef=useRef(null)
   const [accountOpen,setAccountOpen]=useState(false)
   const [resetConfirmOpen,setResetConfirmOpen]=useState(false)
   const [resetInProgress,setResetInProgress]=useState(false)
@@ -1311,8 +1313,6 @@ function App(){
     shop: 'https://oldschool.runescape.wiki/images/Inventory.png',
     bosses: 'https://oldschool.runescape.wiki/images/Artio.png',
   }
-  const questsButtonRef=useRef(null)
-  const diariesButtonRef=useRef(null)
   const tabs=[
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText,ref:questsButtonRef},
     {id:'diaries',label:'Diaries',icon:BookOpen,ref:diariesButtonRef},{id:'shop',label:'Shop',icon:ShoppingBag},{id:'bosses',label:'Bosses',icon:Skull}

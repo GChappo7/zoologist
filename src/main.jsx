@@ -1403,7 +1403,8 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
       :skillProgress
     if(String(reward?.type).toLowerCase()==='skill')onSkillRewardComplete?.(reward)
     if(String(reward?.type).toLowerCase()==='diary')onDiaryRewardComplete?.(reward)
-    setTiles(current=>recomputeFrontier({...current,[keyFor(tile.x,tile.y)]:completed},creatures,nextSkillProgress,effectiveRewardAssignments))
+    setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:completed}));
+    window.setTimeout(()=>setTiles(current=>recomputeFrontier(current,creatures,nextSkillProgress,effectiveRewardAssignments)),2280)
     setSelectedTile(completed)
     setDismissingTileKey(keyFor(completed.x,completed.y))
     setPanelOpen(false)

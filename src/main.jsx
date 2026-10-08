@@ -351,7 +351,29 @@ function HeaderDropdown({open,onClose,anchorRef,children,ariaLabel='Menu',classN
 
 function ProgressionDropdown({open,onClose,anchorRef,ariaLabel='Menu',children,className=''}) {
   const panelRef=useRef(null)
+  const closeTimerRef=useRef(null)
   const [anchorPosition,setAnchorPosition]=useState(null)
+  const [visible,setVisible]=useState(open)
+  const [closing,setClosing]=useState(false)
+
+  useEffect(()=>{
+    if(open){
+      if(closeTimerRef.current) clearTimeout(closeTimerRef.current)
+      setVisible(true)
+      setClosing(false)
+      return
+    }
+    if(!visible) return
+    setClosing(true)
+    closeTimerRef.current=setTimeout(()=>{
+      setVisible(false)
+      setClosing(false)
+    },180)
+    return()=>{ if(closeTimerRef.current) clearTimeout(closeTimerRef.current) }
+  },[open,visible])
+
+  useEffect(()=>()=>{ if(closeTimerRef.current) clearTimeout(closeTimerRef.current) },[])
+
   useLayoutEffect(()=>{
     if(!open)return
     const updatePosition=()=>{
@@ -385,8 +407,8 @@ function ProgressionDropdown({open,onClose,anchorRef,ariaLabel='Menu',children,c
       window.removeEventListener('keydown',handleKeyDown)
     }
   },[open,onClose,anchorRef])
-  if(!open)return null
-  return <div className={`skills-dropdown-anchor ${className}`} ref={panelRef} role="dialog" aria-label={ariaLabel} style={anchorPosition?{top:anchorPosition.top,left:anchorPosition.left}:undefined}>
+  if(!visible)return null
+  return <div className={`skills-dropdown-anchor ${className} ${closing?'is-closing':'is-opening'}`} ref={panelRef} role="dialog" aria-label={ariaLabel} style={anchorPosition?{top:anchorPosition.top,left:anchorPosition.left}:undefined}>
     <div className="skills-dropdown-panel">{children}</div>
   </div>
 }

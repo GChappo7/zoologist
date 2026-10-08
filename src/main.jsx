@@ -89,9 +89,7 @@ function skillBoxUrl() {
 function ProgressionIcon({type,skill,region,background=false,className=''}) {
   const src=type==='skill' ? skillIconUrl(skill) : type==='diaryRegion' ? PROGRESSION_ASSETS.diaryRegions[region] : PROGRESSION_ASSETS[type]
   if(!src)return null
-  const regionStyle = type==='diaryRegion' && region==='Varrock'
-    ? {filter:'invert(1)'}
-    : undefined
+  const regionStyle = undefined;
   return <img className={`progression-icon ${background?'progression-icon-background':''} ${className}`} style={regionStyle} src={src} alt="" aria-hidden="true" draggable="false"/>
 }
 

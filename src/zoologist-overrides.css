@@ -2875,7 +2875,7 @@
   content:"COMPLETE";
   position:absolute;
   left:50%;
-  top:calc(100% + 5px);
+  top:calc(100% + 3px);
   transform:translateX(-50%);
   color:#39d353;
   font-family:var(--font-runescape) !important;

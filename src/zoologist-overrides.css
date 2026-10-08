@@ -2641,3 +2641,59 @@
 .boss-card.is-complete .boss-image-space img{filter:drop-shadow(1px 2px 3px rgba(72,126,82,.5))}
 @media(max-width:760px){.boss-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.boss-card-title strong{font-size:16px}.boss-image-space{height:66px}.boss-image-space img{width:58px;height:58px}}
 @media(max-width:460px){.boss-grid{grid-template-columns:1fr 1fr}.boss-card-title{min-height:36px}.boss-card-title strong{font-size:14px}.boss-creature-name{font-size:14px}}
+
+/* Boss completion and bonus reward selection */
+.boss-complete-button{
+  width:100%;
+  margin:0 0 7px;
+  padding:7px 8px;
+  border:1px solid #8f7337;
+  border-radius:3px;
+  background:linear-gradient(#c6a04b,#806329);
+  color:#fff4c7;
+  font:13px var(--font-runescape);
+  letter-spacing:.4px;
+  text-shadow:1px 1px #3b2b12,0 2px 3px rgba(0,0,0,.7);
+  box-shadow:inset 0 1px rgba(255,255,255,.35),0 2px 4px rgba(0,0,0,.35);
+  cursor:pointer;
+}
+.boss-complete-button:hover{filter:brightness(1.12)}
+.boss-reward-claimed{
+  margin:0 0 7px;
+  padding:5px 7px;
+  border:1px solid #45684e;
+  border-radius:3px;
+  background:linear-gradient(#1c3925,#14251a);
+  text-align:center;
+}
+.boss-reward-claimed span{display:block;font:8px var(--font-runescape);color:#9dcc9f;letter-spacing:.5px}
+.boss-reward-claimed strong{display:block;margin-top:2px;font:11px var(--font-runescape);color:#f1df9b;line-height:1.15}
+.boss-reward-overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.72)}
+.boss-reward-dialog{width:min(620px,94vw);max-height:min(760px,90vh);overflow:auto;padding:18px;border:3px solid #66543b;border-radius:5px;background:linear-gradient(#242c2f,#151a1d);box-shadow:0 18px 70px rgba(0,0,0,.75),inset 0 1px rgba(255,255,255,.08)}
+.boss-reward-header{text-align:center;margin-bottom:16px}
+.boss-reward-header .eyebrow{justify-content:center}
+.boss-reward-header h2{margin:5px 0 4px;font-size:24px;text-shadow:2px 2px #000}
+.boss-reward-header p{margin:0;color:#c3c9c7;font-size:12px}
+.boss-reward-category-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.boss-reward-category{min-height:120px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:1px solid #4a514f;border-radius:4px;background:linear-gradient(#30383b,#1c2225);color:#eee;cursor:pointer;box-shadow:inset 0 1px rgba(255,255,255,.05)}
+.boss-reward-category:hover{filter:brightness(1.12);border-color:#8c784b}
+.boss-reward-category .progression-icon{width:42px;height:42px}
+.boss-reward-category strong{font:16px var(--font-runescape)}
+.boss-reward-category span{font-size:9px;color:#9fa9a9;text-align:center}
+.boss-reward-choice-view{min-height:300px}
+.boss-reward-back{border:0;background:none;color:#d6bd78;font:11px var(--font-runescape);cursor:pointer;padding:2px 0 10px}
+.boss-reward-choice-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:480px;overflow:auto;padding-right:2px}
+.boss-reward-choice{display:flex;align-items:center;gap:9px;min-width:0;padding:8px;border:1px solid #3c4649;border-radius:3px;background:#171d20;color:#eee;text-align:left;cursor:pointer}
+.boss-reward-choice:hover{background:#252e31;border-color:#75633f}
+.boss-reward-choice .progression-icon{width:30px;height:30px}
+.boss-reward-choice span{min-width:0}
+.boss-reward-choice strong{display:block;font:11px var(--font-runescape);line-height:1.15}
+.boss-reward-choice small{display:block;margin-top:2px;color:#899495;font-size:9px}
+.boss-reward-empty{grid-column:1/-1;padding:30px;text-align:center;color:#8e999b;font-size:11px}
+.boss-reward-cancel{display:block;width:100%;margin-top:14px;padding:7px;border:1px solid #4b5353;border-radius:3px;background:#171d20;color:#c0c6c5;font:11px var(--font-runescape);cursor:pointer}
+@media(max-width:560px){
+  .boss-reward-category-grid{grid-template-columns:1fr}
+  .boss-reward-category{min-height:82px;display:grid;grid-template-columns:42px 1fr;text-align:left}
+  .boss-reward-category span{grid-column:2;text-align:left}
+  .boss-reward-choice-list{grid-template-columns:1fr}
+}

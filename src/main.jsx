@@ -42,6 +42,20 @@ function withTimeout(promise,ms=10000){
 const PROGRESSION_ASSETS = {
   quest: 'https://oldschool.runescape.wiki/images/Quests.png',
   diary: 'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',
+  diaryRegions: {
+    'Ardougne': 'https://oldschool.runescape.wiki/images/Ardougne_icon_detail.png',
+    'Desert': 'https://oldschool.runescape.wiki/images/Desert_icon_detail.png',
+    'Falador': 'https://oldschool.runescape.wiki/images/Falador_icon_detail.png',
+    'Fremennik': 'https://oldschool.runescape.wiki/images/Fremennik_icon_detail.png',
+    'Kandarin': 'https://oldschool.runescape.wiki/images/Kandarin_icon_detail.png',
+    'Karamja': 'https://oldschool.runescape.wiki/images/Karamja_icon_detail.png',
+    'Kourend & Kebos': 'https://oldschool.runescape.wiki/images/Kourend_%26_Kebos_icon_detail.png',
+    'Lumbridge & Draynor': 'https://oldschool.runescape.wiki/images/Lumbridge_%26_Draynor_icon_detail.png',
+    'Morytania': 'https://oldschool.runescape.wiki/images/Morytania_icon_detail.png',
+    'Varrock': 'https://oldschool.runescape.wiki/images/Varrock_icon_detail.png',
+    'Western Provinces': 'https://oldschool.runescape.wiki/images/Western_Provinces_icon_detail.png',
+    'Wilderness': 'https://oldschool.runescape.wiki/images/Wilderness_icon_detail.png',
+  },
   skills: {},
 }
 
@@ -69,8 +83,8 @@ function skillBoxUrl() {
   return `${import.meta.env.BASE_URL}assets/ui/skills/${encodeURIComponent(SKILL_BOX_ASSET)}`
 }
 
-function ProgressionIcon({type,skill,background=false,className=''}) {
-  const src=type==='skill' ? skillIconUrl(skill) : PROGRESSION_ASSETS[type]
+function ProgressionIcon({type,skill,region,background=false,className=''}) {
+  const src=type==='skill' ? skillIconUrl(skill) : type==='diaryRegion' ? PROGRESSION_ASSETS.diaryRegions[region] : PROGRESSION_ASSETS[type]
   if(!src)return null
   return <img className={`progression-icon ${background?'progression-icon-background':''} ${className}`} src={src} alt="" aria-hidden="true" draggable="false"/>
 }
@@ -648,7 +662,7 @@ function CollectionLog({creatures,mapTiles,onBack}){
 function DiariesView({statuses={},onStatusClick}){
   const regions=['Ardougne','Desert','Falador','Fremennik','Kandarin','Karamja','Kourend & Kebos','Lumbridge & Draynor','Morytania','Varrock','Western Provinces','Wilderness']
   const tiers=['Easy','Medium','Hard','Elite']
-  return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><BookOpen size={14}/> ACCOUNT PROGRESSION</div><h1>Achievement Diaries</h1><p>Each diary is one bar split into Easy, Medium, Hard and Elite reward tiers.</p></div><div className="diary-grid">{regions.map(region=><div className="diary-card" key={region}><div className="diary-card-header"><ProgressionIcon type="diary"/><strong>{region}</strong></div><div className="diary-tier-labels">{tiers.map(tier=><span key={tier}>{tier}</span>)}</div><button className="diary-progress-bar" type="button" onClick={()=>onStatusClick?.(region)} aria-label={`Mark ${region} diary progress complete`}>{tiers.map(tier=>{const key=`${region}|${tier}`;const status=statuses[key]||'locked';return <span key={tier} className={`diary-quadrant diary-quadrant-${status}`}><i>{status!=='locked'?'Completed':''}</i></span>})}</button></div>)}</div></div>
+  return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><BookOpen size={14}/> ACCOUNT PROGRESSION</div><h1>Achievement Diaries</h1><p>Each diary is one bar split into Easy, Medium, Hard and Elite reward tiers.</p></div><div className="diary-grid">{regions.map(region=><div className="diary-card" key={region}><div className="diary-card-header"><ProgressionIcon type="diaryRegion" region={region}/><strong>{region}</strong></div><div className="diary-tier-labels">{tiers.map(tier=><span key={tier}>{tier}</span>)}</div><button className="diary-progress-bar" type="button" onClick={()=>onStatusClick?.(region)} aria-label={`Mark ${region} diary progress complete`}>{tiers.map(tier=>{const key=`${region}|${tier}`;const status=statuses[key]||'locked';return <span key={tier} className={`diary-quadrant diary-quadrant-${status}`}><i>{status!=='locked'?'Completed':''}</i></span>})}</button></div>)}</div></div>
 }
 function ShopView(){
   return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><ShoppingBag size={14}/> ZOOLOGIST POINTS</div><h1>Shop</h1><p>Boss tasks will award Zoologist Points. Costs remain configurable until the progression rules are finalized.</p></div><div className="shop-grid">{shop.items.map(item=><div className="shop-card" key={item.id}><div className="shop-card-icon"><Sparkles size={17}/></div><strong>{item.name}</strong><p>{item.description}</p><span>Cost: TBD</span></div>)}</div></div>

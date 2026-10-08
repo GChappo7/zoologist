@@ -1030,7 +1030,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
         <div className="boss-reward-header">
           <div className="eyebrow"><Sparkles size={14}/> BOSS REWARD</div>
           <h2 id="boss-reward-title">{rewardModalBoss.name} Complete</h2>
-          <p>Select a reward currently sitting on a frontier tile. Claiming it will move that tile to a new eligible reward.</p>
+          <p>Select a reward currently sitting on a revealed tile. Claiming it will roll a new reward on that existing tile.</p>
         </div>
         {!rewardCategory
           ? <div className="boss-reward-category-grid">

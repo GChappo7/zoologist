@@ -1044,7 +1044,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
                 {rewardOptions.length
                   ? rewardOptions.map(option=><button type="button" className="boss-reward-choice" key={option.id} onClick={()=>claimBossReward(option)}>
                       <ProgressionIcon type={option.type} skill={option.skill} region={option.region}/>
-                      <span><strong>{option.label??option.name}</strong><small className="boss-reward-associated-creature">Creature: {creatureByName.get(String(option.creatureId))?.name??'Unknown'}</small>{option.type==='skill'&&<small>{option.skill}</small>}{option.type==='diary'&&<small>{option.region} • {option.tier}</small>}</span>
+                      <span><strong>{option.label??option.name}</strong><small className="boss-reward-associated-creature">Creature: {creatures.find(item=>String(item.id)===String(option.creatureId))?.name??'Unknown'}</small>{option.type==='skill'&&<small>{option.skill}</small>}{option.type==='diary'&&<small>{option.region} • {option.tier}</small>}</span>
                     </button>)
                   : <div className="boss-reward-empty">No unclaimed rewards of this type are currently available.</div>}
               </div>

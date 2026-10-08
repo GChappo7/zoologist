@@ -1528,7 +1528,7 @@ function App(){
       queuedSaveRef.current=queuedSaveRef.current.catch(()=>{}).then(save)
     },500)
     return()=>window.clearTimeout(timer)
-  },[session?.user?.id,accountReady,resetInProgress,gameState,skillProgress,rewardAssignments,questStatuses,diaryStatuses,bossProgress])
+  },[session?.user?.id,accountReady,resetInProgress,gameState,skillProgress,rewardAssignments,questStatuses,diaryStatuses,bossProgress,bossRewards])
 
   const handleResetProgress=async()=>{
     setResetConfirmOpen(true)

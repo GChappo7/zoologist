@@ -1183,7 +1183,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
   const completeCircleUrl=`${import.meta.env.BASE_URL}assets/ui/box/1211_0%20CircleNoTick.png`
   const completeCircleTickUrl=`${import.meta.env.BASE_URL}assets/ui/box/1213_0%20CircleTick.png`
   return <section
-    className={`tile-popup tile-popup-${presentation.type} ${isDismissing?'is-dismissing':''}`}
+    className={`tile-popup tile-popup-${presentation.type}`}
     style={{...(position?{left:position.left,top:position.top}:{}), '--complete-circle-image': `url("${completeCircleUrl}")`, '--complete-circle-tick-image': `url("${completeCircleTickUrl}")`}}
     aria-label="Reward details"
   >

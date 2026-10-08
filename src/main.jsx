@@ -1173,7 +1173,7 @@ function getRewardPresentation(reward){
     asset:'reward_quest.png',
   }
 }
-function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,skillProgress,rewardAssignments}){
+function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,skillProgress,rewardAssignments,closing=false}){
   const [isDismissing,setIsDismissing]=useState(false)
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null
@@ -1183,7 +1183,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
   const completeCircleUrl=`${import.meta.env.BASE_URL}assets/ui/box/1211_0%20CircleNoTick.png`
   const completeCircleTickUrl=`${import.meta.env.BASE_URL}assets/ui/box/1213_0%20CircleTick.png`
   return <section
-    className={`tile-popup tile-popup-${presentation.type}`}
+    className={`tile-popup tile-popup-${presentation.type} ${closing?'is-closing':''}`}
     style={{...(position?{left:position.left,top:position.top}:{}), '--complete-circle-image': `url("${completeCircleUrl}")`, '--complete-circle-tick-image': `url("${completeCircleTickUrl}")`}}
     aria-label="Reward details"
   >

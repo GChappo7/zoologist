@@ -948,9 +948,9 @@
 .boss-icon{width:36px;height:36px;display:grid;place-items:center;background:#211b1d;border:1px solid #49373a;border-radius:5px;color:#c99a9a}
 .boss-card-main strong{display:block;color:#ffe066;font-family:var(--font-runescape);font-size:18px}
 .boss-card-main span,.boss-association-label{display:block;color:#9aabb4;font-size:11px;margin-top:2px}
-.boss-association{min-height:52px;margin-top:11px;padding-top:9px;border-top:1px solid #253038}
+.boss-association{min-height:52px;margin-top:11px;padding-top:9px;border-top:1px solid #253038;box-sizing:border-box}
 .boss-creature-name{display:block;color:#e7d39b;font-weight:700;margin-top:2px}
-.boss-creature-name-inline{white-space:nowrap}.boss-creature-name-inline>span{display:inline}
+.boss-creature-name-inline{display:block;white-space:normal;line-height:18px;max-width:100%}.boss-creature-name-inline>span{display:inline}
 .boss-creature-status{display:block;color:#91c995;font-size:11px;margin-top:2px}
 .boss-no-association{display:block;color:#68757d;font-size:11px;margin-top:2px}
 .boss-status{margin-top:10px;color:#8e9ba2;font-size:12px}.boss-status b{color:#d26b6b}
@@ -959,7 +959,7 @@
 .boss-image-space>svg{width:54px;height:54px}
 .boss-card.is-locked .boss-image-space img{filter:grayscale(1) brightness(.55) drop-shadow(2px 3px 3px rgba(0,0,0,.8))}
 .boss-card.is-complete .boss-image-space img{filter:drop-shadow(2px 3px 4px rgba(72,126,82,.5))}
-.boss-progress-section{margin-top:auto;padding-top:8px}
+.boss-progress-section{margin-top:auto;padding-top:8px;min-height:72px;box-sizing:border-box}
 .boss-progress-label{display:flex;align-items:center;justify-content:space-between;min-height:22px}
 .boss-progress-track{height:8px;margin-top:4px}
 .boss-kc-controls{height:30px;margin-top:5px;display:flex;align-items:center;justify-content:center;gap:8px}

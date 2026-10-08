@@ -801,7 +801,7 @@ const BOSS_IMAGE_FILENAMES = {
 }
 function bossImageUrl(boss){
   const filename=BOSS_IMAGE_FILENAMES[boss.id]
-  return filename ? `https://oldschool.runescape.wiki/images/${encodeURIComponent(filename)}` : null
+  return filename ? `https://oldschool.runescape.wiki/images/thumb/${encodeURIComponent(filename)}/64px-${encodeURIComponent(filename)}` : null
 }
 
 function BossView({creatures=[],mapTiles={},bossProgress={},onBossProgressChange}){

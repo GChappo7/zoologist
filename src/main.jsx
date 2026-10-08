@@ -781,7 +781,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
   const rewardAsset=`${import.meta.env.BASE_URL}assets/ui/${presentation.asset}`
   return <section
     className={`tile-popup tile-popup-${presentation.type} ${isDismissing?'is-dismissing':''}`}
-    style={position?{left:position.left,top:position.top}:undefined}
+    style={{...(position?{left:position.left,top:position.top}:{}), '--complete-box-image': `url("${import.meta.env.BASE_URL}assets/ui/skills/${encodeURIComponent(SKILL_BOX_ASSET)}")`}}
     aria-label="Reward details"
   >
     <img className="tile-popup-frame" src={rewardAsset} alt="" aria-hidden="true" draggable="false"/>

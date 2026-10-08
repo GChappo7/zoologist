@@ -75,6 +75,10 @@ const SKILL_TAB_LAYOUT = [
 
 const SKILL_BOX_ASSET = 'Blank skill.png'
 
+function uiAssetUrl(filename) {
+  return `${import.meta.env.BASE_URL}assets/ui/${encodeURIComponent(filename)}`
+}
+
 function skillIconUrl(skill) {
   const name = String(skill ?? '')
   if(name === 'Sailing') return 'https://oldschool.runescape.wiki/images/Sailing_icon.png'
@@ -137,6 +141,9 @@ function loadCreatureCatalog(){
   if(!creatures.length)throw new Error('No Active creatures were found.')
   return creatures
 }
+const CREATURE_IMAGE_ALIASES={
+  'Sea Snake (Young/Hatchling)':'sea_snake.png',
+}
 const RAW_FISH_WIKI_IMAGES={
   Shrimp:'Raw_shrimps_detail.png',
   Anchovy:'Raw_anchovies_detail.png',
@@ -174,7 +181,7 @@ const RAW_FISH_WIKI_IMAGES={
 function getCreatureImageCandidates(creature){
   const name=creature?.name??''
   const slug=slugifyCreatureName(name)
-  const localCandidates=[`${import.meta.env.BASE_URL}assets/creatures/${slug}.png`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.webp`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.jpg`]
+  const localCandidates=[CREATURE_IMAGE_ALIASES[name]?`${import.meta.env.BASE_URL}assets/creatures/${CREATURE_IMAGE_ALIASES[name]}`:null,`${import.meta.env.BASE_URL}assets/creatures/${slug}.png`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.webp`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.jpg`].filter(Boolean)
   const rawFishImage=RAW_FISH_WIKI_IMAGES[name]
   return rawFishImage?[`https://oldschool.runescape.wiki/images/${rawFishImage}`,...localCandidates]:localCandidates
 }
@@ -787,11 +794,11 @@ function BossView({creatures=[],mapTiles={},bossProgress={},onBossProgressChange
         <div className="boss-progress-label"><span>{complete?'COMPLETE':'KILL COUNT'}</span><strong>{current} / {target} KC</strong></div>
         <div className="boss-progress-track"><div className="boss-progress-fill" style={{width:`${percent}%`}}/></div>
         <div className="boss-kc-controls">
-          <button type="button" className="boss-kc-button" onClick={()=>changeBossKc(boss,-1)} disabled={current<=0} aria-label={`Decrease ${boss.name} kill count`}><img src="/zoologist/assets/ui/1116_0 Minus Button.png" alt=""/></button>
+          <button type="button" className="boss-kc-button" onClick={()=>changeBossKc(boss,-1)} disabled={current<=0} aria-label={`Decrease ${boss.name} kill count`}><img src={uiAssetUrl('1116_0 Minus Button.png')} alt=""/></button>
           <span className={`boss-kc-count${complete?' is-complete':''}`}>{current}</span>
-          <button type="button" className="boss-kc-button" onClick={()=>changeBossKc(boss,1)} disabled={current>=target} aria-label={`Increase ${boss.name} kill count`}><img src="/zoologist/assets/ui/1117_0 Plus Button.png" alt=""/></button>
+          <button type="button" className="boss-kc-button" onClick={()=>changeBossKc(boss,1)} disabled={current>=target} aria-label={`Increase ${boss.name} kill count`}><img src={uiAssetUrl('1117_0 Plus Button.png')} alt=""/></button>
         </div>
-      </div> : <div className="boss-locked-message"><img src="/zoologist/assets/ui/lock_asset.png" alt=""/> Complete the associated creature tile to unlock</div>}
+      </div> : <div className="boss-locked-message"><img src={uiAssetUrl('lock_asset.png')} alt=""/> Complete the associated creature tile to unlock</div>}
       <div className={`boss-status${complete?' is-complete':''}`}>Boss: <b>{complete?'Complete':unlocked?'In progress':'Locked'}</b></div>
     </div>
   })}</div></div>

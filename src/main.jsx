@@ -144,6 +144,9 @@ function loadCreatureCatalog(){
 const CREATURE_IMAGE_ALIASES={
   'Sea Snake (Young/Hatchling)':'sea_snake.png',
 }
+const CREATURE_IMAGE_URL_ALIASES={
+  'Kharid Scorpion':'https://oldschool.runescape.wiki/images/Kharid_Scorpion.png',
+}
 const RAW_FISH_WIKI_IMAGES={
   Shrimp:'Raw_shrimps_detail.png',
   Anchovy:'Raw_anchovies_detail.png',
@@ -183,7 +186,8 @@ function getCreatureImageCandidates(creature){
   const slug=slugifyCreatureName(name)
   const localCandidates=[CREATURE_IMAGE_ALIASES[name]?`${import.meta.env.BASE_URL}assets/creatures/${CREATURE_IMAGE_ALIASES[name]}`:null,`${import.meta.env.BASE_URL}assets/creatures/${slug}.png`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.webp`,`${import.meta.env.BASE_URL}assets/creatures/${slug}.jpg`].filter(Boolean)
   const rawFishImage=RAW_FISH_WIKI_IMAGES[name]
-  return rawFishImage?[`https://oldschool.runescape.wiki/images/${rawFishImage}`,...localCandidates]:localCandidates
+  const directImage=CREATURE_IMAGE_URL_ALIASES[name]
+  return directImage?[directImage,...localCandidates]:rawFishImage?[`https://oldschool.runescape.wiki/images/${rawFishImage}`,...localCandidates]:localCandidates
 }
 const STARTING_TILE_EXCLUDED_CREATURES=new Set(['Duck'])
 function pickStartingCreature(creatures){

@@ -809,22 +809,45 @@ const BOSS_MOBILE_IMAGE_FILENAMES = {
   'the-leviathan':'The Leviathan icon (mobile).png',
   'venenatis':'Venenatis icon (mobile).png',
 }
+
+// Boss artwork uploaded to the repository. These are deliberately checked
+// before the Wiki fallbacks so the pixel art in public/assets/ui/bosses is
+// the source of truth for the cards.
+const BOSS_LOCAL_IMAGE_FILENAMES = {
+  'callisto':'6354_0 Callisto.png',
+  'scurrius':'6367_0 Scurrius.png',
+  'araxxor':'6370_0 Araxxor.png',
+  'cerberus':'4320_0 Cerberus.png',
+  'venenatis':'5624_0 Spindel.png',
+  'the-leviathan':'5633_0 Leviathon.png',
+  'shellbane-gryphon':'6349_0 Shellbane Gryphon.png',
+}
+
 function bossImageCandidates(boss){
+  const localFilename=BOSS_LOCAL_IMAGE_FILENAMES[boss.id]
   const filename=BOSS_IMAGE_FILENAMES[boss.id]
-  if(!filename)return []
   const mobileFilename=BOSS_MOBILE_IMAGE_FILENAMES[boss.id]
-  const generatedMobile=filename.replace(/\.png$/i,'_icon_(mobile).png')
-  const detailFilename=filename.replace(/\.png$/i,'_icon_(detail).png')
-  const direct=[mobileFilename,generatedMobile,filename,detailFilename].filter(Boolean)
-  return [...new Set(direct.flatMap(name=>{
-    const encoded=encodeURIComponent(name)
-    const thumbName=`120px-${name}`
-    return [
-      `https://oldschool.runescape.wiki/images/${encoded}`,
-      `https://oldschool.runescape.wiki/images/thumb/${encoded}/120px-${encodeURIComponent(name)}`,
-      `https://oldschool.runescape.wiki/w/Special:Redirect/file/${encoded}`,
-    ]
-  }))]
+  const candidates=[]
+  
+  if(localFilename){
+    candidates.push(`${import.meta.env.BASE_URL}assets/ui/bosses/${encodeURIComponent(localFilename)}`)
+  }
+  
+  if(filename){
+    const generatedMobile=filename.replace(/\.png$/i,'_icon_(mobile).png')
+    const detailFilename=filename.replace(/\.png$/i,'_icon_(detail).png')
+    const direct=[mobileFilename,generatedMobile,filename,detailFilename].filter(Boolean)
+    direct.forEach(name=>{
+      const encoded=encodeURIComponent(name)
+      candidates.push(
+        `https://oldschool.runescape.wiki/images/${encoded}`,
+        `https://oldschool.runescape.wiki/images/thumb/${encoded}/120px-${encodeURIComponent(name)}`,
+        `https://oldschool.runescape.wiki/w/Special:Redirect/file/${encoded}`
+      )
+    })
+  }
+  
+  return [...new Set(candidates)]
 }
 function BossPixelImage({boss}){
   const candidates=bossImageCandidates(boss)

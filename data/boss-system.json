@@ -1,8 +1,381 @@
 {
-  "version": 1,
+  "version": 2,
   "currency": "zoologist_points",
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "bryophyta",
+      "name": "Bryophyta",
+      "category": "Free-to-play",
+      "creature": "Moss Giant",
+      "status": "not_slain"
+    },
+    {
+      "id": "obor",
+      "name": "Obor",
+      "category": "Free-to-play",
+      "creature": "Hill Giant",
+      "status": "not_slain"
+    },
+    {
+      "id": "giant-mole",
+      "name": "Giant Mole",
+      "category": "Boss",
+      "creature": "Mole",
+      "status": "not_slain"
+    },
+    {
+      "id": "scurrius",
+      "name": "Scurrius",
+      "category": "Boss",
+      "creature": "Rat",
+      "status": "not_slain"
+    },
+    {
+      "id": "sarachnis",
+      "name": "Sarachnis",
+      "category": "Boss",
+      "creature": "Spider",
+      "status": "not_slain"
+    },
+    {
+      "id": "hespori",
+      "name": "Hespori",
+      "category": "Boss",
+      "creature": "Hespori",
+      "status": "not_slain"
+    },
+    {
+      "id": "barrows",
+      "name": "Barrows Brothers",
+      "category": "Minigame Bosses",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "dagannoth-kings",
+      "name": "Dagannoth Kings",
+      "category": "Dagannoth",
+      "creature": "Dagannoth",
+      "status": "not_slain"
+    },
+    {
+      "id": "king-black-dragon",
+      "name": "King Black Dragon",
+      "category": "Dragon",
+      "creature": "Black Dragon",
+      "status": "not_slain"
+    },
+    {
+      "id": "chaos-elemental",
+      "name": "Chaos Elemental",
+      "category": "Wilderness",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "crazy-archaeologist",
+      "name": "Crazy Archaeologist",
+      "category": "Wilderness",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "chaos-fanatic",
+      "name": "Chaos Fanatic",
+      "category": "Wilderness",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "scorpia",
+      "name": "Scorpia",
+      "category": "Wilderness",
+      "creature": "Scorpion",
+      "status": "not_slain"
+    },
+    {
+      "id": "callisto",
+      "name": "Callisto",
+      "category": "Wilderness",
+      "creature": "Bear",
+      "status": "not_slain"
+    },
+    {
+      "id": "artio",
+      "name": "Artio",
+      "category": "Wilderness",
+      "creature": "Bear",
+      "status": "not_slain"
+    },
+    {
+      "id": "venenatis",
+      "name": "Venenatis",
+      "category": "Wilderness",
+      "creature": "Spider",
+      "status": "not_slain"
+    },
+    {
+      "id": "spindel",
+      "name": "Spindel",
+      "category": "Wilderness",
+      "creature": "Spider",
+      "status": "not_slain"
+    },
+    {
+      "id": "vetion",
+      "name": "Vet'ion",
+      "category": "Wilderness",
+      "creature": "Skeleton",
+      "status": "not_slain"
+    },
+    {
+      "id": "calvarion",
+      "name": "Calvar'ion",
+      "category": "Wilderness",
+      "creature": "Skeleton",
+      "status": "not_slain"
+    },
+    {
+      "id": "corporeal-beast",
+      "name": "Corporeal Beast",
+      "category": "Wilderness",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "general-graardor",
+      "name": "General Graardor",
+      "category": "God Wars Dungeon",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "kreearra",
+      "name": "Kree'arra",
+      "category": "God Wars Dungeon",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "commander-zilyana",
+      "name": "Commander Zilyana",
+      "category": "God Wars Dungeon",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "kril-tsutsaroth",
+      "name": "K'ril Tsutsaroth",
+      "category": "God Wars Dungeon",
+      "creature": "Greater Demon",
+      "status": "not_slain"
+    },
+    {
+      "id": "kraken",
+      "name": "Kraken",
+      "category": "Slayer",
+      "creature": "Veiled Kraken",
+      "status": "not_slain"
+    },
+    {
+      "id": "cerberus",
+      "name": "Cerberus",
+      "category": "Slayer",
+      "creature": "Hellhound",
+      "status": "not_slain"
+    },
+    {
+      "id": "thermonuclear-smoke-devil",
+      "name": "Thermonuclear Smoke Devil",
+      "category": "Slayer",
+      "creature": "Smoke Devil",
+      "status": "not_slain"
+    },
+    {
+      "id": "abyssal-sire",
+      "name": "Abyssal Sire",
+      "category": "Slayer",
+      "creature": "Abyssal Demon",
+      "status": "not_slain"
+    },
+    {
+      "id": "grotesque-guardians",
+      "name": "Grotesque Guardians",
+      "category": "Slayer",
+      "creature": "Gargoyle",
+      "status": "not_slain"
+    },
+    {
+      "id": "alchemical-hydra",
+      "name": "Alchemical Hydra",
+      "category": "Slayer",
+      "creature": "Hydra",
+      "status": "not_slain"
+    },
+    {
+      "id": "araxxor",
+      "name": "Araxxor",
+      "category": "Slayer",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "zulrah",
+      "name": "Zulrah",
+      "category": "Boss",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "vorkath",
+      "name": "Vorkath",
+      "category": "Boss",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "phantom-muspah",
+      "name": "Phantom Muspah",
+      "category": "Boss",
+      "creature": "Muspah",
+      "status": "not_slain"
+    },
+    {
+      "id": "duke-sucellus",
+      "name": "Duke Sucellus",
+      "category": "Desert Treasure II",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "the-leviathan",
+      "name": "The Leviathan",
+      "category": "Desert Treasure II",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "vardorvis",
+      "name": "Vardorvis",
+      "category": "Desert Treasure II",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "the-whisperer",
+      "name": "The Whisperer",
+      "category": "Desert Treasure II",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "nex",
+      "name": "Nex",
+      "category": "God Wars Dungeon",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "the-nightmare",
+      "name": "The Nightmare",
+      "category": "Boss",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "phosanis-nightmare",
+      "name": "Phosani's Nightmare",
+      "category": "Boss",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "zalcano",
+      "name": "Zalcano",
+      "category": "Minigame Boss",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "tempoross",
+      "name": "Tempoross",
+      "category": "Minigame Boss",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "wintertodt",
+      "name": "Wintertodt",
+      "category": "Minigame Boss",
+      "creature": "Wintertoad",
+      "status": "not_slain"
+    },
+    {
+      "id": "tztok-jad",
+      "name": "TzTok-Jad",
+      "category": "Combat Challenge",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "tzkal-zuk",
+      "name": "TzKal-Zuk",
+      "category": "Combat Challenge",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "great-olm",
+      "name": "Great Olm",
+      "category": "Chambers of Xeric",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "verzik-vitur",
+      "name": "Verzik Vitur",
+      "category": "Theatre of Blood",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "kephri",
+      "name": "Kephri",
+      "category": "Tombs of Amascut",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "akkha",
+      "name": "Akkha",
+      "category": "Tombs of Amascut",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "ba-ba",
+      "name": "Ba-Ba",
+      "category": "Tombs of Amascut",
+      "creature": "Baboon",
+      "status": "not_slain"
+    },
+    {
+      "id": "zebak",
+      "name": "Zebak",
+      "category": "Tombs of Amascut",
+      "creature": null,
+      "status": "not_slain"
+    },
+    {
+      "id": "wardens",
+      "name": "The Wardens",
+      "category": "Tombs of Amascut",
+      "creature": null,
+      "status": "not_slain"
+    }
+  ],
   "notes": [
-    "Boss task eligibility and layer placement are intentionally unassigned until progression rules are finalized."
+    "Initial boss checklist. Boss completion is tracked separately from the associated Zoologist creature tile.",
+    "A blank creature association means the boss currently has no direct creature tile match."
   ]
 }

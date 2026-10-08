@@ -2776,3 +2776,35 @@
   width: 240px !important;
   height: 240px !important;
 }
+
+
+/* Final map reward popup completion-circle sizing/position. */
+.tile-popup .tile-popup-complete {
+  width:240px !important;
+  height:240px !important;
+  min-width:240px !important;
+  min-height:240px !important;
+  top:28% !important;
+  right:2% !important;
+  transform:translateY(-50%) !important;
+}
+@media (max-width:760px) {
+  .tile-popup .tile-popup-complete {
+    width:190px !important;
+    height:190px !important;
+    min-width:190px !important;
+    min-height:190px !important;
+    top:27% !important;
+    right:1% !important;
+  }
+}
+@media (max-width:500px) {
+  .tile-popup .tile-popup-complete {
+    width:155px !important;
+    height:155px !important;
+    min-width:155px !important;
+    min-height:155px !important;
+    top:26% !important;
+    right:0 !important;
+  }
+}

@@ -2848,3 +2848,24 @@
     min-height:48px !important;
   }
 }
+
+/* Anchor popup action controls to the full popup frame, not the action row. */
+.tile-popup .tile-popup-actions {
+  left:0 !important;
+  right:0 !important;
+  top:0 !important;
+  bottom:0 !important;
+  pointer-events:none !important;
+}
+.tile-popup .tile-popup-complete,
+.tile-popup .tile-popup-more {
+  pointer-events:auto !important;
+}
+.tile-popup .tile-popup-complete {
+  bottom:12% !important;
+  right:10% !important;
+}
+.tile-popup .tile-popup-more {
+  bottom:22% !important;
+  right:10% !important;
+}

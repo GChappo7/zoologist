@@ -934,31 +934,46 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
     const selectedKey=String(selectedReward?.id??selectedReward?.questId??selectedReward?.label??selectedReward?.name??'').toLowerCase()
     usedKeys.delete(selectedKey)
 
-    const candidates=[]
-    const addCandidate=(reward)=>{
-      if(!reward||String(reward.id??'')===String(selectedReward.id??''))return
-      if(usedKeys.has(String(reward.id??reward.questId??reward.label??reward.name??'').toLowerCase()))return
-      if(String(reward.type).toLowerCase()==='skill'&&!isValidSkillRewardAssignment(creature,reward))return
-      if(String(reward.type).toLowerCase()==='quest'&&!isValidQuestRewardAssignment(creature,reward))return
+    const isUsed=(reward)=>{
+      const key=String(reward?.id??reward?.questId??reward?.label??reward?.name??'').toLowerCase()
+      return !key||usedKeys.has(key)
+    }
+    const isEligible=(reward)=>{
+      if(!reward||isUsed(reward))return false
+      if(String(reward.type).toLowerCase()==='skill')return isValidSkillRewardAssignment(creature,reward)
       if(String(reward.type).toLowerCase()==='quest'){
+        if(!isValidQuestRewardAssignment(creature,reward))return false
         const required=new Set((creature.requiredQuests??[]).map(q=>String(q).trim().toLowerCase()))
         const questKey=String(reward.questId??reward.label??reward.name??'').trim().toLowerCase()
-        if(required.has(questKey)||Object.values(rewardAssignments||{}).some(value=>String(value?.type).toLowerCase()==='quest'&&String(value?.questId??value?.label??value?.name??'').trim().toLowerCase()===questKey))return
+        if(required.has(questKey))return false
+        return !Object.values(rewardAssignments||{}).some(value=>String(value?.type).toLowerCase()==='quest'&&String(value?.questId??value?.label??value?.name??'').trim().toLowerCase()===questKey)
       }
-      candidates.push(reward)
+      if(String(reward.type).toLowerCase()==='diary'){
+        return !Object.values(rewardAssignments||{}).some(value=>String(value?.id)===String(reward.id))
+      }
+      return false
     }
 
-    // Prefer the next bracket of another skill, then eligible quests, then a diary.
-    rewardCatalog.lockedSkills.forEach(skill=>{
-      const next=getNextSkillBand(skillProgress,skill)
-      if(next) addCandidate({...next,type:'skill',skill})
-    })
-    rewardCatalog.mandatory.filter(reward=>String(reward.type).toLowerCase()==='quest').forEach(addCandidate)
-    rewardCatalog.mandatory.filter(reward=>String(reward.type).toLowerCase()==='diary').forEach(addCandidate)
+    // A Skill reward always tries to escalate the SAME skill on this creature first.
+    if(String(selectedReward?.type).toLowerCase()==='skill'&&selectedReward.skill){
+      const sequence=getSkillRewardSequence(selectedReward.skill)
+      const selectedIndex=sequence.findIndex(item=>String(item.id)===String(selectedReward.id))
+      const next=selectedIndex>=0?sequence[selectedIndex+1]:getNextSkillBand(skillProgress,selectedReward.skill)
+      if(next){
+        const sameSkill={...next,type:'skill',skill:selectedReward.skill}
+        if(isEligible(sameSkill))return sameSkill
+      }
+    }
 
-    if(!candidates.length)return null
-    const sameType=candidates.filter(candidate=>String(candidate.type).toLowerCase()===String(selectedReward.type).toLowerCase())
-    return (sameType.length?sameType:candidates)[0]??null
+    // If the same skill cannot escalate, use an eligible quest first, then diary.
+    const questFallback=rewardCatalog.mandatory
+      .filter(reward=>String(reward.type).toLowerCase()==='quest')
+      .find(isEligible)
+    if(questFallback)return questFallback
+
+    return rewardCatalog.mandatory
+      .filter(reward=>String(reward.type).toLowerCase()==='diary')
+      .find(isEligible)??null
   }
 
   const bossTasks=[...bossSystem.tasks].sort((a,b)=>{

@@ -836,7 +836,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},onBossProgressChange
       <div className="boss-image-space">
         {image ? <img src={image} alt="" draggable="false" /> : <Skull size={46}/>}
       </div>
-      <div className="boss-association"><span className="boss-association-label">Associated creature</span>{associatedCreatures.length?associatedCreatures.map(creature=><span className={`boss-creature-name${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id}>{creature.name}</span>):<span className="boss-no-association">No associated creature tile</span>}</div>
+      <div className="boss-association"><span className="boss-association-label">Associated creature</span>{associatedCreatures.length?boss.id==='callisto-artio'?<span className="boss-creature-name boss-creature-name-inline">{['Black Bear','Grizzly Bear','Bear'].map(name=>creatureByName.get(name.toLowerCase())).filter(Boolean).map((creature,index)=><React.Fragment key={creature.id}><span className={completedCreatureIds.has(String(creature.id))?'is-completed':''}>{creature.name}</span>{index<2?' or ':''}</React.Fragment>)}</span>:associatedCreatures.map(creature=><span className={`boss-creature-name${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id}>{creature.name}</span>):<span className="boss-no-association">No associated creature tile</span>}</div>
       {unlocked ? <div className="boss-progress-section">
         <div className="boss-progress-label"><span>{complete?'COMPLETE':'KILL COUNT'}</span><strong>{current} / {target} KC</strong></div>
         <div className="boss-progress-track"><div className="boss-progress-fill" style={{width:`${percent}%`}}/></div>

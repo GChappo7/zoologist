@@ -52,7 +52,7 @@ const PROGRESSION_ASSETS = {
     'Fremennik': `${import.meta.env.BASE_URL}assets/ui/Areas/2738_0%20Fremennik.png`,
     'Kandarin': `${import.meta.env.BASE_URL}assets/ui/Areas/2737_0%20Kandarin.png`,
     'Karamja': `${import.meta.env.BASE_URL}assets/ui/Areas/2732_0%20Karamja.png`,
-    'Kourend & Kebos': 'https://oldschool.runescape.wiki/images/Kourend_Area_Badge.png',
+    'Kourend & Kebos': `${import.meta.env.BASE_URL}assets/ui/Areas/5468_0%20Kourend.png`,
     'Lumbridge & Draynor': `${import.meta.env.BASE_URL}assets/ui/Areas/2731_0%20Lumbridge.png`,
     'Morytania': `${import.meta.env.BASE_URL}assets/ui/Areas/2735_0%20Morytania.png`,
     'Varrock': `${import.meta.env.BASE_URL}assets/ui/Areas/2731_0%20Lumbridge.png`,

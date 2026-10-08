@@ -2033,7 +2033,7 @@
   height: 100% !important;
   overflow-y: auto !important;
   padding: 6px 8px !important;
-  background: #3b362f !important;
+  background: #5d574c !important;
 }
 
 .quest-header-dropdown .quest-row {
@@ -2047,7 +2047,7 @@
 
 .quest-header-dropdown .quest-scroll-arrows {
   min-width: 22px !important;
-  background: #3b362f !important;
+  background: #5d574c !important;
 }
 
 .quest-header-dropdown .quest-info { display: none !important; }

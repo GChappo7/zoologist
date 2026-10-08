@@ -1017,6 +1017,7 @@ function App(){
   const [questStatuses,setQuestStatuses]=useState(gameState.questStatuses||{})
   const [diaryStatuses,setDiaryStatuses]=useState(gameState.diaryStatuses||{})
   const [resetVersion,setResetVersion]=useState(0)
+  const [passwordRecovery,setPasswordRecovery]=useState(false)
   const saveGenerationRef=useRef(0)
   const accountLoadGenerationRef=useRef(0)
   const queuedSaveRef=useRef(Promise.resolve())
@@ -1027,8 +1028,14 @@ function App(){
     supabase.auth.getSession().then(({data})=>{
       if(active)setSession(data.session||null)
     })
-    const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,nextSession)=>{
-      if(active)setSession(nextSession||null)
+    const {data:{subscription}}=supabase.auth.onAuthStateChange((event,nextSession)=>{
+      if(!active)return
+      if(event==='PASSWORD_RECOVERY'){
+        setPasswordRecovery(true)
+        setSession(null)
+      }else{
+        setSession(nextSession||null)
+      }
     })
     return()=>{active=false;subscription.unsubscribe()}
   },[])
@@ -1265,7 +1272,10 @@ function App(){
   // Authentication is a hard gate: logged-out users never receive the map,
   // progression tabs, or another account's state.
   if(!session){
-    return <div className="login-page"><AccountModal open={true} onClose={()=>{}} session={null} onAuthChange={setSession} standalone/></div>
+    return <div className="login-page"><AccountModal open={true} onClose={()=>{}} session={null} onAuthChange={setSession} passwordRecovery={passwordRecovery} onPasswordRecoveryComplete={()=>{
+      setPasswordRecovery(false)
+      supabase.auth.getSession().then(({data})=>setSession(data.session||null))
+    }} standalone/></div>
   }
 
   const creatureCount=creatures.length
@@ -1323,7 +1333,10 @@ function App(){
       </div>   </header>
     <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}</main>
     <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
-    <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession} onResetProgress={handleResetProgress}/>
+    <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession} onResetProgress={handleResetProgress} passwordRecovery={passwordRecovery} onPasswordRecoveryComplete={()=>{
+      setPasswordRecovery(false)
+      supabase.auth.getSession().then(({data})=>setSession(data.session||null))
+    }}/>
     {resetConfirmOpen&&<div className="reset-confirm-overlay" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget&&!resetInProgress)setResetConfirmOpen(false)}}>
       <div className="reset-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="reset-confirm-title">
         <div className="reset-confirm-title" id="reset-confirm-title">Reset all Zoologist progress?</div>

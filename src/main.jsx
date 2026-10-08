@@ -519,10 +519,10 @@ function QuestsView({initialStatuses={},onStatusesChange}){
     }
   },[filtered.length,filter,search])
 
-  const difficultyOrder=['Novice','Intermediate','Experienced','Master','Grandmaster']
-  const grouped=difficultyOrder
-    .map(difficulty=>[difficulty,filtered.filter(q=>q.difficulty===difficulty)])
-    .filter(([,rows])=>rows.length)
+  const grouped=[[
+    'Quests',
+    [...filtered].sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'}))
+  ]]
 
   const cycleStatus=id=>setStatuses(s=>{
     const current=s[id]||'unrevealed'

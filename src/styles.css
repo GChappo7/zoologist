@@ -790,33 +790,41 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 }
 
 
-/* Map atmosphere: keep completed marks compact, make the frontier pop, and deepen the fog gradient. */
+/* Map atmosphere: make the frontier vibrant, deepen the first fog layer, and keep completion marks compact. */
 .tile-completed-tick {
-  width: 210px !important;
-  height: 210px !important;
+  width: 170px !important;
+  height: 170px !important;
 }
 .map-tile-frontier {
-  border-color: #9a743b !important;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(126,91,38,.34) 0%, rgba(70,48,22,.20) 48%, rgba(41,33,22,.05) 100%),
+    linear-gradient(145deg, #4a371d 0%, #332716 52%, #241c12 100%) !important;
+  border-color: #b88946 !important;
   box-shadow:
-    inset 0 0 0 1px rgba(238,196,113,.16),
-    0 0 10px rgba(213,170,99,.18),
-    0 0 24px rgba(213,170,99,.12) !important;
+    inset 0 0 0 1px rgba(255,220,146,.24),
+    inset 0 0 24px rgba(213,170,99,.14),
+    0 0 12px rgba(213,170,99,.24),
+    0 0 28px rgba(213,170,99,.14) !important;
 }
 .map-tile-frontier:hover {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(158,119,54,.42) 0%, rgba(83,58,27,.24) 48%, rgba(43,33,20,.08) 100%),
+    linear-gradient(145deg, #5b431f 0%, #3c2d18 52%, #2a2013 100%) !important;
   border-color: #d5aa63 !important;
   box-shadow:
-    inset 0 0 0 2px rgba(238,196,113,.24),
-    0 0 14px rgba(213,170,99,.28),
-    0 0 30px rgba(213,170,99,.18) !important;
+    inset 0 0 0 2px rgba(255,225,157,.30),
+    inset 0 0 28px rgba(213,170,99,.18),
+    0 0 16px rgba(213,170,99,.34),
+    0 0 34px rgba(213,170,99,.20) !important;
 }
-/* Start the fog gradient at the first back-of-card layer, immediately beyond the frontier. */
-.map-tile-locked .map-fog-card { filter: brightness(.84) saturate(.88); }
-.map-tile-locked .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.08), rgba(5,9,12,.22)); }
-.map-tile-dark-fog-1 .map-fog-card { filter: brightness(.76) saturate(.82); }
-.map-tile-dark-fog-2 .map-fog-card { filter: brightness(.58) saturate(.68); }
-.map-tile-dark-fog-3 .map-fog-card { filter: brightness(.40) saturate(.52); }
-.map-tile-black-fog .map-fog-card { filter: brightness(.22) saturate(.35); }
-.map-tile-dark-fog-1 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.18), rgba(5,9,12,.34)); }
-.map-tile-dark-fog-2 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.36), rgba(5,9,12,.52)); }
-.map-tile-dark-fog-3 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.54), rgba(5,9,12,.70)); }
-.map-tile-black-fog .fog-darken { background: rgba(2,5,7,.82); }
+/* The first face-down fog layer should already feel dark; each further layer falls away harder. */
+.map-tile-locked .map-fog-card { filter: brightness(.68) saturate(.78); }
+.map-tile-locked .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.18), rgba(5,9,12,.36)); }
+.map-tile-dark-fog-1 .map-fog-card { filter: brightness(.56) saturate(.68); }
+.map-tile-dark-fog-2 .map-fog-card { filter: brightness(.43) saturate(.58); }
+.map-tile-dark-fog-3 .map-fog-card { filter: brightness(.31) saturate(.46); }
+.map-tile-black-fog .map-fog-card { filter: brightness(.18) saturate(.30); }
+.map-tile-dark-fog-1 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.30), rgba(5,9,12,.48)); }
+.map-tile-dark-fog-2 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.44), rgba(5,9,12,.60)); }
+.map-tile-dark-fog-3 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.58), rgba(5,9,12,.74)); }
+.map-tile-black-fog .fog-darken { background: rgba(2,5,7,.84); }

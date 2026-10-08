@@ -930,10 +930,10 @@
   position: absolute !important;
   top: 50% !important;
   right: 8% !important;
-  width: 58px !important;
-  height: 58px !important;
-  min-width: 58px !important;
-  min-height: 58px !important;
+  width: 96px !important;
+  height: 96px !important;
+  min-width: 96px !important;
+  min-height: 96px !important;
   padding: 0 !important;
   border: 0 !important;
   border-radius: 50% !important;
@@ -978,10 +978,10 @@
 }
 @media (max-width:760px) {
   .tile-popup .tile-popup-complete {
-    width: 50px !important;
-    height: 50px !important;
-    min-width: 50px !important;
-    min-height: 50px !important;
+    width: 78px !important;
+    height: 78px !important;
+    min-width: 78px !important;
+    min-height: 78px !important;
   }
 }
 

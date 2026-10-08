@@ -863,9 +863,11 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
   const reward=getTileReward(selectedTile,creature,skillProgress,rewardAssignments)
   const presentation=getRewardPresentation(reward)
   const rewardAsset=`${import.meta.env.BASE_URL}assets/ui/${presentation.asset}`
+  const completeCircleUrl=`${import.meta.env.BASE_URL}assets/ui/box/1211_0%20CircleNoTick.png`
+  const completeCircleTickUrl=`${import.meta.env.BASE_URL}assets/ui/box/1213_0%20CircleTick.png`
   return <section
     className={`tile-popup tile-popup-${presentation.type} ${isDismissing?'is-dismissing':''}`}
-    style={{...(position?{left:position.left,top:position.top}:{}), '--complete-box-image': `url("${import.meta.env.BASE_URL}assets/ui/skills/${encodeURIComponent(SKILL_BOX_ASSET)}")`}}
+    style={{...(position?{left:position.left,top:position.top}:{}), '--complete-circle-image': `url("${completeCircleUrl}")`, '--complete-circle-tick-image': `url("${completeCircleTickUrl}")`}}
     aria-label="Reward details"
   >
     <img className="tile-popup-frame" src={rewardAsset} alt="" aria-hidden="true" draggable="false"/>
@@ -877,7 +879,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
         {presentation.subtitle&&<span className="tile-popup-subtitle">{presentation.subtitle}</span>}
       </div>
       <div className="tile-popup-actions">
-        {!selectedTile.completed&&<button className="tile-popup-complete" onClick={()=>{if(isDismissing)return;setIsDismissing(true);onComplete(selectedTile);window.setTimeout(()=>onShowMore?.(false),180)}}>COMPLETE</button>}
+        <button type="button" className={`tile-popup-complete ${selectedTile.completed?'is-completed':''}`} onClick={()=>{if(isDismissing||selectedTile.completed)return;setIsDismissing(true);onComplete(selectedTile);window.setTimeout(()=>onShowMore?.(false),180)}} aria-label={selectedTile.completed?'Completed':'Mark complete'} aria-pressed={selectedTile.completed} />
         <button className="tile-popup-more" onClick={onShowMore}>DETAILS <ChevronRight size={13}/></button>
       </div>
     </div>

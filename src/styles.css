@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'RuneScape';
-  src: url('/zoologist/fonts/RuneScape-Chat-Bold-07.ttf') format('truetype');
+  src: url('./assets/fonts/RuneScape-Chat-Bold-07.ttf') format('truetype');
   font-weight: 400 900;
   font-style: normal;
   font-display: swap;

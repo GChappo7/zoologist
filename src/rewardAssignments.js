@@ -1,7 +1,7 @@
 import rewardCatalog from '../data/reward-catalog.json'
 import { isValidQuestRewardAssignment, isValidSkillRewardAssignment } from './progressionRules'
 
-const EARLY_RISKY_SKILLS = new Set(['Fishing', 'Slayer', 'Sailing'])
+const EARLY_RISKY_SKILLS = new Set(['Slayer', 'Sailing'])
 const EARLY_REWARD_IDS = new Set(['fishing-1-10', 'quest-novice-5', 'quest-novice-29'])
 
 function isForcedEarlyReward(unit) {
@@ -88,15 +88,17 @@ function isEarlyCreature(creature) {
 
 function makeAssignment(creatures, startCreature) {
   const units = shuffle(buildUnits(creatures.length))
-  const adjacency = units.map(unit =>
-    creatures.map((creature, creatureIndex) => {
-      if (!isCompatible(creature, unit)) return -1
+  const adjacency = units.map(unit => {
+    const skillName = String(unit.skill ?? '')
+    const unitType = String(unit.type ?? '').toLowerCase()
+    const candidates = creatures.map((creature, creatureIndex) => {
+      if (!isCompatible(creature, unit)) return null
 
       if (
         isEarlyCreature(creature) &&
-        String(unit.type).toLowerCase() === 'skill' &&
-        EARLY_RISKY_SKILLS.has(unit.skill)
-      ) return -1
+        unitType === 'skill' &&
+        EARLY_RISKY_SKILLS.has(skillName)
+      ) return null
 
       // Reserve the first Fishing unlock, Children of the Sun and Pandemonium for
       // genuinely accessible creatures. The map generator can then enforce that these
@@ -104,16 +106,27 @@ function makeAssignment(creatures, startCreature) {
       if (
         isForcedEarlyReward(unit) &&
         Number(creature.score) > 2
-      ) return -1
+      ) return null
 
       if (
         creature.id === startCreature?.id &&
-        String(unit.type).toLowerCase() !== 'skill'
-      ) return -1
+        unitType !== 'skill'
+      ) return null
 
       return creatureIndex
-    }).filter(index => index >= 0)
-  )
+    }).filter(index => index !== null)
+
+    // Bias the skill distribution without changing the number of upgrades.
+    // Fishing upgrades are preferentially matched to the most accessible creatures,
+    // while Construction is preferentially pushed further into the progression.
+    if (unitType === 'skill' && skillName === 'Fishing') {
+      candidates.sort((a, b) => Number(creatures[a].score) - Number(creatures[b].score))
+    } else if (unitType === 'skill' && skillName === 'Construction') {
+      candidates.sort((a, b) => Number(creatures[b].score) - Number(creatures[a].score))
+    }
+
+    return candidates
+  })
 
   const order = adjacency
     .map((edges, index) => ({ index, degree: edges.length }))

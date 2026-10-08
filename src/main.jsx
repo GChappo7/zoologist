@@ -710,8 +710,8 @@ function DiariesView({statuses={},onStatusClick}){
         {regions.map(region=><div className="diary-card" key={region}>
           <div className="diary-card-header"><ProgressionIcon type="diaryRegion" region={region}/><strong>{region}</strong></div>
           <div className="diary-tier-labels">{tiers.map(tier=><span key={tier}>{tier}</span>)}</div>
-          <button className="diary-progress-bar" type="button" onClick={()=>onStatusClick?.(region)} aria-label={\`Mark \${region} diary progress complete\`}>
-            {tiers.map(tier=>{const key=\`\${region}|\${tier}\`;const status=statuses[key]||'locked';return <span key={tier} className={\`diary-quadrant diary-quadrant-\${status}\`}><i>{status!=='locked'?'Completed':''}</i></span>})}
+          <button className="diary-progress-bar" type="button" onClick={()=>onStatusClick?.(region)} aria-label={`Mark ${region} diary progress complete`}>
+            {tiers.map(tier=>{const key=`${region}|${tier}`;const status=statuses[key]||'locked';return <span key={tier} className={`diary-quadrant diary-quadrant-${status}`}><i>{status!=='locked'?'Completed':''}</i></span>})}
           </button>
         </div>)}
       </div>

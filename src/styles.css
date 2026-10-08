@@ -63,7 +63,7 @@ button { font: inherit; }
   .top-tabs button { padding: 0 5px; }
 }
 @media (max-width: 760px) {
-  .topbar { grid-template-columns: minmax(0,1fr) auto; min-height:60px; }
+  .topbar { grid-template-columns: minmax(0,1fr) auto auto; min-height:60px; }
   .header-left { gap: 8px; }
   .header-left .brand-block { min-width:0; }
   .header-left .brand-subtitle, .header-left .deployment-indicator { display:none; }

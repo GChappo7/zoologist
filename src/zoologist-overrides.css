@@ -2679,7 +2679,7 @@
 .boss-reward-category:hover{filter:brightness(1.12);border-color:#8c784b}
 .boss-reward-category .progression-icon{width:42px;height:42px}
 .boss-reward-category strong{font:16px var(--font-runescape)}
-.boss-reward-category span{font-size:9px;color:#9fa9a9;text-align:center}
+.boss-reward-category span{font:11px var(--font-runescape);color:#b7bebd;text-align:center;line-height:1.2}
 .boss-reward-choice-view{min-height:300px}
 .boss-reward-back{border:0;background:none;color:#d6bd78;font:11px var(--font-runescape);cursor:pointer;padding:2px 0 10px}
 .boss-reward-choice-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:480px;overflow:auto;padding-right:2px}

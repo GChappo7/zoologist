@@ -507,10 +507,26 @@
   }
 }
 
-/* Quest reward text sits immediately to the right of the large quest watermark. */
-.tile-popup-quest .tile-popup-reward-copy {
+/* Quest and achievement diary reward text sits immediately to the right of the large watermark. */
+.tile-popup-quest .tile-popup-reward-copy,
+.tile-popup-diary .tile-popup-reward-copy {
   left: 25% !important;
   right: 6% !important;
+  top: 12% !important;
+  bottom: 30% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* Keep achievement diary popup text visually identical to quest reward text. */
+.tile-popup-diary .tile-popup-title,
+.tile-popup-diary .tile-popup-subtitle {
+  font-family: var(--font-runescape) !important;
+  text-align: center !important;
+  text-shadow: 0 2px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.8);
 }
 
 /* Skill rewards make the level band the primary information in the popup. */

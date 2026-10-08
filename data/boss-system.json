@@ -67,18 +67,7 @@
     },
     {
       "id": "callisto",
-      "name": "Callisto",
-      "category": "Wilderness",
-      "status": "not_slain",
-      "creatures": [
-        "Bear",
-        "Black Bear",
-        "Grizzly Bear"
-      ]
-    },
-    {
-      "id": "artio",
-      "name": "Artio",
+      "name": "Callisto / Artio",
       "category": "Wilderness",
       "status": "not_slain",
       "creatures": [
@@ -89,14 +78,7 @@
     },
     {
       "id": "venenatis",
-      "name": "Venenatis",
-      "category": "Wilderness",
-      "creature": "Spider",
-      "status": "not_slain"
-    },
-    {
-      "id": "spindel",
-      "name": "Spindel",
+      "name": "Venenatis / Spindel",
       "category": "Wilderness",
       "creature": "Spider",
       "status": "not_slain"

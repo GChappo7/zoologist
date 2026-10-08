@@ -343,7 +343,7 @@ function getRandomSkillReward(creature,skillProgress){
 }
 function HeaderDropdown({open,onClose,anchorRef,children,ariaLabel='Menu',className=''}) {
   const panelRef=useRef(null),[position,setPosition]=useState(null)
-  useLayoutEffect(()=>{if(!open)return;const update=()=>{const rect=anchorRef?.current?.getBoundingClientRect();if(rect)setPosition({top:rect.bottom+8,left:rect.left+rect.width/2})};update();window.addEventListener('resize',update);window.addEventListener('scroll',update,true);return()=>{window.removeEventListener('resize',update);window.removeEventListener('scroll',update,true)}},[open,anchorRef])
+  useLayoutEffect(()=>{if(!open)return;const update=()=>{const rect=anchorRef?.current?.getBoundingClientRect();if(rect)setPosition({top:rect.bottom+(className.includes('quest-header-dropdown')?0:8),left:rect.left+rect.width/2})};update();window.addEventListener('resize',update);window.addEventListener('scroll',update,true);return()=>{window.removeEventListener('resize',update);window.removeEventListener('scroll',update,true)}},[open,anchorRef])
   useEffect(()=>{if(!open)return;const down=e=>{if(!panelRef.current?.contains(e.target)&&!anchorRef?.current?.contains(e.target))onClose?.()};const key=e=>{if(e.key==='Escape')onClose?.()};document.addEventListener('pointerdown',down);window.addEventListener('keydown',key);return()=>{document.removeEventListener('pointerdown',down);window.removeEventListener('keydown',key)}},[open,onClose,anchorRef])
   if(!open)return null
   return <div ref={panelRef} className={'header-dropdown '+className} role="dialog" aria-label={ariaLabel} style={position?{top:position.top,left:position.left}:undefined}>{children}</div>

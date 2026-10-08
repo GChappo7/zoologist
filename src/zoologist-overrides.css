@@ -2045,5 +2045,5 @@
     max-width: calc(100vw - 12px) !important;
   }
   .diary-header-dropdown { width: calc(100vw - 12px); }
-  .quest-header-dropdown .quest-log-body { height: 350px; }
+  .quest-header-dropdown .quest-log-body { height: 298px !important; }
 }

@@ -799,12 +799,23 @@ const BOSS_IMAGE_FILENAMES = {
   'ba-ba':'Ba-Ba.png',
   'zebak':'Zebak.png',
 }
+const BOSS_MOBILE_IMAGE_FILENAMES = {
+  'callisto':'Callisto icon (mobile).png',
+  'araxxor':'Araxxor icon (mobile).png',
+  'cerberus':'Cerberus icon (mobile).png',
+  'scorpia':'Scorpia icon (mobile).png',
+  'scurrius':'Scurrius icon (mobile).png',
+  'shellbane-gryphon':'Shellbane gryphon icon (mobile).png',
+  'the-leviathan':'The Leviathan icon (mobile).png',
+  'venenatis':'Venenatis icon (mobile).png',
+}
 function bossImageCandidates(boss){
   const filename=BOSS_IMAGE_FILENAMES[boss.id]
   if(!filename)return []
-  const mobileFilename=filename.replace(/\.png$/i,'_icon_(mobile).png')
+  const mobileFilename=BOSS_MOBILE_IMAGE_FILENAMES[boss.id]
+  const generatedMobile=filename.replace(/\.png$/i,'_icon_(mobile).png')
   const detailFilename=filename.replace(/\.png$/i,'_icon_(detail).png')
-  const direct=[mobileFilename,filename,detailFilename]
+  const direct=[mobileFilename,generatedMobile,filename,detailFilename].filter(Boolean)
   return [...new Set(direct.flatMap(name=>[
     `https://oldschool.runescape.wiki/images/${encodeURIComponent(name)}`,
     `https://oldschool.runescape.wiki/w/Special:Redirect/file/${encodeURIComponent(name)}`,

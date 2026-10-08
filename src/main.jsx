@@ -23,9 +23,9 @@ const TILE_GAP = 0
 const TILE_STEP = TILE_SIZE + TILE_GAP
 const RENDER_RADIUS = 20
 const RENDER_DIAMETER = RENDER_RADIUS * 2 + 1
-const MIN_ZOOM = 0.5
+const MIN_ZOOM = 0.2
 const MAX_ZOOM = 2.25
-const ZOOM_STEP = 0.12
+const ZOOM_STEP = 0.1
 const CARDINAL_DIRECTIONS = [[0,-1],[1,0],[0,1],[-1,0]]
 const QUEST_FILTERS = ['all','revealed','completed']
 const DEPLOYMENT_SHA = String(import.meta.env.VITE_DEPLOYMENT_SHA || 'local')
@@ -850,7 +850,7 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
     const ratio=target/current
     setPan(p=>({x:ox-(ox-p.x)*ratio,y:oy-(oy-p.y)*ratio}));setZoom(target)
   }
-  const handleWheel=e=>{e.preventDefault();zoomAtPoint(zoomRef.current+(e.deltaY>0?-1:1)*.11,e.clientX,e.clientY)}
+  const handleWheel=e=>{e.preventDefault();zoomAtPoint(zoomRef.current+(e.deltaY>0?-1:1)*.1,e.clientX,e.clientY)}
   const handlePointerMove=e=>{
     pointerRef.current={x:e.clientX,y:e.clientY,inside:true}
     if(e.pointerType==='touch'){

@@ -788,3 +788,33 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
   .reset-status-title { font-size:19px; }
   .reset-status-message { font-size:13px; }
 }
+
+
+/* Map atmosphere: keep completed marks compact, make the frontier pop, and deepen the fog gradient. */
+.tile-completed-tick {
+  width: 210px !important;
+  height: 210px !important;
+}
+.map-tile-frontier {
+  border-color: #9a743b !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(238,196,113,.16),
+    0 0 10px rgba(213,170,99,.18),
+    0 0 24px rgba(213,170,99,.12) !important;
+}
+.map-tile-frontier:hover {
+  border-color: #d5aa63 !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(238,196,113,.24),
+    0 0 14px rgba(213,170,99,.28),
+    0 0 30px rgba(213,170,99,.18) !important;
+}
+/* The first fog layer is deliberately darker, making the frontier the clear visual edge. */
+.map-tile-dark-fog-1 .map-fog-card { filter: brightness(.76) saturate(.82); }
+.map-tile-dark-fog-2 .map-fog-card { filter: brightness(.58) saturate(.68); }
+.map-tile-dark-fog-3 .map-fog-card { filter: brightness(.40) saturate(.52); }
+.map-tile-black-fog .map-fog-card { filter: brightness(.22) saturate(.35); }
+.map-tile-dark-fog-1 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.18), rgba(5,9,12,.34)); }
+.map-tile-dark-fog-2 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.36), rgba(5,9,12,.52)); }
+.map-tile-dark-fog-3 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.54), rgba(5,9,12,.70)); }
+.map-tile-black-fog .fog-darken { background: rgba(2,5,7,.82); }

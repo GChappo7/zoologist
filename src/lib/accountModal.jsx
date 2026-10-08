@@ -120,7 +120,7 @@ export default function AccountModal({ open, onClose, session, onAuthChange, onR
         </form>
         {mode === 'login' && <button className="account-modal-switch" type="button" onClick={sendPasswordReset} disabled={busy}>Forgot password?</button>}
         {mode !== 'reset' && <button className="account-modal-switch" type="button" onClick={()=>{setMode(mode === 'login' ? 'signup' : 'login');setMessage('')}}>{mode === 'login' ? 'Need an account? Create one' : 'Already have an account? Log in'}</button>}
-        {mode === 'reset' && <button className="account-modal-switch" type="button" onClick={()=>{onPasswordRecoveryComplete?.();setMode('login');setMessage('')}}>Back to log in</button>
+        {mode === 'reset' && <button className="account-modal-switch" type="button" onClick={()=>{onPasswordRecoveryComplete?.();setMode('login');setMessage('')}}>Back to log in</button>}
       </>}
     </section>
   </div>

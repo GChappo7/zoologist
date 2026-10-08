@@ -1031,26 +1031,24 @@ function App(){
       return hash==='recovery'||query==='recovery'
     }
 
-    if(isRecoveryRedirect()){
+    const recoveryRedirect=isRecoveryRedirect()
+    if(recoveryRedirect){
       setPasswordRecovery(true)
-      setSession(null)
     }
 
     supabase.auth.getSession().then(({data})=>{
       if(!active)return
-      if(isRecoveryRedirect()){
+      if(recoveryRedirect){
         setPasswordRecovery(true)
-        setSession(null)
-      }else{
-        setSession(data.session||null)
       }
+      setSession(data.session||null)
     })
     const {data:{subscription}}=supabase.auth.onAuthStateChange((event,nextSession)=>{
       if(!active)return
       if(event==='PASSWORD_RECOVERY'){
         setPasswordRecovery(true)
-        setSession(null)
-      }else if(!isRecoveryRedirect()){
+        setSession(nextSession||null)
+      }else{
         setSession(nextSession||null)
       }
     })
@@ -1288,8 +1286,8 @@ function App(){
 
   // Authentication is a hard gate: logged-out users never receive the map,
   // progression tabs, or another account's state.
-  if(!session){
-    return <div className="login-page"><AccountModal open={true} onClose={()=>{}} session={null} onAuthChange={setSession} passwordRecovery={passwordRecovery} onPasswordRecoveryComplete={()=>{
+  if(!session || passwordRecovery){
+    return <div className="login-page"><AccountModal open={true} onClose={()=>{}} session={session} onAuthChange={setSession} passwordRecovery={passwordRecovery} onPasswordRecoveryComplete={()=>{
       setPasswordRecovery(false)
       supabase.auth.getSession().then(({data})=>setSession(data.session||null))
     }} standalone/></div>

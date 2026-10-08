@@ -766,6 +766,45 @@ function DiariesView({statuses={},onStatusClick}){
 function ShopView(){
   return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><ShoppingBag size={14}/> ZOOLOGIST POINTS</div><h1>Shop</h1><p>Boss tasks will award Zoologist Points. Costs remain configurable until the progression rules are finalized.</p></div><div className="shop-grid">{shop.items.map(item=><div className="shop-card" key={item.id}><div className="shop-card-icon"><Sparkles size={17}/></div><strong>{item.name}</strong><p>{item.description}</p><span>Cost: TBD</span></div>)}</div></div>
 }
+const BOSS_IMAGE_FILENAMES = {
+  'bryophyta':'Bryophyta.png',
+  'obor':'Obor.png',
+  'giant-mole':'Giant_Mole.png',
+  'scurrius':'Scurrius.png',
+  'sarachnis':'Sarachnis.png',
+  'hespori':'Hespori.png',
+  'dagannoth-kings':'Dagannoth_Kings.png',
+  'king-black-dragon':'King_Black_Dragon.png',
+  'scorpia':'Scorpia.png',
+  'callisto':'Callisto.png',
+  'venenatis':'Venenatis.png',
+  'corporeal-beast':'Corporeal_Beast.png',
+  'general-graardor':'General_Graardor.png',
+  'kreearra':"Kree'arra.png",
+  'kril-tsutsaroth':'K%27ril_Tsutsaroth.png',
+  'kraken':'Kraken.png',
+  'cerberus':'Cerberus.png',
+  'thermonuclear-smoke-devil':'Thermonuclear_smoke_devil.png',
+  'abyssal-sire':'Abyssal_Sire.png',
+  'grotesque-guardians':'Grotesque_Guardians.png',
+  'alchemical-hydra':'Alchemical_Hydra.png',
+  'araxxor':'Araxxor.png',
+  'zulrah':'Zulrah.png',
+  'vorkath':'Vorkath.png',
+  'the-leviathan':'The_Leviathan.png',
+  'zalcano':'Zalcano.png',
+  'tempoross':'Tempoross.png',
+  'wintertodt':'Wintertodt.png',
+  'great-olm':'Great_Olm.png',
+  'kephri':'Kephri.png',
+  'ba-ba':'Ba-Ba.png',
+  'zebak':'Zebak.png',
+}
+function bossImageUrl(boss){
+  const filename=BOSS_IMAGE_FILENAMES[boss.id]
+  return filename ? `https://oldschool.runescape.wiki/images/${filename}` : null
+}
+
 function BossView({creatures=[],mapTiles={},bossProgress={},onBossProgressChange}){
   const creatureByName=useMemo(()=>new Map(creatures.map(c=>[String(c.name||'').trim().toLowerCase(),c])),[creatures])
   const completedCreatureIds=useMemo(()=>new Set(Object.values(mapTiles||{}).filter(tile=>tile?.completed&&tile?.creatureId).map(tile=>String(tile.creatureId))),[mapTiles])
@@ -783,13 +822,17 @@ function BossView({creatures=[],mapTiles={},bossProgress={},onBossProgressChange
     const next=Math.max(0,Math.min(state.target,state.current+delta))
     onBossProgressChange?.(current=>({...current,[boss.id]:next}))
   }
-  return <div className="full-tab-page boss-page"><div className="tab-page-heading"><div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div><h1>Boss Tasks</h1><p>Bosses unlock when an associated creature tile is completed. Track the required kill count with the controls on each boss.</p></div><div className="boss-grid">{bossSystem.tasks.map(boss=>{
+  return <div className="full-tab-page boss-page"><div className="tab-page-heading"><div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div><h1>Boss Tasks</h1><p>Complete the associated creature tile to unlock each boss, then track the required kill count.</p></div><div className="boss-grid">{bossSystem.tasks.map(boss=>{
     const {target,current,associatedCreatures,unlocked}=getBossState(boss)
     const complete=unlocked&&current>=target
     const percent=target?Math.min(100,current/target*100):0
+    const image=bossImageUrl(boss)
     return <div className={`boss-card${!unlocked?' is-locked':''}${complete?' is-complete':''}`} key={boss.id}>
-      <div className="boss-card-main"><div className="boss-icon"><Skull size={20}/></div><div><strong>{boss.name}</strong><span>{boss.category}</span></div></div>
-      <div className="boss-association"><span className="boss-association-label">Creature tile</span>{associatedCreatures.length?associatedCreatures.map(creature=><span className={`boss-creature-name${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id}>{creature.name}</span>):<span className="boss-no-association">No associated creature tile</span>}</div>
+      <div className="boss-card-title"><strong>{boss.name}</strong></div>
+      <div className="boss-image-space">
+        {image ? <img src={image} alt="" draggable="false" /> : <Skull size={46}/>}
+      </div>
+      <div className="boss-association"><span className="boss-association-label">Associated creature</span>{associatedCreatures.length?associatedCreatures.map(creature=><span className={`boss-creature-name${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id}>{creature.name}</span>):<span className="boss-no-association">No associated creature tile</span>}</div>
       {unlocked ? <div className="boss-progress-section">
         <div className="boss-progress-label"><span>{complete?'COMPLETE':'KILL COUNT'}</span><strong>{current} / {target} KC</strong></div>
         <div className="boss-progress-track"><div className="boss-progress-fill" style={{width:`${percent}%`}}/></div>
@@ -799,7 +842,6 @@ function BossView({creatures=[],mapTiles={},bossProgress={},onBossProgressChange
           <button type="button" className="boss-kc-button" onClick={()=>changeBossKc(boss,1)} disabled={current>=target} aria-label={`Increase ${boss.name} kill count`}><img src={uiAssetUrl('1117_0 Plus Button.png')} alt=""/></button>
         </div>
       </div> : <div className="boss-locked-message"><img src={uiAssetUrl('lock_asset.png')} alt=""/> Complete the associated creature tile to unlock</div>}
-      <div className={`boss-status${complete?' is-complete':''}`}>Boss: <b>{complete?'Complete':unlocked?'In progress':'Locked'}</b></div>
     </div>
   })}</div></div>
 }

@@ -2910,3 +2910,17 @@
   from { opacity:1; clip-path:inset(0 0 0 0 round 0); }
   to { opacity:0; clip-path:inset(0 100% 0 0 round 0); }
 }
+
+/* Keep the completion artwork fully inside its control; the supplied tick asset includes transparent padding. */
+.tile-popup .tile-popup-complete {
+  overflow:visible !important;
+}
+.tile-popup .tile-popup-complete::after {
+  overflow:visible;
+  background-size:100% 100%;
+}
+/* Let the completed popup remain visible, then close with the same reverse-unroll motion. */
+.tile-popup.is-completing-close {
+  animation:tile-popup-close .28s cubic-bezier(.65,0,.8,.2) forwards !important;
+  pointer-events:none;
+}

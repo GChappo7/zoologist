@@ -358,7 +358,9 @@ function SkillsDropdown({open,onClose,skillProgress,anchorRef}) {
       const anchor=anchorRef?.current
       if(!anchor)return
       const rect=anchor.getBoundingClientRect()
-      setAnchorPosition({top:rect.bottom+8,left:rect.left+rect.width/2})
+      const topbar=document.querySelector('.topbar')
+      const topbarRect=topbar?.getBoundingClientRect()
+      setAnchorPosition({top:topbarRect?.bottom??rect.bottom,left:rect.left+rect.width/2})
     }
     updatePosition()
     window.addEventListener('resize',updatePosition)

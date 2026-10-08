@@ -39,6 +39,22 @@ jobs:
           unzip -p /tmp/RuneScape-Fonts.zip "$PLAIN" > public/fonts/RuneScape-Plain-12.ttf
           unzip -p /tmp/RuneScape-Fonts.zip "$BOLD" > public/fonts/RuneScape-Bold-12.ttf
 
+      - name: Download achievement diary region icons
+        run: |
+          mkdir -p public/assets/ui/diaries
+          curl -L --fail --retry 3 https://oldschool.runescape.wiki/images/Ardougne_icon_detail.png -o public/assets/ui/diaries/Ardougne.png
+          curl -L --fail --retry 3 https://oldschool.runescape.wiki/images/Desert_icon_detail.png -o public/assets/ui/diaries/Desert.png
+          curl -L --fail --retry 3 https://oldschool.runescape.wiki/images/Falador_icon_detail.png -o public/assets/ui/diaries/Falador.png
+          curl -L --fail --retry 3 https://oldschool.runescape.wiki/images/Fremennik_icon_detail.png -o public/assets/ui/diaries/Fremennik.png
+          curl -L --fail --retry 3 https://oldschool.runescape.wiki/images/Kandarin_icon_detail.png -o public/assets/ui/diaries/Kandarin.png
+          curl -L --fail --retry 3 https://oldschool.runescape.wiki/images/Karamja_icon_detail.png -o public/assets/ui/diaries/Karamja.png
+          curl -L --fail --retry 3 https://oldschool.runescape.wiki/images/Kourend_%26_Kebos_icon_detail.png -o public/assets/ui/diaries/Kourend_Kebos.png
+          curl -L --fail --retry 3 https://oldschool.runescape.wiki/images/Lumbridge_%26_Draynor_icon_detail.png -o public/assets/ui/diaries/Lumbridge_Draynor.png
+          curl -L --fail --retry 3 https://oldschool.runescape.wiki/images/Morytania_icon_detail.png -o public/assets/ui/diaries/Morytania.png
+          curl -L --fail --retry 3 https://oldschool.runescape.wiki/images/Varrock_icon_detail.png -o public/assets/ui/diaries/Varrock.png
+          curl -L --fail --retry 3 https://oldschool.runescape.wiki/images/Western_Provinces_icon_detail.png -o public/assets/ui/diaries/Western_Provinces.png
+          curl -L --fail --retry 3 https://oldschool.runescape.wiki/images/Wilderness_icon_detail.png -o public/assets/ui/diaries/Wilderness.png
+
       - name: Build
         env:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}

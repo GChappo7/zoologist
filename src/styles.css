@@ -45,12 +45,13 @@ body { margin: 0; min-width: 320px; background: radial-gradient(circle at 50% -1
 button { font: inherit; }
 
 .app-shell { min-height: 100vh; display: flex; flex-direction: column; }
-.topbar { min-height: 76px; padding: 0 24px; display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 18px; border-bottom: 1px solid var(--border); background: rgba(9,15,19,.94); backdrop-filter: blur(14px); position: sticky; top: 0; z-index: 30; }
-.brand-block { display: flex; align-items: center; gap: 11px; }
+.topbar { min-height: 76px; padding: 0 24px; display: grid; grid-template-columns: minmax(0,auto) minmax(0,1fr) auto; align-items: center; gap: 18px; border-bottom: 1px solid var(--border); background: rgba(9,15,19,.94); backdrop-filter: blur(14px); position: sticky; top: 0; z-index: 30; }
+.header-left { min-width: 0; display: flex; align-items: center; gap: 22px; }
+.brand-block { display: flex; align-items: center; gap: 11px; flex: 0 0 auto; }
 .brand-mark { width: 39px; height: 39px; display: grid; place-items: center; border: 1px solid #5d492b; color: var(--accent); background: #191710; border-radius: 10px; box-shadow: inset 0 1px rgba(255,255,255,.03); }
 .brand-name { font-family: var(--font-runescape); font-weight: 700; letter-spacing: .02em; }
 .brand-subtitle { font-size: 10px; color: var(--muted); margin-top: 2px; }
-.top-tabs { position:static; min-width:0; display:flex; align-items:stretch; justify-content:center; gap:0; height:76px; }
+.top-tabs { position:static; min-width:0; display:flex; align-items:stretch; justify-content:flex-end; gap:0; height:76px; }
 .top-tabs button { border:0; border-bottom:2px solid transparent; background:transparent; color:var(--muted); padding:0 8px; display:flex; align-items:center; gap:4px; cursor:pointer; white-space:nowrap; }
 .top-tabs button + button { margin-left:0; }
 .osrs-top-tab-icon { width:20px; height:20px; object-fit:contain; image-rendering:pixelated; filter:drop-shadow(1px 1px 0 #111); }
@@ -58,9 +59,15 @@ button { font: inherit; }
 .top-tabs button.active { color: var(--text); border-bottom-color: var(--accent); }
 @media (max-width: 980px) {
   .topbar { padding: 0 16px; gap: 10px; }
+  .header-left { gap: 12px; }
   .top-tabs button { padding: 0 5px; }
 }
 @media (max-width: 760px) {
+  .topbar { grid-template-columns: minmax(0,1fr) auto; min-height:60px; }
+  .header-left { gap: 8px; }
+  .header-left .brand-block { min-width:0; }
+  .header-left .brand-subtitle, .header-left .deployment-indicator { display:none; }
+  .header-collection { width:110px; flex-basis:110px; }
   .top-tabs { position:static; height:42px; }
   .top-tabs button { padding:0 6px; gap:4px; }
   .top-tabs button span { display:none; }

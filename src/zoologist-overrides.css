@@ -2863,7 +2863,7 @@
 }
 .tile-popup .tile-popup-complete {
   bottom:12% !important;
-  right:10% !important;
+  right:15% !important;
 }
 .tile-popup .tile-popup-more {
   bottom:22% !important;
@@ -2872,7 +2872,7 @@
 
 /* Completion prompt above the popup tick. */
 .tile-popup .tile-popup-complete::before {
-  content:"COMPLETE?";
+  content:"COMPLETE";
   position:absolute;
   left:50%;
   bottom:calc(100% + 5px);

@@ -2307,7 +2307,20 @@
 }
 
 .quest-header-dropdown .quest-scroll-arrows::before {
-  background: linear-gradient(90deg,#51452f,#8f7650,#51452f) !important;
+  background: var(--scroll-back) center top / 100% auto repeat-y !important;
+}
+.quest-header-dropdown .quest-scroll-track {
+  background: var(--scroll-back) center top / 100% auto repeat-y !important;
+}
+.quest-header-dropdown .quest-scroll-thumb {
+  background: var(--scroll-middle) center / 100% auto repeat-y !important;
+  box-shadow: none !important;
+}
+.quest-header-dropdown .quest-scroll-thumb::before {
+  background: var(--scroll-top) center / 100% 100% no-repeat !important;
+}
+.quest-header-dropdown .quest-scroll-thumb::after {
+  background: var(--scroll-bottom) center / 100% 100% no-repeat !important;
 }
 
 @media (max-width:600px) {

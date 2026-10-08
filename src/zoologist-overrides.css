@@ -2688,7 +2688,7 @@
 .boss-reward-choice .progression-icon{width:30px;height:30px}
 .boss-reward-choice span{min-width:0}
 .boss-reward-choice strong{display:block;font:11px var(--font-runescape);line-height:1.15}
-.boss-reward-choice small{display:block;margin-top:2px;color:#899495;font-size:9px}
+.boss-reward-choice small{display:block;margin-top:3px;color:#aab2b1;font-size:11px;line-height:1.15}
 .boss-reward-empty{grid-column:1/-1;padding:30px;text-align:center;color:#8e999b;font-size:11px}
 .boss-reward-cancel{display:block;width:100%;margin-top:14px;padding:7px;border:1px solid #4b5353;border-radius:3px;background:#171d20;color:#c0c6c5;font:11px var(--font-runescape);cursor:pointer}
 @media(max-width:560px){

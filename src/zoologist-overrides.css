@@ -2900,3 +2900,13 @@
   text-shadow:2px 2px 0 #000, 0 2px 4px rgba(0,0,0,.9), 0 0 3px #000;
   filter:drop-shadow(0 2px 2px rgba(0,0,0,.8));
 }
+
+/* Reverse the reward-popup reveal when its tile is clicked again. */
+.tile-popup.is-closing {
+  animation:tile-popup-close .26s cubic-bezier(.65,0,.8,.2) forwards !important;
+  pointer-events:none;
+}
+@keyframes tile-popup-close {
+  from { opacity:1; clip-path:inset(0 0 0 0 round 0); }
+  to { opacity:0; clip-path:inset(0 100% 0 0 round 0); }
+}

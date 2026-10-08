@@ -2816,7 +2816,7 @@
 @media (max-width:500px) { .tile-popup .tile-popup-complete { top:9% !important; } }
 
 
-/* Position the map reward completion circle high beside the reward text. */
-.tile-popup .tile-popup-complete { top:20% !important; }
-@media (max-width:760px) { .tile-popup .tile-popup-complete { top:20% !important; } }
-@media (max-width:500px) { .tile-popup .tile-popup-complete { top:20% !important; } }
+/* Position the map reward completion circle high beside the reward text. Use bottom rather than top so no earlier top rule can affect its vertical position. */
+.tile-popup .tile-popup-complete { top:auto !important; bottom:58% !important; }
+@media (max-width:760px) { .tile-popup .tile-popup-complete { top:auto !important; bottom:58% !important; } }
+@media (max-width:500px) { .tile-popup .tile-popup-complete { top:auto !important; bottom:58% !important; } }

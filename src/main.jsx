@@ -781,7 +781,7 @@ const BOSS_IMAGE_FILENAMES = {
   'corporeal-beast':'Corporeal_Beast.png',
   'general-graardor':'General_Graardor.png',
   'kreearra':"Kree'arra.png",
-  'kril-tsutsaroth':'K%27ril_Tsutsaroth.png',
+  'kril-tsutsaroth':"K'ril_Tsutsaroth.png",
   'kraken':'Kraken.png',
   'cerberus':'Cerberus.png',
   'thermonuclear-smoke-devil':'Thermonuclear_smoke_devil.png',

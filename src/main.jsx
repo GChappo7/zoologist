@@ -543,7 +543,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
       <div className="quest-log-title">
         <ProgressionIcon type="quest"/>
         <div>
-          <strong>Quest Log</strong>
+          <strong>Quest List</strong>
           <span>{counts.completed} / {counts.all} quests complete</span>
         </div>
       </div>

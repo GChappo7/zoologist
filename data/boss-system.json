@@ -3,166 +3,10 @@
   "currency": "zoologist_points",
   "tasks": [
     {
-      "id": "bryophyta",
-      "name": "Bryophyta",
-      "category": "Free-to-play",
-      "creature": "Moss Giant",
-      "status": "not_slain",
-      "kcRequired": 25
-    },
-    {
-      "id": "obor",
-      "name": "Obor",
-      "category": "Free-to-play",
-      "creature": "Hill Giant",
-      "status": "not_slain",
-      "kcRequired": 25
-    },
-    {
-      "id": "giant-mole",
-      "name": "Giant Mole",
-      "category": "Boss",
-      "creature": "Mole",
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
-      "id": "scurrius",
-      "name": "Scurrius",
-      "category": "Boss",
-      "creature": "Rat",
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
-      "id": "sarachnis",
-      "name": "Sarachnis",
-      "category": "Boss",
-      "creature": "Temple Spider",
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
-      "id": "hespori",
-      "name": "Hespori",
-      "category": "Boss",
-      "creature": "Hespori",
-      "status": "not_slain",
-      "kcRequired": 25
-    },
-    {
-      "id": "dagannoth-kings",
-      "name": "Dagannoth Kings",
-      "category": "Dagannoth",
-      "creature": "Dagannoth",
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
-      "id": "king-black-dragon",
-      "name": "King Black Dragon",
-      "category": "Dragon",
-      "creature": "Black Dragon",
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
-      "id": "scorpia",
-      "name": "Scorpia",
-      "category": "Wilderness",
-      "creature": "Scorpion",
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
-      "id": "callisto",
-      "name": "Callisto / Artio",
-      "category": "Wilderness",
-      "status": "not_slain",
-      "creatures": [
-        "Bear",
-        "Black Bear",
-        "Grizzly Bear"
-      ],
-      "kcRequired": 100
-    },
-    {
-      "id": "venenatis",
-      "name": "Venenatis / Spindel",
-      "category": "Wilderness",
-      "creature": "Spider",
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
-      "id": "corporeal-beast",
-      "name": "Corporeal Beast",
-      "category": "Wilderness",
-      "creature": null,
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
-      "id": "general-graardor",
-      "name": "General Graardor",
-      "category": "God Wars Dungeon",
-      "creature": "Goblin",
-      "status": "not_slain",
-      "kcRequired": 50
-    },
-    {
-      "id": "kreearra",
-      "name": "Kree'arra",
-      "category": "God Wars Dungeon",
-      "creature": "Aviansie",
-      "status": "not_slain",
-      "kcRequired": 50
-    },
-    {
-      "id": "kril-tsutsaroth",
-      "name": "K'ril Tsutsaroth",
-      "category": "God Wars Dungeon",
-      "creature": "Greater Demon",
-      "status": "not_slain",
-      "kcRequired": 50
-    },
-    {
-      "id": "kraken",
-      "name": "Kraken",
-      "category": "Slayer",
-      "creature": "Cave Kraken",
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
-      "id": "cerberus",
-      "name": "Cerberus",
-      "category": "Slayer",
-      "creature": "Hellhound",
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
-      "id": "thermonuclear-smoke-devil",
-      "name": "Thermonuclear Smoke Devil",
-      "category": "Slayer",
-      "creature": "Smoke Devil",
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
       "id": "abyssal-sire",
       "name": "Abyssal Sire",
       "category": "Slayer",
       "creature": "Abyssal Demon",
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
-      "id": "grotesque-guardians",
-      "name": "Grotesque Guardians",
-      "category": "Slayer",
-      "creature": "Gargoyle",
       "status": "not_slain",
       "kcRequired": 100
     },
@@ -183,42 +27,70 @@
       "kcRequired": 100
     },
     {
-      "id": "shellbane-gryphon",
-      "name": "Shellbane Gryphon",
+      "id": "ba-ba",
+      "name": "Ba-Ba",
+      "category": "Tombs of Amascut",
+      "creature": "Baboon",
+      "status": "not_slain",
+      "kcRequired": 25
+    },
+    {
+      "id": "bryophyta",
+      "name": "Bryophyta",
+      "category": "Free-to-play",
+      "creature": "Moss Giant",
+      "status": "not_slain",
+      "kcRequired": 25
+    },
+    {
+      "id": "callisto",
+      "name": "Callisto / Artio",
+      "category": "Wilderness",
+      "status": "not_slain",
+      "creatures": [
+        "Bear",
+        "Black Bear",
+        "Grizzly Bear"
+      ],
+      "kcRequired": 100
+    },
+    {
+      "id": "cerberus",
+      "name": "Cerberus",
       "category": "Slayer",
-      "creature": "Gryphon",
+      "creature": "Hellhound",
       "status": "not_slain",
       "kcRequired": 100
     },
     {
-      "id": "zulrah",
-      "name": "Zulrah",
-      "category": "Boss",
-      "creature": "Swamp Snake",
+      "id": "corporeal-beast",
+      "name": "Corporeal Beast",
+      "category": "Wilderness",
+      "creature": null,
       "status": "not_slain",
       "kcRequired": 100
     },
     {
-      "id": "vorkath",
-      "name": "Vorkath",
-      "category": "Boss",
-      "creature": "Blue Dragon",
+      "id": "dagannoth-kings",
+      "name": "Dagannoth Kings",
+      "category": "Dagannoth",
+      "creature": "Dagannoth",
       "status": "not_slain",
       "kcRequired": 100
     },
     {
-      "id": "the-leviathan",
-      "name": "The Leviathan",
-      "category": "Desert Treasure II",
-      "creature": "Sea Snake (Young/Hatchling)",
+      "id": "general-graardor",
+      "name": "General Graardor",
+      "category": "God Wars Dungeon",
+      "creature": "Goblin",
       "status": "not_slain",
       "kcRequired": 50
     },
     {
-      "id": "wintertodt",
-      "name": "Wintertodt",
-      "category": "Minigame Boss",
-      "creature": "Wintertoad",
+      "id": "giant-mole",
+      "name": "Giant Mole",
+      "category": "Boss",
+      "creature": "Mole",
       "status": "not_slain",
       "kcRequired": 100
     },
@@ -231,6 +103,30 @@
       "kcRequired": 25
     },
     {
+      "id": "grotesque-guardians",
+      "name": "Grotesque Guardians",
+      "category": "Slayer",
+      "creature": "Gargoyle",
+      "status": "not_slain",
+      "kcRequired": 100
+    },
+    {
+      "id": "hespori",
+      "name": "Hespori",
+      "category": "Boss",
+      "creature": "Hespori",
+      "status": "not_slain",
+      "kcRequired": 25
+    },
+    {
+      "id": "kril-tsutsaroth",
+      "name": "K'ril Tsutsaroth",
+      "category": "God Wars Dungeon",
+      "creature": "Greater Demon",
+      "status": "not_slain",
+      "kcRequired": 50
+    },
+    {
       "id": "kephri",
       "name": "Kephri",
       "category": "Tombs of Amascut",
@@ -239,12 +135,108 @@
       "kcRequired": 25
     },
     {
-      "id": "ba-ba",
-      "name": "Ba-Ba",
-      "category": "Tombs of Amascut",
-      "creature": "Baboon",
+      "id": "king-black-dragon",
+      "name": "King Black Dragon",
+      "category": "Dragon",
+      "creature": "Black Dragon",
+      "status": "not_slain",
+      "kcRequired": 100
+    },
+    {
+      "id": "kraken",
+      "name": "Kraken",
+      "category": "Slayer",
+      "creature": "Cave Kraken",
+      "status": "not_slain",
+      "kcRequired": 100
+    },
+    {
+      "id": "kreearra",
+      "name": "Kree'arra",
+      "category": "God Wars Dungeon",
+      "creature": "Aviansie",
+      "status": "not_slain",
+      "kcRequired": 50
+    },
+    {
+      "id": "obor",
+      "name": "Obor",
+      "category": "Free-to-play",
+      "creature": "Hill Giant",
       "status": "not_slain",
       "kcRequired": 25
+    },
+    {
+      "id": "sarachnis",
+      "name": "Sarachnis",
+      "category": "Boss",
+      "creature": "Temple Spider",
+      "status": "not_slain",
+      "kcRequired": 100
+    },
+    {
+      "id": "scorpia",
+      "name": "Scorpia",
+      "category": "Wilderness",
+      "creature": "Scorpion",
+      "status": "not_slain",
+      "kcRequired": 100
+    },
+    {
+      "id": "scurrius",
+      "name": "Scurrius",
+      "category": "Boss",
+      "creature": "Rat",
+      "status": "not_slain",
+      "kcRequired": 100
+    },
+    {
+      "id": "shellbane-gryphon",
+      "name": "Shellbane Gryphon",
+      "category": "Slayer",
+      "creature": "Gryphon",
+      "status": "not_slain",
+      "kcRequired": 100
+    },
+    {
+      "id": "the-leviathan",
+      "name": "The Leviathan",
+      "category": "Desert Treasure II",
+      "creature": "Sea Snake (Young/Hatchling)",
+      "status": "not_slain",
+      "kcRequired": 50
+    },
+    {
+      "id": "thermonuclear-smoke-devil",
+      "name": "Thermonuclear Smoke Devil",
+      "category": "Slayer",
+      "creature": "Smoke Devil",
+      "status": "not_slain",
+      "kcRequired": 100
+    },
+    {
+      "id": "venenatis",
+      "name": "Venenatis / Spindel",
+      "category": "Wilderness",
+      "creature": "Spider",
+      "status": "not_slain",
+      "kcRequired": 100
+    },
+    {
+      "id": "vorkath",
+      "name": "Vorkath",
+      "category": "Boss",
+      "creature": "Blue Dragon",
+      "status": "not_slain",
+      "kcRequired": 100
+    },
+    {
+      "id": "wintertodt",
+      "name": "Wintertodt",
+      "category": "Minigame Boss",
+      "creature": "Wintertoad",
+      "status": "not_slain",
+      "kcRequired": 100
     },
     {
       "id": "zebak",
@@ -253,6 +245,14 @@
       "creature": "Crocodile",
       "status": "not_slain",
       "kcRequired": 25
+    },
+    {
+      "id": "zulrah",
+      "name": "Zulrah",
+      "category": "Boss",
+      "creature": "Swamp Snake",
+      "status": "not_slain",
+      "kcRequired": 100
     }
   ],
   "notes": [

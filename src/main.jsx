@@ -792,8 +792,6 @@ const BOSS_IMAGE_FILENAMES = {
   'zulrah':'Zulrah.png',
   'vorkath':'Vorkath.png',
   'the-leviathan':'The_Leviathan.png',
-  'zalcano':'Zalcano.png',
-  'tempoross':'Tempoross.png',
   'wintertodt':'Wintertodt.png',
   'great-olm':'Great_Olm.png',
   'kephri':'Kephri.png',
@@ -802,7 +800,7 @@ const BOSS_IMAGE_FILENAMES = {
 }
 function bossImageUrl(boss){
   const filename=BOSS_IMAGE_FILENAMES[boss.id]
-  return filename ? `https://oldschool.runescape.wiki/images/${filename}` : null
+  return filename ? `https://oldschool.runescape.wiki/images/${encodeURIComponent(filename)}` : null
 }
 
 function BossView({creatures=[],mapTiles={},bossProgress={},onBossProgressChange}){

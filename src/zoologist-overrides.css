@@ -573,7 +573,9 @@
   position: fixed;
   z-index: 1000;
   width: 310px;
-  transform: translateX(-50%);
+  left: auto !important;
+  right: 0 !important;
+  transform: none !important;
   pointer-events: none;
 }
 
@@ -741,7 +743,8 @@
 
 @media (max-width:760px) {
   .skills-dropdown-anchor {
-    left: 50vw !important;
+    left: auto !important;
+    right: 0 !important;
     width: min(310px, calc(100vw - 16px));
   }
   .skills-dropdown-grid {

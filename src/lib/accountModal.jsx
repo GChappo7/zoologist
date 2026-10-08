@@ -103,7 +103,15 @@ export default function AccountModal({ open, onClose, session, onAuthChange, onR
   return <div className={`account-modal-backdrop ${standalone ? "account-modal-backdrop-standalone" : ""}`} onMouseDown={e => !standalone && e.target === e.currentTarget && onClose?.()}>
     <section className={`account-modal ${standalone ? "account-modal-standalone" : ""}`} role="dialog" aria-modal="true" aria-label="Account">
       {!standalone && <button className="account-modal-close" type="button" onClick={onClose} aria-label="Close"><X size={17}/></button>}
-      {session ? <>
+      {passwordRecovery ? <>
+        <div className="account-modal-heading"><div className="account-modal-icon"><LogIn size={20}/></div><div><strong>Set new password</strong><span>Zoologist account recovery</span></div></div>
+        <form onSubmit={submit} className="account-form">
+          <p className="account-modal-copy">Choose a new password for your existing Zoologist account.</p>
+          <label>New password<input type="password" autoComplete="new-password" minLength={6} required value={password} onChange={e=>setPassword(e.target.value)} placeholder="At least 6 characters"/></label>
+          {message && <p className="account-modal-message">{message}</p>}
+          <button className="account-modal-primary" disabled={busy} type="submit"><LogIn size={15}/>{busy ? 'Please wait…' : 'Set new password'}</button>
+        </form>
+      </> : session ? <>
         <div className="account-modal-heading"><div className="account-modal-icon"><LogIn size={20}/></div><div><strong>Account</strong><span>{session.user.email}</span></div></div>
         <p className="account-modal-copy">Your Zoologist progress is linked to this account and can be loaded on another device.</p>
         <button className="account-modal-primary" type="button" onClick={logout} disabled={busy}><LogOut size={15}/> {busy ? 'Signing out…' : 'Sign out'}</button>

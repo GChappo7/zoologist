@@ -607,7 +607,12 @@ function QuestsView({initialStatuses={},onStatusesChange}){
       </div>
 
       <div className="quest-log-controls">
-        <div className="quest-filters">
+        <div className="quest-filters"
+          style={{
+            '--box-left': `url("${import.meta.env.BASE_URL}assets/ui/box/1229_0%20leftSectionBox.png")`,
+            '--box-mid': `url("${import.meta.env.BASE_URL}assets/ui/box/1230_0%20midSectionBox.png")`,
+            '--box-right': `url("${import.meta.env.BASE_URL}assets/ui/box/1231_0%20rightSectionBox.png")`,
+          }}>
           {[
             ['all','All',counts.all],
             ['revealed','Revealed',counts.revealed],

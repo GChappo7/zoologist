@@ -1656,7 +1656,6 @@
   font: 11px var(--font-runescape) !important;
   cursor: pointer !important;
   text-shadow: 1px 1px 0 #17130f !important;
-  isolation: isolate !important;
 }
 .quest-filters button::before,
 .quest-filters button::after {
@@ -1668,7 +1667,6 @@
   background-repeat: no-repeat !important;
   background-size: 100% 100% !important;
   pointer-events: none !important;
-  z-index: -1 !important;
 }
 .quest-filters button::before {
   left: 0 !important;

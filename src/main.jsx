@@ -146,6 +146,8 @@ const CREATURE_IMAGE_ALIASES={
 }
 const CREATURE_IMAGE_URL_ALIASES={
   'Kharid Scorpion':'https://oldschool.runescape.wiki/images/Kharid_Scorpion.png',
+  'Warped Tortoise':'https://oldschool.runescape.wiki/images/Warped_Tortoise.png',
+  'Swamp toad':'https://oldschool.runescape.wiki/images/Swamp_toad_(item)_detail.png',
 }
 const RAW_FISH_WIKI_IMAGES={
   Shrimp:'Raw_shrimps_detail.png',

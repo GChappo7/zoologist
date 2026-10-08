@@ -759,8 +759,9 @@ function DiariesView({statuses={},onStatusClick}){
 function ShopView(){
   return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><ShoppingBag size={14}/> ZOOLOGIST POINTS</div><h1>Shop</h1><p>Boss tasks will award Zoologist Points. Costs remain configurable until the progression rules are finalized.</p></div><div className="shop-grid">{shop.items.map(item=><div className="shop-card" key={item.id}><div className="shop-card-icon"><Sparkles size={17}/></div><strong>{item.name}</strong><p>{item.description}</p><span>Cost: TBD</span></div>)}</div></div>
 }
-function BossView(){
-  return <div className="full-tab-page"><div className="tab-page-heading"><div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div><h1>Boss Tasks</h1><p>Boss layers are ready to award Zoologist Points once boss placement and task eligibility are finalized.</p></div><div className="boss-empty"><MapPinned size={28}/><strong>Boss pool not assigned yet</strong><span>{bossSystem.tasks.length} boss tasks configured</span></div></div>
+function BossView({creatures=[]}){
+  const creatureByName=useMemo(()=>new Map(creatures.map(c=>[String(c.name||'').trim().toLowerCase(),c])),[creatures])
+  return <div className="full-tab-page boss-page"><div className="tab-page-heading"><div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div><h1>Boss Tasks</h1><p>Bosses that will need to be slain. Creature tiles are shown where a direct association exists.</p></div><div className="boss-grid">{bossSystem.tasks.map(boss=>{const creature=boss.creature?creatureByName.get(String(boss.creature).trim().toLowerCase()):null;return <div className="boss-card" key={boss.id}><div className="boss-card-main"><div className="boss-icon"><Skull size={20}/></div><div><strong>{boss.name}</strong><span>{boss.category}</span></div></div><div className="boss-association"><span className="boss-association-label">Creature tile</span>{creature?<><span className="boss-creature-name">{creature.name}</span><span className="boss-creature-status">Creature not recorded</span></>:<span className="boss-no-association">No associated creature tile</span>}</div><div className="boss-status">Boss: <b>Not slain</b></div></div>})}</div></div>
 }
 function resolveReservedReward(reward,skillProgress){
   if(!reward)return null
@@ -1408,7 +1409,7 @@ function App(){
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>
     :tab==='shop'?<ShopView/>
-    :tab==='bosses'?<BossView/>
+    :tab==='bosses'?<BossView creatures={creatures}/>
     :<MapView
       key={`${session?.user?.id??'local'}-${gameState.worldId??'legacy'}-${resetVersion}`}
       creatures={creatures}

@@ -799,21 +799,56 @@ const BOSS_IMAGE_FILENAMES = {
   'ba-ba':'Ba-Ba.png',
   'zebak':'Zebak.png',
 }
+const BOSS_IMAGE_FILENAMES = {
+  'bryophyta':'Bryophyta.png',
+  'obor':'Obor.png',
+  'giant-mole':'Giant_Mole.png',
+  'scurrius':'Scurrius.png',
+  'sarachnis':'Sarachnis.png',
+  'hespori':'Hespori.png',
+  'dagannoth-kings':'Dagannoth_Kings.png',
+  'king-black-dragon':'King_Black_Dragon.png',
+  'scorpia':'Scorpia.png',
+  'callisto':'Callisto.png',
+  'venenatis':'Venenatis.png',
+  'corporeal-beast':'Corporeal_Beast.png',
+  'general-graardor':'General_Graardor.png',
+  'kreearra':"Kree'arra.png",
+  'kril-tsutsaroth':"K'ril_Tsutsaroth.png",
+  'kraken':'Kraken.png',
+  'cerberus':'Cerberus.png',
+  'thermonuclear-smoke-devil':'Thermonuclear_smoke_devil.png',
+  'abyssal-sire':'Abyssal_Sire.png',
+  'grotesque-guardians':'Grotesque_Guardians.png',
+  'alchemical-hydra':'Alchemical_Hydra.png',
+  'araxxor':'Araxxor.png',
+  'shellbane-gryphon':'Shellbane_gryphon.png',
+  'zulrah':'Zulrah.png',
+  'vorkath':'Vorkath.png',
+  'the-leviathan':'The_Leviathan.png',
+  'wintertodt':'Wintertodt.png',
+  'great-olm':'Great_Olm.png',
+  'kephri':'Kephri.png',
+  'ba-ba':'Ba-Ba.png',
+  'zebak':'Zebak.png',
+}
 function bossImageCandidates(boss){
   const filename=BOSS_IMAGE_FILENAMES[boss.id]
   if(!filename)return []
   const mobileFilename=filename.replace(/\.png$/i,'_icon_(mobile).png')
-  return [
-    `https://oldschool.runescape.wiki/images/${encodeURIComponent(mobileFilename)}`,
-    `https://oldschool.runescape.wiki/images/${encodeURIComponent(filename)}`,
-  ]
+  const detailFilename=filename.replace(/\.png$/i,'_icon_(detail).png')
+  const direct=[mobileFilename,filename,detailFilename]
+  return [...new Set(direct.flatMap(name=>[
+    `https://oldschool.runescape.wiki/images/${encodeURIComponent(name)}`,
+    `https://oldschool.runescape.wiki/w/Special:Redirect/file/${encodeURIComponent(name)}`,
+  ]))]
 }
 function BossPixelImage({boss}){
   const candidates=bossImageCandidates(boss)
   const [index,setIndex]=useState(0)
   useEffect(()=>setIndex(0),[boss.id])
-  if(!candidates.length)return <Skull size={46}/>
-  return <img src={candidates[index]} alt="" draggable="false" onError={()=>setIndex(current=>current+1<candidates.length?current+1:candidates.length)}/>
+  if(!candidates.length||index>=candidates.length)return <Skull size={46}/>
+  return <img src={candidates[index]} alt="" draggable="false" onError={()=>setIndex(current=>current+1)}/>
 }
 
 function BossView({creatures=[],mapTiles={},bossProgress={},onBossProgressChange}){

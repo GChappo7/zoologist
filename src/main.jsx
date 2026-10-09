@@ -1409,7 +1409,7 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,sk
     </div>}
   </aside>
 }
-function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkillRewardComplete,onDiaryRewardComplete,onCreatureCompleted,initialTiles,onTilesChange,rewardAssignments,bossProgress,bossRewards,onRewardAssignmentsChange,onBossClick,focusCreatureId=null}){
+function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkillRewardComplete,onDiaryRewardComplete,onCreatureCompleted,initialTiles,onTilesChange,rewardAssignments,bossProgress,bossRewards,onRewardAssignmentsChange,onBossClick,focusCreatureId=null,onFocusCreatureHandled}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[dismissingTileKey,setDismissingTileKey]=useState(null),[closingPopupTileKey,setClosingPopupTileKey]=useState(null),[startCreature]=useState(()=>creatureById[initialTiles?.[keyFor(0,0)]?.creatureId]??pickStartingCreature(creatures))
   const [generatedRewardAssignments]=useState(()=>rewardAssignments??buildRewardAssignments(creatures,startCreature))
@@ -1427,7 +1427,8 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     setPan({x:-target.x*TILE_STEP,y:-target.y*TILE_STEP})
     setSelectedTile(target)
     setPanelOpen(false)
-  },[focusCreatureId,tiles])
+    onFocusCreatureHandled?.()
+  },[focusCreatureId,tiles,onFocusCreatureHandled])
   useEffect(()=>{onTilesChange?.(tiles)},[tiles,onTilesChange])
   useEffect(()=>{
     if(rewardAssignments||!startCreature)return
@@ -2022,6 +2023,7 @@ function App(){
     :<MapView
       key={`${session?.user?.id??'local'}-${gameState.worldId??'legacy'}-${resetVersion}`}
       focusCreatureId={focusCreatureId}
+      onFocusCreatureHandled={()=>setFocusCreatureId(null)}
       creatures={creatures}
       onProgressChange={setProgress}
       skillProgress={skillProgress}

@@ -1000,9 +1000,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
         if(required.has(questKey))return false
         return !Object.values(rewardAssignments||{}).some(value=>String(value?.type).toLowerCase()==='quest'&&String(value?.questId??value?.label??value?.name??'').trim().toLowerCase()===questKey)
       }
-      if(String(reward.type).toLowerCase()==='diary'){
-        return !Object.values(rewardAssignments||{}).some(value=>String(value?.id)===String(reward.id))
-      }
+      if(String(reward.type).toLowerCase()==='diary')return false
       return false
     }
 
@@ -1091,8 +1089,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
           ? <div className="boss-reward-category-grid">
               <button type="button" className="boss-reward-category" onClick={()=>setRewardCategory('quest')}><ProgressionIcon type="quest"/><strong>Quest</strong><span>Receive a quest reward</span></button>
               <button type="button" className="boss-reward-category" onClick={()=>setRewardCategory('skill')}><ProgressionIcon type="skill" skill="Fishing"/><strong>Skill</strong><span>Unlock your next skill level band</span></button>
-              <button type="button" className="boss-reward-category" onClick={()=>setRewardCategory('diary')}><ProgressionIcon type="diary"/><strong>Diary</strong><span>Receive an achievement diary reward</span></button>
-            </div>
+                    </div>
           : <div className="boss-reward-choice-view">
               <button type="button" className="boss-reward-back" onClick={()=>setRewardCategory(null)}>← Back to reward types</button>
               <div className="boss-reward-choice-list">
@@ -1205,9 +1202,10 @@ function getUsedQuestRewardKeys(tiles){
 }
 
 function createTileReward(creature,skillProgress,distance=Infinity,usedQuestRewards=new Set(),rewardAssignments=null,diaryStatuses={}){
+  // Achievement Diaries are milestone bonuses, never standard creature-tile rewards.
   const reservedReward=getAssignedReward(rewardAssignments,creature)
   if(reservedReward)return reservedReward
-  return weightedRandomPick(getAvailableDiaryRewards(diaryStatuses),reward=>getDiaryTierWeight(reward.tier,distance))
+  return getRandomSkillReward(creature,skillProgress)
 }
 
 function getTileReward(tile,creature,skillProgress,rewardAssignments,diaryStatuses={}){
@@ -1215,9 +1213,11 @@ function getTileReward(tile,creature,skillProgress,rewardAssignments,diaryStatus
   // This is important for revealed frontier tiles: recalculating their
   // reward on every render can make a quest appear to change or duplicate.
   if(tile?.reward){
-    // Completed diary tiles retain the exact tier they awarded; unfinished tiles
-    // follow the next available tier for their region.
-    if(tile.completed&&String(tile.reward.type).toLowerCase()==='diary')return tile.reward
+    // Preserve legacy completed diary tiles, but diary tiers are no longer normal tile rewards.
+    if(String(tile.reward.type).toLowerCase()==='diary'){
+      if(tile.completed)return tile.reward
+      return getAssignedReward(rewardAssignments,creature)??getRandomSkillReward(creature,skillProgress)
+    }
     return resolveReservedReward(tile.reward,skillProgress,diaryStatuses)
   }
   return resolveReservedReward(createTileReward(creature,skillProgress,Infinity,new Set(),rewardAssignments,diaryStatuses),skillProgress,diaryStatuses)
@@ -1302,7 +1302,7 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,sk
     </div>}
   </aside>
 }
-function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkillRewardComplete,onDiaryRewardComplete,initialTiles,onTilesChange,rewardAssignments,bossProgress,bossRewards,onRewardAssignmentsChange,onBossClick}){
+function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkillRewardComplete,onDiaryRewardComplete,onCreatureCompleted,initialTiles,onTilesChange,rewardAssignments,bossProgress,bossRewards,onRewardAssignmentsChange,onBossClick}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[dismissingTileKey,setDismissingTileKey]=useState(null),[closingPopupTileKey,setClosingPopupTileKey]=useState(null),[startCreature]=useState(()=>creatureById[initialTiles?.[keyFor(0,0)]?.creatureId]??pickStartingCreature(creatures))
   const [generatedRewardAssignments]=useState(()=>rewardAssignments??buildRewardAssignments(creatures,startCreature))
@@ -1482,6 +1482,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     if(String(reward?.type).toLowerCase()==='skill')onSkillRewardComplete?.(reward)
     if(String(reward?.type).toLowerCase()==='diary')onDiaryRewardComplete?.(reward)
     setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:completed}));
+    onCreatureCompleted?.()
     window.setTimeout(()=>setTiles(current=>recomputeFrontier(current,creatures,nextSkillProgress,effectiveRewardAssignments,diaryStatuses)),1700)
     setSelectedTile(completed)
     setDismissingTileKey(keyFor(completed.x,completed.y))
@@ -1520,6 +1521,8 @@ function App(){
   const [rewardAssignments,setRewardAssignments]=useState(()=>hasValidRewardAssignments(gameState.rewardAssignments)?gameState.rewardAssignments:null)
   const [questStatuses,setQuestStatuses]=useState(gameState.questStatuses||{})
   const [diaryStatuses,setDiaryStatuses]=useState(gameState.diaryStatuses||{})
+  const [diaryMilestone,setDiaryMilestone]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('zoologist-diary-milestone')||'null');if(saved&&Number.isInteger(saved.count)&&Number.isInteger(saved.target)&&saved.target>=15&&saved.target<=30)return saved}catch{};return gameState.diaryMilestone&&Number.isInteger(gameState.diaryMilestone.target)?gameState.diaryMilestone:{count:0,target:15+Math.floor(Math.random()*16)}})
+  const [diaryReveal,setDiaryReveal]=useState(null)
   const [bossProgress,setBossProgress]=useState(gameState.bossProgress||{})
   const [bossRewards,setBossRewards]=useState(gameState.bossRewards||{})
   const [resetVersion,setResetVersion]=useState(0)
@@ -1606,6 +1609,8 @@ function App(){
           setRewardAssignments(next.rewardAssignments||null)
           setQuestStatuses(next.questStatuses||{})
           setDiaryStatuses(next.diaryStatuses||{})
+          const loadedMilestone=next.diaryMilestone??diaryMilestone
+          setDiaryMilestone(loadedMilestone&&Number.isInteger(loadedMilestone.target)&&loadedMilestone.target>=15&&loadedMilestone.target<=30?{count:Math.max(0,Math.min(loadedMilestone.target-1,Number(loadedMilestone.count)||0)),target:loadedMilestone.target}:{count:0,target:15+Math.floor(Math.random()*16)})
           setBossProgress(next.bossProgress||{})
           setBossRewards(next.bossRewards||{})
           setAccountReady(true)
@@ -1626,6 +1631,7 @@ function App(){
 
   useEffect(()=>localStorage.setItem('zoologist-skill-progress',JSON.stringify(skillProgress)),[skillProgress])
   useEffect(()=>localStorage.setItem('zoologist-diary-statuses',JSON.stringify(diaryStatuses)),[diaryStatuses])
+  useEffect(()=>localStorage.setItem('zoologist-diary-milestone',JSON.stringify(diaryMilestone)),[diaryMilestone])
   useEffect(()=>localStorage.setItem('zoologist-boss-progress',JSON.stringify(bossProgress)),[bossProgress])
   useEffect(()=>localStorage.setItem('zoologist-boss-rewards',JSON.stringify(bossRewards)),[bossRewards])
 
@@ -1672,10 +1678,11 @@ function App(){
     const hasUnlockedSkill=Object.values(skillProgress||{}).some(value=>Number(value?.maxLevel)>0)
     const hasQuestProgress=Object.keys(questStatuses||{}).length>0
     const hasDiaryProgress=Object.keys(diaryStatuses||{}).length>0
+    const hasDiaryMilestoneProgress=Number(diaryMilestone?.count)>0
     const hasBossProgress=Object.keys(bossProgress||{}).length>0
     const hasBossRewards=Object.keys(bossRewards||{}).length>0
-    if(!session||!accountReady||resetInProgress||(!hasCompletedTile&&!hasUnlockedSkill&&!hasQuestProgress&&!hasDiaryProgress&&!hasBossProgress&&!hasBossRewards))return
-    const payload={...gameState,skillProgress,rewardAssignments,questStatuses,diaryStatuses,bossProgress,bossRewards}
+    if(!session||!accountReady||resetInProgress||(!hasCompletedTile&&!hasUnlockedSkill&&!hasQuestProgress&&!hasDiaryProgress&&!hasDiaryMilestoneProgress&&!hasBossProgress&&!hasBossRewards))return
+    const payload={...gameState,skillProgress,rewardAssignments,questStatuses,diaryStatuses,diaryMilestone,bossProgress,bossRewards}
     const generation=saveGenerationRef.current
     const timer=window.setTimeout(()=>{
       if(generation!==saveGenerationRef.current)return
@@ -1699,7 +1706,7 @@ function App(){
       queuedSaveRef.current=queuedSaveRef.current.catch(()=>{}).then(save)
     },500)
     return()=>window.clearTimeout(timer)
-  },[session?.user?.id,accountReady,resetInProgress,gameState,skillProgress,rewardAssignments,questStatuses,diaryStatuses,bossProgress,bossRewards])
+  },[session?.user?.id,accountReady,resetInProgress,gameState,skillProgress,rewardAssignments,questStatuses,diaryStatuses,diaryMilestone,bossProgress,bossRewards])
 
   const handleResetProgress=async()=>{
     setResetConfirmOpen(true)
@@ -1742,6 +1749,8 @@ function App(){
       localStorage.removeItem('zoologist-map-tiles')
       localStorage.removeItem('zoologist-reward-assignments')
       localStorage.removeItem('zoologist-quest-statuses')
+       localStorage.removeItem('zoologist-diary-milestone')
+       localStorage.removeItem('zoologist-diary-milestone')
       localStorage.removeItem('zoologist-boss-progress')
       localStorage.removeItem('zoologist-boss-rewards')
       localStorage.removeItem('zoologist-local-save-owner')
@@ -1756,6 +1765,10 @@ function App(){
       setRewardAssignments(null)
       setQuestStatuses({})
       setDiaryStatuses({})
+      const freshDiaryMilestone={count:0,target:15+Math.floor(Math.random()*16)}
+      setDiaryMilestone(freshDiaryMilestone)
+      setDiaryReveal(null)
+      updateGameState({diaryMilestone:freshDiaryMilestone})
       setBossProgress({})
       setBossRewards({})
       setProgress({explored:0,revealed:1})
@@ -1778,6 +1791,19 @@ function App(){
     if(current[key])return current
     return {...current,[key]:'rewarded'}
   })
+  const handleCreatureCompleted=()=>{
+    const available=getAvailableDiaryRewards(diaryStatuses)
+    if(!available.length)return
+    const nextCount=(Number(diaryMilestone?.count)||0)+1
+    const target=Math.max(15,Math.min(30,Number(diaryMilestone?.target)||15))
+    if(nextCount<target){const next={...diaryMilestone,count:nextCount};setDiaryMilestone(next);updateGameState({diaryMilestone:next});return}
+    const weights={Easy:70,Medium:20,Hard:8,Elite:2}
+    const reward=weightedRandomPick(available,item=>weights[item.tier]??0)
+    const nextMilestone={count:0,target:15+Math.floor(Math.random()*16)}
+    setDiaryMilestone(nextMilestone)
+    updateGameState({diaryMilestone:nextMilestone})
+    if(reward){handleDiaryRewardComplete(reward);setDiaryReveal({...reward,earnedAt:Date.now()})}
+  }
   const handleDiaryStatusClick=region=>setDiaryStatuses(current=>{
     const next={...current}
     ;['Easy','Medium','Hard','Elite'].forEach(tier=>{
@@ -1841,6 +1867,7 @@ function App(){
       skillProgress={skillProgress}
       onSkillRewardComplete={handleSkillRewardComplete}
       onDiaryRewardComplete={handleDiaryRewardComplete}
+      onCreatureCompleted={handleCreatureCompleted}
        diaryStatuses={diaryStatuses}
       initialTiles={gameState.mapTiles}
       onTilesChange={resetInProgress?undefined:mapTiles=>updateGameState({mapTiles})}
@@ -1878,6 +1905,18 @@ function App(){
       </div>   </header>
     <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}{questView}{diaryView}</main>
     <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
+    {diaryReveal&&<div className={`diary-reveal-overlay diary-reveal-${String(diaryReveal.tier||'easy').toLowerCase()}`} role="presentation">
+      <div className="diary-reveal-dialog" role="dialog" aria-modal="true" aria-labelledby="diary-reveal-title">
+        <div className="diary-reveal-glow" aria-hidden="true"/>
+        <div className="diary-reveal-eyebrow"><Sparkles size={16}/> BONUS REWARD UNLOCKED <Sparkles size={16}/></div>
+        <div className="diary-reveal-emblem"><img src={PROGRESSION_ASSETS.diaryRegions[diaryReveal.region]||PROGRESSION_ASSETS.diary} alt="" draggable="false"/><span className="diary-reveal-tier-mark">{String(diaryReveal.tier||'').toUpperCase()}</span></div>
+        <div className="diary-reveal-kicker">NEW ACHIEVEMENT DIARY TIER</div>
+        <h2 id="diary-reveal-title">{diaryReveal.region}</h2>
+        <div className="diary-reveal-tier">{diaryReveal.tier} Diary</div>
+        <p>Your research has earned a new diary milestone. You can now work towards this tier's normal OSRS diary tasks.</p>
+        <button type="button" className="diary-reveal-continue" onClick={()=>setDiaryReveal(null)}>CONTINUE</button>
+      </div>
+    </div>}
     <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession} onResetProgress={handleResetProgress} passwordRecovery={passwordRecovery} onPasswordRecoveryComplete={()=>{
       setPasswordRecovery(false)
       supabase.auth.getSession().then(({data})=>setSession(data.session||null))

@@ -3622,3 +3622,14 @@
     transform: translateY(-7px);
   }
 }
+
+
+/* Raise the lock icon a little further on locked boss cards. */
+.boss-card.is-locked .boss-lock-overlay img {
+  transform: translateY(-16px);
+}
+@media (max-width:600px) {
+  .boss-card.is-locked .boss-lock-overlay img {
+    transform: translateY(-12px);
+  }
+}

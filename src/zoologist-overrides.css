@@ -3377,3 +3377,21 @@
 @media (max-width:600px){
   .boss-card.is-locked .boss-locked-message{font-size:14px;}
 }
+
+
+/* Refine locked boss cards: add top breathing room, and style the unlock instruction in OSRS gold text. */
+.boss-card.is-locked .boss-card-title{margin-top:14px;}
+.boss-card.is-locked .boss-image-space,
+.boss-card.is-locked .boss-association{position:relative;z-index:1;}
+.boss-card.is-locked .boss-lock-overlay{z-index:20;}
+.boss-card.is-locked .boss-locked-message{
+  font-family:var(--font-runescape) !important;
+  color:#e6c66f !important;
+  font-size:17px;
+  line-height:1.2;
+  text-shadow:2px 2px 0 #21180b, 0 0 4px rgba(0,0,0,.95);
+}
+@media (max-width:600px){
+  .boss-card.is-locked .boss-card-title{margin-top:14px;}
+  .boss-card.is-locked .boss-locked-message{font-size:15px;}
+}

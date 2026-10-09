@@ -1663,7 +1663,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   const openTile=tile=>{
     if(!tile?.creatureId)return
     if(selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y){
-      playSfx('click')
+      playSfx('reward')
       setClosingPopupTileKey(keyFor(tile.x,tile.y))
       window.setTimeout(()=>{
         setSelectedTile(null)

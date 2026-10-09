@@ -1776,7 +1776,7 @@ function App(){
     quests: 'https://oldschool.runescape.wiki/images/Quests.png',
     diaries: 'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',
     shop: 'https://oldschool.runescape.wiki/images/Inventory.png',
-    bosses: 'https://oldschool.runescape.wiki/images/Dagannoth_Kings.png',
+    bosses: 'https://oldschool.runescape.wiki/images/Dagannoth_Kings_icon_%28mobile%29.png',
   }
   const tabs=[
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText,ref:questsButtonRef},

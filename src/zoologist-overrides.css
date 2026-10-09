@@ -3914,8 +3914,3 @@
 }
 
 
-/* Keep map navigation behaviour, but hide the on-screen help and zoom widgets. */
-.map-page .map-help,
-.map-page .map-zoom-controls {
-  display: none !important;
-}

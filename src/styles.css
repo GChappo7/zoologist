@@ -841,7 +841,14 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 .diary-reveal-dialog{position:relative;isolation:isolate;overflow:hidden;width:min(520px,100%);padding:30px 28px 26px;text-align:center;color:#f7edce;background:linear-gradient(155deg,#302d25 0%,#171a1b 55%,#0e1112 100%);border:2px solid #b99b5a;border-radius:14px;box-shadow:0 0 0 5px rgba(0,0,0,.42),0 24px 90px rgba(0,0,0,.75),0 0 45px var(--diary-reveal-glow,rgba(201,164,76,.25));animation:diaryRevealPop .48s cubic-bezier(.16,1,.3,1) both}
 .diary-reveal-dialog:before{content:"";position:absolute;inset:8px;border:1px solid rgba(226,199,128,.35);border-radius:8px;pointer-events:none;z-index:-1}
 .diary-reveal-glow{position:absolute;z-index:-1;left:50%;top:22%;width:270px;height:270px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--diary-reveal-glow,rgba(218,177,76,.3)),transparent 70%);filter:blur(10px);pointer-events:none}
-.diary-reveal-eyebrow{display:flex;align-items:center;justify-content:center;gap:9px;color:#e6c777;font-size:11px;font-weight:900;letter-spacing:.18em}
+.diary-reveal-dialog{font-family:var(--font-runescape)}
+.diary-reveal-eyebrow{display:flex;align-items:center;justify-content:center;gap:10px;color:#e6c777;font-family:var(--font-runescape);font-size:16px;font-weight:900;letter-spacing:.025em;text-shadow:0 2px 0 #000,0 0 9px rgba(230,199,119,.35)}
+.diary-reveal-side-icon{display:block;width:24px;height:24px;flex:0 0 24px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 2px 0 #090909) drop-shadow(0 0 4px rgba(230,199,119,.55))}
+.diary-reveal-kicker{font-family:var(--font-runescape);font-size:14px;letter-spacing:.04em;text-shadow:0 2px 0 #000}
+.diary-reveal-dialog h2{font-family:var(--font-runescape);font-weight:400;letter-spacing:.015em}
+.diary-reveal-tier{font-family:var(--font-runescape);font-size:23px;font-weight:400;text-shadow:0 2px 0 #000}
+.diary-reveal-dialog p{font-family:var(--font-runescape);font-size:17px;line-height:1.35}
+.diary-reveal-continue{font-family:var(--font-runescape);font-size:18px;font-weight:400;letter-spacing:.03em}
 .diary-reveal-emblem{position:relative;display:grid;place-items:center;width:150px;height:150px;margin:23px auto 18px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.1),rgba(0,0,0,.28) 68%);border:1px solid rgba(255,222,145,.55);box-shadow:0 0 0 7px rgba(0,0,0,.18),0 0 36px var(--diary-reveal-glow,rgba(218,177,76,.3));animation:diaryEmblemFloat 3s ease-in-out infinite}
 .diary-reveal-emblem img{width:100px;height:100px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 5px 10px rgba(0,0,0,.6))}
 .diary-reveal-tier-mark{position:absolute;bottom:-8px;padding:5px 12px;color:#17130a;background:#e6c777;border:2px solid #302819;border-radius:4px;font-size:11px;font-weight:1000;letter-spacing:.1em;box-shadow:0 3px 10px #0009}

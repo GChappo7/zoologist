@@ -41,12 +41,10 @@ const melodies = {
     [1450, 720, 0.045, 0.055, 'square', 0.025],
     [260, 180, 0.075, 0.12, 'triangle', 0.045],
   ],
-  // A more rewarding coin pickup: a low coin clink, rising double chime, and bright final sparkle.
+  // A clean, short confirmation ding rather than a retro game jingle.
   complete: [
-    [520, 390, 0, 0.075, 'triangle', 0.045],
-    [1046, 1318, 0.045, 0.12, 'sine', 0.055],
-    [1568, 2093, 0.105, 0.19, 'sine', 0.05],
-    [1318, 1760, 0.19, 0.22, 'triangle', 0.035],
+    [1174.66, 1174.66, 0, 0.095, 'sine', 0.055],
+    [1567.98, 1567.98, 0.025, 0.12, 'sine', 0.032],
   ],
   // Achievement diary bonus reveal: a distinct, uplifting unlock sparkle.
   diary: [

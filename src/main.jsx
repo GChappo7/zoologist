@@ -1434,10 +1434,16 @@ function getRewardPresentation(reward){
 function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,skillProgress,diaryStatuses,rewardAssignments,closing=false}){
   const [isDismissing,setIsDismissing]=useState(false)
   const [isCompletingClose,setIsCompletingClose]=useState(false)
+  const previousTileKeyRef=useRef(null)
   useEffect(()=>{
     setIsDismissing(false)
     setIsCompletingClose(false)
-    if(selectedTile)playSfx('reward')
+    if(selectedTile){
+      const tileKey=keyFor(selectedTile.x,selectedTile.y)
+      if(previousTileKeyRef.current===null)playSfx('reward')
+      else if(previousTileKeyRef.current!==tileKey)playSfx('click')
+      previousTileKeyRef.current=tileKey
+    }
   },[selectedTile?.x,selectedTile?.y])
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null
@@ -1460,7 +1466,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
         {presentation.subtitle&&<span className="tile-popup-subtitle">{presentation.subtitle}</span>}
       </div>
       <div className="tile-popup-actions">
-        <button type="button" className={`tile-popup-complete ${selectedTile.completed?'is-completed':''} ${isDismissing?'is-ticking':''}`} onClick={()=>{if(isDismissing||selectedTile.completed)return;setIsDismissing(true);onComplete(selectedTile);window.setTimeout(()=>{setIsCompletingClose(true);window.setTimeout(()=>onShowMore?.(false),280)},1000)}} aria-label={selectedTile.completed?'Completed':'Mark complete'} aria-pressed={selectedTile.completed} />
+        <button type="button" className={`tile-popup-complete ${selectedTile.completed?'is-completed':''} ${isDismissing?'is-ticking':''}`} onClick={()=>{if(isDismissing||selectedTile.completed)return;setIsDismissing(true);onComplete(selectedTile);window.setTimeout(()=>{playSfx('reward');setIsCompletingClose(true);window.setTimeout(()=>onShowMore?.(false),280)},1000)}} aria-label={selectedTile.completed?'Completed':'Mark complete'} aria-pressed={selectedTile.completed} />
       </div>
     </div>
   </section>
@@ -1657,6 +1663,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   const openTile=tile=>{
     if(!tile?.creatureId)return
     if(selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y){
+      playSfx('click')
       setClosingPopupTileKey(keyFor(tile.x,tile.y))
       window.setTimeout(()=>{
         setSelectedTile(null)

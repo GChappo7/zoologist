@@ -3014,3 +3014,27 @@
     height: 42px;
   }
 }
+
+/* Boss shortcut icons: increase size again and move further inward from the top-left corner. */
+.tile-boss-shortcuts {
+  top: 26px;
+  left: 24px;
+  right: auto;
+  gap: 6px;
+}
+.tile-boss-shortcut {
+  width: 60px;
+  height: 60px;
+}
+@media (max-width: 760px) {
+  .tile-boss-shortcuts {
+    top: 17px;
+    left: 16px;
+    right: auto;
+    gap: 5px;
+  }
+  .tile-boss-shortcut {
+    width: 50px;
+    height: 50px;
+  }
+}

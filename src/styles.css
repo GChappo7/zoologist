@@ -106,7 +106,7 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 .map-grid { display: grid; gap: 0; transform-origin: center center; pointer-events: auto; will-change: transform; transition: none; }
 .creature-image { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: auto; user-select: none; pointer-events: none; }
 .creature-fallback-glyph { display: block; line-height: 1; }
-.map-tile { position: relative; width: 100%; height: 100%; box-sizing: border-box; border: 1px solid #23313a; background: #0d151a; color: #56656e; display: grid; place-items: center; padding: 5px; cursor: pointer; transition: border-color .13s ease, box-shadow .13s ease, background .13s ease; overflow: hidden; transform: none; }
+.map-tile { position: relative; width: 100%; height: 100%; box-sizing: border-box; border: 1px solid #23313a; background: #0d151a; color: #56656e; display: grid; place-items: center; padding: 5px; cursor: pointer; transition: border-color .13s ease, box-shadow .13s ease; overflow: hidden; transform: none; }
 .map-tile:hover { z-index: 3; }
 .map-tile:focus-visible { outline: 2px solid rgba(238,225,198,.85); outline-offset: -2px; z-index: 4; }
 .map-tile-explored { background: var(--explored-bg); border-color: #385146; }

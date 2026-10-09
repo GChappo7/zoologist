@@ -903,7 +903,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
     const current=Math.max(0,Math.min(target,Number(bossProgress?.[boss.id])||0))
     const associationNames=Array.isArray(boss.creatures)?boss.creatures:(boss.creature?[boss.creature]:[])
     const associatedCreatures=associationNames.map(name=>creatureByName.get(String(name).trim().toLowerCase())).filter(Boolean)
-    const unlocked=associatedCreatures.length>0&&associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id)))
+    const unlocked=associatedCreatures.length>0&&(boss.unlockMode==='all'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))
     const reward=bossRewards?.[boss.id]??null
     return {target,current,associatedCreatures,unlocked,reward}
   }
@@ -1059,8 +1059,8 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
           <div className="boss-association">
             <span className="boss-association-label">Associated creature</span>
             {associatedCreatures.length
-              ? (['callisto','scorpia','king-black-dragon','vorkath','venenatis'].includes(boss.id))
-                ? <span className={`boss-creature-name boss-creature-name-inline${associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id)))?' is-completed':''}`}><span>{{callisto:'Bear(s)',scorpia:'Scorpion(s)','king-black-dragon':'Black Dragon(s)',vorkath:'Blue Dragon(s)',venenatis:'Spider(s) (Except Temple Spider)'}[boss.id]}</span></span>
+              ? (['callisto','scorpia','king-black-dragon','vorkath','venenatis','hueycoatl','royal-titans'].includes(boss.id))
+                ? <span className={`boss-creature-name boss-creature-name-inline${associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id)))?' is-completed':''}`}><span>{{callisto:'Bear(s)',scorpia:'Scorpion(s)','king-black-dragon':'Black Dragon(s)',vorkath:'Blue Dragon(s)',venenatis:'Spider(s) (Except Temple Spider)',hueycoatl:'Green Dragon(s)','royal-titans:'Fire Giant(s) & Ice Giant(s)'}[boss.id]}</span></span>
                 : associatedCreatures.map(creature=><span className={`boss-creature-name${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id}>{creature.name}</span>)
               : <span className="boss-no-association">No associated creature tile</span>}
           </div>

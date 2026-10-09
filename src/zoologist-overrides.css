@@ -3687,3 +3687,13 @@
   cursor: default;
   text-decoration: none;
 }
+
+
+/* Make associated creature links match the OSRS text style without underlines. */
+.boss-association .boss-creature-link {
+  font-family: var(--font-runescape) !important;
+  text-decoration: none !important;
+}
+.boss-association .boss-creature-link:hover:not(:disabled) {
+  text-decoration: none !important;
+}

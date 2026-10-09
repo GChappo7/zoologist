@@ -1203,7 +1203,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
             <span className="boss-association-label">Associated creature</span>
             {associatedCreatures.length
               ? (['callisto','scorpia','king-black-dragon','vorkath','venenatis','hueycoatl','royal-titans'].includes(boss.id))
-                ? <button type="button" className={`boss-creature-name boss-creature-name-inline boss-creature-link${(boss.id==='royal-titans'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))?' is-completed':''}`} onClick={()=>{if(unlocked&&linkedCreature)onCreatureClick?.(linkedCreature.id)}} disabled={!unlocked||!linkedCreature} title={unlocked?'View associated creature on map':'Unlock this boss first'}><span>{{callisto:'Bear(s)',scorpia:'Scorpion(s)','king-black-dragon':'Black Dragon(s)',vorkath:'Blue Dragon(s)',venenatis:'Spider(s) (Except Temple Spider)',hueycoatl:'Green Dragon(s)','royal-titans':'Fire Giant(s) & Ice Giant(s)'}[boss.id]}</span></button>
+                ? <button type="button" className={`boss-creature-name boss-creature-name-inline boss-creature-link${(boss.id==='royal-titans'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))?' is-completed':''}`} onClick={()=>{if(unlocked&&linkedCreature)onCreatureClick?.(boss.id==='scorpia'?'__scorpia_scorpion__':linkedCreature.id)}} disabled={!unlocked||!linkedCreature} title={unlocked?'View associated creature on map':'Unlock this boss first'}><span>{{callisto:'Bear(s)',scorpia:'Scorpion(s)','king-black-dragon':'Black Dragon(s)',vorkath:'Blue Dragon(s)',venenatis:'Spider(s) (Except Temple Spider)',hueycoatl:'Green Dragon(s)','royal-titans':'Fire Giant(s) & Ice Giant(s)'}[boss.id]}</span></button>
                 : associatedCreatures.map(creature=><button type="button" className={`boss-creature-name boss-creature-link${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id} onClick={()=>unlocked&&onCreatureClick?.(creature.id)} disabled={!unlocked} title={unlocked?'View this creature on map':'Unlock this boss first'}>{creature.name}</button>)
               : <span className="boss-no-association">No associated creature tile</span>}
           </div>
@@ -1511,9 +1511,15 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   useEffect(()=>{zoomRef.current=zoom},[zoom])
   useEffect(()=>{
     if(!focusCreatureId)return
-    const matchingTiles=Object.values(tiles).filter(tile=>String(tile?.creatureId)===String(focusCreatureId)||String(creatureById[tile?.creatureId]?.name||'').trim().toLowerCase()===String(focusCreatureId).trim().toLowerCase())
-    // Prefer the already-completed copy when navigating from a boss association.
-    // This keeps the shortcut anchored to the creature tile the player has recorded.
+    const isScorpiaShortcut=String(focusCreatureId)==='__scorpia_scorpion__'
+    const matchingTiles=Object.values(tiles).filter(tile=>{
+      const name=String(creatureById[tile?.creatureId]?.name||'').trim().toLowerCase()
+      return isScorpiaShortcut
+        ? name.includes('scorpion')
+        : String(tile?.creatureId)===String(focusCreatureId)||name===String(focusCreatureId).trim().toLowerCase()
+    })
+    // Scorpia's association covers the Scorpion creature family, so prioritise
+    // any completed scorpion tile rather than a single named creature ID.
     const target=matchingTiles.find(tile=>tile?.completed)??matchingTiles[0]
     if(!target)return
     setZoom(1)

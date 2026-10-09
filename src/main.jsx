@@ -2034,11 +2034,21 @@ function App(){
   }
   const handleDiaryStatusClick=region=>setDiaryStatuses(current=>{
     const next={...current}
-    ;['Easy','Medium','Hard','Elite'].forEach(tier=>{
+    const tiers=['Easy','Medium','Hard','Elite']
+    const hasCompleted=tiers.some(tier=>next[`${region}|${tier}`]==='completed')
+    let changed=false
+    tiers.forEach(tier=>{
       const key=`${region}|${tier}`
-      if(next[key]==='rewarded')next[key]='completed'
+      if(hasCompleted&&next[key]==='completed'){
+        next[key]='rewarded'
+        changed=true
+      }else if(!hasCompleted&&next[key]==='rewarded'){
+        next[key]='completed'
+        changed=true
+      }
     })
-    return next
+    if(changed)playSfx('click')
+    return changed?next:current
   })
   const handleSkillRewardComplete=reward=>{
     const skill=reward?.skill

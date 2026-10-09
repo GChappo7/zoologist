@@ -3428,3 +3428,26 @@
     margin-top:10px !important;
   }
 }
+
+
+/* Keep the boss name anchored at the top; put the extra whitespace only between title and pixel art. */
+.boss-card.is-locked{
+  padding-top:8px !important;
+}
+.boss-card.is-locked .boss-card-title{
+  margin-top:0 !important;
+}
+.boss-card.is-locked .boss-image-space{
+  margin-top:30px !important;
+}
+@media (max-width:600px){
+  .boss-card.is-locked{
+    padding-top:8px !important;
+  }
+  .boss-card.is-locked .boss-card-title{
+    margin-top:0 !important;
+  }
+  .boss-card.is-locked .boss-image-space{
+    margin-top:24px !important;
+  }
+}

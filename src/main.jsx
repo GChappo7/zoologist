@@ -1165,7 +1165,6 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
 
   return <div className="full-tab-page boss-page">
     <div className="tab-page-heading">
-      <div className="eyebrow"><Skull size={14}/> BOSS LAYERS</div>
       <h1>Boss Tasks</h1>
       <p>Complete the associated creature tile to unlock each boss, then track the required kill count.</p>
     </div>

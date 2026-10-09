@@ -385,7 +385,12 @@ function getRandomSkillReward(creature,skillProgress){
     return nextReward&&canAssignSkillReward(creature,{...nextReward,type:'skill',skill})
   })
   if(!validSkills.length)return null
-  const skill=validSkills[Math.floor(Math.random()*validSkills.length)]
+  // Unassigned/legacy tiles can be rendered repeatedly. Choose their fallback skill
+  // from the creature ID so React renders cannot make the reward icon cycle randomly.
+  const seed=String(creature?.id??creature?.name??'zoologist')
+  let hash=0
+  for(let i=0;i<seed.length;i+=1)hash=(hash*31+seed.charCodeAt(i))>>>0
+  const skill=validSkills[hash%validSkills.length]
   const reward=getNextSkillBand(skillProgress??getInitialSkillProgress(),skill)
   return reward?{...reward,type:'skill',skill}:null
 }
@@ -1663,7 +1668,9 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   }
   const handleReveal=tile=>{
     if(!tile?.faceDown)return
-    const revealed={...tile,faceDown:false}
+    const creature=creatureById[tile.creatureId]
+    const reward=getTileReward(tile,creature,skillProgress,effectiveRewardAssignments,diaryStatuses)
+    const revealed={...tile,faceDown:false,...(reward?{reward}:{})}
     setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:revealed}))
     setFogVisible(true)
     openTile(revealed)

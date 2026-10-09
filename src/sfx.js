@@ -47,6 +47,13 @@ const melodies = {
     [1568, 2093, 0.105, 0.19, 'sine', 0.05],
     [1318, 1760, 0.19, 0.22, 'triangle', 0.035],
   ],
+  // Achievement diary bonus reveal: a distinct, uplifting unlock sparkle.
+  diary: [
+    [659, 784, 0, 0.11, 'triangle', 0.04],
+    [988, 1175, 0.075, 0.14, 'sine', 0.045],
+    [1318, 1568, 0.16, 0.2, 'sine', 0.05],
+    [1760, 1760, 0.26, 0.23, 'sine', 0.035],
+  ],
   boss: [
     [392, 392, 0, 0.13, 'triangle', 0.04],
     [523, 523, 0.09, 0.13, 'triangle', 0.04],

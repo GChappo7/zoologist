@@ -3605,3 +3605,20 @@
   content: none !important;
   display: none !important;
 }
+
+
+/* Small final spacing tweak for locked boss cards: lower the unlock instruction and lift the lock artwork slightly. */
+.boss-card.is-locked .boss-locked-message {
+  margin-top: 36px !important;
+}
+.boss-card.is-locked .boss-lock-overlay img {
+  transform: translateY(-10px);
+}
+@media (max-width:600px) {
+  .boss-card.is-locked .boss-locked-message {
+    margin-top: 30px !important;
+  }
+  .boss-card.is-locked .boss-lock-overlay img {
+    transform: translateY(-7px);
+  }
+}

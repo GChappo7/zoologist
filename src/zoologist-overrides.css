@@ -3324,3 +3324,8 @@
     min-width: 22px;
   }
 }
+
+
+/* Locked boss cards show the unlock requirement before their associated creatures. */
+.boss-card.is-locked .boss-locked-message{order:2;position:relative;z-index:21;}
+.boss-card.is-locked .boss-association{order:3;position:relative;z-index:21;}

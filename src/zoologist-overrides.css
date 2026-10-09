@@ -3655,3 +3655,35 @@
     padding-top: 0 !important;
   }
 }
+
+
+/* Associated creature names on unlocked boss cards act as links to their map tiles. */
+.boss-association .boss-creature-link {
+  appearance: none;
+  display: inline-block;
+  margin: 2px 5px 2px 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #e8d6a6;
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(232,214,166,.55);
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.boss-association .boss-creature-link:hover:not(:disabled) {
+  color: #ffe066;
+  text-decoration-color: currentColor;
+}
+.boss-association .boss-creature-link:focus-visible {
+  outline: 1px solid #ffe066;
+  outline-offset: 3px;
+}
+.boss-association .boss-creature-link.is-completed {
+  color: #91c995;
+}
+.boss-association .boss-creature-link:disabled {
+  cursor: default;
+  text-decoration: none;
+}

@@ -14,6 +14,7 @@ export const EMPTY_GAME_STATE = {
   questStatuses: {},
   bossProgress: {},
   bossRewards: {},
+  diaryMilestone: null,
 }
 
 export function readLocalGameState() {
@@ -22,6 +23,7 @@ export function readLocalGameState() {
   let rewardAssignments = null
   let questStatuses = {}
   let diaryStatuses = {}
+  let diaryMilestone = null
   let bossProgress = {}
   let bossRewards = {}
   let worldId = null
@@ -30,10 +32,11 @@ export function readLocalGameState() {
   try { rewardAssignments = JSON.parse(localStorage.getItem('zoologist-reward-assignments') || 'null') } catch {}
   try { questStatuses = JSON.parse(localStorage.getItem('zoologist-quest-statuses') || '{}') } catch {}
   try { diaryStatuses = JSON.parse(localStorage.getItem('zoologist-diary-statuses') || '{}') } catch {}
+  try { diaryMilestone = JSON.parse(localStorage.getItem('zoologist-diary-milestone') || 'null') } catch {}
   try { bossProgress = JSON.parse(localStorage.getItem('zoologist-boss-progress') || '{}') } catch {}
   try { bossRewards = JSON.parse(localStorage.getItem('zoologist-boss-rewards') || '{}') } catch {}
   try { worldId = localStorage.getItem('zoologist-world-id') || null } catch {}
-  return { ...EMPTY_GAME_STATE, worldId, skillProgress, mapTiles, rewardAssignments, questStatuses, diaryStatuses, bossProgress, bossRewards }
+  return { ...EMPTY_GAME_STATE, worldId, skillProgress, mapTiles, rewardAssignments, questStatuses, diaryStatuses, diaryMilestone, bossProgress, bossRewards }
 }
 
 export async function loadCloudGameState(userId) {

@@ -3154,3 +3154,10 @@
 .tile-boss-shortcut.is-boss-complete:focus-visible > img:not(.tile-boss-shortcut-tick) {
   filter: grayscale(1) brightness(.86);
 }
+
+
+/* Slightly reduce the background completion tick on completed creature map tiles. */
+.tile-completed-tick {
+  width: 215px !important;
+  height: 215px !important;
+}

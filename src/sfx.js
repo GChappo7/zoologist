@@ -34,12 +34,11 @@ function tone(ctx, { frequency, endFrequency = frequency, start, duration, type 
 
 // Short, soft retro sounds generated locally; no audio files or external requests.
 const melodies = {
-  // Clearly audible card flip: a quick descending swish with a crisp card-edge tick.
+  // Short, clearly audible two-part card flip. Fixed pitches avoid the fast
+  // frequency sweeps that can be hard to hear on some browser audio systems.
   flip: [
-    [680, 210, 0, 0.16, 'sawtooth', 0.065],
-    [980, 420, 0.018, 0.105, 'triangle', 0.055],
-    [1450, 720, 0.045, 0.055, 'square', 0.025],
-    [260, 180, 0.075, 0.12, 'triangle', 0.045],
+    [880, 880, 0, 0.075, 'triangle', 0.075],
+    [587.33, 587.33, 0.045, 0.11, 'sine', 0.065],
   ],
   // A clean, short confirmation ding rather than a retro game jingle.
   complete: [
@@ -68,17 +67,22 @@ export function playSfx(name) {
   const notes = melodies[name]
   if (!ctx || !notes) return
 
-  // Schedule the tones immediately in the click/pointer gesture. Web Audio can
-  // queue nodes while suspended; resuming afterwards lets the queued sound play
-  // without relying on a promise callback that may lose the browser's activation.
-  if (!isSfxEnabled()) return
-  const now = ctx.currentTime + 0.012
-  try {
-    notes.forEach(([frequency, endFrequency, offset, duration, type, volume]) => {
-      tone(ctx, { frequency, endFrequency, start: now + offset, duration, type, volume })
-    })
-  } catch {
-    // If the context was interrupted, try to resume it for the next interaction.
+  // Request resume synchronously from the user's interaction. If the browser
+  // suspended audio, schedule notes only once the context is actually running.
+  const schedule = () => {
+    if (!isSfxEnabled() || ctx.state !== 'running') return
+    const now = ctx.currentTime + 0.012
+    try {
+      notes.forEach(([frequency, endFrequency, offset, duration, type, volume]) => {
+        tone(ctx, { frequency, endFrequency, start: now + offset, duration, type, volume })
+      })
+    } catch {
+      // A browser may interrupt audio while the page is backgrounded.
+    }
   }
-  if (ctx.state !== 'running') ctx.resume().catch(() => {})
+  if (ctx.state === 'running') {
+    schedule()
+    return
+  }
+  ctx.resume().then(schedule).catch(() => {})
 }

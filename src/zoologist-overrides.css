@@ -3767,11 +3767,20 @@
 .boss-reward-scroll-down { bottom: 0; }
 .boss-reward-scroll-track {
   position: absolute; top: 22px; right: 0; bottom: 22px; left: 0;
+  z-index: 1;
   background: url("/zoologist/assets/ui/scroll/792_0%20scrollBack.png") center top / 100% auto repeat-y;
+  cursor: pointer;
+  touch-action: none;
 }
 .boss-reward-scroll-thumb {
   position: absolute; top: 0; left: 0; width: 100%; min-height: 28px; box-sizing: border-box;
-  background: url("/zoologist/assets/ui/scroll/790_0%20scrollMiddle.png") center / 100% auto repeat-y;
+  background-color: #a99a7b;
+  background-image: url("/zoologist/assets/ui/scroll/790_0%20scrollMiddle.png");
+  background-position: center;
+  background-size: 100% auto;
+  background-repeat: repeat-y;
+  border: 1px solid #d2c19b;
+  box-shadow: inset 0 0 0 1px #554a37, 0 0 2px #000;
   cursor: grab;
 }
 .boss-reward-scroll-thumb:active { cursor: grabbing; }
@@ -3820,7 +3829,7 @@
   touch-action: none;
 }
 .boss-reward-scroll-thumb {
-  pointer-events: none;
+  pointer-events: auto;
 }
 @media (max-width:560px) {
   .boss-reward-category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

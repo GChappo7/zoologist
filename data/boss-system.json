@@ -35,6 +35,14 @@
       "kcRequired": 25
     },
     {
+      "id": "brutus",
+      "name": "Brutus",
+      "category": "Boss",
+      "creature": "Bull",
+      "status": "not_slain",
+      "kcRequired": 250
+    },
+    {
       "id": "bryophyta",
       "name": "Bryophyta",
       "category": "Free-to-play",

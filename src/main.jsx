@@ -1466,7 +1466,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
         {presentation.subtitle&&<span className="tile-popup-subtitle">{presentation.subtitle}</span>}
       </div>
       <div className="tile-popup-actions">
-        <button type="button" className={`tile-popup-complete ${selectedTile.completed?'is-completed':''} ${isDismissing?'is-ticking':''}`} onClick={()=>{if(isDismissing||selectedTile.completed)return;setIsDismissing(true);onComplete(selectedTile);window.setTimeout(()=>{playSfx('reward');setIsCompletingClose(true);window.setTimeout(()=>onShowMore?.(false),280)},1000)}} aria-label={selectedTile.completed?'Completed':'Mark complete'} aria-pressed={selectedTile.completed} />
+        <button type="button" className={`tile-popup-complete ${selectedTile.completed?'is-completed':''} ${isDismissing?'is-ticking':''}`} onMouseEnter={()=>{if(!isDismissing&&!selectedTile.completed)playSfx('click')}} onFocus={()=>{if(!isDismissing&&!selectedTile.completed)playSfx('click')}} onClick={()=>{if(isDismissing||selectedTile.completed)return;setIsDismissing(true);onComplete(selectedTile);window.setTimeout(()=>{playSfx('reward');setIsCompletingClose(true);window.setTimeout(()=>onShowMore?.(false),280)},1000)}} aria-label={selectedTile.completed?'Completed':'Mark complete'} aria-pressed={selectedTile.completed} />
       </div>
     </div>
   </section>

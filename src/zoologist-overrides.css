@@ -3109,3 +3109,16 @@
 .tile-boss-shortcut.is-boss-complete:focus-visible {
   filter: grayscale(1) brightness(.82);
 }
+
+
+/* Nudge the boss completion tick slightly inward from the bottom-right corner. */
+.tile-boss-shortcut-tick {
+  right: -1px;
+  bottom: -1px;
+}
+@media (max-width: 760px) {
+  .tile-boss-shortcut-tick {
+    right: 0;
+    bottom: 0;
+  }
+}

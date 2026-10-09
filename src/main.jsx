@@ -5,6 +5,7 @@ import {
   LayoutGrid, MousePointer2, PawPrint, ScrollText, ShieldCheck,
   Sparkles, Users, Search, ShoppingBag, Skull, MapPinned
 } from 'lucide-react'
+import { isSfxEnabled, playSfx, setSfxEnabled } from './sfx'
 import './styles.css'
 import './zoologist-overrides.css'
 import creatureCsv from '../data/creatures.csv?raw'
@@ -1049,6 +1050,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
 
   const claimBossReward=(reward)=>{
     if(!rewardModalBoss||!reward)return
+    playSfx('boss')
     const replacement=findReplacementReward(reward,reward.tileKey)
 
     // The map tile stores its current reward, so changing only the global
@@ -1661,6 +1663,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   }
   const handleReveal=tile=>{
     if(!tile?.faceDown)return
+    playSfx('reveal')
     const revealed={...tile,faceDown:false}
     setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:revealed}))
     setFogVisible(true)
@@ -1668,6 +1671,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   }
   const handleComplete=tile=>{
     if(!tile||tile.state!=='frontier'||tile.completed||tile.faceDown)return
+    playSfx('complete')
     const reward=getTileReward(tile,creatureById[tile.creatureId],skillProgress,effectiveRewardAssignments,diaryStatuses)
     const completed={...tile,state:'explored',completed:true,faceDown:false,reward}
     const nextSkillProgress=String(reward?.type).toLowerCase()==='skill'
@@ -1701,6 +1705,7 @@ function App(){
   const skillsButtonRef=useRef(null)
   const questsButtonRef=useRef(null)
   const diariesButtonRef=useRef(null)
+  const [soundEnabled,setSoundEnabled]=useState(()=>isSfxEnabled())
   const [accountOpen,setAccountOpen]=useState(false)
   const [resetConfirmOpen,setResetConfirmOpen]=useState(false)
   const [resetInProgress,setResetInProgress]=useState(false)
@@ -2140,6 +2145,7 @@ function App(){
       </div>
       <nav className="top-tabs">{tabs.map(({id,label,icon:Icon,ref})=><button type="button" key={id} ref={ref|| (id==='skills'?skillsButtonRef:undefined)} className={`top-tab-${id} ${(id==='skills'?skillsOpen:tab===id&&!(id==='map'&&skillsOpen))?'active':''}`} onClick={()=>handleTabClick(id)} aria-expanded={id==='skills'?skillsOpen:undefined}>{OSRS_TAB_ICONS[id]?<img className="osrs-top-tab-icon" src={OSRS_TAB_ICONS[id]} alt="" aria-hidden="true" draggable="false"/>:<Icon size={16}/>}<span>{label}</span></button>)}</nav>
       <div className="header-actions">
+        <button type="button" className="sound-toggle" onClick={()=>{const next=!soundEnabled;setSoundEnabled(next);setSfxEnabled(next);if(next)playSfx('click')}} aria-label={soundEnabled?'Mute sound effects':'Enable sound effects'} title={soundEnabled?'Sound effects on':'Sound effects off'}>{soundEnabled?'♫':'♪̸'}</button>
         <button className={`account-button ${session?'account-button-signed-in':''}`} onClick={()=>setAccountOpen(true)} aria-label="Account" title="Account"><img className="account-button-icon" src="https://oldschool.runescape.wiki/images/Account_Management_-_Name_Changer_icon.png" alt="" aria-hidden="true" draggable="false"/>{session&&<i className="account-status-dot" aria-label="Cloud save connected"/>}</button>
       </div>   </header>
     <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}{questView}{diaryView}</main>

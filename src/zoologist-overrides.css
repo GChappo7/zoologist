@@ -3468,3 +3468,20 @@
     margin-top:14px !important;
   }
 }
+
+
+/* Final spacing correction: leave the title and artwork positioning alone; add space only after the artwork. */
+.boss-card.is-locked .boss-card-title{
+  margin-top:0 !important;
+}
+.boss-card.is-locked .boss-locked-message{
+  margin-top:28px !important;
+}
+@media (max-width:600px){
+  .boss-card.is-locked .boss-card-title{
+    margin-top:0 !important;
+  }
+  .boss-card.is-locked .boss-locked-message{
+    margin-top:22px !important;
+  }
+}

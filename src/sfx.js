@@ -119,7 +119,10 @@ export function playSfx(name, count = 1) {
         // Each revealed card gets its own lightly staggered sound, so a batch
         // of three cards is heard as three overlapping physical flips.
         const voices = Math.max(1, Math.min(12, Math.floor(Number(count) || 1)))
-        for (let i = 0; i < voices; i++) cardFlip(ctx, now + i * 0.024, 0.055 / Math.sqrt(Math.max(1, voices * 0.55)))
+        // Spread each card shuffle across the reveal beat so individual flips
+        // are easier to distinguish when several tiles appear together.
+        const spacing = voices > 1 ? Math.min(0.105, 0.42 / (voices - 1)) : 0
+        for (let i = 0; i < voices; i++) cardFlip(ctx, now + i * spacing, 0.055 / Math.sqrt(Math.max(1, voices * 0.55)))
       } else {
         notes.forEach(([frequency, endFrequency, offset, duration, type, volume]) => {
           tone(ctx, { frequency, endFrequency, start: now + offset, duration, type, volume })

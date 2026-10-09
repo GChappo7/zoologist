@@ -3697,3 +3697,23 @@
 .boss-association .boss-creature-link:hover:not(:disabled) {
   text-decoration: none !important;
 }
+
+
+/* Use the RuneScape font for the boss kill-count label and all main navigation tabs. */
+.boss-progress-label > span {
+  font-family: var(--font-runescape) !important;
+}
+.top-tabs .top-tab-map,
+.top-tabs .top-tab-skills,
+.top-tabs .top-tab-quests,
+.top-tabs .top-tab-diaries,
+.top-tabs .top-tab-bosses {
+  font-family: var(--font-runescape) !important;
+}
+.top-tabs .top-tab-map > span,
+.top-tabs .top-tab-skills > span,
+.top-tabs .top-tab-quests > span,
+.top-tabs .top-tab-diaries > span,
+.top-tabs .top-tab-bosses > span {
+  font-family: var(--font-runescape) !important;
+}

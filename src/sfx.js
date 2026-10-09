@@ -25,7 +25,7 @@ function tone(ctx, { frequency, endFrequency = frequency, start, duration, type 
   oscillator.frequency.setValueAtTime(frequency, start)
   if (endFrequency !== frequency) oscillator.frequency.exponentialRampToValueAtTime(Math.max(1, endFrequency), start + duration)
   gain.gain.setValueAtTime(0.0001, start)
-  gain.gain.exponentialRampToValueAtTime(volume, start + Math.min(0.012, duration * 0.25))
+  gain.gain.exponentialRampToValueAtTime(volume, start + Math.min(0.008, duration * 0.2))
   gain.gain.exponentialRampToValueAtTime(0.0001, start + duration)
   oscillator.connect(gain)
   gain.connect(ctx.destination)
@@ -33,11 +33,26 @@ function tone(ctx, { frequency, endFrequency = frequency, start, duration, type 
   oscillator.stop(start + duration + 0.015)
 }
 
+// Short, soft retro sounds generated locally; no audio files or external requests.
 const melodies = {
-  reveal: [[520, 680, 0, 0.09], [760, 920, 0.065, 0.11]],
-  complete: [[523, 523, 0, 0.12], [659, 659, 0.075, 0.12], [784, 988, 0.15, 0.22]],
-  boss: [[392, 392, 0, 0.13], [523, 523, 0.09, 0.13], [659, 659, 0.18, 0.13], [784, 1047, 0.27, 0.32]],
-  click: [[620, 500, 0, 0.045]],
+  // A quick wooden/card flick followed by a tiny click.
+  flip: [
+    [420, 250, 0, 0.075, 'triangle', 0.035],
+    [780, 560, 0.025, 0.045, 'square', 0.018],
+  ],
+  // Coin-like ka-ching: bright register, metallic ping, then a small falling coin tone.
+  complete: [
+    [1318, 1760, 0, 0.105, 'sine', 0.045],
+    [1976, 1568, 0.035, 0.16, 'sine', 0.035],
+    [1046, 784, 0.105, 0.12, 'triangle', 0.025],
+  ],
+  boss: [
+    [392, 392, 0, 0.13, 'triangle', 0.04],
+    [523, 523, 0.09, 0.13, 'triangle', 0.04],
+    [659, 659, 0.18, 0.13, 'triangle', 0.04],
+    [784, 1047, 0.27, 0.32, 'sine', 0.045],
+  ],
+  click: [[620, 500, 0, 0.045, 'triangle', 0.02]],
 }
 
 export function playSfx(name) {
@@ -46,7 +61,7 @@ export function playSfx(name) {
   const notes = melodies[name]
   if (!ctx || !notes) return
   const now = ctx.currentTime + 0.012
-  notes.forEach(([frequency, endFrequency, offset, duration], index) => {
-    tone(ctx, { frequency, endFrequency, start: now + offset, duration, volume: name === 'click' ? 0.025 : index === notes.length - 1 ? 0.065 : 0.045 })
+  notes.forEach(([frequency, endFrequency, offset, duration, type, volume]) => {
+    tone(ctx, { frequency, endFrequency, start: now + offset, duration, type, volume })
   })
 }

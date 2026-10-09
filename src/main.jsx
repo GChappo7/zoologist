@@ -329,7 +329,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress,dia
   }):[]
   const tileStyle={...(tile.fogDistance?{'--fog-distance':tile.fogDistance}:{}),...(tile.gridColumn?{gridColumn:tile.gridColumn,gridRow:tile.gridRow}:{})}
   const handleClick=()=>{
-    if(isFaceDown&&creature){onReveal?.(tile);return}
+    if(isFaceDown&&creature){playSfx('flip');onReveal?.(tile);return}
     if(creature)onSelect(tile)
   }
   return <div className="map-tile-wrapper" style={tileStyle}>
@@ -1663,7 +1663,6 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   }
   const handleReveal=tile=>{
     if(!tile?.faceDown)return
-    playSfx('flip')
     const revealed={...tile,faceDown:false}
     setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:revealed}))
     setFogVisible(true)

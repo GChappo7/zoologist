@@ -3498,6 +3498,8 @@
   background-image:none !important;
   border-color:#385146 !important;
   box-shadow:none !important;
+  /* Avoid a brief green/explored-state flash before the completed grey settles. */
+  transition: none !important;
 }
 .map-tile.is-completed::before,
 .map-tile.is-completed::after,

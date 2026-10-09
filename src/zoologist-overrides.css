@@ -3836,3 +3836,72 @@
   .boss-reward-dialog { height: auto; }
   .boss-reward-dialog.has-reward-category { height: 88vh; }
 }
+
+
+/* Creature Collection: keep every label and control in the RuneScape font. */
+.collection-log-page,
+.collection-log-page * {
+  font-family: var(--font-runescape) !important;
+}
+.collection-log-page .collection-log-progress-label,
+.collection-log-page .collection-log-legend,
+.collection-log-page .collection-log-stat span {
+  letter-spacing: 0 !important;
+}
+.collection-log-page .collection-search input {
+  font-family: var(--font-runescape) !important;
+  font-size: 14px;
+}
+
+/* Use the project's OSRS blank-skill box artwork for each collection filter. */
+.collection-log-page .collection-filters {
+  gap: 3px;
+}
+.collection-log-page .collection-filters button {
+  min-height: 34px;
+  padding: 6px 11px;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  background-image: url("${import.meta.env.BASE_URL}assets/ui/skills/Blank%20skill.png");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  color: #b8b8b8;
+  text-shadow: 1px 1px 0 #000;
+  font-size: 13px;
+  font-weight: 400;
+}
+.collection-log-page .collection-filters button:hover {
+  border: 0;
+  color: #fff0a6;
+  filter: brightness(1.12);
+}
+.collection-log-page .collection-filters button.active {
+  border: 0;
+  background-color: transparent;
+  color: #ffdf76;
+  filter: brightness(1.18);
+}
+.collection-log-page .collection-filters button span {
+  margin-left: 3px;
+  opacity: .9;
+}
+@media (max-width: 600px) {
+  .collection-log-page .collection-log-controls {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+  .collection-log-page .collection-filters {
+    width: 100%;
+  }
+  .collection-log-page .collection-filters button {
+    flex: 1 1 auto;
+    padding-inline: 7px;
+    font-size: 12px;
+  }
+  .collection-log-page .collection-search {
+    width: 100%;
+    margin-left: 0;
+  }
+}

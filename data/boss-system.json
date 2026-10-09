@@ -146,9 +146,12 @@
       "id": "king-black-dragon",
       "name": "King Black Dragon",
       "category": "Dragon",
-      "creature": "Black Dragon",
       "status": "not_slain",
-      "kcRequired": 100
+      "kcRequired": 100,
+      "creatures": [
+        "Black Dragon",
+        "Brutal Black Dragon"
+      ]
     },
     {
       "id": "kraken",
@@ -178,15 +181,23 @@
       "id": "sarachnis",
       "name": "Sarachnis",
       "category": "Boss",
-      "creature": "Temple Spider",
       "status": "not_slain",
-      "kcRequired": 100
+      "kcRequired": 100,
+      "creatures": [
+        "Temple Spider"
+      ]
     },
     {
       "id": "scorpia",
       "name": "Scorpia",
       "category": "Wilderness",
-      "creatures": ["Scorpion", "King Scorpion", "Poison Scorpion", "Kharid Scorpion", "Pit Scorpion"],
+      "creatures": [
+        "Scorpion",
+        "King Scorpion",
+        "Poison Scorpion",
+        "Kharid Scorpion",
+        "Pit Scorpion"
+      ],
       "status": "not_slain",
       "kcRequired": 100
     },
@@ -226,17 +237,27 @@
       "id": "venenatis",
       "name": "Venenatis / Spindel",
       "category": "Wilderness",
-      "creature": "Spider",
       "status": "not_slain",
-      "kcRequired": 100
+      "kcRequired": 100,
+      "creatures": [
+        "Spider",
+        "Jungle Spider",
+        "Poison Spider",
+        "Ice Spider",
+        "Crypt Spider",
+        "Fever Spider"
+      ]
     },
     {
       "id": "vorkath",
       "name": "Vorkath",
       "category": "Boss",
-      "creature": "Blue Dragon",
       "status": "not_slain",
-      "kcRequired": 100
+      "kcRequired": 100,
+      "creatures": [
+        "Blue Dragon",
+        "Brutal Blue Dragon"
+      ]
     },
     {
       "id": "wintertodt",

@@ -2000,7 +2000,7 @@ function App(){
     const nextMilestone={count:0,target:15+Math.floor(Math.random()*16)}
     setDiaryMilestone(nextMilestone)
     updateGameState({diaryMilestone:nextMilestone})
-    if(reward){handleDiaryRewardComplete(reward);setDiaryReveal({...reward,earnedAt:Date.now()})}
+    if(reward){playSfx('diary');handleDiaryRewardComplete(reward);setDiaryReveal({...reward,earnedAt:Date.now()})}
   }
   const handleDiaryStatusClick=region=>setDiaryStatuses(current=>{
     const next={...current}

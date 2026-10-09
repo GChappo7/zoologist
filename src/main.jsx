@@ -1480,7 +1480,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   const [tiles,setTiles]=useState(()=>initialTiles&&Object.keys(initialTiles).length?initialTiles:createInitialTiles(creatures,startCreature,skillProgress,effectiveRewardAssignments))
   const [fogVisible,setFogVisible]=useState(()=>Object.values(initialTiles??{}).some(tile=>tile?.state==='explored'))
   const [pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false), [mapHelpOpen,setMapHelpOpen]=useState(false)
-  const stageRef=useRef(null),zoomRef=useRef(zoom),wheelTargetZoomRef=useRef(zoom),wheelFrameRef=useRef(null),wheelPointRef=useRef({x:0,y:0}),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0,pointerType:null}),touchPointersRef=useRef(new Map()),pinchRef=useRef(null),suppressClickRef=useRef(false),edgeFrameRef=useRef(null)
+  const stageRef=useRef(null),zoomRef=useRef(zoom),wheelTargetZoomRef=useRef(zoom),wheelFrameRef=useRef(null),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0,pointerType:null}),touchPointersRef=useRef(new Map()),pinchRef=useRef(null),suppressClickRef=useRef(false),edgeFrameRef=useRef(null)
   useEffect(()=>{zoomRef.current=zoom},[zoom])
   useEffect(()=>{
     if(!focusCreatureId)return
@@ -1532,16 +1532,15 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     if(wheelFrameRef.current===null)wheelTargetZoomRef.current=current
     const delta=e.deltaMode===1?e.deltaY*16:e.deltaMode===2?e.deltaY*(stageRef.current?.clientHeight??800):e.deltaY
     wheelTargetZoomRef.current=Math.min(MAX_ZOOM,Math.max(MIN_ZOOM,wheelTargetZoomRef.current*Math.exp(-delta*0.0015)))
-    wheelPointRef.current={x:e.clientX,y:e.clientY}
     if(wheelFrameRef.current!==null)return
     const animateWheelZoom=()=>{
       const liveZoom=zoomRef.current,target=wheelTargetZoomRef.current,difference=target-liveZoom
       if(Math.abs(difference)<0.001){
-        zoomAtPoint(target,wheelPointRef.current.x,wheelPointRef.current.y)
+        setZoom(target)
         wheelFrameRef.current=null
         return
       }
-      zoomAtPoint(liveZoom+difference*0.14,wheelPointRef.current.x,wheelPointRef.current.y)
+      setZoom(liveZoom+difference*0.14)
       wheelFrameRef.current=requestAnimationFrame(animateWheelZoom)
     }
     wheelFrameRef.current=requestAnimationFrame(animateWheelZoom)

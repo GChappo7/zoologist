@@ -722,6 +722,53 @@ function QuestsView({initialStatuses={},onStatusesChange}){
 function CollectionLog({creatures,mapTiles,onBack}){
   const [filter,setFilter]=useState('all')
   const [search,setSearch]=useState('')
+  const collectionListRef=useRef(null)
+  const collectionScrollbarRef=useRef(null)
+  const [collectionScroll,setCollectionScroll]=useState({top:0,height:40})
+  const collectionDragRef=useRef(null)
+  const dragCollectionScrollbar=(event)=>{
+    const scrollbar=collectionScrollbarRef.current
+    const list=collectionListRef.current
+    if(!scrollbar||!list||list.scrollHeight<=list.clientHeight)return
+    event.preventDefault()
+    const trackHeight=Math.max(1,scrollbar.clientHeight-44)
+    const maxThumbTop=Math.max(0,trackHeight-collectionScroll.height)
+    const rect=scrollbar.getBoundingClientRect()
+    const pointerTop=event.clientY-rect.top-22
+    const nextTop=Math.max(0,Math.min(maxThumbTop,pointerTop-collectionScroll.height/2))
+    const maxScroll=list.scrollHeight-list.clientHeight
+    list.scrollTop=maxThumbTop?(nextTop/maxThumbTop)*maxScroll:0
+  }
+  const startCollectionScrollbarDrag=(event)=>{
+    if(event.button!==0)return
+    const scrollbar=collectionScrollbarRef.current
+    const list=collectionListRef.current
+    if(!scrollbar||!list||list.scrollHeight<=list.clientHeight)return
+    const rect=scrollbar.getBoundingClientRect()
+    const thumbTop=collectionScroll.top+22
+    if(event.clientY<rect.top+thumbTop||event.clientY>rect.top+thumbTop+collectionScroll.height){
+      const trackHeight=Math.max(1,scrollbar.clientHeight-44)
+      const maxThumbTop=Math.max(0,trackHeight-collectionScroll.height)
+      const clickTop=Math.max(0,Math.min(maxThumbTop,event.clientY-rect.top-22-collectionScroll.height/2))
+      const maxScroll=list.scrollHeight-list.clientHeight
+      list.scrollTop=maxThumbTop?(clickTop/maxThumbTop)*maxScroll:0
+      return
+    }
+    collectionDragRef.current={startY:event.clientY,startScroll:list.scrollTop}
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+  }
+  const moveCollectionScrollbar=(event)=>{
+    const drag=collectionDragRef.current
+    const scrollbar=collectionScrollbarRef.current
+    const list=collectionListRef.current
+    if(!drag||!scrollbar||!list)return
+    const trackHeight=Math.max(1,scrollbar.clientHeight-44)
+    const maxThumbTop=Math.max(0,trackHeight-collectionScroll.height)
+    const maxScroll=list.scrollHeight-list.clientHeight
+    if(maxThumbTop<=0)return
+    list.scrollTop=Math.max(0,Math.min(maxScroll,drag.startScroll+(event.clientY-drag.startY)*(maxScroll/maxThumbTop)))
+  }
+  const endCollectionScrollbarDrag=()=>{collectionDragRef.current=null}
   const statusByCreature=useMemo(()=>{
     const statuses={}
     Object.values(mapTiles||{}).forEach(tile=>{
@@ -763,7 +810,8 @@ function CollectionLog({creatures,mapTiles,onBack}){
         <div className="collection-filters">{filters.map(([id,label,count])=><button type="button" key={id} className={filter===id?'active':''} onClick={()=>setFilter(id)}>{label} <span>{count}</span></button>)}</div>
         <label className="collection-search"><Search size={14}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search creatures"/></label>
       </div>
-      <div className="collection-grid">
+      <div className="collection-scroll-body">
+        <div className="collection-grid" ref={collectionListRef}>
         {filtered.map(creature=>{
           const status=statusByCreature[String(creature.id)]||'unknown'
           return <div className={'collection-card collection-card-'+status} key={creature.id}>
@@ -772,10 +820,53 @@ function CollectionLog({creatures,mapTiles,onBack}){
             <div className="collection-card-status">{status==='completed'?'Recorded':status==='revealed'?'Revealed':'Unknown'}</div>
           </div>
         })}
+        </div>
+        <div className="collection-scroll-arrows" ref={collectionScrollbarRef} aria-label="Creature collection scroll controls"
+          style={{
+            '--scroll-up': `url("${import.meta.env.BASE_URL}assets/ui/scroll/773_0%20scrollUpArrow.png")`,
+            '--scroll-down': `url("${import.meta.env.BASE_URL}assets/ui/scroll/788_0%20scrollDownArrow.png")`,
+            '--scroll-top': `url("${import.meta.env.BASE_URL}assets/ui/scroll/789_0%20scrollTop.png")`,
+            '--scroll-middle': `url("${import.meta.env.BASE_URL}assets/ui/scroll/790_0%20scrollMiddle.png")`,
+            '--scroll-bottom': `url("${import.meta.env.BASE_URL}assets/ui/scroll/791_0%20scrollBottom.png")`,
+            '--scroll-back': `url("${import.meta.env.BASE_URL}assets/ui/scroll/792_0%20scrollBack.png")`,
+          }}
+          onPointerMove={moveCollectionScrollbar} onPointerUp={endCollectionScrollbarDrag} onPointerCancel={endCollectionScrollbarDrag} onPointerDown={startCollectionScrollbarDrag}>
+          <button type="button" className="collection-scroll-arrow collection-scroll-up" onClick={()=>collectionListRef.current?.scrollBy({top:-260,behavior:'smooth'})} aria-label="Scroll creature collection up">
+            <img src={`${import.meta.env.BASE_URL}assets/ui/scroll/773_0%20scrollUpArrow.png`} alt="" draggable="false"/>
+          </button>
+          <button type="button" className="collection-scroll-arrow collection-scroll-down" onClick={()=>collectionListRef.current?.scrollBy({top:260,behavior:'smooth'})} aria-label="Scroll creature collection down">
+            <img src={`${import.meta.env.BASE_URL}assets/ui/scroll/788_0%20scrollDownArrow.png`} alt="" draggable="false"/>
+          </button>
+          <div className="collection-scroll-track" aria-hidden="true">
+            <div className="collection-scroll-thumb" style={{transform:`translateY(${collectionScroll.top}px)`,height:`${collectionScroll.height}px`}} />
+          </div>
+        </div>
       </div>
       {!filtered.length&&<div className="collection-empty">No creatures match that search.</div>}
+      <CollectionScrollbarSync listRef={collectionListRef} scrollbarRef={collectionScrollbarRef} setScroll={setCollectionScroll} dependencyKey={`${filtered.length}|${filter}|${search}`}/>
     </div>
   </div>
+}
+
+function CollectionScrollbarSync({listRef,scrollbarRef,setScroll,dependencyKey}){
+  useEffect(()=>{
+    const list=listRef.current
+    const scrollbar=scrollbarRef.current
+    if(!list||!scrollbar)return
+    const update=()=>{
+      const maxScroll=Math.max(0,list.scrollHeight-list.clientHeight)
+      const trackHeight=Math.max(1,scrollbar.clientHeight-44)
+      const thumbHeight=maxScroll>0?Math.max(28,Math.min(trackHeight,trackHeight*(list.clientHeight/list.scrollHeight))):trackHeight
+      const maxThumbTop=Math.max(0,trackHeight-thumbHeight)
+      const top=maxScroll>0?(list.scrollTop/maxScroll)*maxThumbTop:0
+      setScroll({top,height:thumbHeight})
+    }
+    update()
+    list.addEventListener('scroll',update,{passive:true})
+    window.addEventListener('resize',update)
+    return ()=>{list.removeEventListener('scroll',update);window.removeEventListener('resize',update)}
+  },[listRef,scrollbarRef,setScroll,dependencyKey])
+  return null
 }
 
 function DiariesView({statuses={},onStatusClick}){

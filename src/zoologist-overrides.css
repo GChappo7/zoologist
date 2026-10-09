@@ -3395,3 +3395,36 @@
   .boss-card.is-locked .boss-card-title{margin-top:14px;}
   .boss-card.is-locked .boss-locked-message{font-size:15px;}
 }
+
+
+/* Add noticeably more top breathing room and lower the full contents of locked boss cards. */
+.boss-card.is-locked{
+  padding-top:24px !important;
+}
+.boss-card.is-locked .boss-card-title{
+  margin-top:22px !important;
+}
+.boss-card.is-locked .boss-image-space{
+  margin-top:14px !important;
+}
+.boss-card.is-locked .boss-locked-message{
+  margin-top:12px !important;
+}
+.boss-card.is-locked .boss-association{
+  margin-top:12px !important;
+}
+@media (max-width:600px){
+  .boss-card.is-locked{
+    padding-top:20px !important;
+  }
+  .boss-card.is-locked .boss-card-title{
+    margin-top:18px !important;
+  }
+  .boss-card.is-locked .boss-image-space{
+    margin-top:12px !important;
+  }
+  .boss-card.is-locked .boss-locked-message,
+  .boss-card.is-locked .boss-association{
+    margin-top:10px !important;
+  }
+}

@@ -834,3 +834,25 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 .creature-glyph-cave_eel .creature-image {
   transform: translateY(-7px);
 }
+
+
+/* Dramatic Achievement Diary milestone reveal */
+.diary-reveal-overlay{position:fixed;inset:0;z-index:12000;display:grid;place-items:center;padding:20px;background:rgba(5,8,12,.86);backdrop-filter:blur(7px);animation:diaryRevealFade .28s ease-out both}
+.diary-reveal-dialog{position:relative;isolation:isolate;overflow:hidden;width:min(520px,100%);padding:30px 28px 26px;text-align:center;color:#f7edce;background:linear-gradient(155deg,#302d25 0%,#171a1b 55%,#0e1112 100%);border:2px solid #b99b5a;border-radius:14px;box-shadow:0 0 0 5px rgba(0,0,0,.42),0 24px 90px rgba(0,0,0,.75),0 0 45px var(--diary-reveal-glow,rgba(201,164,76,.25));animation:diaryRevealPop .48s cubic-bezier(.16,1,.3,1) both}
+.diary-reveal-dialog:before{content:"";position:absolute;inset:8px;border:1px solid rgba(226,199,128,.35);border-radius:8px;pointer-events:none;z-index:-1}
+.diary-reveal-glow{position:absolute;z-index:-1;left:50%;top:22%;width:270px;height:270px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--diary-reveal-glow,rgba(218,177,76,.3)),transparent 70%);filter:blur(10px);pointer-events:none}
+.diary-reveal-eyebrow{display:flex;align-items:center;justify-content:center;gap:9px;color:#e6c777;font-size:11px;font-weight:900;letter-spacing:.18em}
+.diary-reveal-emblem{position:relative;display:grid;place-items:center;width:150px;height:150px;margin:23px auto 18px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.1),rgba(0,0,0,.28) 68%);border:1px solid rgba(255,222,145,.55);box-shadow:0 0 0 7px rgba(0,0,0,.18),0 0 36px var(--diary-reveal-glow,rgba(218,177,76,.3));animation:diaryEmblemFloat 3s ease-in-out infinite}
+.diary-reveal-emblem img{width:100px;height:100px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 5px 10px rgba(0,0,0,.6))}
+.diary-reveal-tier-mark{position:absolute;bottom:-8px;padding:5px 12px;color:#17130a;background:#e6c777;border:2px solid #302819;border-radius:4px;font-size:11px;font-weight:1000;letter-spacing:.1em;box-shadow:0 3px 10px #0009}
+.diary-reveal-kicker{color:#b7b4a7;font-size:10px;font-weight:800;letter-spacing:.2em}
+.diary-reveal-dialog h2{margin:8px 0 2px;color:#f3d57e;font-family:inherit;font-size:clamp(26px,6vw,38px);font-weight:900;text-shadow:0 3px 0 #000,0 0 18px #d8b75a55}
+.diary-reveal-tier{font-size:19px;font-weight:800;color:#fff4d2}
+.diary-reveal-dialog p{max-width:370px;margin:16px auto 23px;color:#c9c8bf;font-size:13px;line-height:1.6}
+.diary-reveal-continue{position:relative;min-width:170px;padding:13px 25px;color:#1a160d;background:linear-gradient(#f4d987,#c59d48);border:1px solid #ffe8a3;border-radius:5px;font-weight:1000;letter-spacing:.1em;box-shadow:0 4px 0 #755a26,0 8px 18px #0006;cursor:pointer}
+.diary-reveal-continue:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.diary-reveal-medium{--diary-reveal-glow:rgba(100,170,231,.34)}.diary-reveal-medium .diary-reveal-dialog{border-color:#78aeda}.diary-reveal-medium .diary-reveal-eyebrow,.diary-reveal-medium .diary-reveal-dialog h2{color:#a7d7ff}.diary-reveal-medium .diary-reveal-tier-mark{background:#a7d7ff}
+.diary-reveal-hard{--diary-reveal-glow:rgba(181,116,231,.4)}.diary-reveal-hard .diary-reveal-dialog{border-color:#b57be1}.diary-reveal-hard .diary-reveal-eyebrow,.diary-reveal-hard .diary-reveal-dialog h2{color:#d9a8ff}.diary-reveal-hard .diary-reveal-tier-mark{background:#d9a8ff}
+.diary-reveal-elite{--diary-reveal-glow:rgba(235,155,64,.46)}.diary-reveal-elite .diary-reveal-dialog{border-color:#e8a04e}.diary-reveal-elite .diary-reveal-eyebrow,.diary-reveal-elite .diary-reveal-dialog h2{color:#ffc477}.diary-reveal-elite .diary-reveal-tier-mark{background:#ffc477}
+@keyframes diaryRevealFade{from{opacity:0}to{opacity:1}}@keyframes diaryRevealPop{from{opacity:0;transform:translateY(18px) scale(.88)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes diaryEmblemFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(max-width:520px){.diary-reveal-dialog{padding:25px 18px 22px}.diary-reveal-emblem{width:126px;height:126px;margin-top:20px}.diary-reveal-emblem img{width:82px;height:82px}}

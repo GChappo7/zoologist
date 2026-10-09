@@ -329,11 +329,11 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress,dia
   }):[]
   const tileStyle={...(tile.fogDistance?{'--fog-distance':tile.fogDistance}:{}),...(tile.gridColumn?{gridColumn:tile.gridColumn,gridRow:tile.gridRow}:{})}
   const handleClick=()=>{
-    if(isFaceDown&&creature){playSfx('flip');onReveal?.(tile);return}
+    if(isFaceDown&&creature){onReveal?.(tile);return}
     if(creature)onSelect(tile)
   }
   return <div className="map-tile-wrapper" style={tileStyle}>
-    <button type="button" data-tile-key={keyFor(tile.x,tile.y)} className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''} ${tile.completed?'is-completed':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
+    <button type="button" data-tile-key={keyFor(tile.x,tile.y)} className={`map-tile map-tile-${tile.state} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''} ${tile.completed?'is-completed':''}`} onPointerDown={e=>{if(isFaceDown&&creature&&e.button!==2)playSfx('flip')}} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
       {creature&&<>
         <span className="map-card-face map-card-back" aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/ui/map_tile_back.png`} alt="" draggable="false"/></span>
         <span className="map-card-face map-card-front">

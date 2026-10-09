@@ -40,11 +40,12 @@ const melodies = {
     [420, 250, 0, 0.075, 'triangle', 0.035],
     [780, 560, 0.025, 0.045, 'square', 0.018],
   ],
-  // Coin-like ka-ching: bright register, metallic ping, then a small falling coin tone.
+  // A more rewarding coin pickup: a low coin clink, rising double chime, and bright final sparkle.
   complete: [
-    [1318, 1760, 0, 0.105, 'sine', 0.045],
-    [1976, 1568, 0.035, 0.16, 'sine', 0.035],
-    [1046, 784, 0.105, 0.12, 'triangle', 0.025],
+    [520, 390, 0, 0.075, 'triangle', 0.045],
+    [1046, 1318, 0.045, 0.12, 'sine', 0.055],
+    [1568, 2093, 0.105, 0.19, 'sine', 0.05],
+    [1318, 1760, 0.19, 0.22, 'triangle', 0.035],
   ],
   boss: [
     [392, 392, 0, 0.13, 'triangle', 0.04],
@@ -60,8 +61,19 @@ export function playSfx(name) {
   const ctx = getAudioContext()
   const notes = melodies[name]
   if (!ctx || !notes) return
-  const now = ctx.currentTime + 0.012
-  notes.forEach(([frequency, endFrequency, offset, duration, type, volume]) => {
-    tone(ctx, { frequency, endFrequency, start: now + offset, duration, type, volume })
-  })
+
+  // Some browsers create the audio context suspended. Schedule sounds only once
+  // the context is running, otherwise the first card flip can be silent.
+  const play = () => {
+    if (!isSfxEnabled() || ctx.state !== 'running') return
+    const now = ctx.currentTime + 0.012
+    notes.forEach(([frequency, endFrequency, offset, duration, type, volume]) => {
+      tone(ctx, { frequency, endFrequency, start: now + offset, duration, type, volume })
+    })
+  }
+  if (ctx.state === 'suspended') {
+    ctx.resume().then(play).catch(() => {})
+  } else {
+    play()
+  }
 }

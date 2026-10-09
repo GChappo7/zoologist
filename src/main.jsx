@@ -252,7 +252,11 @@ function getCompletedTileCount(tiles){
 
 function getEarlyRewardCandidate(creatures,used,rewardAssignments,completedCount){
   const targetIds = []
+  // Bring several early Fishing milestones into the opening progression,
+  // while still requiring a genuinely accessible creature (score <= 2).
   if(completedCount < 10) targetIds.push('fishing-1-10')
+  if(completedCount < 16) targetIds.push('fishing-11-20')
+  if(completedCount < 24) targetIds.push('fishing-21-30')
   if(completedCount < 20) targetIds.push('quest-novice-5')
   if(completedCount < 40) targetIds.push('quest-novice-29')
 

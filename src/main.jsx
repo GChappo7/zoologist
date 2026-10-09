@@ -1480,7 +1480,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   const [tiles,setTiles]=useState(()=>initialTiles&&Object.keys(initialTiles).length?initialTiles:createInitialTiles(creatures,startCreature,skillProgress,effectiveRewardAssignments))
   const [fogVisible,setFogVisible]=useState(()=>Object.values(initialTiles??{}).some(tile=>tile?.state==='explored'))
   const [pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false), [mapHelpOpen,setMapHelpOpen]=useState(false)
-  const stageRef=useRef(null),zoomRef=useRef(zoom),wheelTargetZoomRef=useRef(zoom),wheelFrameRef=useRef(null),panFrameRef=useRef(null),panDeltaRef=useRef({x:0,y:0}),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0,pointerType:null}),touchPointersRef=useRef(new Map()),pinchRef=useRef(null),suppressClickRef=useRef(false),edgeFrameRef=useRef(null)
+  const stageRef=useRef(null),zoomRef=useRef(zoom),wheelTargetZoomRef=useRef(zoom),wheelFrameRef=useRef(null),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0,pointerType:null}),touchPointersRef=useRef(new Map()),pinchRef=useRef(null),suppressClickRef=useRef(false),edgeFrameRef=useRef(null)
   useEffect(()=>{zoomRef.current=zoom},[zoom])
   useEffect(()=>{
     if(!focusCreatureId)return
@@ -1569,16 +1569,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     if(Math.abs(dx)+Math.abs(dy)>3)suppressClickRef.current=true
     dragRef.current.x=e.clientX
     dragRef.current.y=e.clientY
-    panDeltaRef.current.x+=dx
-    panDeltaRef.current.y+=dy
-    if(panFrameRef.current===null){
-      panFrameRef.current=requestAnimationFrame(()=>{
-        const delta=panDeltaRef.current
-        panDeltaRef.current={x:0,y:0}
-        panFrameRef.current=null
-        if(delta.x||delta.y)updatePan(delta.x,delta.y)
-      })
-    }
+    updatePan(dx,dy)
   }
   const handlePointerDown=e=>{
     if(e.pointerType==='touch'){

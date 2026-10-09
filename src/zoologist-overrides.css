@@ -3506,3 +3506,14 @@
   background:none !important;
   box-shadow:none !important;
 }
+
+
+/* Remove the old green radial glow from explored/completed creature cards. Completion is indicated by the tick and normal dark tile art only. */
+.map-tile-explored .map-card-front::after,
+.map-tile.is-completed .map-card-front::after,
+.map-tile.map-tile-explored.is-completed .map-card-front::after {
+  content:none !important;
+  display:none !important;
+  background:none !important;
+  opacity:0 !important;
+}

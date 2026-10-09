@@ -989,7 +989,7 @@ function BossPixelImage({boss}){
   return <img src={candidates[index]} alt="" draggable="false" onError={()=>setIndex(current=>current+1)}/>
 }
 
-function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},questStatuses={},diaryStatuses={},skillProgress={},rewardAssignments={},onBossProgressChange,onRewardAssignmentsChange,onMapTilesChange,onBossRewardClaim,focusBossId=null}){
+function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},questStatuses={},diaryStatuses={},skillProgress={},rewardAssignments={},onBossProgressChange,onRewardAssignmentsChange,onMapTilesChange,onBossRewardClaim,onCreatureClick,focusBossId=null}){
   const creatureByName=useMemo(()=>new Map(creatures.map(c=>[String(c.name||'').trim().toLowerCase(),c])),[creatures])
   const completedCreatureIds=useMemo(()=>new Set(Object.values(mapTiles||{}).filter(tile=>tile?.completed&&tile?.creatureId).map(tile=>String(tile.creatureId))),[mapTiles])
   const [rewardModalBoss,setRewardModalBoss]=useState(null)
@@ -1156,8 +1156,8 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
             <span className="boss-association-label">Associated creature</span>
             {associatedCreatures.length
               ? (['callisto','scorpia','king-black-dragon','vorkath','venenatis','hueycoatl','royal-titans'].includes(boss.id))
-                ? <span className={`boss-creature-name boss-creature-name-inline${(boss.id==='royal-titans'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))?' is-completed':''}`}><span>{{callisto:'Bear(s)',scorpia:'Scorpion(s)','king-black-dragon':'Black Dragon(s)',vorkath:'Blue Dragon(s)',venenatis:'Spider(s) (Except Temple Spider)',hueycoatl:'Green Dragon(s)','royal-titans':'Fire Giant(s) & Ice Giant(s)'}[boss.id]}</span></span>
-                : associatedCreatures.map(creature=><span className={`boss-creature-name${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id}>{creature.name}</span>)
+                ? <button type="button" className={`boss-creature-name boss-creature-name-inline boss-creature-link${(boss.id==='royal-titans'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))?' is-completed':''}`} onClick={()=>unlocked&&associatedCreatures[0]&&onCreatureClick?.(associatedCreatures[0].id)} disabled={!unlocked||!associatedCreatures[0]} title={unlocked?'View associated creature on map':'Unlock this boss first'}><span>{{callisto:'Bear(s)',scorpia:'Scorpion(s)','king-black-dragon':'Black Dragon(s)',vorkath:'Blue Dragon(s)',venenatis:'Spider(s) (Except Temple Spider)',hueycoatl:'Green Dragon(s)','royal-titans':'Fire Giant(s) & Ice Giant(s)'}[boss.id]}</span></button>
+                : associatedCreatures.map(creature=><button type="button" className={`boss-creature-name boss-creature-link${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id} onClick={()=>unlocked&&onCreatureClick?.(creature.id)} disabled={!unlocked} title={unlocked?'View this creature on map':'Unlock this boss first'}>{creature.name}</button>)
               : <span className="boss-no-association">No associated creature tile</span>}
           </div>
           {!unlocked && <div className="boss-lock-overlay" aria-hidden="true"><img src={uiAssetUrl('lock_asset.png')} alt=""/></div>}
@@ -1409,7 +1409,7 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,sk
     </div>}
   </aside>
 }
-function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkillRewardComplete,onDiaryRewardComplete,onCreatureCompleted,initialTiles,onTilesChange,rewardAssignments,bossProgress,bossRewards,onRewardAssignmentsChange,onBossClick}){
+function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkillRewardComplete,onDiaryRewardComplete,onCreatureCompleted,initialTiles,onTilesChange,rewardAssignments,bossProgress,bossRewards,onRewardAssignmentsChange,onBossClick,focusCreatureId=null}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[dismissingTileKey,setDismissingTileKey]=useState(null),[closingPopupTileKey,setClosingPopupTileKey]=useState(null),[startCreature]=useState(()=>creatureById[initialTiles?.[keyFor(0,0)]?.creatureId]??pickStartingCreature(creatures))
   const [generatedRewardAssignments]=useState(()=>rewardAssignments??buildRewardAssignments(creatures,startCreature))
@@ -1419,6 +1419,15 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   const [pan,setPan]=useState({x:0,y:0}),[zoom,setZoom]=useState(1),[dragging,setDragging]=useState(false), [mapHelpOpen,setMapHelpOpen]=useState(false)
   const stageRef=useRef(null),zoomRef=useRef(zoom),pointerRef=useRef({x:0,y:0,inside:false}),dragRef=useRef({active:false,x:0,y:0,pointerType:null}),touchPointersRef=useRef(new Map()),pinchRef=useRef(null),suppressClickRef=useRef(false),edgeFrameRef=useRef(null)
   useEffect(()=>{zoomRef.current=zoom},[zoom])
+  useEffect(()=>{
+    if(!focusCreatureId)return
+    const target=Object.values(tiles).find(tile=>String(tile?.creatureId)===String(focusCreatureId))
+    if(!target)return
+    setZoom(1)
+    setPan({x:-target.x*TILE_STEP,y:-target.y*TILE_STEP})
+    setSelectedTile(target)
+    setPanelOpen(false)
+  },[focusCreatureId,tiles])
   useEffect(()=>{onTilesChange?.(tiles)},[tiles,onTilesChange])
   useEffect(()=>{
     if(rewardAssignments||!startCreature)return
@@ -1609,7 +1618,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
 </div>
 }
 function App(){
-  const [tab,setTab]=useState('map'),[focusBossId,setFocusBossId]=useState(null)
+  const [tab,setTab]=useState('map'),[focusBossId,setFocusBossId]=useState(null),[focusCreatureId,setFocusCreatureId]=useState(null)
   const [skillsOpen,setSkillsOpen]=useState(false)
   const skillsButtonRef=useRef(null)
   const questsButtonRef=useRef(null)
@@ -2004,7 +2013,7 @@ function App(){
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>
     :tab==='shop'?<ShopView/>
-    :tab==='bosses'?<BossView focusBossId={focusBossId} creatures={creatures} mapTiles={gameState.mapTiles} bossProgress={bossProgress} bossRewards={bossRewards} questStatuses={questStatuses} diaryStatuses={diaryStatuses} skillProgress={skillProgress} rewardAssignments={rewardAssignments||{}} onBossProgressChange={setBossProgress} onRewardAssignmentsChange={assignments=>{setRewardAssignments(current=>{const next=typeof assignments==='function'?assignments(current):assignments;updateGameState({rewardAssignments:next});return next})}} onMapTilesChange={resetInProgress?undefined:mapTiles=>{updateGameState({mapTiles:typeof mapTiles==='function'?mapTiles(gameState.mapTiles||{}):mapTiles})}} onBossRewardClaim={(boss,reward)=>{
+    :tab==='bosses'?<BossView focusBossId={focusBossId} onCreatureClick={creatureId=>{setFocusCreatureId(String(creatureId));setSkillsOpen(false);setTab('map')}} creatures={creatures} mapTiles={gameState.mapTiles} bossProgress={bossProgress} bossRewards={bossRewards} questStatuses={questStatuses} diaryStatuses={diaryStatuses} skillProgress={skillProgress} rewardAssignments={rewardAssignments||{}} onBossProgressChange={setBossProgress} onRewardAssignmentsChange={assignments=>{setRewardAssignments(current=>{const next=typeof assignments==='function'?assignments(current):assignments;updateGameState({rewardAssignments:next});return next})}} onMapTilesChange={resetInProgress?undefined:mapTiles=>{updateGameState({mapTiles:typeof mapTiles==='function'?mapTiles(gameState.mapTiles||{}):mapTiles})}} onBossRewardClaim={(boss,reward)=>{
       setBossRewards(current=>({...current,[boss.id]:reward}))
       if(String(reward?.type).toLowerCase()==='skill')handleSkillRewardComplete(reward)
       if(String(reward?.type).toLowerCase()==='quest'&&reward.questId)setQuestStatuses(current=>({...current,[reward.questId]:'revealed'}))
@@ -2012,6 +2021,7 @@ function App(){
     }}/>
     :<MapView
       key={`${session?.user?.id??'local'}-${gameState.worldId??'legacy'}-${resetVersion}`}
+      focusCreatureId={focusCreatureId}
       creatures={creatures}
       onProgressChange={setProgress}
       skillProgress={skillProgress}

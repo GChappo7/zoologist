@@ -817,3 +817,12 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 .map-tile-dark-fog-2 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.44), rgba(5,9,12,.60)); }
 .map-tile-dark-fog-3 .fog-darken { background: linear-gradient(180deg, rgba(5,9,12,.58), rgba(5,9,12,.74)); }
 .map-tile-black-fog .fog-darken { background: rgba(2,5,7,.84); }
+
+
+/* Small per-creature vertical adjustments to visually centre map images. */
+.creature-glyph-sunlight_moth .creature-image,
+.creature-glyph-swamp_lizard .creature-image,
+.creature-glyph-heron .creature-image,
+.creature-glyph-desert_lizard .creature-image {
+  transform: translateY(-7px);
+}

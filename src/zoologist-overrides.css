@@ -3129,3 +3129,28 @@
   filter: sepia(.35) saturate(1.35) hue-rotate(55deg) brightness(1.05)
     drop-shadow(0 1px 2px rgba(0, 0, 0, .95));
 }
+
+
+/* Apply desaturation to the boss artwork only, not the completion tick layered over it. */
+.tile-boss-shortcut.is-boss-complete {
+  filter: none;
+  opacity: 1;
+  border-color: #626765;
+  box-shadow: 0 2px 5px rgba(0,0,0,.85), inset 0 0 0 1px rgba(210,215,210,.08);
+}
+.tile-boss-shortcut.is-boss-complete > img:not(.tile-boss-shortcut-tick) {
+  filter: grayscale(1) brightness(.72);
+  opacity: .78;
+}
+.tile-boss-shortcut.is-boss-complete .tile-boss-shortcut-tick {
+  filter: sepia(.5) saturate(2.2) hue-rotate(65deg) brightness(1.12)
+    drop-shadow(0 1px 2px rgba(0, 0, 0, .95));
+}
+.tile-boss-shortcut.is-boss-complete:hover,
+.tile-boss-shortcut.is-boss-complete:focus-visible {
+  filter: none;
+}
+.tile-boss-shortcut.is-boss-complete:hover > img:not(.tile-boss-shortcut-tick),
+.tile-boss-shortcut.is-boss-complete:focus-visible > img:not(.tile-boss-shortcut-tick) {
+  filter: grayscale(1) brightness(.86);
+}

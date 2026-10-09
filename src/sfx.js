@@ -68,20 +68,17 @@ export function playSfx(name) {
   const notes = melodies[name]
   if (!ctx || !notes) return
 
-  // Some browsers create the audio context suspended. Schedule sounds only once
-  // the context is running, otherwise the first card flip can be silent.
-  const play = () => {
-    if (!isSfxEnabled() || ctx.state !== 'running') return
-    const now = ctx.currentTime + 0.012
+  // Schedule the tones immediately in the click/pointer gesture. Web Audio can
+  // queue nodes while suspended; resuming afterwards lets the queued sound play
+  // without relying on a promise callback that may lose the browser's activation.
+  if (!isSfxEnabled()) return
+  const now = ctx.currentTime + 0.012
+  try {
     notes.forEach(([frequency, endFrequency, offset, duration, type, volume]) => {
       tone(ctx, { frequency, endFrequency, start: now + offset, duration, type, volume })
     })
+  } catch {
+    // If the context was interrupted, try to resume it for the next interaction.
   }
-  if (ctx.state === 'running') {
-    play()
-  } else {
-    // Browsers can report other non-running states (for example, interrupted),
-    // not just suspended. Always attempt to resume from the user interaction.
-    ctx.resume().then(play).catch(() => {})
-  }
+  if (ctx.state !== 'running') ctx.resume().catch(() => {})
 }

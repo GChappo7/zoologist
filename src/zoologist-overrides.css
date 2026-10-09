@@ -3794,3 +3794,32 @@
   .boss-reward-scroll-body { max-height: calc(88vh - 250px); }
   .boss-reward-choice-list { grid-template-columns: 1fr; }
 }
+
+
+/* Compact reward picker: there are only Quest and Skill categories now. */
+.boss-reward-category-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.boss-reward-category {
+  min-height: 96px;
+  padding: 10px;
+}
+.boss-reward-choice-view {
+  min-height: 0 !important;
+}
+.boss-reward-dialog {
+  height: auto;
+}
+.boss-reward-scroll-track {
+  cursor: pointer;
+  touch-action: none;
+}
+.boss-reward-scroll-thumb {
+  pointer-events: none;
+}
+@media (max-width:560px) {
+  .boss-reward-category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .boss-reward-category { min-height: 88px; }
+  .boss-reward-dialog { height: auto; }
+}

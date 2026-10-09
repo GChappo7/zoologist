@@ -801,7 +801,7 @@ function CollectionLog({creatures,mapTiles,onBack}){
         <button type="button" className="collection-back-button" onClick={onBack} aria-label="Back to map"><ChevronLeft size={18}/><span>Map</span></button>
         <div className="collection-log-title">
           <div className="collection-log-icon"><PawPrint size={22}/></div>
-          <div><strong>Creature Collection</strong><span>Pokédex • {counts.recorded} / {counts.all} recorded</span></div>
+          <div><strong>Creature Collection</strong><span>{counts.recorded} / {counts.all} recorded</span></div>
         </div>
         <div className="collection-log-stat"><b>{counts.complete}</b><span>COMPLETE</span></div>
       </div>

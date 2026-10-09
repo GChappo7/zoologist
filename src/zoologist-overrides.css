@@ -3329,3 +3329,9 @@
 /* Locked boss cards show the unlock requirement before their associated creatures. */
 .boss-card.is-locked .boss-locked-message{order:2;position:relative;z-index:21;}
 .boss-card.is-locked .boss-association{order:3;position:relative;z-index:21;}
+
+
+/* Keep the unlock instruction underneath the large lock, while creature names stay readable. */
+.boss-card.is-locked .boss-locked-message{z-index:1;}
+.boss-card.is-locked .boss-lock-overlay{z-index:20;}
+.boss-card.is-locked .boss-association{z-index:21;}

@@ -1162,7 +1162,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
           </div>
           {!unlocked && <div className="boss-lock-overlay" aria-hidden="true"><img src={uiAssetUrl('lock_asset.png')} alt=""/></div>}
           {unlocked ? <div className="boss-progress-section">
-            {readyToComplete&&<button type="button" className="boss-complete-button" onClick={()=>openBossReward(boss)}>COMPLETE BOSS</button>}
+            <button type="button" className="boss-complete-button" onClick={()=>openBossReward(boss)} disabled={!readyToComplete} aria-hidden={!readyToComplete} tabIndex={readyToComplete?0:-1} style={{visibility:readyToComplete?'visible':'hidden'}}>COMPLETE BOSS</button>
             {reward&&<div className="boss-reward-claimed"><span>REWARD CLAIMED</span><strong>{reward.label??reward.name}</strong></div>}
             <div className="boss-progress-label"><span>{complete?'COMPLETE':readyToComplete?'READY TO COMPLETE':'KILL COUNT'}</span><strong>{current} / {target} KC</strong></div>
             <div className="boss-progress-track"><div className="boss-progress-fill" style={{width:`${percent}%`}}/></div>

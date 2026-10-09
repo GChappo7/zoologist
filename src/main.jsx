@@ -1238,10 +1238,10 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
                     '--scroll-bottom': `url("${import.meta.env.BASE_URL}assets/ui/scroll/791_0%20scrollBottom.png")`,
                     '--scroll-back': `url("${import.meta.env.BASE_URL}assets/ui/scroll/792_0%20scrollBack.png")`,
                   }}
-                  onPointerMove={moveBossRewardScrollbar} onPointerUp={endBossRewardScrollbarDrag} onPointerCancel={endBossRewardScrollbarDrag} onPointerDown={startBossRewardScrollbarDrag}>
+                  onPointerMove={moveBossRewardScrollbar} onPointerUp={endBossRewardScrollbarDrag} onPointerCancel={endBossRewardScrollbarDrag}>
                   <button type="button" className="boss-reward-scroll-arrow boss-reward-scroll-up" onClick={()=>bossRewardListRef.current?.scrollBy({top:-220,behavior:'smooth'})} aria-label="Scroll rewards up"><img src={`${import.meta.env.BASE_URL}assets/ui/scroll/773_0%20scrollUpArrow.png`} alt="" draggable="false"/></button>
                   <button type="button" className="boss-reward-scroll-arrow boss-reward-scroll-down" onClick={()=>bossRewardListRef.current?.scrollBy({top:220,behavior:'smooth'})} aria-label="Scroll rewards down"><img src={`${import.meta.env.BASE_URL}assets/ui/scroll/788_0%20scrollDownArrow.png`} alt="" draggable="false"/></button>
-                  <div className="boss-reward-scroll-track" aria-hidden="true"><div className="boss-reward-scroll-thumb" style={{transform:`translateY(${bossRewardScroll.top}px)`,height:`${bossRewardScroll.height}px`}}/></div>
+                  <div className="boss-reward-scroll-track" aria-hidden="true" onPointerDown={startBossRewardScrollbarDrag}><div className="boss-reward-scroll-thumb" style={{transform:`translateY(${bossRewardScroll.top}px)`,height:`${bossRewardScroll.height}px`}}/></div>
                 </div>
               </div>
             </div>}

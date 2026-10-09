@@ -1793,6 +1793,8 @@ function App(){
       initialTiles={gameState.mapTiles}
       onTilesChange={resetInProgress?undefined:mapTiles=>updateGameState({mapTiles})}
       rewardAssignments={rewardAssignments}
+      bossProgress={bossProgress}
+      bossRewards={bossRewards}
       onBossClick={bossId=>{setFocusBossId(bossId);setSkillsOpen(false);setTab('bosses')}}
       onRewardAssignmentsChange={resetInProgress?undefined:assignments=>{setRewardAssignments(assignments);updateGameState({rewardAssignments:assignments})}}
     />

@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import {
   BookOpen, ChevronLeft, ChevronRight, Compass, Eye, Flag, Gamepad2, Gem,
   LayoutGrid, MousePointer2, PawPrint, ScrollText, ShieldCheck,
-  Sparkles, Users, Search, ShoppingBag, Skull, MapPinned
+  Users, Search, ShoppingBag, Skull, MapPinned
 } from 'lucide-react'
 import './styles.css'
 import './zoologist-overrides.css'
@@ -994,6 +994,36 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
   const completedCreatureIds=useMemo(()=>new Set(Object.values(mapTiles||{}).filter(tile=>tile?.completed&&tile?.creatureId).map(tile=>String(tile.creatureId))),[mapTiles])
   const [rewardModalBoss,setRewardModalBoss]=useState(null)
   const [rewardCategory,setRewardCategory]=useState(null)
+  const bossRewardListRef=useRef(null)
+  const bossRewardScrollbarRef=useRef(null)
+  const [bossRewardScroll,setBossRewardScroll]=useState({top:0,height:40})
+  const bossRewardDragRef=useRef(null)
+  const moveBossRewardScrollbar=(event)=>{
+    const drag=bossRewardDragRef.current, scrollbar=bossRewardScrollbarRef.current, list=bossRewardListRef.current
+    if(!drag||!scrollbar||!list)return
+    const trackHeight=Math.max(1,scrollbar.clientHeight-44)
+    const maxThumbTop=Math.max(0,trackHeight-bossRewardScroll.height)
+    const maxScroll=list.scrollHeight-list.clientHeight
+    if(maxThumbTop<=0)return
+    list.scrollTop=Math.max(0,Math.min(maxScroll,drag.startScroll+(event.clientY-drag.startY)*(maxScroll/maxThumbTop)))
+  }
+  const endBossRewardScrollbarDrag=()=>{bossRewardDragRef.current=null}
+  const startBossRewardScrollbarDrag=(event)=>{
+    if(event.button!==0)return
+    const scrollbar=bossRewardScrollbarRef.current, list=bossRewardListRef.current
+    if(!scrollbar||!list||list.scrollHeight<=list.clientHeight)return
+    const rect=scrollbar.getBoundingClientRect(), thumbTop=bossRewardScroll.top+22
+    if(event.clientY<rect.top+thumbTop||event.clientY>rect.top+thumbTop+bossRewardScroll.height){
+      const trackHeight=Math.max(1,scrollbar.clientHeight-44)
+      const maxThumbTop=Math.max(0,trackHeight-bossRewardScroll.height)
+      const clickTop=Math.max(0,Math.min(maxThumbTop,event.clientY-rect.top-22-bossRewardScroll.height/2))
+      const maxScroll=list.scrollHeight-list.clientHeight
+      list.scrollTop=maxThumbTop?(clickTop/maxThumbTop)*maxScroll:0
+      return
+    }
+    bossRewardDragRef.current={startY:event.clientY,startScroll:list.scrollTop}
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+  }
   useEffect(()=>{if(!focusBossId)return;const target=document.getElementById(`boss-card-${focusBossId}`);if(target){target.scrollIntoView({behavior:'smooth',block:'center'});target.classList.add('is-focus-target')}},[focusBossId])
 
   const getBossState=(boss)=>{
@@ -1179,7 +1209,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
     {rewardModalBoss&&<div className="boss-reward-overlay" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget){setRewardModalBoss(null);setRewardCategory(null)}}}>
       <div className="boss-reward-dialog" role="dialog" aria-modal="true" aria-labelledby="boss-reward-title">
         <div className="boss-reward-header">
-          <div className="eyebrow"><Sparkles size={14}/> BOSS REWARD</div>
+          <div className="eyebrow">BOSS REWARD</div>
           <h2 id="boss-reward-title">{rewardModalBoss.name} Complete</h2>
           <p>Select a reward currently sitting on a revealed tile. Claiming it will roll a new reward on that existing tile.</p>
         </div>
@@ -1190,19 +1220,54 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
                     </div>
           : <div className="boss-reward-choice-view">
               <button type="button" className="boss-reward-back" onClick={()=>setRewardCategory(null)}>← Back to reward types</button>
-              <div className="boss-reward-choice-list">
-                {rewardOptions.length
-                  ? rewardOptions.map(option=><button type="button" className="boss-reward-choice" key={option.id} onClick={()=>claimBossReward(option)}>
-                      <ProgressionIcon type={option.type} skill={option.skill} region={option.region}/>
-                      <span><strong>{option.label??option.name}</strong><small className="boss-reward-associated-creature">Creature: {creatures.find(item=>String(item.id)===String(option.creatureId))?.name??'Unknown'}</small>{option.type==='skill'&&<small>{option.skill}</small>}{option.type==='diary'&&<small>{option.region} • {option.tier}</small>}</span>
-                    </button>)
-                  : <div className="boss-reward-empty">No unclaimed rewards of this type are currently available.</div>}
+              <div className="boss-reward-scroll-body">
+                <div className="boss-reward-choice-list" ref={bossRewardListRef}>
+                  {rewardOptions.length
+                    ? rewardOptions.map(option=><button type="button" className="boss-reward-choice" key={option.id} onClick={()=>claimBossReward(option)}>
+                        <ProgressionIcon type={option.type} skill={option.skill} region={option.region}/>
+                        <span><strong>{option.label??option.name}</strong><small className="boss-reward-associated-creature">Creature: {creatures.find(item=>String(item.id)===String(option.creatureId))?.name??'Unknown'}</small>{option.type==='skill'&&<small>{option.skill}</small>}{option.type==='diary'&&<small>{option.region} • {option.tier}</small>}</span>
+                      </button>)
+                    : <div className="boss-reward-empty">No unclaimed rewards of this type are currently available.</div>}
+                </div>
+                <div className="boss-reward-scroll-arrows" ref={bossRewardScrollbarRef} aria-label="Boss reward list scroll controls"
+                  style={{
+                    '--scroll-up': `url("${import.meta.env.BASE_URL}assets/ui/scroll/773_0%20scrollUpArrow.png")`,
+                    '--scroll-down': `url("${import.meta.env.BASE_URL}assets/ui/scroll/788_0%20scrollDownArrow.png")`,
+                    '--scroll-top': `url("${import.meta.env.BASE_URL}assets/ui/scroll/789_0%20scrollTop.png")`,
+                    '--scroll-middle': `url("${import.meta.env.BASE_URL}assets/ui/scroll/790_0%20scrollMiddle.png")`,
+                    '--scroll-bottom': `url("${import.meta.env.BASE_URL}assets/ui/scroll/791_0%20scrollBottom.png")`,
+                    '--scroll-back': `url("${import.meta.env.BASE_URL}assets/ui/scroll/792_0%20scrollBack.png")`,
+                  }}
+                  onPointerMove={moveBossRewardScrollbar} onPointerUp={endBossRewardScrollbarDrag} onPointerCancel={endBossRewardScrollbarDrag} onPointerDown={startBossRewardScrollbarDrag}>
+                  <button type="button" className="boss-reward-scroll-arrow boss-reward-scroll-up" onClick={()=>bossRewardListRef.current?.scrollBy({top:-220,behavior:'smooth'})} aria-label="Scroll rewards up"><img src={`${import.meta.env.BASE_URL}assets/ui/scroll/773_0%20scrollUpArrow.png`} alt="" draggable="false"/></button>
+                  <button type="button" className="boss-reward-scroll-arrow boss-reward-scroll-down" onClick={()=>bossRewardListRef.current?.scrollBy({top:220,behavior:'smooth'})} aria-label="Scroll rewards down"><img src={`${import.meta.env.BASE_URL}assets/ui/scroll/788_0%20scrollDownArrow.png`} alt="" draggable="false"/></button>
+                  <div className="boss-reward-scroll-track" aria-hidden="true"><div className="boss-reward-scroll-thumb" style={{transform:`translateY(${bossRewardScroll.top}px)`,height:`${bossRewardScroll.height}px`}}/></div>
+                </div>
               </div>
             </div>}
+        {rewardCategory&&<BossRewardScrollbarSync listRef={bossRewardListRef} scrollbarRef={bossRewardScrollbarRef} setScroll={setBossRewardScroll} dependencyKey={`${rewardCategory}|${rewardOptions.length}`}/>}
         <button type="button" className="boss-reward-cancel" onClick={()=>{setRewardModalBoss(null);setRewardCategory(null)}}>CLOSE</button>
       </div>
     </div>}
   </div>
+}
+function BossRewardScrollbarSync({listRef,scrollbarRef,setScroll,dependencyKey}){
+  useEffect(()=>{
+    const list=listRef.current, scrollbar=scrollbarRef.current
+    if(!list||!scrollbar)return
+    const update=()=>{
+      const maxScroll=Math.max(0,list.scrollHeight-list.clientHeight)
+      const trackHeight=Math.max(1,scrollbar.clientHeight-44)
+      const thumbHeight=maxScroll>0?Math.max(28,Math.min(trackHeight,trackHeight*(list.clientHeight/list.scrollHeight))):trackHeight
+      const maxThumbTop=Math.max(0,trackHeight-thumbHeight)
+      setScroll({top:maxScroll>0?(list.scrollTop/maxScroll)*maxThumbTop:0,height:thumbHeight})
+    }
+    update()
+    list.addEventListener('scroll',update,{passive:true})
+    window.addEventListener('resize',update)
+    return()=>{list.removeEventListener('scroll',update);window.removeEventListener('resize',update)}
+  },[listRef,scrollbarRef,setScroll,dependencyKey])
+  return null
 }
 function resolveReservedReward(reward,skillProgress,diaryStatuses={}){
   if(!reward)return null

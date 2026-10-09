@@ -1012,7 +1012,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
       const selectedIndex=sequence.findIndex(item=>String(item.id)===String(selectedReward.id))
       const next=selectedIndex>=0?sequence[selectedIndex+1]:getNextSkillBand(skillProgress,selectedReward.skill)
       if(next){
-        const sameSkill={...next,type:'skill',skill:selectedReward.skill}
+        const sameSkill={...next,type:'skill',skill:selectedReward.skill,followSkillProgress:true}
         if(isEligible(sameSkill))return sameSkill
       }
     }
@@ -1108,7 +1108,15 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
 }
 function resolveReservedReward(reward,skillProgress){
   if(!reward)return null
-  if(String(reward.type).toLowerCase()!=='skill'||reward.band)return reward
+  if(String(reward.type).toLowerCase()!=='skill')return reward
+  // Boss-reward swaps can leave a tile as the continuing slot for a skill.
+  // Resolve that slot against current progress each time, so it advances after
+  // another tile completes the current bracket instead of keeping a stale band.
+  if(reward.followSkillProgress){
+    const next=getNextSkillBand(skillProgress,reward.skill)
+    return next?{...next,type:'skill',skill:reward.skill,slot:reward.slot,followSkillProgress:true}:reward
+  }
+  if(reward.band)return reward
   const next=getNextSkillBand(skillProgress,reward.skill)
   return next?{...next,type:'skill',skill:reward.skill,slot:reward.slot}:reward
 }

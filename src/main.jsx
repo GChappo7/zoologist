@@ -1868,7 +1868,7 @@ function App(){
       onSkillRewardComplete={handleSkillRewardComplete}
       onDiaryRewardComplete={handleDiaryRewardComplete}
       onCreatureCompleted={handleCreatureCompleted}
-       diaryStatuses={diaryStatuses}
+      diaryStatuses={diaryStatuses}
       initialTiles={gameState.mapTiles}
       onTilesChange={resetInProgress?undefined:mapTiles=>updateGameState({mapTiles})}
       rewardAssignments={rewardAssignments}

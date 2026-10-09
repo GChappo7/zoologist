@@ -3914,3 +3914,32 @@
 }
 
 
+
+
+/* Compact, accessible sound-effects toggle */
+.header-actions .sound-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  padding: 0;
+  border: 1px solid rgba(224, 190, 111, .55);
+  border-radius: 4px;
+  background: linear-gradient(180deg, #3c3428, #211d18);
+  color: #f4d783;
+  font-family: var(--font-runescape, Georgia, serif);
+  font-size: 21px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: inset 0 1px rgba(255,255,255,.08), 0 1px 3px rgba(0,0,0,.35);
+}
+.header-actions .sound-toggle:hover {
+  background: linear-gradient(180deg, #59482c, #30251a);
+  border-color: #f4d783;
+}
+.header-actions .sound-toggle:focus-visible {
+  outline: 2px solid #f4d783;
+  outline-offset: 2px;
+}

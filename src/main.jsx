@@ -1056,8 +1056,8 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
           <div className="boss-association">
             <span className="boss-association-label">Associated creature</span>
             {associatedCreatures.length
-              ? boss.id==='callisto'
-                ? <span className="boss-creature-name boss-creature-name-inline"><span>Bear(s)</span></span>
+              ? (boss.id==='callisto'||boss.id==='scorpia')
+                ? <span className={`boss-creature-name boss-creature-name-inline${associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id)))?' is-completed':''}`}><span>{boss.id==='scorpia'?'Scorpion(s)':'Bear(s)'}</span></span>
                 : associatedCreatures.map(creature=><span className={`boss-creature-name${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id}>{creature.name}</span>)
               : <span className="boss-no-association">No associated creature tile</span>}
           </div>

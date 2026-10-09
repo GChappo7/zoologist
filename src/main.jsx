@@ -1030,7 +1030,9 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
 
   const bossTasks=[...bossSystem.tasks].sort((a,b)=>{
     const aState=getBossState(a),bState=getBossState(b)
-    if(aState.unlocked!==bState.unlocked)return aState.unlocked?-1:1
+    const aGroup=!aState.unlocked?2:(aState.current>=aState.target?1:0)
+    const bGroup=!bState.unlocked?2:(bState.current>=bState.target?1:0)
+    if(aGroup!==bGroup)return aGroup-bGroup
     return a.name.localeCompare(b.name,undefined,{sensitivity:'base'})
   })
 
@@ -1774,7 +1776,7 @@ function App(){
     quests: 'https://oldschool.runescape.wiki/images/Quests.png',
     diaries: 'https://oldschool.runescape.wiki/images/Achievement_Diaries.png',
     shop: 'https://oldschool.runescape.wiki/images/Inventory.png',
-    bosses: 'https://oldschool.runescape.wiki/images/Artio.png',
+    bosses: 'https://oldschool.runescape.wiki/images/Dagannoth_Kings.png',
   }
   const tabs=[
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText,ref:questsButtonRef},

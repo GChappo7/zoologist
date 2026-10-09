@@ -186,7 +186,7 @@
       "id": "scorpia",
       "name": "Scorpia",
       "category": "Wilderness",
-      "creature": "Scorpion(s)",
+      "creatures": ["Scorpion", "King Scorpion", "Poison Scorpion", "Kharid Scorpion", "Pit Scorpion"],
       "status": "not_slain",
       "kcRequired": 100
     },

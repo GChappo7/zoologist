@@ -3485,3 +3485,24 @@
     margin-top:22px !important;
   }
 }
+
+
+/* Prevent completed map tiles from inheriting the explored/selected blue highlight. Keep the creature art and completion tick intact. */
+.map-tile.is-completed,
+.map-tile.map-tile-explored.is-completed,
+.map-tile.is-completed:hover,
+.map-tile.map-tile-explored.is-completed:hover,
+.map-tile.is-completed:focus,
+.map-tile.map-tile-explored.is-completed:focus {
+  background-color:#0d151a !important;
+  background-image:none !important;
+  border-color:#385146 !important;
+  box-shadow:none !important;
+}
+.map-tile.is-completed::before,
+.map-tile.is-completed::after,
+.map-tile.map-tile-explored.is-completed::before,
+.map-tile.map-tile-explored.is-completed::after {
+  background:none !important;
+  box-shadow:none !important;
+}

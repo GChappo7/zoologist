@@ -34,45 +34,53 @@ function tone(ctx, { frequency, endFrequency = frequency, start, duration, type 
 
 // Locally generated UI sounds; no audio files or external requests.
 function cardFlip(ctx, start, volume = 0.055) {
-  // A brief papery swish with a soft, low card tap — not a pitched game blip.
-  const length = Math.ceil(ctx.sampleRate * 0.12)
+  // A short, dry shuffle: several fast paper/card edge strokes with a soft
+  // broadband rasp. The little pulses make it feel like cards sliding past
+  // one another rather than a single whoosh or a pitched game sound.
+  const duration = 0.19
+  const length = Math.ceil(ctx.sampleRate * duration)
   const buffer = ctx.createBuffer(1, length, ctx.sampleRate)
   const data = buffer.getChannelData(0)
   for (let i = 0; i < length; i++) {
-    const fade = 1 - i / length
-    data[i] = (Math.random() * 2 - 1) * fade
+    const t = i / ctx.sampleRate
+    const fadeIn = Math.min(1, t / 0.012)
+    const fadeOut = Math.max(0, 1 - t / duration)
+    data[i] = (Math.random() * 2 - 1) * fadeIn * fadeOut
   }
+
   const source = ctx.createBufferSource()
-  const filter = ctx.createBiquadFilter()
+  const highPass = ctx.createBiquadFilter()
+  const body = ctx.createBiquadFilter()
   const gain = ctx.createGain()
   source.buffer = buffer
-  filter.type = 'bandpass'
-  filter.frequency.setValueAtTime(1900, start)
-  filter.frequency.exponentialRampToValueAtTime(650, start + 0.105)
-  filter.Q.setValueAtTime(0.7, start)
+  highPass.type = 'highpass'
+  highPass.frequency.setValueAtTime(700, start)
+  body.type = 'bandpass'
+  body.frequency.setValueAtTime(2300, start)
+  body.frequency.exponentialRampToValueAtTime(1250, start + duration)
+  body.Q.setValueAtTime(0.65, start)
+
   gain.gain.setValueAtTime(0.0001, start)
-  gain.gain.linearRampToValueAtTime(volume, start + 0.012)
-  gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.12)
-  source.connect(filter)
-  filter.connect(gain)
+  // Four quick, uneven strokes imitate the edges of a small stack of cards.
+  const pulses = [
+    [0.000, 0.52],
+    [0.038, 0.92],
+    [0.078, 0.68],
+    [0.119, 0.78],
+    [0.158, 0.34],
+  ]
+  for (const [offset, strength] of pulses) {
+    gain.gain.setValueAtTime(Math.max(0.0001, volume * strength), start + offset)
+    gain.gain.setValueAtTime(Math.max(0.0001, volume * strength * 0.58), start + offset + 0.018)
+  }
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + duration)
+  source.connect(highPass)
+  highPass.connect(body)
+  body.connect(gain)
   gain.connect(ctx.destination)
   source.start(start)
-  source.stop(start + 0.125)
-
-  const tap = ctx.createOscillator()
-  const tapGain = ctx.createGain()
-  tap.type = 'sine'
-  tap.frequency.setValueAtTime(210, start)
-  tap.frequency.exponentialRampToValueAtTime(105, start + 0.045)
-  tapGain.gain.setValueAtTime(0.0001, start)
-  tapGain.gain.linearRampToValueAtTime(volume * 0.48, start + 0.004)
-  tapGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.055)
-  tap.connect(tapGain)
-  tapGain.connect(ctx.destination)
-  tap.start(start)
-  tap.stop(start + 0.06)
+  source.stop(start + duration + 0.005)
 }
-
 const melodies = {
   // A clean, short confirmation ding rather than a retro game jingle.
   complete: [

@@ -3633,3 +3633,25 @@
     transform: translateY(-12px);
   }
 }
+
+
+/* Keep every boss creature name flush to the top edge of its tile. */
+.boss-card .boss-card-title {
+  order: 0 !important;
+  margin-top: 0 !important;
+  align-self: stretch;
+}
+.boss-card.is-locked {
+  padding-top: 0 !important;
+}
+.boss-card.is-locked .boss-card-title {
+  margin-top: 0 !important;
+}
+@media (max-width:600px) {
+  .boss-card .boss-card-title {
+    margin-top: 0 !important;
+  }
+  .boss-card.is-locked {
+    padding-top: 0 !important;
+  }
+}

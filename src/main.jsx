@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import {
   BookOpen, ChevronLeft, ChevronRight, Compass, Eye, Flag, Gamepad2, Gem,
   LayoutGrid, MousePointer2, PawPrint, ScrollText, ShieldCheck,
-  Users, Search, ShoppingBag, Skull, MapPinned
+  Sparkles, Users, Search, ShoppingBag, Skull, MapPinned
 } from 'lucide-react'
 import './styles.css'
 import './zoologist-overrides.css'

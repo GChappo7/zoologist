@@ -1473,7 +1473,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
         {presentation.subtitle&&<span className="tile-popup-subtitle">{presentation.subtitle}</span>}
       </div>
       <div className="tile-popup-actions">
-        <button type="button" className={`tile-popup-complete ${selectedTile.completed?'is-completed':''} ${isDismissing?'is-ticking':''}`} onPointerDown={()=>{suppressCompleteHoverRef.current=true}} onMouseEnter={()=>{if(!suppressCompleteHoverRef.current&&!isDismissing&&!selectedTile.completed)playSfx('click')}} onFocus={()=>{if(!isDismissing&&!selectedTile.completed)playSfx('click')}} onClick={()=>{if(isDismissing||selectedTile.completed)return;suppressCompleteHoverRef.current=true;playSfx('complete');setIsDismissing(true);onComplete(selectedTile);window.setTimeout(()=>{setIsCompletingClose(true);window.setTimeout(()=>onShowMore?.(false),280)},1000)}} aria-label={selectedTile.completed?'Completed':'Mark complete'} aria-pressed={selectedTile.completed} />
+        <button type="button" className={`tile-popup-complete ${selectedTile.completed?'is-completed':''} ${isDismissing?'is-ticking':''}`} onClick={()=>{if(isDismissing||selectedTile.completed)return;playSfx('complete');setIsDismissing(true);onComplete(selectedTile);window.setTimeout(()=>{setIsCompletingClose(true);window.setTimeout(()=>onShowMore?.(false),280)},1000)}} aria-label={selectedTile.completed?'Completed':'Mark complete'} aria-pressed={selectedTile.completed} />
       </div>
     </div>
   </section>
@@ -1695,7 +1695,6 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   }
   const handleComplete=tile=>{
     if(!tile||tile.state!=='frontier'||tile.completed||tile.faceDown)return
-    playSfx('complete')
     const reward=getTileReward(tile,creatureById[tile.creatureId],skillProgress,effectiveRewardAssignments,diaryStatuses)
     const completed={...tile,state:'explored',completed:true,faceDown:false,revealAnimation:false,reward}
     const revealedCardCount=getAdjacentPositions({...tiles,[keyFor(tile.x,tile.y)]:completed}).length

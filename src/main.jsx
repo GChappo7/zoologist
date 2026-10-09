@@ -1683,6 +1683,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     playSfx('complete')
     const reward=getTileReward(tile,creatureById[tile.creatureId],skillProgress,effectiveRewardAssignments,diaryStatuses)
     const completed={...tile,state:'explored',completed:true,faceDown:false,reward}
+    const revealedCardCount=getAdjacentPositions({...tiles,[keyFor(tile.x,tile.y)]:completed}).length
     const nextSkillProgress=String(reward?.type).toLowerCase()==='skill'
       ?getSkillProgressAfterReward(skillProgress,reward)
       :skillProgress
@@ -1691,9 +1692,8 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:completed}));
     onCreatureCompleted?.()
     window.setTimeout(()=>{
-      // Completing a creature reveals the next frontier batch; play the flip
-      // sound here as well as when the initial face-down tile is clicked.
-      playSfx('flip')
+      // Give every newly revealed card its own lightly layered flip sound.
+      if(revealedCardCount>0)playSfx('flip',revealedCardCount)
       setTiles(current=>recomputeFrontier(current,creatures,nextSkillProgress,effectiveRewardAssignments,diaryStatuses))
     },1700)
     setSelectedTile(completed)

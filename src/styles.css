@@ -856,8 +856,12 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 .diary-reveal-dialog h2{margin:8px 0 2px;color:#f3d57e;font-family:inherit;font-size:clamp(26px,6vw,38px);font-weight:900;text-shadow:0 3px 0 #000,0 0 18px #d8b75a55}
 .diary-reveal-tier{font-size:19px;font-weight:800;color:#fff4d2}
 .diary-reveal-dialog p{max-width:370px;margin:16px auto 23px;color:#c9c8bf;font-size:13px;line-height:1.6}
-.diary-reveal-continue{position:relative;min-width:170px;padding:13px 25px;color:#1a160d;background:linear-gradient(#f4d987,#c59d48);border:1px solid #ffe8a3;border-radius:5px;font-weight:1000;letter-spacing:.1em;box-shadow:0 4px 0 #755a26,0 8px 18px #0006;cursor:pointer}
-.diary-reveal-continue:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.diary-reveal-continue{position:relative;display:inline-grid;place-items:center;width:190px;height:48px;padding:0;border:0;border-radius:4px;background:transparent;box-shadow:0 5px 12px #0008;cursor:pointer;isolation:isolate;transition:transform .14s ease,filter .14s ease}
+.diary-reveal-continue-image{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;filter:sepia(1) saturate(3.4) hue-rotate(350deg) brightness(1.08);z-index:-1;pointer-events:none}
+.diary-reveal-continue span{position:relative;color:#fff0b4;font-family:var(--font-runescape);font-size:18px;font-weight:400;letter-spacing:.035em;line-height:1;text-shadow:0 2px 0 #4b3210,1px 0 0 #79521d,-1px 0 0 #79521d,0 0 5px #3d270d;pointer-events:none}
+.diary-reveal-continue:hover{filter:brightness(1.12);transform:translateY(-2px)}
+.diary-reveal-continue:active{transform:translateY(1px);filter:brightness(.96)}
+.diary-reveal-continue:focus-visible{outline:2px solid #ffe7a0;outline-offset:4px}
 .diary-reveal-medium{--diary-reveal-glow:rgba(100,170,231,.34)}.diary-reveal-medium .diary-reveal-dialog{border-color:#78aeda}.diary-reveal-medium .diary-reveal-eyebrow,.diary-reveal-medium .diary-reveal-dialog h2{color:#a7d7ff}.diary-reveal-medium .diary-reveal-tier-mark{background:#a7d7ff}
 .diary-reveal-hard{--diary-reveal-glow:rgba(181,116,231,.4)}.diary-reveal-hard .diary-reveal-dialog{border-color:#b57be1}.diary-reveal-hard .diary-reveal-eyebrow,.diary-reveal-hard .diary-reveal-dialog h2{color:#d9a8ff}.diary-reveal-hard .diary-reveal-tier-mark{background:#d9a8ff}
 .diary-reveal-elite{--diary-reveal-glow:rgba(235,155,64,.46)}.diary-reveal-elite .diary-reveal-dialog{border-color:#e8a04e}.diary-reveal-elite .diary-reveal-eyebrow,.diary-reveal-elite .diary-reveal-dialog h2{color:#ffc477}.diary-reveal-elite .diary-reveal-tier-mark{background:#ffc477}

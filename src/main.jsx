@@ -1486,7 +1486,10 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   useEffect(()=>{zoomRef.current=zoom},[zoom])
   useEffect(()=>{
     if(!focusCreatureId)return
-    const target=Object.values(tiles).find(tile=>String(tile?.creatureId)===String(focusCreatureId))
+    const matchingTiles=Object.values(tiles).filter(tile=>String(tile?.creatureId)===String(focusCreatureId))
+    // Prefer the already-completed copy when navigating from a boss association.
+    // This keeps the shortcut anchored to the creature tile the player has recorded.
+    const target=matchingTiles.find(tile=>tile?.completed)??matchingTiles[0]
     if(!target)return
     setZoom(1)
     setPan({x:-target.x*TILE_STEP,y:-target.y*TILE_STEP})

@@ -1284,7 +1284,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
     </div>
   </section>
 }
-function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,skillProgress,rewardAssignments}){
+function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,skillProgress,diaryStatuses,rewardAssignments}){
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   const reward=selectedTile&&creature?getTileReward(selectedTile,creature,skillProgress,rewardAssignments,diaryStatuses):null
   if(!open)return null
@@ -1497,7 +1497,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
     </div>
   </section>
-  <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} rewardAssignments={effectiveRewardAssignments}/>
+  <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments}/>
 </div>
 }
 function App(){

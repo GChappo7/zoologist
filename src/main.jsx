@@ -408,14 +408,18 @@ function ProgressionDropdown({open,onClose,anchorRef,ariaLabel='Menu',children,c
   const [anchorPosition,setAnchorPosition]=useState(null)
   const [visible,setVisible]=useState(open)
   const [closing,setClosing]=useState(false)
+  const wasOpenRef=useRef(false)
 
   useEffect(()=>{
     if(open){
+      if(!wasOpenRef.current)playSfx('click')
+      wasOpenRef.current=true
       if(closeTimerRef.current) clearTimeout(closeTimerRef.current)
       setVisible(true)
       setClosing(false)
       return
     }
+    wasOpenRef.current=false
     if(!visible) return
     setClosing(true)
     closeTimerRef.current=setTimeout(()=>{

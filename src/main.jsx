@@ -148,6 +148,18 @@ const CREATURE_IMAGE_URL_ALIASES={
   'Kharid Scorpion':'https://oldschool.runescape.wiki/images/Kharid_Scorpion.png',
   'Warped Tortoise':'https://oldschool.runescape.wiki/images/Warped_Tortoise.png',
   'Swamp toad':'https://oldschool.runescape.wiki/images/Swamp_toad_(item)_detail.png',
+  'Husky':'https://oldschool.runescape.wiki/images/Husky_(black_%26_white)_follower.png',
+  'Labrador':'https://oldschool.runescape.wiki/images/Labrador_(golden)_follower.png',
+  'Chihuahua':'https://oldschool.runescape.wiki/images/Chihuahua_(tan)_follower.png',
+  'Border Collie':'https://oldschool.runescape.wiki/images/Border_Collie_(chocolate)_follower.png',
+  'Shiba':'https://oldschool.runescape.wiki/images/Shiba_(tan)_follower.png',
+  'Samoyed':'https://oldschool.runescape.wiki/images/Samoyed_(white)_follower.png',
+  'Spaniel':'https://oldschool.runescape.wiki/images/Spaniel_(red)_follower.png',
+  'Bernese Mountain Dog':'https://oldschool.runescape.wiki/images/Bernese_Mountain_Dog_(chocolate)_follower.png',
+  'Corgi':'https://oldschool.runescape.wiki/images/Corgi_(tan)_follower.png',
+  'Greyhound':'https://oldschool.runescape.wiki/images/Greyhound_(tan)_follower.png',
+  'Yorkie':'https://oldschool.runescape.wiki/images/Yorkie_(brown)_follower.png',
+  'Pug':'https://oldschool.runescape.wiki/images/Pug_(fawn)_follower.png',
 }
 const RAW_FISH_WIKI_IMAGES={
   Shrimp:'Raw_shrimps_detail.png',

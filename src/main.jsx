@@ -1835,7 +1835,7 @@ function App(){
   }
 
   const creatureCount=creatures.length
-  const recordedCreatureCount=new Set(Object.values(gameState.mapTiles||{}).filter(tile=>tile?.creatureId&&tile?.faceDown===false).map(tile=>String(tile.creatureId))).size
+  const researchedCreatureCount=new Set(Object.values(gameState.mapTiles||{}).filter(tile=>tile?.creatureId&&tile?.completed===true).map(tile=>String(tile.creatureId))).size
   const OSRS_TAB_ICONS = {
     map: 'https://oldschool.runescape.wiki/images/World_map_icon.png',
     skills: 'https://oldschool.runescape.wiki/images/Skills_icon.png',
@@ -1894,8 +1894,8 @@ function App(){
       <div className="header-left">
       <div className="brand-block"><div className="brand-mark"><PawPrint size={21}/></div><div><div className="brand-name">Zoologist <span className="deployment-indicator" title={`GitHub deployment ${DEPLOYMENT_SHA}`}>{DEPLOYMENT_LABEL}</span></div><div className="brand-subtitle">OSRS creature exploration</div></div></div>
         <button type="button" className={`header-collection ${tab==='collection'?'active':''}`} onClick={()=>{setSkillsOpen(false);setTab('collection')}} aria-label="Open creature collection" title="Open Creature Collection">
-          <div className="header-collection-label"><span>CREATURES RECORDED</span><strong>{recordedCreatureCount} / {creatureCount}</strong></div>
-          <div className="header-collection-track"><div className="header-collection-fill" style={{width:`${creatureCount?Math.min(100,recordedCreatureCount/creatureCount*100):0}%`}}/></div>
+          <div className="header-collection-label"><span>CREATURES RESEARCHED</span></div>
+          <div className="header-collection-progress-row"><strong>{researchedCreatureCount} / {creatureCount}</strong><div className="header-collection-track"><div className="header-collection-fill" style={{width:`${creatureCount?Math.min(100,researchedCreatureCount/creatureCount*100):0}%`}}/></div></div>
         </button>
       </div>
       <nav className="top-tabs">{tabs.map(({id,label,icon:Icon,ref})=><button type="button" key={id} ref={ref|| (id==='skills'?skillsButtonRef:undefined)} className={`top-tab-${id} ${id==='skills'&&skillsOpen||tab===id?'active':''}`} onClick={()=>handleTabClick(id)} aria-expanded={id==='skills'?skillsOpen:undefined}>{OSRS_TAB_ICONS[id]?<img className="osrs-top-tab-icon" src={OSRS_TAB_ICONS[id]} alt="" aria-hidden="true" draggable="false"/>:<Icon size={16}/>}<span>{label}</span></button>)}</nav>

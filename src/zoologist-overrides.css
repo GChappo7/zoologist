@@ -3362,3 +3362,18 @@
 }
 .boss-card.is-locked .boss-locked-message img{display:none;}
 .boss-card.is-locked .boss-lock-overlay{z-index:20;}
+
+
+/* Locked boss card hierarchy: artwork, larger unlock instruction, then associated-creature label and names. */
+.boss-card.is-locked .boss-image-space{order:2;}
+.boss-card.is-locked .boss-locked-message{
+  order:3;
+  font-size:15px;
+  line-height:1.2;
+  margin:4px 8px 3px;
+  padding:2px 4px;
+}
+.boss-card.is-locked .boss-association{order:4;}
+@media (max-width:600px){
+  .boss-card.is-locked .boss-locked-message{font-size:14px;}
+}

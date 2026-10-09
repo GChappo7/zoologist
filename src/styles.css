@@ -826,3 +826,11 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 .creature-glyph-desert_lizard .creature-image {
   transform: translateY(-7px);
 }
+
+.creature-glyph-gecko .creature-image,
+.creature-glyph-crab .creature-image,
+.creature-glyph-rat .creature-image,
+.creature-glyph-monkfish .creature-image,
+.creature-glyph-cave_eel .creature-image {
+  transform: translateY(-7px);
+}

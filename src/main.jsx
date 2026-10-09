@@ -1998,7 +1998,7 @@ function App(){
     {diaryReveal&&<div className={`diary-reveal-overlay diary-reveal-${String(diaryReveal.tier||'easy').toLowerCase()}`} role="presentation">
       <div className="diary-reveal-dialog" role="dialog" aria-modal="true" aria-labelledby="diary-reveal-title">
         <div className="diary-reveal-glow" aria-hidden="true"/>
-        <div className="diary-reveal-eyebrow"><Sparkles size={16}/> BONUS REWARD UNLOCKED <Sparkles size={16}/></div>
+        <div className="diary-reveal-eyebrow"><img className="diary-reveal-side-icon" src={PROGRESSION_ASSETS.diaryRegions[diaryReveal.region]||PROGRESSION_ASSETS.diary} alt="" aria-hidden="true" draggable="false"/> <span>BONUS REWARD UNLOCKED</span> <img className="diary-reveal-side-icon" src={PROGRESSION_ASSETS.diaryRegions[diaryReveal.region]||PROGRESSION_ASSETS.diary} alt="" aria-hidden="true" draggable="false"/></div>
         <div className="diary-reveal-emblem"><img src={PROGRESSION_ASSETS.diaryRegions[diaryReveal.region]||PROGRESSION_ASSETS.diary} alt="" draggable="false"/><span className="diary-reveal-tier-mark">{String(diaryReveal.tier||'').toUpperCase()}</span></div>
         <div className="diary-reveal-kicker">NEW ACHIEVEMENT DIARY TIER</div>
         <h2 id="diary-reveal-title">{diaryReveal.region}</h2>

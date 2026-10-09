@@ -808,7 +808,6 @@ function CollectionLog({creatures,mapTiles,onBack}){
       <div className="collection-log-progress">
         <div className="collection-log-progress-label"><span>CREATURES RECORDED</span><strong>{counts.recorded} / {counts.all}</strong></div>
         <div className="collection-log-progress-track"><div className="collection-log-progress-fill" style={{width:`${counts.all?Math.min(100,counts.recorded/counts.all*100):0}%`}}/></div>
-        <div className="collection-log-legend"><span><i className="collection-swatch complete"/> Complete</span><span><i className="collection-swatch revealed"/> Revealed</span><span><i className="collection-swatch unknown"/> Unknown</span></div>
       </div>
       <div className="collection-log-controls">
         <div className="collection-filters">{filters.map(([id,label,count])=><button type="button" key={id} className={filter===id?'active':''} onClick={()=>setFilter(id)}>{label} <span>{count}</span></button>)}</div>

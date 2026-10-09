@@ -1030,8 +1030,8 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
 
   const bossTasks=[...bossSystem.tasks].sort((a,b)=>{
     const aState=getBossState(a),bState=getBossState(b)
-    const aGroup=!aState.unlocked?2:(aState.current>=aState.target?1:0)
-    const bGroup=!bState.unlocked?2:(bState.current>=bState.target?1:0)
+    const aGroup=!aState.unlocked?2:(aState.reward?1:0)
+    const bGroup=!bState.unlocked?2:(bState.reward?1:0)
     if(aGroup!==bGroup)return aGroup-bGroup
     return a.name.localeCompare(b.name,undefined,{sensitivity:'base'})
   })
@@ -1047,7 +1047,8 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
     <div className="boss-grid">
       {bossTasks.map(boss=>{
         const {target,current,associatedCreatures,unlocked,reward}=getBossState(boss)
-        const complete=unlocked&&current>=target
+        const readyToComplete=unlocked&&current>=target&&!reward
+        const complete=Boolean(reward)
         const percent=target?Math.min(100,current/target*100):0
         const imageAvailable=bossImageCandidates(boss).length
         return <div id={`boss-card-${boss.id}`} className={`boss-card${!unlocked?' is-locked':''}${reward?' is-complete':''}`} key={boss.id}>
@@ -1065,9 +1066,9 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
           </div>
           {!unlocked && <div className="boss-lock-overlay" aria-hidden="true"><img src={uiAssetUrl('lock_asset.png')} alt=""/></div>}
           {unlocked ? <div className="boss-progress-section">
-            {complete&&!reward&&<button type="button" className="boss-complete-button" onClick={()=>openBossReward(boss)}>COMPLETE BOSS</button>}
+            {readyToComplete&&<button type="button" className="boss-complete-button" onClick={()=>openBossReward(boss)}>COMPLETE BOSS</button>}
             {reward&&<div className="boss-reward-claimed"><span>REWARD CLAIMED</span><strong>{reward.label??reward.name}</strong></div>}
-            <div className="boss-progress-label"><span>{complete?'COMPLETE':'KILL COUNT'}</span><strong>{current} / {target} KC</strong></div>
+            <div className="boss-progress-label"><span>{complete?'COMPLETE':readyToComplete?'READY TO COMPLETE':'KILL COUNT'}</span><strong>{current} / {target} KC</strong></div>
             <div className="boss-progress-track"><div className="boss-progress-fill" style={{width:`${percent}%`}}/></div>
             <div className="boss-kc-controls">
               <button type="button" className="boss-kc-button" onClick={()=>changeBossKc(boss,-1)} disabled={current<=0||Boolean(reward)} aria-label={`Decrease ${boss.name} kill count`}><img src={uiAssetUrl('1116_0 Minus Button.png')} alt=""/></button>

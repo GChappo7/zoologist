@@ -3517,3 +3517,25 @@
   background:none !important;
   opacity:0 !important;
 }
+
+
+/* Completed map tiles should have no outline at all; remove both the tile border and the inset pseudo-element border from the base stylesheet. */
+.map-tile.is-completed,
+.map-tile.map-tile-explored.is-completed,
+.map-tile.is-completed:hover,
+.map-tile.map-tile-explored.is-completed:hover,
+.map-tile.is-completed:focus,
+.map-tile.map-tile-explored.is-completed:focus,
+.map-tile.is-completed.is-selected,
+.map-tile.map-tile-explored.is-completed.is-selected {
+  border: 1px solid transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.map-tile.is-completed::after,
+.map-tile.map-tile-explored.is-completed::after {
+  content: none !important;
+  display: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}

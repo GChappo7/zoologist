@@ -285,7 +285,7 @@ function getEarlyRewardCandidate(creatures,used,rewardAssignments,completedCount
   return null
 }
 
-function recomputeFrontier(tiles,creatures,skillProgress,rewardAssignments){
+function recomputeFrontier(tiles,creatures,skillProgress,rewardAssignments,diaryStatuses={}){
   const next={...tiles},used=new Set(Object.values(next).map(t=>t.creatureId).filter(Boolean))
   const usedQuestRewards=getUsedQuestRewardKeys(tiles)
   const completedCount=getCompletedTileCount(tiles)
@@ -296,7 +296,7 @@ function recomputeFrontier(tiles,creatures,skillProgress,rewardAssignments){
     if(creature){
       used.add(creature.id)
       const distance=Math.abs(x)+Math.abs(y)
-      const reward=createTileReward(creature,skillProgress,distance,usedQuestRewards,rewardAssignments)
+      const reward=createTileReward(creature,skillProgress,distance,usedQuestRewards,rewardAssignments,diaryStatuses)
       if(String(reward?.type??'').toLowerCase()==='quest'){
         const questKey=String(reward.label??reward.name??'').trim().toLowerCase()
         if(questKey)usedQuestRewards.add(questKey)
@@ -315,7 +315,7 @@ function CreatureGlyph({creature,size='medium'}){
   const isRawFishImage=Boolean(RAW_FISH_WIKI_IMAGES[name]&&index===0)
   return <div className={`creature-glyph creature-glyph-${size} creature-glyph-${slugifyCreatureName(name)} ${isRawFishImage?'creature-glyph-raw-fish':''}`}>{!failed?<img src={candidates[index]} alt="" className={`creature-image ${isRawFishImage?'creature-image-raw-fish':''}`} draggable="false" onError={()=>index+1<candidates.length?setIndex(i=>i+1):setFailed(true)}/>:<span className="creature-fallback-glyph">🐾</span>}</div>
 }
-function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress,rewardAssignments,bossProgress,bossRewards,onBossClick}){
+function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress,diaryStatuses,rewardAssignments,bossProgress,bossRewards,onBossClick}){
   const creature=tile.creatureId?creatureById[tile.creatureId]:null
   const isFaceDown=Boolean(tile.faceDown)
   const associatedBosses=creature&&!isFaceDown?bossSystem.tasks.filter(boss=>{
@@ -335,7 +335,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress,rew
           <img src={`${import.meta.env.BASE_URL}assets/ui/map_tile.png`} alt="" draggable="false"/>
           <span className="map-card-content">
             {tile.completed&&<img className="tile-completed-tick" src={`${import.meta.env.BASE_URL}assets/ui/tick_circle.png`} alt="" aria-hidden="true" draggable="false"/>}
-            {(()=>{const reward=getTileReward(tile,creature,skillProgress,rewardAssignments);const presentation=getRewardPresentation(reward);return reward&&<ProgressionIcon type={presentation.type} skill={presentation.iconName} className="tile-progression-stamp"/>})()}
+            {(()=>{const reward=getTileReward(tile,creature,skillProgress,rewardAssignments,diaryStatuses);const presentation=getRewardPresentation(reward);return reward&&<ProgressionIcon type={presentation.type} skill={presentation.iconName} className="tile-progression-stamp"/>})()}
             <CreatureGlyph creature={creature} size="tile"/>
             <span className={`tile-completion-method ${creature.howToComplete === 'Find and kill' ? 'tile-method-slay' : creature.howToComplete === 'Find and examine' ? 'tile-method-examine' : creature.howToComplete === 'Find and catch/hunt' ? 'tile-method-catch' : creature.howToComplete === 'Shear' ? 'tile-method-shear' : creature.howToComplete === 'PET!' || creature.howToComplete === 'Examine or PET!' ? 'tile-method-pet' : ''}`}>{creature.howToComplete === 'Find and kill' ? 'Slay' : creature.howToComplete === 'Find and examine' ? 'Examine' : creature.howToComplete === 'Find and catch/hunt' ? 'Catch or Hunt' : creature.howToComplete === 'Shear' ? 'Shear' : creature.howToComplete === 'PET!' ? 'PET!' : creature.howToComplete === 'Examine or PET!' ? 'Examine or PET!' : creature.howToComplete}</span><span className="tile-name">{creature.name}</span>
           </span>
@@ -963,7 +963,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
       if(!tile||tile.completed||tile.faceDown||!tile.creatureId)return
       const creature=creatureByName.size?creatures.find(item=>String(item.id)===String(tile.creatureId)):null
       if(!creature)return
-      const reward=getTileReward(tile,creature,skillProgress,rewardAssignments)
+      const reward=getTileReward(tile,creature,skillProgress,rewardAssignments,diaryStatuses)
       if(!reward)return
       const key=`${String(reward.type).toLowerCase()}|${String(reward.id??reward.questId??reward.label??reward.name??'').toLowerCase()}`
       if(seen.has(key))return
@@ -971,7 +971,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
       result.push({...reward,tileKey,creatureId:creature.id})
     })
     return result
-  },[mapTiles,creatures,skillProgress,rewardAssignments,creatureByName])
+  },[mapTiles,creatures,skillProgress,rewardAssignments,diaryStatuses,creatureByName])
 
   const getRewardOptions=(category)=>{
     return frontierRewards.filter(reward=>String(reward.type).toLowerCase()===category)
@@ -1109,8 +1109,9 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
     </div>}
   </div>
 }
-function resolveReservedReward(reward,skillProgress){
+function resolveReservedReward(reward,skillProgress,diaryStatuses={}){
   if(!reward)return null
+  if(String(reward.type).toLowerCase()==='diary')return resolveDiaryReward(reward,diaryStatuses)
   if(String(reward.type).toLowerCase()!=='skill')return reward
   // Boss-reward swaps can leave a tile as the continuing slot for a skill.
   // Resolve that slot against current progress each time, so it advances after
@@ -1158,6 +1159,41 @@ function getDiaryTierWeight(tier,distance){
   return weightsByDistance[tier]??0
 }
 
+function getAvailableDiaryRewards(diaryStatuses={}) {
+  const tiers=['Easy','Medium','Hard','Elite']
+  const regions=[...new Set(rewardCatalog.mandatory
+    .filter(reward=>String(reward.type).toLowerCase()==='diary')
+    .map(reward=>String(reward.region??'').trim())
+    .filter(Boolean))]
+  return regions.flatMap(region=>{
+    const nextTier=tiers.find(tier=>!diaryStatuses[region+'|'+tier])
+    if(!nextTier)return []
+    const reward=rewardCatalog.mandatory.find(item=>
+      String(item.type).toLowerCase()==='diary' &&
+      String(item.region).trim()===region &&
+      String(item.tier).toLowerCase()===nextTier.toLowerCase()
+    )
+    return reward?[reward]:[]
+  })
+}
+
+function resolveDiaryReward(reward,diaryStatuses={},distance=Infinity) {
+  const region=String(reward?.region??reward?.location??'').trim()
+  const tiers=['Easy','Medium','Hard','Elite']
+  if(region){
+    const nextTier=tiers.find(tier=>!diaryStatuses[region+'|'+tier])
+    if(nextTier){
+      const nextReward=rewardCatalog.mandatory.find(item=>
+        String(item.type).toLowerCase()==='diary' &&
+        String(item.region).trim()===region &&
+        String(item.tier).toLowerCase()===nextTier.toLowerCase()
+      )
+      if(nextReward)return {...reward,...nextReward}
+    }
+  }
+  return weightedRandomPick(getAvailableDiaryRewards(diaryStatuses),item=>getDiaryTierWeight(item.tier,distance))
+}
+
 function getUsedQuestRewardKeys(tiles){
   return new Set(
     Object.values(tiles??{})
@@ -1168,19 +1204,23 @@ function getUsedQuestRewardKeys(tiles){
   )
 }
 
-function createTileReward(creature,skillProgress,distance=Infinity,usedQuestRewards=new Set(),rewardAssignments=null){
+function createTileReward(creature,skillProgress,distance=Infinity,usedQuestRewards=new Set(),rewardAssignments=null,diaryStatuses={}){
   const reservedReward=getAssignedReward(rewardAssignments,creature)
   if(reservedReward)return reservedReward
-  const diaryRewards=rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()==='diary')
-  return weightedRandomPick(diaryRewards,reward=>getDiaryTierWeight(reward.tier,distance))
+  return weightedRandomPick(getAvailableDiaryRewards(diaryStatuses),reward=>getDiaryTierWeight(reward.tier,distance))
 }
 
-function getTileReward(tile,creature,skillProgress,rewardAssignments){
+function getTileReward(tile,creature,skillProgress,rewardAssignments,diaryStatuses={}){
   // Once a tile has been assigned a reward, that reward is permanent.
   // This is important for revealed frontier tiles: recalculating their
   // reward on every render can make a quest appear to change or duplicate.
-  if(tile?.reward)return resolveReservedReward(tile.reward,skillProgress)
-  return resolveReservedReward(createTileReward(creature,skillProgress,Infinity,new Set(),rewardAssignments),skillProgress)
+  if(tile?.reward){
+    // Completed diary tiles retain the exact tier they awarded; unfinished tiles
+    // follow the next available tier for their region.
+    if(tile.completed&&String(tile.reward.type).toLowerCase()==='diary')return tile.reward
+    return resolveReservedReward(tile.reward,skillProgress,diaryStatuses)
+  }
+  return resolveReservedReward(createTileReward(creature,skillProgress,Infinity,new Set(),rewardAssignments,diaryStatuses),skillProgress,diaryStatuses)
 }
 
 function getRewardPresentation(reward){
@@ -1211,7 +1251,7 @@ function getRewardPresentation(reward){
     asset:'reward_quest.png',
   }
 }
-function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,skillProgress,rewardAssignments,closing=false}){
+function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,skillProgress,diaryStatuses,rewardAssignments,closing=false}){
   const [isDismissing,setIsDismissing]=useState(false)
   const [isCompletingClose,setIsCompletingClose]=useState(false)
   useEffect(()=>{
@@ -1220,7 +1260,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
   },[selectedTile?.x,selectedTile?.y])
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null
-  const reward=getTileReward(selectedTile,creature,skillProgress,rewardAssignments)
+  const reward=getTileReward(selectedTile,creature,skillProgress,rewardAssignments,diaryStatuses)
   const presentation=getRewardPresentation(reward)
   const rewardAsset=`${import.meta.env.BASE_URL}assets/ui/${presentation.asset}`
   const completeCircleUrl=`${import.meta.env.BASE_URL}assets/ui/box/1211_0%20CircleNoTick.png`
@@ -1246,7 +1286,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
 }
 function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,skillProgress,rewardAssignments}){
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
-  const reward=selectedTile&&creature?getTileReward(selectedTile,creature,skillProgress,rewardAssignments):null
+  const reward=selectedTile&&creature?getTileReward(selectedTile,creature,skillProgress,rewardAssignments,diaryStatuses):null
   if(!open)return null
   return <aside className="side-panel side-panel-open">
     <div className="side-panel-header"><div><div className="eyebrow"><Compass size={13}/> EXPEDITION LOG</div><strong>Animal details</strong></div><button className="icon-button" onClick={()=>setOpen(false)}><ChevronRight size={17}/></button></div>
@@ -1262,7 +1302,7 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,sk
     </div>}
   </aside>
 }
-function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete,onDiaryRewardComplete,initialTiles,onTilesChange,rewardAssignments,bossProgress,bossRewards,onRewardAssignmentsChange,onBossClick}){
+function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkillRewardComplete,onDiaryRewardComplete,initialTiles,onTilesChange,rewardAssignments,bossProgress,bossRewards,onRewardAssignmentsChange,onBossClick}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[dismissingTileKey,setDismissingTileKey]=useState(null),[closingPopupTileKey,setClosingPopupTileKey]=useState(null),[startCreature]=useState(()=>creatureById[initialTiles?.[keyFor(0,0)]?.creatureId]??pickStartingCreature(creatures))
   const [generatedRewardAssignments]=useState(()=>rewardAssignments??buildRewardAssignments(creatures,startCreature))
@@ -1434,7 +1474,7 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
   }
   const handleComplete=tile=>{
     if(!tile||tile.state!=='frontier'||tile.completed||tile.faceDown)return
-    const reward=getTileReward(tile,creatureById[tile.creatureId],skillProgress,effectiveRewardAssignments)
+    const reward=getTileReward(tile,creatureById[tile.creatureId],skillProgress,effectiveRewardAssignments,diaryStatuses)
     const completed={...tile,state:'explored',completed:true,faceDown:false,reward}
     const nextSkillProgress=String(reward?.type).toLowerCase()==='skill'
       ?getSkillProgressAfterReward(skillProgress,reward)
@@ -1442,7 +1482,7 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
     if(String(reward?.type).toLowerCase()==='skill')onSkillRewardComplete?.(reward)
     if(String(reward?.type).toLowerCase()==='diary')onDiaryRewardComplete?.(reward)
     setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:completed}));
-    window.setTimeout(()=>setTiles(current=>recomputeFrontier(current,creatures,nextSkillProgress,effectiveRewardAssignments)),2280)
+    window.setTimeout(()=>setTiles(current=>recomputeFrontier(current,creatures,nextSkillProgress,effectiveRewardAssignments,diaryStatuses)),2280)
     setSelectedTile(completed)
     setDismissingTileKey(keyFor(completed.x,completed.y))
     setPanelOpen(false)
@@ -1451,7 +1491,7 @@ function MapView({creatures,onProgressChange,skillProgress,onSkillRewardComplete
   }
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onClickCapture={handleStageClickCapture} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
-  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} rewardAssignments={effectiveRewardAssignments} bossProgress={bossProgress} bossRewards={bossRewards} onBossClick={onBossClick}/>)}{selectedTile&&<TilePopup closing={closingPopupTileKey===keyFor(selectedTile.x,selectedTile.y)} selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} rewardAssignments={effectiveRewardAssignments} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+132,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-38}}/>}</div></div>
+  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} bossProgress={bossProgress} bossRewards={bossRewards} onBossClick={onBossClick}/>)}{selectedTile&&<TilePopup closing={closingPopupTileKey===keyFor(selectedTile.x,selectedTile.y)} selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} rewardAssignments={effectiveRewardAssignments} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+132,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-38}}/>}</div></div>
       <div className="map-zoom-controls" onPointerDown={e=>e.stopPropagation()}><button onClick={()=>zoomAtPoint(zoom-ZOOM_STEP,innerWidth/2,innerHeight/2)}>−</button><button className="zoom-readout" onClick={()=>{setPan({x:0,y:0});setZoom(1)}}>{Math.round(zoom*100)}%</button><button onClick={()=>zoomAtPoint(zoom+ZOOM_STEP,innerWidth/2,innerHeight/2)}>+</button></div>
       <div className={`map-help ${mapHelpOpen?'is-open':''}`}><button type="button" className="map-help-toggle" onClick={e=>{e.stopPropagation();setMapHelpOpen(open=>!open)}} aria-label={mapHelpOpen?'Hide map controls':'Show map controls'} aria-expanded={mapHelpOpen} title="Map controls"><img src="https://oldschool.runescape.wiki/images/Lumbridge_Guide_icon.png" alt="" draggable="false"/></button><div className="map-help-panel"><div><MousePointer2 size={13}/> Move to edge to pan</div><div>↑ ↓ ← → <span>Arrow keys</span></div><div>MMB <span>Drag to pan</span></div><div>Wheel <span>Zoom</span></div></div></div>
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
@@ -1801,6 +1841,7 @@ function App(){
       skillProgress={skillProgress}
       onSkillRewardComplete={handleSkillRewardComplete}
       onDiaryRewardComplete={handleDiaryRewardComplete}
+       diaryStatuses={diaryStatuses}
       initialTiles={gameState.mapTiles}
       onTilesChange={resetInProgress?undefined:mapTiles=>updateGameState({mapTiles})}
       rewardAssignments={rewardAssignments}

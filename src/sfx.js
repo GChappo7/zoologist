@@ -33,6 +33,39 @@ function tone(ctx, { frequency, endFrequency = frequency, start, duration, type 
 }
 
 // Locally generated UI sounds; no audio files or external requests.
+function rewardWhoosh(ctx, start, volume = 0.035) {
+  // A subtle airy sweep to accompany the reward artwork appearing.
+  const duration = 0.28
+  const length = Math.ceil(ctx.sampleRate * duration)
+  const buffer = ctx.createBuffer(1, length, ctx.sampleRate)
+  const data = buffer.getChannelData(0)
+  for (let i = 0; i < length; i++) {
+    const t = i / ctx.sampleRate
+    const envelope = Math.sin(Math.PI * t / duration) ** 1.4
+    data[i] = (Math.random() * 2 - 1) * envelope
+  }
+  const source = ctx.createBufferSource()
+  const highPass = ctx.createBiquadFilter()
+  const lowPass = ctx.createBiquadFilter()
+  const gain = ctx.createGain()
+  source.buffer = buffer
+  highPass.type = 'highpass'
+  highPass.frequency.setValueAtTime(420, start)
+  highPass.frequency.exponentialRampToValueAtTime(1100, start + duration * 0.72)
+  lowPass.type = 'lowpass'
+  lowPass.frequency.setValueAtTime(1800, start)
+  lowPass.frequency.exponentialRampToValueAtTime(3600, start + duration * 0.72)
+  gain.gain.setValueAtTime(0.0001, start)
+  gain.gain.linearRampToValueAtTime(volume, start + 0.07)
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + duration)
+  source.connect(highPass)
+  highPass.connect(lowPass)
+  lowPass.connect(gain)
+  gain.connect(ctx.destination)
+  source.start(start)
+  source.stop(start + duration + 0.01)
+}
+
 function cardFlip(ctx, start, volume = 0.055) {
   // A short, dry shuffle: several fast paper/card edge strokes with a soft
   // broadband rasp. The little pulses make it feel like cards sliding past
@@ -107,7 +140,7 @@ export function playSfx(name, count = 1) {
   if (!isSfxEnabled()) return
   const ctx = getAudioContext()
   const notes = melodies[name]
-  if (!ctx || (!notes && name !== 'flip')) return
+  if (!ctx || (!notes && name !== 'flip' && name !== 'reward')) return
 
   // Request resume synchronously from the user's interaction. If the browser
   // suspended audio, schedule notes only once the context is actually running.
@@ -115,7 +148,9 @@ export function playSfx(name, count = 1) {
     if (!isSfxEnabled() || ctx.state !== 'running') return
     const now = ctx.currentTime + 0.012
     try {
-      if (name === 'flip') {
+      if (name === 'reward') {
+        rewardWhoosh(ctx, now)
+      } else if (name === 'flip') {
         // Each revealed card gets its own lightly staggered sound, so a batch
         // of three cards is heard as three overlapping physical flips.
         const voices = Math.max(1, Math.min(12, Math.floor(Number(count) || 1)))

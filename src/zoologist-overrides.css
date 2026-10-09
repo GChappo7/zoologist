@@ -3717,3 +3717,80 @@
 .top-tabs .top-tab-bosses > span {
   font-family: var(--font-runescape) !important;
 }
+
+
+/* Keep the boss reward dialog within the viewport and use the OSRS scroll assets for long lists. */
+.boss-reward-overlay { padding: 12px !important; overflow: hidden; }
+.boss-reward-dialog {
+  width: min(620px, 94vw);
+  max-height: min(620px, 88vh) !important;
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  box-sizing: border-box;
+}
+.boss-reward-header { flex: 0 0 auto; margin-bottom: 12px; }
+.boss-reward-choice-view { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; overflow: hidden; }
+.boss-reward-back { flex: 0 0 auto; }
+.boss-reward-scroll-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22px;
+  gap: 0;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-height: 100px;
+  max-height: min(390px, calc(88vh - 230px));
+  overflow: hidden;
+}
+.boss-reward-choice-list {
+  min-height: 0;
+  max-height: none !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none;
+  align-content: start;
+}
+.boss-reward-choice-list::-webkit-scrollbar { display: none !important; width: 0 !important; }
+.boss-reward-scroll-arrows {
+  position: relative; width: 22px; min-width: 22px; height: 100%; min-height: 100px;
+  background: #5d574c; overflow: hidden; pointer-events: auto; touch-action: none; user-select: none;
+}
+.boss-reward-scroll-arrow {
+  position: absolute; left: 0; z-index: 2; display: grid; place-items: center;
+  width: 22px; height: 22px; min-width: 22px; padding: 0; border: 0; border-radius: 0;
+  background: #5d574c; cursor: pointer;
+}
+.boss-reward-scroll-arrow img { display: block; width: 22px; height: 22px; object-fit: fill; image-rendering: pixelated; pointer-events: none; }
+.boss-reward-scroll-up { top: 0; }
+.boss-reward-scroll-down { bottom: 0; }
+.boss-reward-scroll-track {
+  position: absolute; top: 22px; right: 0; bottom: 22px; left: 0;
+  background: url("/zoologist/assets/ui/scroll/792_0%20scrollBack.png") center top / 100% auto repeat-y;
+}
+.boss-reward-scroll-thumb {
+  position: absolute; top: 0; left: 0; width: 100%; min-height: 28px; box-sizing: border-box;
+  background: url("/zoologist/assets/ui/scroll/790_0%20scrollMiddle.png") center / 100% auto repeat-y;
+  cursor: grab;
+}
+.boss-reward-scroll-thumb:active { cursor: grabbing; }
+.boss-reward-scroll-thumb::before {
+  content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 7px;
+  background: url("/zoologist/assets/ui/scroll/789_0%20scrollTop.png") center / 100% 100% no-repeat;
+}
+.boss-reward-scroll-thumb::after {
+  content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 7px;
+  background: url("/zoologist/assets/ui/scroll/791_0%20scrollBottom.png") center / 100% 100% no-repeat;
+}
+.boss-reward-cancel { flex: 0 0 auto; }
+@media (max-width:560px) {
+  .boss-reward-dialog { max-height: 88vh !important; padding: 14px !important; }
+  .boss-reward-header h2 { font-size: 21px; }
+  .boss-reward-header p { font-size: 11px; }
+  .boss-reward-category-grid { grid-template-columns: 1fr 1fr; }
+  .boss-reward-category { min-height: 92px; display: flex; padding: 8px 6px; text-align: center; }
+  .boss-reward-category span { text-align: center; }
+  .boss-reward-scroll-body { max-height: calc(88vh - 250px); }
+  .boss-reward-choice-list { grid-template-columns: 1fr; }
+}

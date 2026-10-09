@@ -1185,8 +1185,11 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
       {bossTasks.map(boss=>{
         const {target,current,associatedCreatures,unlocked,reward}=getBossState(boss)
         const linkedCreature=boss.id==='scorpia'
-          ? (associatedCreatures.find(creature=>String(creature.name||'').trim().toLowerCase()==='scorpion')||associatedCreatures[0])
-          : associatedCreatures[0]
+          ? (associatedCreatures.find(creature=>String(creature.name||'').trim().toLowerCase()==='scorpion'&&completedCreatureIds.has(String(creature.id)))
+            ||associatedCreatures.find(creature=>String(creature.name||'').trim().toLowerCase()==='scorpion')
+            ||associatedCreatures.find(creature=>completedCreatureIds.has(String(creature.id)))
+            ||associatedCreatures[0])
+          : (associatedCreatures.find(creature=>completedCreatureIds.has(String(creature.id)))||associatedCreatures[0])
         const readyToComplete=unlocked&&current>=target&&!reward
         const complete=Boolean(reward)
         const percent=target?Math.min(100,current/target*100):0
@@ -1200,7 +1203,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
             <span className="boss-association-label">Associated creature</span>
             {associatedCreatures.length
               ? (['callisto','scorpia','king-black-dragon','vorkath','venenatis','hueycoatl','royal-titans'].includes(boss.id))
-                ? <button type="button" className={`boss-creature-name boss-creature-name-inline boss-creature-link${(boss.id==='royal-titans'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))?' is-completed':''}`} onClick={()=>{if(unlocked&&linkedCreature)onCreatureClick?.(boss.id==='scorpia'?linkedCreature.name:linkedCreature.id)}} disabled={!unlocked||!linkedCreature} title={unlocked?'View associated creature on map':'Unlock this boss first'}><span>{{callisto:'Bear(s)',scorpia:'Scorpion(s)','king-black-dragon':'Black Dragon(s)',vorkath:'Blue Dragon(s)',venenatis:'Spider(s) (Except Temple Spider)',hueycoatl:'Green Dragon(s)','royal-titans':'Fire Giant(s) & Ice Giant(s)'}[boss.id]}</span></button>
+                ? <button type="button" className={`boss-creature-name boss-creature-name-inline boss-creature-link${(boss.id==='royal-titans'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))?' is-completed':''}`} onClick={()=>{if(unlocked&&linkedCreature)onCreatureClick?.(linkedCreature.id)}} disabled={!unlocked||!linkedCreature} title={unlocked?'View associated creature on map':'Unlock this boss first'}><span>{{callisto:'Bear(s)',scorpia:'Scorpion(s)','king-black-dragon':'Black Dragon(s)',vorkath:'Blue Dragon(s)',venenatis:'Spider(s) (Except Temple Spider)',hueycoatl:'Green Dragon(s)','royal-titans':'Fire Giant(s) & Ice Giant(s)'}[boss.id]}</span></button>
                 : associatedCreatures.map(creature=><button type="button" className={`boss-creature-name boss-creature-link${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id} onClick={()=>unlocked&&onCreatureClick?.(creature.id)} disabled={!unlocked} title={unlocked?'View this creature on map':'Unlock this boss first'}>{creature.name}</button>)
               : <span className="boss-no-association">No associated creature tile</span>}
           </div>

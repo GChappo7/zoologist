@@ -648,7 +648,9 @@ function QuestsView({initialStatuses={},onStatusesChange}){
   const cycleStatus=id=>setStatuses(s=>{
     const current=s[id]||'unrevealed'
     if(current==='unrevealed') return s
-    return {...s,[id]:current==='revealed'?'completed':'revealed'}
+    const nextStatus=current==='revealed'?'completed':'revealed'
+    if(nextStatus==='completed')playSfx('complete')
+    return {...s,[id]:nextStatus}
   })
 
   const statusLabel={
@@ -2014,6 +2016,7 @@ function App(){
     if(!region||!tier)return current
     const key=`${region}|${tier}`
     if(current[key])return current
+    playSfx('complete')
     return {...current,[key]:'rewarded'}
   })
   const handleCreatureCompleted=()=>{

@@ -3165,8 +3165,8 @@
 
 /* Header collection progress: researched means fully completed, not merely revealed. */
 .header-collection {
-  width: 176px;
-  flex: 0 0 176px;
+  width: 145px;
+  flex: 0 0 145px;
 }
 .header-collection-label {
   display: block;
@@ -3196,12 +3196,12 @@
   margin-top: 0;
 }
 @media (max-width: 980px) {
-  .header-collection { width: 166px; flex-basis: 166px; }
+   .header-collection { width: 140px; flex-basis: 140px; }
   .header-collection-label { font-size: 12px; }
   .header-collection-progress-row > strong { font-size: 12px; }
 }
 @media (max-width: 760px) {
-  .header-collection { width: 150px; flex-basis: 150px; }
+   .header-collection { width: 132px; flex-basis: 132px; }
   .header-collection-label { font-size: 11px; }
   .header-collection-progress-row { gap: 5px; margin-top: 4px; }
   .header-collection-progress-row > strong { font-size: 11px; }

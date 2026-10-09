@@ -3905,3 +3905,10 @@
     margin-left: 0;
   }
 }
+
+
+/* Boss tab heading typography */
+.boss-page .tab-page-heading h1,
+.boss-page .tab-page-heading p {
+  font-family: var(--font-runescape) !important;
+}

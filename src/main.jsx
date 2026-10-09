@@ -1531,7 +1531,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     const current=zoomRef.current
     if(wheelFrameRef.current===null)wheelTargetZoomRef.current=current
     const delta=e.deltaMode===1?e.deltaY*16:e.deltaMode===2?e.deltaY*(stageRef.current?.clientHeight??800):e.deltaY
-    wheelTargetZoomRef.current=Math.min(MAX_ZOOM,Math.max(MIN_ZOOM,wheelTargetZoomRef.current*Math.exp(-delta*0.0012)))
+    wheelTargetZoomRef.current=Math.min(MAX_ZOOM,Math.max(MIN_ZOOM,wheelTargetZoomRef.current*Math.exp(-delta*0.0015)))
     wheelPointRef.current={x:e.clientX,y:e.clientY}
     if(wheelFrameRef.current!==null)return
     const animateWheelZoom=()=>{
@@ -1541,7 +1541,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
         wheelFrameRef.current=null
         return
       }
-      zoomAtPoint(liveZoom+difference*0.22,wheelPointRef.current.x,wheelPointRef.current.y)
+      zoomAtPoint(liveZoom+difference*0.14,wheelPointRef.current.x,wheelPointRef.current.y)
       wheelFrameRef.current=requestAnimationFrame(animateWheelZoom)
     }
     wheelFrameRef.current=requestAnimationFrame(animateWheelZoom)

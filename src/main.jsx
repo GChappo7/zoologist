@@ -1690,7 +1690,12 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     if(String(reward?.type).toLowerCase()==='diary')onDiaryRewardComplete?.(reward)
     setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:completed}));
     onCreatureCompleted?.()
-    window.setTimeout(()=>setTiles(current=>recomputeFrontier(current,creatures,nextSkillProgress,effectiveRewardAssignments,diaryStatuses)),1700)
+    window.setTimeout(()=>{
+      // Completing a creature reveals the next frontier batch; play the flip
+      // sound here as well as when the initial face-down tile is clicked.
+      playSfx('flip')
+      setTiles(current=>recomputeFrontier(current,creatures,nextSkillProgress,effectiveRewardAssignments,diaryStatuses))
+    },1700)
     setSelectedTile(completed)
     setDismissingTileKey(keyFor(completed.x,completed.y))
     setPanelOpen(false)

@@ -3161,3 +3161,49 @@
   width: 215px !important;
   height: 215px !important;
 }
+
+
+/* Header collection progress: researched means fully completed, not merely revealed. */
+.header-collection {
+  width: 176px;
+  flex: 0 0 176px;
+}
+.header-collection-label {
+  display: block;
+  white-space: nowrap;
+  line-height: 1.1;
+  font-size: 13px;
+}
+.header-collection-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  margin-top: 5px;
+}
+.header-collection-progress-row > strong {
+  flex: 0 0 auto;
+  color: #e8dfc8;
+  font-family: var(--font-runescape);
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.header-collection-progress-row .header-collection-track {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-top: 0;
+}
+@media (max-width: 980px) {
+  .header-collection { width: 166px; flex-basis: 166px; }
+  .header-collection-label { font-size: 12px; }
+  .header-collection-progress-row > strong { font-size: 12px; }
+}
+@media (max-width: 760px) {
+  .header-collection { width: 150px; flex-basis: 150px; }
+  .header-collection-label { font-size: 11px; }
+  .header-collection-progress-row { gap: 5px; margin-top: 4px; }
+  .header-collection-progress-row > strong { font-size: 11px; }
+  .header-collection-progress-row .header-collection-track { height: 3px; }
+}

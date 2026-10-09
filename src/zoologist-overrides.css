@@ -3811,6 +3811,10 @@
 .boss-reward-dialog {
   height: auto;
 }
+/* A definite height is needed on the reward-selection view so its list can overflow and scroll. */
+.boss-reward-dialog.has-reward-category {
+  height: min(620px, 88vh);
+}
 .boss-reward-scroll-track {
   cursor: pointer;
   touch-action: none;
@@ -3822,4 +3826,5 @@
   .boss-reward-category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .boss-reward-category { min-height: 88px; }
   .boss-reward-dialog { height: auto; }
+  .boss-reward-dialog.has-reward-category { height: 88vh; }
 }

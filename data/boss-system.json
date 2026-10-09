@@ -119,10 +119,13 @@
       "kcRequired": 25
     },
     {
-      "id": "kalphite-queen",
-      "name": "Kalphite Queen",
-      "category": "Boss",
-      "creature": "Kalphite",
+      "id": "hueycoatl",
+      "name": "Hueycoatl",
+      "category": "Varlamore",
+      "creatures": [
+        "Green Dragon",
+        "Brutal Green Dragon"
+      ],
       "status": "not_slain",
       "kcRequired": 100
     },
@@ -133,6 +136,14 @@
       "creature": "Greater Demon",
       "status": "not_slain",
       "kcRequired": 50
+    },
+    {
+      "id": "kalphite-queen",
+      "name": "Kalphite Queen",
+      "category": "Boss",
+      "creature": "Kalphite",
+      "status": "not_slain",
+      "kcRequired": 100
     },
     {
       "id": "kephri",
@@ -224,6 +235,18 @@
       "creature": "Sea Snake (Young/Hatchling)",
       "status": "not_slain",
       "kcRequired": 50
+    },
+    {
+      "id": "royal-titans",
+      "name": "The Royal Titans",
+      "category": "Boss",
+      "creatures": [
+        "Fire Giant",
+        "Ice Giant"
+      ],
+      "unlockMode": "all",
+      "status": "not_slain",
+      "kcRequired": 100
     },
     {
       "id": "thermonuclear-smoke-devil",

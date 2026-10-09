@@ -3451,3 +3451,20 @@
     margin-top:24px !important;
   }
 }
+
+
+/* Fine-tune vertical spacing inside locked boss cards without moving the title. */
+.boss-card.is-locked .boss-image-space{
+  margin-top:38px !important;
+}
+.boss-card.is-locked .boss-locked-message{
+  margin-top:18px !important;
+}
+@media (max-width:600px){
+  .boss-card.is-locked .boss-image-space{
+    margin-top:30px !important;
+  }
+  .boss-card.is-locked .boss-locked-message{
+    margin-top:14px !important;
+  }
+}

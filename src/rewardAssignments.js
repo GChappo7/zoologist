@@ -2,7 +2,7 @@ import rewardCatalog from '../data/reward-catalog.json'
 import { isValidQuestRewardAssignment, isValidSkillRewardAssignment } from './progressionRules'
 
 const EARLY_RISKY_SKILLS = new Set(['Slayer', 'Sailing'])
-const EARLY_REWARD_IDS = new Set(['fishing-1-10', 'quest-novice-5', 'quest-novice-29'])
+const EARLY_REWARD_IDS = new Set(['fishing-1-10', 'quest-novice-5', 'quest-novice-29', 'quest-novice-32', 'quest-novice-46'])
 
 function isForcedEarlyReward(unit) {
   return EARLY_REWARD_IDS.has(String(unit?.id ?? ''))
@@ -100,9 +100,9 @@ function makeAssignment(creatures, startCreature) {
         EARLY_RISKY_SKILLS.has(skillName)
       ) return null
 
-      // Reserve the first Fishing unlock, Children of the Sun and Pandemonium for
-      // genuinely accessible creatures. The map generator can then enforce that these
-      // rewards are encountered early without making the early game impossible.
+      // Reserve key early milestones and major region unlocks for genuinely accessible
+      // creatures. The map generator can then bring them into progression at a sensible
+      // point without making the opening game impossible.
       if (
         isForcedEarlyReward(unit) &&
         Number(creature.score) > 2

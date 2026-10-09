@@ -3572,3 +3572,36 @@
   filter: none !important;
   opacity: 1 !important;
 }
+
+
+/* Completed cards retain the muted grey completion treatment, including the tick overlay. The Map_tile.png card background itself must remain untinted. */
+.map-tile.is-completed .map-card-front > img,
+.map-tile.map-tile-explored.is-completed .map-card-front > img {
+  filter: none !important;
+  opacity: 1 !important;
+}
+.map-tile.is-completed .map-card-content,
+.map-tile.map-tile-explored.is-completed .map-card-content {
+  filter: grayscale(.72) !important;
+  opacity: .68 !important;
+  transition: filter .15s ease, opacity .15s ease;
+}
+.map-tile.is-completed:hover .map-card-content,
+.map-tile.map-tile-explored.is-completed:hover .map-card-content {
+  filter: grayscale(.72) !important;
+  opacity: .76 !important;
+}
+/* Remove any explored-state wash from the tile surface; do not alter the underlying PNG colours. */
+.map-tile.is-completed::before,
+.map-tile.is-completed::after,
+.map-tile.map-tile-explored.is-completed::before,
+.map-tile.map-tile-explored.is-completed::after {
+  background: none !important;
+}
+.map-tile.is-completed .map-card-front::before,
+.map-tile.is-completed .map-card-front::after,
+.map-tile.map-tile-explored.is-completed .map-card-front::before,
+.map-tile.map-tile-explored.is-completed .map-card-front::after {
+  content: none !important;
+  display: none !important;
+}

@@ -3096,3 +3096,16 @@
     height: 24px;
   }
 }
+
+
+/* Claimed boss rewards are complete: mute the boss shortcut so it blends into the map. */
+.tile-boss-shortcut.is-boss-complete {
+  filter: grayscale(1) brightness(.68);
+  opacity: .78;
+  border-color: #626765;
+  box-shadow: 0 2px 5px rgba(0,0,0,.85), inset 0 0 0 1px rgba(210,215,210,.08);
+}
+.tile-boss-shortcut.is-boss-complete:hover,
+.tile-boss-shortcut.is-boss-complete:focus-visible {
+  filter: grayscale(1) brightness(.82);
+}

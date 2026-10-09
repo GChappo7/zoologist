@@ -1690,7 +1690,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     if(!tile||tile.state!=='frontier'||tile.completed||tile.faceDown)return
     playSfx('complete')
     const reward=getTileReward(tile,creatureById[tile.creatureId],skillProgress,effectiveRewardAssignments,diaryStatuses)
-    const completed={...tile,state:'explored',completed:true,faceDown:false,reward}
+    const completed={...tile,state:'explored',completed:true,faceDown:false,revealAnimation:false,reward}
     const revealedCardCount=getAdjacentPositions({...tiles,[keyFor(tile.x,tile.y)]:completed}).length
     const nextSkillProgress=String(reward?.type).toLowerCase()==='skill'
       ?getSkillProgressAfterReward(skillProgress,reward)

@@ -3487,6 +3487,17 @@
 }
 
 
+/* Completion is a final state, not a card-reveal animation: prevent any lingering flip/colour flash. */
+.map-tile.is-completed .map-card-face {
+  animation: none !important;
+}
+.map-tile.is-completed .map-card-front {
+  transform: rotateY(0deg) !important;
+}
+.map-tile.is-completed .map-card-back {
+  transform: rotateY(180deg) !important;
+}
+
 /* Prevent completed map tiles from inheriting the explored/selected blue highlight. Keep the creature art and completion tick intact. */
 .map-tile.is-completed,
 .map-tile.map-tile-explored.is-completed,

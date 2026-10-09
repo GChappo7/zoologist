@@ -2181,7 +2181,7 @@ function App(){
         <h2 id="diary-reveal-title">{diaryReveal.region}</h2>
         <div className="diary-reveal-tier">{diaryReveal.tier} Diary</div>
         <p>Your research has earned a new diary milestone. You can now work towards this tier's normal OSRS diary tasks.</p>
-        <button type="button" className="diary-reveal-continue" onClick={()=>setDiaryReveal(null)} aria-label="Continue"><img className="diary-reveal-continue-image" src={`${import.meta.env.BASE_URL}assets/ui/box/818_0%20Blue%20Button.png`} alt="" aria-hidden="true" draggable="false"/><span>CONTINUE</span></button>
+        <button type="button" className="diary-reveal-continue" onMouseEnter={()=>playSfx('click')} onFocus={()=>playSfx('click')} onClick={()=>{playSfx('complete');setDiaryReveal(null)}} aria-label="Continue"><img className="diary-reveal-continue-image" src={`${import.meta.env.BASE_URL}assets/ui/box/818_0%20Blue%20Button.png`} alt="" aria-hidden="true" draggable="false"/><span>CONTINUE</span></button>
       </div>
     </div>}
     <AccountModal open={accountOpen} onClose={()=>setAccountOpen(false)} session={session} onAuthChange={setSession} onResetProgress={handleResetProgress} passwordRecovery={passwordRecovery} onPasswordRecoveryComplete={()=>{

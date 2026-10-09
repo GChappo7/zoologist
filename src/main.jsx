@@ -269,8 +269,8 @@ function getEarlyRewardCandidate(creatures,used,rewardAssignments,completedCount
   if(completedCount < 10) targetIds.push('fishing-1-10')
   if(completedCount < 16) targetIds.push('fishing-11-20')
   if(completedCount < 24) targetIds.push('fishing-21-30')
-  if(completedCount < 20) targetIds.push('quest-novice-5')
-  if(completedCount < 40) targetIds.push('quest-novice-29')
+  if(completedCount < 55) targetIds.push('quest-novice-5')
+  if(completedCount < 75) targetIds.push('quest-novice-29')
   // Bring the major Morytania and Fossil Island unlocks into mid-early progression,
   // without forcing them into the opening handful of tiles.
   if(completedCount < 30) targetIds.push('quest-novice-32')

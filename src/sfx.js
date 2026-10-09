@@ -14,7 +14,6 @@ function getAudioContext() {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext
   if (!AudioContextClass) return null
   if (!audioContext) audioContext = new AudioContextClass()
-  if (audioContext.state === 'suspended') audioContext.resume().catch(() => {})
   return audioContext
 }
 
@@ -80,9 +79,11 @@ export function playSfx(name) {
       tone(ctx, { frequency, endFrequency, start: now + offset, duration, type, volume })
     })
   }
-  if (ctx.state === 'suspended') {
-    ctx.resume().then(play).catch(() => {})
-  } else {
+  if (ctx.state === 'running') {
     play()
+  } else {
+    // Browsers can report other non-running states (for example, interrupted),
+    // not just suspended. Always attempt to resume from the user interaction.
+    ctx.resume().then(play).catch(() => {})
   }
 }

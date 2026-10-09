@@ -1750,7 +1750,6 @@ function App(){
       localStorage.removeItem('zoologist-reward-assignments')
       localStorage.removeItem('zoologist-quest-statuses')
        localStorage.removeItem('zoologist-diary-milestone')
-       localStorage.removeItem('zoologist-diary-milestone')
       localStorage.removeItem('zoologist-boss-progress')
       localStorage.removeItem('zoologist-boss-rewards')
       localStorage.removeItem('zoologist-local-save-owner')

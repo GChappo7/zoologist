@@ -329,7 +329,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress,dia
   }):[]
   const tileStyle={...(tile.fogDistance?{'--fog-distance':tile.fogDistance}:{}),...(tile.gridColumn?{gridColumn:tile.gridColumn,gridRow:tile.gridRow}:{})}
   const handleClick=()=>{
-    if(isFaceDown&&creature){playSfx('flip');onReveal?.(tile);return}
+    if(isFaceDown&&creature){onReveal?.(tile);return}
     if(creature)onSelect(tile)
   }
   return <div className="map-tile-wrapper" style={tileStyle}>
@@ -1668,6 +1668,9 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   }
   const handleReveal=tile=>{
     if(!tile?.faceDown)return
+    // Trigger audio from the reveal action itself, avoiding map pointer-capture
+    // and drag handling that can interfere with the tile's pointer event.
+    playSfx('flip')
     const creature=creatureById[tile.creatureId]
     const reward=getTileReward(tile,creature,skillProgress,effectiveRewardAssignments,diaryStatuses)
     const revealed={...tile,faceDown:false,...(reward?{reward}:{})}

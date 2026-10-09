@@ -735,7 +735,7 @@ function CollectionLog({creatures,mapTiles,onBack}){
     const list=collectionListRef.current
     if(!scrollbar||!list||list.scrollHeight<=list.clientHeight)return
     event.preventDefault()
-    const trackHeight=Math.max(1,scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.clientHeight-44)
+    const trackHeight=Math.max(1,scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.clientHeight-44)
     const maxThumbTop=Math.max(0,trackHeight-collectionScroll.height)
     const rect=scrollbar.getBoundingClientRect()
     const pointerTop=event.clientY-rect.top-22
@@ -751,7 +751,7 @@ function CollectionLog({creatures,mapTiles,onBack}){
     const rect=scrollbar.getBoundingClientRect()
     const thumbTop=collectionScroll.top+22
     if(event.clientY<rect.top+thumbTop||event.clientY>rect.top+thumbTop+collectionScroll.height){
-      const trackHeight=Math.max(1,scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.clientHeight-44)
+      const trackHeight=Math.max(1,scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.clientHeight-44)
       const maxThumbTop=Math.max(0,trackHeight-collectionScroll.height)
       const clickTop=Math.max(0,Math.min(maxThumbTop,event.clientY-rect.top-22-collectionScroll.height/2))
       const maxScroll=list.scrollHeight-list.clientHeight
@@ -766,7 +766,7 @@ function CollectionLog({creatures,mapTiles,onBack}){
     const scrollbar=collectionScrollbarRef.current
     const list=collectionListRef.current
     if(!drag||!scrollbar||!list)return
-    const trackHeight=Math.max(1,scrollbar.clientHeight-44)
+    const trackHeight=Math.max(1,scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.clientHeight-44)
     const maxThumbTop=Math.max(0,trackHeight-collectionScroll.height)
     const maxScroll=list.scrollHeight-list.clientHeight
     if(maxThumbTop<=0)return
@@ -859,7 +859,7 @@ function CollectionScrollbarSync({listRef,scrollbarRef,setScroll,dependencyKey})
     if(!list||!scrollbar)return
     const update=()=>{
       const maxScroll=Math.max(0,list.scrollHeight-list.clientHeight)
-      const trackHeight=Math.max(1,scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.clientHeight-44)
+      const trackHeight=Math.max(1,scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.clientHeight-44)
       const thumbHeight=maxScroll>0?Math.max(28,Math.min(trackHeight,trackHeight*(list.clientHeight/list.scrollHeight))):trackHeight
       const maxThumbTop=Math.max(0,trackHeight-thumbHeight)
       const top=maxScroll>0?(list.scrollTop/maxScroll)*maxThumbTop:0
@@ -1001,7 +1001,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
   const moveBossRewardScrollbar=(event)=>{
     const drag=bossRewardDragRef.current, scrollbar=bossRewardScrollbarRef.current, list=bossRewardListRef.current
     if(!drag||!scrollbar||!list)return
-    const trackHeight=Math.max(1,scrollbar.clientHeight-44)
+    const trackHeight=Math.max(1,scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.clientHeight-44)
     const maxThumbTop=Math.max(0,trackHeight-bossRewardScroll.height)
     const maxScroll=list.scrollHeight-list.clientHeight
     if(maxThumbTop<=0)return
@@ -1014,7 +1014,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
     if(!scrollbar||!list||list.scrollHeight<=list.clientHeight)return
     const rect=scrollbar.getBoundingClientRect(), thumbTop=bossRewardScroll.top+22
     if(event.clientY<rect.top+thumbTop||event.clientY>rect.top+thumbTop+bossRewardScroll.height){
-      const trackHeight=Math.max(1,scrollbar.clientHeight-44)
+      const trackHeight=Math.max(1,scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.clientHeight-44)
       const maxThumbTop=Math.max(0,trackHeight-bossRewardScroll.height)
       const clickTop=Math.max(0,Math.min(maxThumbTop,event.clientY-rect.top-22-bossRewardScroll.height/2))
       const maxScroll=list.scrollHeight-list.clientHeight
@@ -1257,7 +1257,7 @@ function BossRewardScrollbarSync({listRef,scrollbarRef,setScroll,dependencyKey})
     if(!list||!scrollbar)return
     const update=()=>{
       const maxScroll=Math.max(0,list.scrollHeight-list.clientHeight)
-      const trackHeight=Math.max(1,scrollbar.clientHeight-44)
+      const trackHeight=Math.max(1,scrollbar.querySelector('.boss-reward-scroll-track')?.clientHeight||scrollbar.clientHeight-44)
       const thumbHeight=maxScroll>0?Math.max(28,Math.min(trackHeight,trackHeight*(list.clientHeight/list.scrollHeight))):trackHeight
       const maxThumbTop=Math.max(0,trackHeight-thumbHeight)
       setScroll({top:maxScroll>0?(list.scrollTop/maxScroll)*maxThumbTop:0,height:thumbHeight})

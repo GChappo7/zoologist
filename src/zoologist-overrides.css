@@ -3038,3 +3038,37 @@
     height: 50px;
   }
 }
+
+
+/* Mark boss shortcuts as complete directly on the map once their KC target or reward is completed. */
+.tile-boss-shortcut {
+  position: relative;
+}
+.tile-boss-shortcut.is-boss-complete {
+  border-color: #66b86d;
+  box-shadow: 0 0 7px rgba(91, 204, 105, .5), 0 2px 5px rgba(0,0,0,.9), inset 0 0 0 1px rgba(205,255,195,.22);
+}
+.tile-boss-shortcut-tick {
+  position: absolute;
+  right: -7px;
+  bottom: -7px;
+  width: 25px;
+  height: 25px;
+  padding: 2px;
+  box-sizing: border-box;
+  object-fit: contain;
+  image-rendering: pixelated;
+  border: 1px solid #a8e9a1;
+  border-radius: 50%;
+  background: linear-gradient(#347c3e, #174b25);
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.9));
+  pointer-events: none;
+}
+@media (max-width: 760px) {
+  .tile-boss-shortcut-tick {
+    right: -6px;
+    bottom: -6px;
+    width: 22px;
+    height: 22px;
+  }
+}

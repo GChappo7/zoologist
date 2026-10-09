@@ -1437,6 +1437,7 @@ function TilePopup({selectedTile,onShowMore,onComplete,creatureById,position,ski
   useEffect(()=>{
     setIsDismissing(false)
     setIsCompletingClose(false)
+    if(selectedTile)playSfx('reward')
   },[selectedTile?.x,selectedTile?.y])
   const creature=selectedTile?.creatureId?creatureById[selectedTile.creatureId]:null
   if(!selectedTile||!creature)return null

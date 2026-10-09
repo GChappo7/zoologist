@@ -3539,3 +3539,36 @@
   border: 0 !important;
   box-shadow: none !important;
 }
+
+
+/* Completed tiles should use the same untinted Map_tile.png background as other revealed tiles. Remove the explored overlay and undo the completed-state dimming on the card content. */
+.map-tile.is-completed .map-card-front,
+.map-tile.map-tile-explored.is-completed .map-card-front {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+.map-tile.is-completed .map-card-front::before,
+.map-tile.is-completed .map-card-front::after,
+.map-tile.map-tile-explored.is-completed .map-card-front::before,
+.map-tile.map-tile-explored.is-completed .map-card-front::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  opacity: 0 !important;
+}
+.map-tile.is-completed .map-card-front > img,
+.map-tile.map-tile-explored.is-completed .map-card-front > img {
+  filter: none !important;
+  opacity: 1 !important;
+}
+.map-tile.is-completed .map-card-content,
+.map-tile.map-tile-explored.is-completed .map-card-content {
+  filter: none !important;
+  opacity: 1 !important;
+}
+.map-tile.is-completed:hover .map-card-content,
+.map-tile.map-tile-explored.is-completed:hover .map-card-content {
+  filter: none !important;
+  opacity: 1 !important;
+}

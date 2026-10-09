@@ -1663,7 +1663,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   }
   const handleReveal=tile=>{
     if(!tile?.faceDown)return
-    playSfx('reveal')
+    playSfx('flip')
     const revealed={...tile,faceDown:false}
     setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:revealed}))
     setFogVisible(true)

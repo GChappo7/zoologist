@@ -1528,22 +1528,12 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   }
   const handleWheel=e=>{
     e.preventDefault()
-    const current=zoomRef.current
-    if(wheelFrameRef.current===null)wheelTargetZoomRef.current=current
+    const current=wheelTargetZoomRef.current
     const delta=e.deltaMode===1?e.deltaY*16:e.deltaMode===2?e.deltaY*(stageRef.current?.clientHeight??800):e.deltaY
-    wheelTargetZoomRef.current=Math.min(MAX_ZOOM,Math.max(MIN_ZOOM,wheelTargetZoomRef.current*Math.exp(-delta*0.0019)))
-    if(wheelFrameRef.current!==null)return
-    const animateWheelZoom=()=>{
-      const liveZoom=zoomRef.current,target=wheelTargetZoomRef.current,difference=target-liveZoom
-      if(Math.abs(difference)<0.001){
-        setZoom(target)
-        wheelFrameRef.current=null
-        return
-      }
-      setZoom(liveZoom+difference*0.12)
-      wheelFrameRef.current=requestAnimationFrame(animateWheelZoom)
-    }
-    wheelFrameRef.current=requestAnimationFrame(animateWheelZoom)
+    const target=Math.min(MAX_ZOOM,Math.max(MIN_ZOOM,current*Math.exp(-delta*0.0019)))
+    wheelTargetZoomRef.current=target
+    zoomRef.current=target
+    setZoom(target)
   }
   const handlePointerMove=e=>{
     pointerRef.current={x:e.clientX,y:e.clientY,inside:true}
@@ -1693,7 +1683,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   }
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onClickCapture={handleStageClickCapture} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
-  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} bossProgress={bossProgress} bossRewards={bossRewards} onBossClick={onBossClick}/>)}{selectedTile&&<TilePopup closing={closingPopupTileKey===keyFor(selectedTile.x,selectedTile.y)} selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+132,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-38}}/>}</div></div>
+  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`,transition:'transform 120ms ease-out',willChange:'transform'}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} bossProgress={bossProgress} bossRewards={bossRewards} onBossClick={onBossClick}/>)}{selectedTile&&<TilePopup closing={closingPopupTileKey===keyFor(selectedTile.x,selectedTile.y)} selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+132,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-38}}/>}</div></div>
 
 
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>

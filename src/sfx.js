@@ -35,10 +35,12 @@ function tone(ctx, { frequency, endFrequency = frequency, start, duration, type 
 
 // Short, soft retro sounds generated locally; no audio files or external requests.
 const melodies = {
-  // A quick wooden/card flick followed by a tiny click.
+  // Clearly audible card flip: a quick descending swish with a crisp card-edge tick.
   flip: [
-    [420, 250, 0, 0.075, 'triangle', 0.035],
-    [780, 560, 0.025, 0.045, 'square', 0.018],
+    [680, 210, 0, 0.16, 'sawtooth', 0.065],
+    [980, 420, 0.018, 0.105, 'triangle', 0.055],
+    [1450, 720, 0.045, 0.055, 'square', 0.025],
+    [260, 180, 0.075, 0.12, 'triangle', 0.045],
   ],
   // A more rewarding coin pickup: a low coin clink, rising double chime, and bright final sparkle.
   complete: [

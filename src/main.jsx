@@ -1306,14 +1306,23 @@ function createTileReward(creature,skillProgress,distance=Infinity,usedQuestRewa
 }
 
 function getTileReward(tile,creature,skillProgress,rewardAssignments,diaryStatuses={}){
-  // Once a tile has been assigned a reward, that reward is permanent.
-  // This is important for revealed frontier tiles: recalculating their
-  // reward on every render can make a quest appear to change or duplicate.
+  // Keep a revealed reward stable unless its skill has reached 99. At that
+  // point the unused tile must follow its newly reassigned skill slot.
   if(tile?.reward){
-    // Preserve legacy completed diary tiles, but diary tiers are no longer normal tile rewards.
+    // Preserve completed rewards, including the 91-99 reward that completed a skill.
+    if(tile.completed)return tile.reward
+    // Achievement Diaries are milestone bonuses, never standard creature-tile rewards.
     if(String(tile.reward.type).toLowerCase()==='diary'){
-      if(tile.completed)return tile.reward
       return getAssignedReward(rewardAssignments,creature)??getRandomSkillReward(creature,skillProgress)
+    }
+    if(
+      String(tile.reward.type).toLowerCase()==='skill' &&
+      Number(skillProgress?.[tile.reward.skill]?.maxLevel)>=99
+    ){
+      const reassigned=getAssignedReward(rewardAssignments,creature)
+      if(reassigned && String(reassigned.skill??'')!==String(tile.reward.skill??'')){
+        return resolveReservedReward(reassigned,skillProgress,diaryStatuses)
+      }
     }
     return resolveReservedReward(tile.reward,skillProgress,diaryStatuses)
   }
@@ -1908,16 +1917,60 @@ function App(){
     })
     return next
   })
-  const handleSkillRewardComplete=reward=>setSkillProgress(current=>{
+  const handleSkillRewardComplete=reward=>{
     const skill=reward?.skill
-    if(!skill)return current
+    if(!skill)return
     const sequence=getSkillRewardSequence(skill)
     const index=sequence.findIndex(item=>item.id===reward.id)
-    if(index<0)return current
+    if(index<0)return
     const band=sequence[index]?.band
     const maxLevel=Number(String(band).split('-').pop())||0
-    return {...current,[skill]:{unlocked:true,maxLevel,nextRewardIndex:index+1}}
-  })
+    const nextProgress={
+      ...skillProgress,
+      [skill]:{unlocked:true,maxLevel,nextRewardIndex:index+1},
+    }
+    setSkillProgress(current=>({...current,[skill]:{unlocked:true,maxLevel,nextRewardIndex:index+1}}))
+
+    // Once a skill reaches 99, its remaining unfinished creature slots are
+    // randomly reassigned to skills that have not reached 99 yet. Completed
+    // tiles keep their earned reward; revealed tiles use the updated assignment.
+    if(maxLevel>=99){
+      setRewardAssignments(current=>{
+        if(!current)return current
+        const completedCreatureIds=new Set(
+          Object.values(gameState.mapTiles??{})
+            .filter(tile=>tile?.completed===true)
+            .map(tile=>String(tile.creatureId))
+        )
+        const creatureById=Object.fromEntries(creatures.map(creature=>[String(creature.id),creature]))
+        const next={...current}
+        for(const [creatureId,assigned] of Object.entries(current)){
+          if(String(assigned?.type??'').toLowerCase()!=='skill')continue
+          if(String(assigned.skill??'')!==skill)continue
+          if(completedCreatureIds.has(String(creatureId)))continue
+          const creature=creatureById[String(creatureId)]
+          if(!creature)continue
+          const candidates=rewardCatalog.lockedSkills.filter(candidateSkill=>{
+            if(candidateSkill===skill)return false
+            if(Number(nextProgress?.[candidateSkill]?.maxLevel)>=99)return false
+            const nextReward=getNextSkillBand(nextProgress,candidateSkill)
+            return Boolean(nextReward&&canAssignSkillReward(creature,{...nextReward,type:'skill',skill:candidateSkill}))
+          })
+          if(!candidates.length)continue
+          const replacementSkill=candidates[Math.floor(Math.random()*candidates.length)]
+          const replacementBand=getNextSkillBand(nextProgress,replacementSkill)
+          next[creatureId]={
+            ...replacementBand,
+            type:'skill',
+            skill:replacementSkill,
+            slot:assigned.slot,
+            followSkillProgress:true,
+          }
+        }
+        return next
+      })
+    }
+  }
 
   if(!creatures.length)return <div className="app-shell"><div className="full-tab-page"><h1>Creature data could not be loaded</h1><p>Check data/creatures.csv.</p></div></div>
   if(!accountReady)return <div className="app-shell"><div className="account-loading"><div className="account-loading-spinner"/>Loading Zoologist…</div></div>

@@ -932,6 +932,7 @@ const BOSS_IMAGE_FILENAMES = {
   'obor':'Obor.png',
   'giant-mole':'Giant_Mole.png',
   'scurrius':'Scurrius.png',
+  'skotizo':'Skotizo.png',
   'sarachnis':'Sarachnis.png',
   'hespori':'Hespori.png',
   'dagannoth-kings':'Dagannoth_Kings.png',

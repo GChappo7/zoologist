@@ -670,9 +670,11 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={}}){
   ]]
 
   const cycleStatus=id=>setStatuses(s=>{
-    const current=(s[id]||'unrevealed')==='completed'?'completed':completableQuestIds.has(String(id))?'unlocked':(s[id]||'unrevealed')
-    if(current==='unrevealed') return s
-    const nextStatus=current==='completed'?'revealed':'completed'
+    const savedStatus=s[id]||'unrevealed'
+    const isUnlocked=completableQuestIds.has(String(id))
+    // A revealed quest cannot be completed until its reward tile is completed.
+    if(savedStatus!=='completed'&&!isUnlocked) return s
+    const nextStatus=savedStatus==='completed'?(isUnlocked?'unlocked':'revealed'):'completed'
     if(nextStatus==='completed')playSfx('complete')
     return {...s,[id]:nextStatus}
   })
@@ -725,7 +727,7 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={}}){
                   type="button"
                   key={q.id}
                   className={`quest-row quest-${status}`}
-                  onClick={()=>status!=='unrevealed'&&cycleStatus(q.id)}
+                  onClick={()=>['unlocked','completed'].includes(status)&&cycleStatus(q.id)}
                   aria-label={status==='unrevealed'?`${q.name}, quest not revealed`:`${q.name}, ${statusLabel[status]}`}
                 >
                   <span className="quest-status-dot" aria-hidden="true"/>

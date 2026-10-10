@@ -848,9 +848,8 @@ function CollectionLog({creatures,mapTiles,onBack}){
         <button type="button" className="collection-back-button" onClick={onBack} aria-label="Back to map"><ChevronLeft size={18}/><span>Map</span></button>
         <div className="collection-log-title">
           <div className="collection-log-icon"><img src={skillIconUrl('Hunter')} alt="" aria-hidden="true" draggable="false"/></div>
-          <div><strong>Bestiary Compendium</strong><span>{counts.recorded} / {counts.all} recorded</span></div>
+          <div className="collection-log-title-copy"><div className="collection-log-title-line"><strong>Bestiary Compendium</strong><span className="collection-log-inline-stat"><b>{counts.complete}</b> complete</span></div><span>{counts.recorded} / {counts.all} recorded</span></div>
         </div>
-        <div className="collection-log-stat"><b>{counts.complete}</b><span>COMPLETE</span></div>
       </div>
       <div className="collection-log-progress">
         <div className="collection-log-progress-label"><span>CREATURES RECORDED</span><strong>{counts.recorded} / {counts.all}</strong></div>

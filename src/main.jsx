@@ -338,6 +338,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress,dia
         <span className="map-card-face map-card-back" aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/ui/map_tile_back.png`} alt="" draggable="false"/></span>
         <span className="map-card-face map-card-front">
           <img src={`${import.meta.env.BASE_URL}assets/ui/map_tile.png`} alt="" draggable="false"/>
+          {tile.x===0&&tile.y===0&&tile.completed&&<span className="starter-completion-tint" aria-hidden="true"/>}
           <span className="map-card-content">
             {tile.completed&&<img className="tile-completed-tick" src={`${import.meta.env.BASE_URL}assets/ui/tick_circle.png`} alt="" aria-hidden="true" draggable="false"/>}
             {(()=>{const reward=getTileReward(tile,creature,skillProgress,rewardAssignments,diaryStatuses);const presentation=getRewardPresentation(reward);return reward&&<ProgressionIcon type={presentation.type} skill={presentation.iconName} className="tile-progression-stamp"/>})()}

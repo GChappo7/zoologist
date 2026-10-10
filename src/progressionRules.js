@@ -11,6 +11,8 @@
 //
 // Hunter is intentionally excluded because Hunter is automatically unlocked.
 
+import quests from '../data/quests.json'
+
 export const DEFAULT_SKILL_MAX_LEVELS = {
   Attack: 99,
   Strength: 99,
@@ -92,19 +94,65 @@ export function isFinalBracketSelfLock(creature, reward, skillMaxLevels = DEFAUL
   return requiredLevel >= rewardMin
 }
 
+function normalizeQuestName(value) {
+  return String(value ?? '')
+    .trim()
+    .toLowerCase()
+    .replace(/\\s*\\(started\\)\\s*$/i, '')
+    .replace(/\\s+/g, ' ')
+}
+
+function questRewardKeys(reward) {
+  const values = [
+    reward?.id,
+    reward?.questId,
+    reward?.label,
+    reward?.name,
+    reward?.metadata?.name,
+    reward?.reward_metadata?.name,
+  ].map(normalizeQuestName).filter(Boolean)
+
+  const record = (quests ?? []).find(quest => {
+    const id = normalizeQuestName(quest.id)
+    const name = normalizeQuestName(quest.name)
+    return values.includes(id) || values.includes(name)
+  })
+
+  if (record) {
+    values.push(normalizeQuestName(record.id), normalizeQuestName(record.name))
+  }
+
+  return new Set(values)
+}
+
 export function isValidQuestRewardAssignment(creature, reward) {
   if (!creature || !reward || String(reward.type ?? '').toLowerCase() !== 'quest') return true
 
-  const rewardQuest = String(reward.label ?? reward.name ?? '').trim().toLowerCase()
-  if (!rewardQuest) return true
+  const rewardKeys = questRewardKeys(reward)
+  if (!rewardKeys.size) return true
 
-  const hardNoRewardQuests = Array.isArray(creature.hardNoRewardQuests)
-    ? creature.hardNoRewardQuests
-    : []
+  // A quest cannot be awarded by a creature whose own access requires that
+  // quest. Check both explicit hard-no metadata and the prerequisite list so
+  // incomplete or mismatched hard-no lists cannot create progression deadlocks.
+  const forbiddenQuests = [
+    ...(Array.isArray(creature.requiredQuests) ? creature.requiredQuests : []),
+    ...(Array.isArray(creature.hardNoRewardQuests) ? creature.hardNoRewardQuests : []),
+  ]
 
-  return !hardNoRewardQuests.some(quest =>
-    String(quest).trim().toLowerCase() === rewardQuest
-  )
+  return !forbiddenQuests.some(value => {
+    const key = normalizeQuestName(value)
+    if (!key) return false
+    if (rewardKeys.has(key)) return true
+
+    const record = (quests ?? []).find(quest =>
+      normalizeQuestName(quest.id) === key ||
+      normalizeQuestName(quest.name) === key
+    )
+    return Boolean(record && (
+      rewardKeys.has(normalizeQuestName(record.id)) ||
+      rewardKeys.has(normalizeQuestName(record.name))
+    ))
+  })
 }
 
 export function isValidSkillRewardAssignment(creature, reward, skillMaxLevels = DEFAULT_SKILL_MAX_LEVELS) {

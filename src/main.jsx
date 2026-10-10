@@ -663,7 +663,10 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={}}){
 
   const grouped=[[
     'Quests',
-    [...filtered].sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'}))
+    [...filtered].sort((a,b)=>{
+      const sortName=name=>String(name??'').replace(/^(?:a|the)\s+/i,'').trim()
+      return sortName(a.name).localeCompare(sortName(b.name),undefined,{sensitivity:'base'})
+    })
   ]]
 
   const cycleStatus=id=>setStatuses(s=>{

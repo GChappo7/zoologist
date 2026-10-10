@@ -2235,22 +2235,31 @@
 }
 
 .quest-header-dropdown .quest-log-controls {
-  flex: 0 0 46px !important;
-  height: 46px !important;
-  min-height: 46px !important;
-  padding: 6px !important;
+  position: relative !important;
+  z-index: 5 !important;
+  flex: 0 0 78px !important;
+  height: 78px !important;
+  min-height: 78px !important;
+  padding: 5px 6px !important;
   margin: 0 !important;
   display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+  gap: 5px !important;
   box-sizing: border-box !important;
   background: #5d574c !important;
   border-bottom: 2px solid #3d3831 !important;
+  overflow: visible !important;
 }
 
 .quest-header-dropdown .quest-filters {
+  position: relative !important;
+  z-index: 2 !important;
   display: flex !important;
-  flex: 0 0 auto !important;
+  flex: 0 0 28px !important;
+  width: 100% !important;
+  min-width: 0 !important;
   gap: 3px !important;
   flex-wrap: nowrap !important;
 }
@@ -2282,10 +2291,12 @@
 }
 
 .quest-header-dropdown .quest-search {
-  flex: 1 1 auto !important;
+  position: relative !important;
+  z-index: 3 !important;
+  flex: 0 0 29px !important;
   min-width: 0 !important;
-  width: auto !important;
-  height: 30px !important;
+  width: 100% !important;
+  height: 29px !important;
   margin: 0 !important;
   padding: 0 7px !important;
   display: flex !important;
@@ -2321,11 +2332,13 @@
 }
 
 .quest-header-dropdown .quest-log-body {
-  flex: 0 0 298px !important;
+  position: relative !important;
+  z-index: 1 !important;
+  flex: 0 0 266px !important;
   width: 100% !important;
-  height: 298px !important;
-  min-height: 298px !important;
-  max-height: 298px !important;
+  height: 266px !important;
+  min-height: 266px !important;
+  max-height: 266px !important;
   margin: 0 !important;
   padding: 0 !important;
   display: grid !important;
@@ -2338,9 +2351,9 @@
 
 .quest-header-dropdown .quest-list {
   width: 100% !important;
-  height: 298px !important;
-  min-height: 298px !important;
-  max-height: 298px !important;
+  height: 266px !important;
+  min-height: 266px !important;
+  max-height: 266px !important;
   margin: 0 !important;
   padding: 6px 8px !important;
   box-sizing: border-box !important;
@@ -2381,7 +2394,7 @@
   bottom: auto !important;
   width: 22px !important;
   min-width: 22px !important;
-  height: 298px !important;
+  height: 266px !important;
   margin: 0 !important;
   background: #5d574c !important;
 }
@@ -2409,11 +2422,11 @@
     min-height: 392px !important;
   }
   .quest-header-dropdown .quest-log-controls {
-    flex-direction: row !important;
-    align-items: center !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
   }
   .quest-header-dropdown .quest-filters {
-    width: auto !important;
+    width: 100% !important;
   }
   .quest-header-dropdown .quest-filters button {
     flex: 0 0 auto !important;
@@ -2421,6 +2434,7 @@
     padding-right: 6px !important;
   }
   .quest-header-dropdown .quest-search {
+    width: 100% !important;
     margin-left: 0 !important;
     min-width: 0 !important;
   }

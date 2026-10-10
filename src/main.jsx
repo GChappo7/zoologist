@@ -1055,13 +1055,14 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
   }
 
   const openBossReward=(boss)=>{
+    playSfx('cash')
     setRewardModalBoss(boss)
     setRewardCategory(null)
   }
 
   const claimBossReward=(reward)=>{
     if(!rewardModalBoss||!reward)return
-    playSfx('boss')
+    playSfx('confirm')
     const replacement=findReplacementReward(reward,reward.tileKey)
 
     // The map tile stores its current reward, so changing only the global
@@ -1203,7 +1204,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
             <span className="boss-association-label">Associated creature</span>
             {associatedCreatures.length
               ? (['callisto','scorpia','king-black-dragon','vorkath','venenatis','hueycoatl','royal-titans'].includes(boss.id))
-                ? <button type="button" className={`boss-creature-name boss-creature-name-inline boss-creature-link${(boss.id==='royal-titans'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))?' is-completed':''}`} onClick={()=>{if(unlocked&&linkedCreature)onCreatureClick?.(boss.id==='scorpia'?'__scorpia_scorpion__':linkedCreature.id)}} disabled={!unlocked||!linkedCreature} title={unlocked?'View associated creature on map':'Unlock this boss first'}><span>{{callisto:'Bear(s)',scorpia:'Scorpion(s)','king-black-dragon':'Black Dragon(s)',vorkath:'Blue Dragon(s)',venenatis:'Spider(s) (Except Temple Spider)',hueycoatl:'Green Dragon(s)','royal-titans':'Fire Giant(s) & Ice Giant(s)'}[boss.id]}</span></button>
+                ? <button type="button" className={`boss-creature-name boss-creature-name-inline boss-creature-link${(boss.id==='royal-titans'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))?' is-completed':''}`} onClick={()=>{if(unlocked&&linkedCreature)onCreatureClick?.(boss.id==='scorpia'?'__scorpia_scorpion__':linkedCreature.id)}} disabled={!unlocked||!linkedCreature} title={unlocked?'View associated creature on map':'Unlock this boss first'}><span>{{callisto:'Bear(s)',scorpia:'Scorpion(s)','king-black-dragon':'Black Dragon(s)',vorkath:'Blue Dragon(s)',venenatis:'Spider(s) (Except Temple Spider)',hueycoatl:'Green Dragon(s)','royal-titans':'Fire Giant & Ice Giant'}[boss.id]}</span></button>
                 : associatedCreatures.map(creature=><button type="button" className={`boss-creature-name boss-creature-link${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id} onClick={()=>unlocked&&onCreatureClick?.(creature.id)} disabled={!unlocked} title={unlocked?'View this creature on map':'Unlock this boss first'}>{creature.name}</button>)
               : <span className="boss-no-association">No associated creature tile</span>}
           </div>
@@ -1232,15 +1233,15 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
         </div>
         {!rewardCategory
           ? <div className="boss-reward-category-grid">
-              <button type="button" className="boss-reward-category" onClick={()=>setRewardCategory('quest')}><ProgressionIcon type="quest"/><strong>Quest</strong><span>Receive a quest reward</span></button>
-              <button type="button" className="boss-reward-category" onClick={()=>setRewardCategory('skill')}><ProgressionIcon type="skill" skill="Fishing"/><strong>Skill</strong><span>Unlock your next skill level band</span></button>
+              <button type="button" className="boss-reward-category" onMouseEnter={()=>playSfx('hover')} onClick={()=>{playSfx('click');setRewardCategory('quest')}}><ProgressionIcon type="quest"/><strong>Quest</strong><span>Receive a quest reward</span></button>
+              <button type="button" className="boss-reward-category" onMouseEnter={()=>playSfx('hover')} onClick={()=>{playSfx('click');setRewardCategory('skill')}}><ProgressionIcon type="skill" skill="Fishing"/><strong>Skill</strong><span>Unlock your next skill level band</span></button>
                     </div>
           : <div className="boss-reward-choice-view">
               <button type="button" className="boss-reward-back" onClick={()=>setRewardCategory(null)}>← Back to reward types</button>
               <div className="boss-reward-scroll-body">
                 <div className="boss-reward-choice-list" ref={bossRewardListRef}>
                   {rewardOptions.length
-                    ? rewardOptions.map(option=><button type="button" className="boss-reward-choice" key={option.id} onClick={()=>claimBossReward(option)}>
+                    ? rewardOptions.map(option=><button type="button" className="boss-reward-choice" key={option.id} onMouseEnter={()=>playSfx('hover')} onClick={()=>claimBossReward(option)}>
                         <ProgressionIcon type={option.type} skill={option.skill} region={option.region}/>
                         <span><strong>{option.label??option.name}</strong><small className="boss-reward-associated-creature">Creature: {creatures.find(item=>String(item.id)===String(option.creatureId))?.name??'Unknown'}</small>{option.type==='skill'&&<small>{option.skill}</small>}{option.type==='diary'&&<small>{option.region} • {option.tier}</small>}</span>
                       </button>)

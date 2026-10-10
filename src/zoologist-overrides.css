@@ -1873,7 +1873,7 @@
   white-space: nowrap !important;
 }
 .quest-status-label {
-  font: 9px var(--font-runescape) !important;
+  font: 10px var(--font-runescape) !important;
   color: #707b80 !important;
   opacity: 1 !important;
 }

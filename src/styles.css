@@ -867,3 +867,7 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 .diary-reveal-elite{--diary-reveal-glow:rgba(235,155,64,.46)}.diary-reveal-elite .diary-reveal-dialog{border-color:#e8a04e}.diary-reveal-elite .diary-reveal-eyebrow,.diary-reveal-elite .diary-reveal-dialog h2{color:#ffc477}.diary-reveal-elite .diary-reveal-tier-mark{background:#ffc477}
 @keyframes diaryRevealFade{from{opacity:0}to{opacity:1}}@keyframes diaryRevealPop{from{opacity:0;transform:translateY(18px) scale(.88)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes diaryEmblemFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media(max-width:520px){.diary-reveal-dialog{padding:25px 18px 22px}.diary-reveal-emblem{width:126px;height:126px;margin-top:20px}.diary-reveal-emblem img{width:82px;height:82px}}
+
+
+/* Use the OSRS Hunter skill icon in the existing Zoologist brand badge. */
+.brand-mark img { width: 23px; height: 23px; object-fit: contain; transform: rotate(15deg); image-rendering: pixelated; }

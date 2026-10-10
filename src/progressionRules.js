@@ -98,8 +98,8 @@ function normalizeQuestName(value) {
   return String(value ?? '')
     .trim()
     .toLowerCase()
-    .replace(/\\s*\\(started\\)\\s*$/i, '')
-    .replace(/\\s+/g, ' ')
+    .replace(/\s*\(started\)\s*$/i, '')
+    .replace(/\s+/g, ' ')
 }
 
 function questRewardKeys(reward) {

@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" shape-rendering="crispEdges">
-  <rect x="1" y="1" width="62" height="62" rx="13" fill="#b6a17a" stroke="#776345" stroke-width="2"/>
-  <!-- Self-contained pixel-art Hunter emblem; avoid external images in browser favicons. -->
-  <g transform="rotate(28 32 32)">
-    <path d="M30 7h8v5h6v6h-5v7h-5v-6h-5v-6h-5v-4h6z" fill="#466b36"/>
-    <path d="M28 13h8v5h5v7h-5v7h-5v-5h-5v-8h2z" fill="#648c43"/>
-    <path d="M23 24h8v-4h8v5h5v9h-5v9h-5v5h-8v-5h-5v-8h-3v-6h5z" fill="#35572f"/>
-    <path d="M25 27h12v5h4v7h-5v6h-8v-5h-4v-8h-3v-3h4z" fill="#d7bd8a"/>
-    <path d="M25 30h4v4h-4zM34 30h4v4h-4z" fill="#3d3325"/>
-    <path d="M28 38h8v3h-8z" fill="#8c6543"/>
-    <path d="M20 27h5v-5h5v-4h-8v5h-4v8h2z" fill="#71964b"/>
-    <path d="M19 37h5v7h5v5h-9v-5h-4v-7z" fill="#466b36"/>
-    <path d="M36 43h5v-5h4v8h-5v5h-7v-4h3z" fill="#466b36"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect x="1" y="1" width="62" height="62" rx="12" fill="#b6a17a" stroke="#776345" stroke-width="2"/>
+  <g transform="rotate(28 32 32)" fill="#49351f">
+    <ellipse cx="32" cy="40" rx="13" ry="10.5"/>
+    <ellipse cx="17" cy="26" rx="5" ry="7" transform="rotate(-25 17 26)"/>
+    <ellipse cx="28" cy="20" rx="5" ry="7" transform="rotate(-8 28 20)"/>
+    <ellipse cx="40" cy="21" rx="5" ry="7" transform="rotate(12 40 21)"/>
+    <ellipse cx="49" cy="29" rx="5" ry="7" transform="rotate(28 49 29)"/>
   </g>
 </svg>

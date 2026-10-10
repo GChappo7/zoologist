@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect x="1" y="1" width="62" height="62" rx="13" fill="#b6a17a" stroke="#776345" stroke-width="2"/>
+  <image href="https://oldschool.runescape.wiki/images/Hunter_icon_(detail).png" x="8" y="8" width="48" height="48" preserveAspectRatio="xMidYMid meet" transform="rotate(28 32 32)"/>
+</svg>

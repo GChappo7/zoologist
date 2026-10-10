@@ -4035,3 +4035,13 @@
 .map-position {
   display: none !important;
 }
+
+
+/* Give the completed starting tile a subtle blue tint to distinguish its origin. */
+.map-tile.is-starter.map-tile-explored .map-card-front::after {
+  background: radial-gradient(circle at 50% 48%,
+    rgba(126, 177, 218, .30) 0%,
+    rgba(83, 137, 190, .19) 42%,
+    rgba(44, 83, 126, .14) 58%,
+    transparent 68%);
+}

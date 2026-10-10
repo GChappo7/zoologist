@@ -2066,7 +2066,8 @@ function App(){
     }
   },[gameState.mapTiles])
 
-  const updateGameState=patch=>setGameState(current=>({...current,...patch}))
+  const updateGameState=useCallback(patch=>setGameState(current=>({...current,...patch})),[])
+  const handleTilesChange=useCallback(mapTiles=>updateGameState({mapTiles}),[updateGameState])
 
   useEffect(()=>{
     // A factory-reset account has no cloud row until the player actually
@@ -2082,9 +2083,9 @@ function App(){
     if(!session||!accountReady||resetInProgress||(!gameState.journeyStarted&&!hasCompletedTile&&!hasUnlockedSkill&&!hasQuestProgress&&!hasDiaryProgress&&!hasDiaryMilestoneProgress&&!hasBossProgress&&!hasBossRewards))return
     const payload={...gameState,skillProgress,rewardAssignments,questStatuses,diaryStatuses,diaryMilestone,bossProgress,bossRewards}
     const generation=saveGenerationRef.current
+    setCloudSaveStatus('saving')
     const timer=window.setTimeout(()=>{
       if(generation!==saveGenerationRef.current)return
-      setCloudSaveStatus('saving')
       const save=async()=>{
         if(generation!==saveGenerationRef.current)return
         try{
@@ -2327,7 +2328,7 @@ function App(){
       onCreatureCompleted={handleCreatureCompleted}
       diaryStatuses={diaryStatuses}
       initialTiles={gameState.mapTiles}
-      onTilesChange={resetInProgress||journeyStage==='intro'?undefined:mapTiles=>updateGameState({mapTiles})}
+      onTilesChange={resetInProgress||journeyStage==='intro'?undefined:handleTilesChange}
       rewardAssignments={rewardAssignments}
       bossProgress={bossProgress}
       bossRewards={bossRewards}

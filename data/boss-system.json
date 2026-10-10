@@ -207,6 +207,14 @@
       ]
     },
     {
+      "id": "skotizo",
+      "name": "Skotizo",
+      "category": "Slayer",
+      "creature": "Skotizo",
+      "status": "not_slain",
+      "kcRequired": 25
+    },
+    {
       "id": "scorpia",
       "name": "Scorpia",
       "category": "Wilderness",

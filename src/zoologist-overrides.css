@@ -3978,3 +3978,19 @@
   image-rendering: pixelated;
   pointer-events: none;
 }
+
+
+/* Zoom-out rendering stability: avoid compositing the entire 41x41 map as a
+   perspective 3D scene. Apply perspective only to cards that are actually
+   flipping, which reduces GPU pressure while keeping the reveal animation. */
+.map-grid-pan,
+.map-grid {
+  will-change: auto !important;
+}
+.map-grid {
+  perspective: none !important;
+}
+.map-tile.is-face-down,
+.map-tile.is-batch-reveal {
+  perspective: 1400px;
+}

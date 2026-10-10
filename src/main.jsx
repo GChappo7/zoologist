@@ -2263,8 +2263,18 @@ function App(){
       return
     }
     if(id==='skills'){
+      const shouldOpen=!skillsOpen
+      setSkillsOpen(false)
       setTab('map')
-      setSkillsOpen(current=>!current)
+      if(shouldOpen){
+        // Let an open quest/diary panel finish its 180ms closing animation
+        // before opening Skills, so the two panels never overlap.
+        if(tab==='quests'||tab==='diaries'){
+          window.setTimeout(()=>setSkillsOpen(true),180)
+        }else{
+          setSkillsOpen(true)
+        }
+      }
       return
     }
     setSkillsOpen(false)

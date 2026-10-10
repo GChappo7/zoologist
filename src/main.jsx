@@ -1571,9 +1571,17 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     const current=wheelTargetZoomRef.current
     const delta=e.deltaMode===1?e.deltaY*16:e.deltaMode===2?e.deltaY*(stageRef.current?.clientHeight??800):e.deltaY
     const target=Math.min(MAX_ZOOM,Math.max(MIN_ZOOM,current*Math.exp(-delta*0.0019)))
+    const stage=stageRef.current
+    if(stage){
+      const rect=stage.getBoundingClientRect()
+      // Keep the viewport centre fixed while zooming; the mouse position must
+      // not influence where the map zooms towards.
+      zoomAtPoint(target,rect.left+rect.width/2,rect.top+rect.height/2)
+    } else {
+      setZoom(target)
+    }
     wheelTargetZoomRef.current=target
     zoomRef.current=target
-    setZoom(target)
   }
   const handlePointerMove=e=>{
     pointerRef.current={x:e.clientX,y:e.clientY,inside:true}

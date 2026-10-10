@@ -700,7 +700,7 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={}}){
             ['unlocked','Unlocked',counts.unlocked],
             ['completed','Completed',counts.completed],
           ].map(([id,label,count])=>
-            <button type="button" key={id} className={filter===id?'active':''} onClick={()=>setFilter(id)}>
+            <button type="button" key={id} className={`${filter===id?'active ':''}quest-filter-${id}`} onClick={()=>setFilter(id)}>
               {label} <span>{count}</span>
             </button>
           )}

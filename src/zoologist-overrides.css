@@ -4412,41 +4412,106 @@
 }
 
 
-/* Boss List: use the existing OSRS scrollbar artwork instead of the browser's white bar. */
+/* Boss List shares the same custom OSRS scrollbar used by Quests and the Bestiary Compendium. */
 .full-tab-page.boss-page {
   position: relative;
-  height: calc(100vh - 76px);
-  max-height: calc(100vh - 76px);
+  height: calc(100vh - 130px);
+  max-height: calc(100vh - 130px);
   min-height: 0;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  scrollbar-width: thin;
-  scrollbar-color: #8b806a #5d574c;
+  box-sizing: border-box;
+  overflow: hidden !important;
 }
-.full-tab-page.boss-page::-webkit-scrollbar {
+.boss-list-scroll-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22px;
+  gap: 0;
+  align-items: stretch;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+.boss-list-scroll-content {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none;
+}
+.boss-list-scroll-content::-webkit-scrollbar { display: none !important; width: 0 !important; }
+.boss-list-scroll-arrows {
+  position: relative;
   width: 22px;
+  min-width: 22px;
+  height: 100%;
+  min-height: 120px;
+  background: #5d574c;
+  overflow: hidden;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
 }
-.full-tab-page.boss-page::-webkit-scrollbar-track {
-  background: #5d574c url("/zoologist/assets/ui/scroll/792_0%20scrollBack.png") center top / 100% auto repeat-y;
-}
-.full-tab-page.boss-page::-webkit-scrollbar-thumb {
-  min-height: 28px;
+.boss-list-scroll-arrow {
+  position: absolute;
+  left: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  padding: 0;
   border: 0;
   border-radius: 0;
-  background: #8b806a url("/zoologist/assets/ui/scroll/790_0%20scrollMiddle.png") center top / 100% auto repeat-y;
+  background: #5d574c;
+  cursor: pointer;
 }
-.full-tab-page.boss-page::-webkit-scrollbar-button:single-button {
-  display: block;
-  height: 22px;
+.boss-list-scroll-arrow img { display: block; width: 22px; height: 22px; object-fit: fill; image-rendering: pixelated; pointer-events: none; }
+.boss-list-scroll-up { top: 0; }
+.boss-list-scroll-down { bottom: 0; }
+.boss-list-scroll-track {
+  position: absolute;
+  top: 22px;
+  right: 0;
+  bottom: 22px;
+  left: 0;
   width: 22px;
-  background-color: #5d574c;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 22px 22px;
+  cursor: pointer;
+  touch-action: none;
+  background: var(--scroll-back) center top / 100% auto repeat-y;
+  image-rendering: pixelated;
 }
-.full-tab-page.boss-page::-webkit-scrollbar-button:single-button:vertical:decrement {
-  background-image: url("/zoologist/assets/ui/scroll/773_0%20scrollUpArrow.png");
+.boss-list-scroll-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  min-height: 28px;
+  background: var(--scroll-middle) center / 100% auto repeat-y;
+  image-rendering: pixelated;
+  pointer-events: none;
+  box-sizing: border-box;
 }
-.full-tab-page.boss-page::-webkit-scrollbar-button:single-button:vertical:increment {
-  background-image: url("/zoologist/assets/ui/scroll/788_0%20scrollDownArrow.png");
+.boss-list-scroll-thumb::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 8px;
+  background: var(--scroll-top) center / 100% 100% no-repeat;
+  image-rendering: pixelated;
+}
+.boss-list-scroll-thumb::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 8px;
+  background: var(--scroll-bottom) center / 100% 100% no-repeat;
+  image-rendering: pixelated;
+}
+@media (max-width: 600px) {
+  .full-tab-page.boss-page { height: calc(100vh - 112px); max-height: calc(100vh - 112px); }
 }

@@ -4156,15 +4156,9 @@
     transparent 68%);
 }
 
-/* Quest dropdown filters: remove the unwanted horizontal ==== strokes. */
+/* Keep the quest filter PNG box sprites while suppressing CSS border lines. */
 .quest-header-dropdown .quest-filters button {
   border-top: 0 !important;
   border-bottom: 0 !important;
-  box-shadow: none !important;
-  background-image: none !important;
-}
-.quest-header-dropdown .quest-filters button::before,
-.quest-header-dropdown .quest-filters button::after {
-  display: none !important;
 }
 

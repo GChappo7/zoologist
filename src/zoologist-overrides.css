@@ -1780,8 +1780,46 @@
   cursor: pointer !important;
 }
 .quest-creature-shortcut:hover { border-color: #e1c56d !important; background: rgba(95,78,35,.65) !important; }
-.quest-creature-shortcut .creature-glyph-tile { width: 19px !important; height: 19px !important; margin: 0 !important; }
-.quest-creature-shortcut .creature-image { max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; }
+.quest-creature-shortcut .creature-glyph-tile {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  display: block !important;
+  width: 19px !important;
+  height: 19px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 19px !important;
+  max-height: 19px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  transform: none !important;
+}
+.quest-creature-shortcut .creature-image {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  transform: none !important;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+.quest-creature-shortcut .creature-fallback-glyph {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+}
 .quest-status-dot {
   width: 6px !important;
   height: 6px !important;

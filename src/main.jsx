@@ -320,7 +320,7 @@ function CreatureGlyph({creature,size='medium'}){
   const isRawFishImage=Boolean(RAW_FISH_WIKI_IMAGES[name]&&index===0)
   return <div className={`creature-glyph creature-glyph-${size} creature-glyph-${slugifyCreatureName(name)} ${isRawFishImage?'creature-glyph-raw-fish':''}`}>{!failed?<img src={candidates[index]} alt="" className={`creature-image ${isRawFishImage?'creature-image-raw-fish':''}`} draggable="false" onError={()=>index+1<candidates.length?setIndex(i=>i+1):setFailed(true)}/>:<span className="creature-fallback-glyph">🐾</span>}</div>
 }
-function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress,diaryStatuses,rewardAssignments,bossProgress,bossRewards,onBossClick}){
+function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress,diaryStatuses,rewardAssignments,bossProgress,bossRewards,onBossClick,journeyStage='started',onStartingAnimationEnd}){
   const creature=tile.creatureId?creatureById[tile.creatureId]:null
   const isFaceDown=Boolean(tile.faceDown)
   const associatedBosses=creature&&!isFaceDown?bossSystem.tasks.filter(boss=>{
@@ -333,7 +333,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress,dia
     if(creature)onSelect(tile)
   }
   return <div className="map-tile-wrapper" style={tileStyle}>
-    <button type="button" data-tile-key={keyFor(tile.x,tile.y)} className={`map-tile map-tile-${tile.state} ${tile.x===0&&tile.y===0?'is-starter':''} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''} ${tile.completed?'is-completed':''}`} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
+    <button type="button" data-tile-key={keyFor(tile.x,tile.y)} className={`map-tile map-tile-${tile.state} ${tile.x===0&&tile.y===0?'is-starter':''} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''} ${tile.completed?'is-completed':''} ${tile.x===0&&tile.y===0&&journeyStage==='animating'?'is-starting-drop':''}`} onAnimationEnd={event=>{if(event.animationName==='zoologist-starting-tile-drop')onStartingAnimationEnd?.()}} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
       {creature&&<>
         <span className="map-card-face map-card-back" aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/ui/map_tile_back.png`} alt="" draggable="false"/></span>
         <span className="map-card-face map-card-front">
@@ -1554,7 +1554,7 @@ function SidePanel({open,setOpen,selectedTile,onClear,onComplete,creatureById,sk
     </div>}
   </aside>
 }
-function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkillRewardComplete,onDiaryRewardComplete,onCreatureCompleted,initialTiles,onTilesChange,rewardAssignments,bossProgress,bossRewards,onRewardAssignmentsChange,onBossClick,focusCreatureId=null,onFocusCreatureHandled}){
+function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkillRewardComplete,onDiaryRewardComplete,onCreatureCompleted,initialTiles,onTilesChange,rewardAssignments,bossProgress,bossRewards,onRewardAssignmentsChange,onBossClick,focusCreatureId=null,onFocusCreatureHandled,journeyStage='started',onStartingAnimationEnd}){
   const creatureById=useMemo(()=>Object.fromEntries(creatures.map(c=>[c.id,c])),[creatures])
   const [panelOpen,setPanelOpen]=useState(false),[selectedTile,setSelectedTile]=useState(null),[dismissingTileKey,setDismissingTileKey]=useState(null),[closingPopupTileKey,setClosingPopupTileKey]=useState(null),[startCreature]=useState(()=>creatureById[initialTiles?.[keyFor(0,0)]?.creatureId]??pickStartingCreature(creatures))
   const [generatedRewardAssignments]=useState(()=>rewardAssignments??buildRewardAssignments(creatures,startCreature))
@@ -1816,7 +1816,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   },[tiles,creatures,skillProgress,effectiveRewardAssignments,diaryStatuses,creatureById,frontierCount,onSkillRewardComplete,onDiaryRewardComplete,onCreatureCompleted,onProgressChange])
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onClickCapture={handleStageClickCapture} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
-  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${pan.x+centreTileX*TILE_STEP*zoom}px,${pan.y+centreTileY*TILE_STEP*zoom}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`,transition:'transform 120ms ease-out',willChange:'transform'}}>{mapCells.cells.map(tile=><MemoizedMapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} bossProgress={bossProgress} bossRewards={bossRewards} onBossClick={onBossClick}/>)}{selectedTile&&<TilePopup closing={closingPopupTileKey===keyFor(selectedTile.x,selectedTile.y)} selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+132,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-38}}/>}</div></div>
+  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${pan.x+centreTileX*TILE_STEP*zoom}px,${pan.y+centreTileY*TILE_STEP*zoom}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`,transition:'transform 120ms ease-out',willChange:'transform'}}>{mapCells.cells.map(tile=><MemoizedMapTile key={`${tile.x}:${tile.y}`} tile={tile} journeyStage={journeyStage} onStartingAnimationEnd={onStartingAnimationEnd} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} bossProgress={bossProgress} bossRewards={bossRewards} onBossClick={onBossClick}/>)}{selectedTile&&<TilePopup closing={closingPopupTileKey===keyFor(selectedTile.x,selectedTile.y)} selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+132,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-38}}/>}</div></div>
 
 
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
@@ -1840,6 +1840,7 @@ function App(){
   const [accountReady,setAccountReady]=useState(false)
   const [cloudSaveStatus,setCloudSaveStatus]=useState('disconnected')
   const [gameState,setGameState]=useState(()=>readLocalGameState())
+  const [journeyStage,setJourneyStage]=useState(()=>{const initial=readLocalGameState();return initial.journeyStarted||Object.keys(initial.mapTiles||{}).length?'started':'intro'})
   const [creatures]=useState(()=>{try{return loadCreatureCatalog()}catch{return[]}})
   const [progress,setProgress]=useState({explored:0,revealed:1})
   const [skillProgress,setSkillProgress]=useState(()=>normalizeSkillProgress(gameState.skillProgress||{}))
@@ -1954,6 +1955,8 @@ function App(){
     return()=>{active=false}
   },[session?.user?.id])
 
+  useEffect(()=>{if(journeyStage!=='animating'&&(gameState.journeyStarted||Object.keys(gameState.mapTiles||{}).length))setJourneyStage('started')},[gameState.journeyStarted,gameState.mapTiles,journeyStage])
+
   useEffect(()=>localStorage.setItem('zoologist-skill-progress',JSON.stringify(skillProgress)),[skillProgress])
   useEffect(()=>localStorage.setItem('zoologist-diary-statuses',JSON.stringify(diaryStatuses)),[diaryStatuses])
   useEffect(()=>localStorage.setItem('zoologist-diary-milestone',JSON.stringify(diaryMilestone)),[diaryMilestone])
@@ -2006,7 +2009,7 @@ function App(){
     const hasDiaryMilestoneProgress=Number(diaryMilestone?.count)>0
     const hasBossProgress=Object.keys(bossProgress||{}).length>0
     const hasBossRewards=Object.keys(bossRewards||{}).length>0
-    if(!session||!accountReady||resetInProgress||(!hasCompletedTile&&!hasUnlockedSkill&&!hasQuestProgress&&!hasDiaryProgress&&!hasDiaryMilestoneProgress&&!hasBossProgress&&!hasBossRewards))return
+    if(!session||!accountReady||resetInProgress||(!gameState.journeyStarted&&!hasCompletedTile&&!hasUnlockedSkill&&!hasQuestProgress&&!hasDiaryProgress&&!hasDiaryMilestoneProgress&&!hasBossProgress&&!hasBossRewards))return
     const payload={...gameState,skillProgress,rewardAssignments,questStatuses,diaryStatuses,diaryMilestone,bossProgress,bossRewards}
     const generation=saveGenerationRef.current
     const timer=window.setTimeout(()=>{
@@ -2202,7 +2205,7 @@ function App(){
     }
   }
 
-  if(!creatures.length)return <div className="app-shell"><div className="full-tab-page"><h1>Creature data could not be loaded</h1><p>Check data/creatures.csv.</p></div></div>
+  if(!creatures.length)return <div className={`app-shell ${journeyStage==='intro'?'journey-intro-active':''} ${journeyStage==='animating'?'journey-animating':''}`}><div className="full-tab-page"><h1>Creature data could not be loaded</h1><p>Check data/creatures.csv.</p></div></div>
   if(!accountReady)return <div className="app-shell"><div className="account-loading"><div className="account-loading-spinner"/>Loading Zoologist…</div></div>
 
   // Authentication is a hard gate: logged-out users never receive the map,
@@ -2245,6 +2248,8 @@ function App(){
       onFocusCreatureHandled={()=>setFocusCreatureId(null)}
       creatures={creatures}
       onProgressChange={setProgress}
+      journeyStage={journeyStage}
+      onStartingAnimationEnd={()=>setJourneyStage('started')}
       skillProgress={skillProgress}
       onSkillRewardComplete={handleSkillRewardComplete}
       onDiaryRewardComplete={handleDiaryRewardComplete}
@@ -2297,6 +2302,7 @@ function App(){
       </div>   </header>
     <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}{questView}{diaryView}</main>
     <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
+    {journeyStage==='intro'&&<div className="journey-intro-overlay" role="presentation"><div className="journey-intro-dialog" role="dialog" aria-modal="true" aria-labelledby="journey-intro-title"><div className="journey-intro-emblem"><img src={`${import.meta.env.BASE_URL}assets/ui/skills/Blank%20skill.png`} alt="" aria-hidden="true" draggable="false"/><span>🐾</span></div><h1 id="journey-intro-title">Are you ready to begin your Zoologist Journey?</h1><p>Your expedition begins with a single creature. Reveal your first tile to start your research.</p><button type="button" className="journey-intro-continue" onMouseEnter={()=>playSfx('click')} onFocus={()=>playSfx('click')} onClick={()=>{playSfx('complete');updateGameState({journeyStarted:true});setJourneyStage('animating')}}><img src={`${import.meta.env.BASE_URL}assets/ui/box/818_0%20Blue%20Button.png`} alt="" aria-hidden="true" draggable="false"/><span>CONTINUE</span></button></div></div>}
     {diaryReveal&&<div className={`diary-reveal-overlay diary-reveal-${String(diaryReveal.tier||'easy').toLowerCase()}`} role="presentation">
       <div className="diary-reveal-dialog" role="dialog" aria-modal="true" aria-labelledby="diary-reveal-title">
         <div className="diary-reveal-glow" aria-hidden="true"/>

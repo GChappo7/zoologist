@@ -4020,3 +4020,18 @@
   filter: none !important;
   image-rendering: auto;
 }
+
+
+/* Keep deployment/debug details out of the player-facing interface. */
+.deployment-indicator {
+  display: none !important;
+}
+
+.footer > span:nth-child(2) {
+  display: none !important;
+}
+
+.map-key,
+.map-position {
+  display: none !important;
+}

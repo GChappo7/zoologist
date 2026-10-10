@@ -333,7 +333,7 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress,dia
     if(creature)onSelect(tile)
   }
   return <div className="map-tile-wrapper" style={tileStyle}>
-    <button type="button" data-tile-key={keyFor(tile.x,tile.y)} className={`map-tile map-tile-${tile.state} ${tile.x===0&&tile.y===0?'is-starter':''} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''} ${tile.completed?'is-completed':''} ${tile.x===0&&tile.y===0&&journeyStage==='animating'?'is-starting-drop':''}`} onAnimationEnd={event=>{if(event.animationName==='zoologist-starting-tile-drop')onStartingAnimationEnd?.()}} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
+    <button type="button" data-tile-key={keyFor(tile.x,tile.y)} className={`map-tile map-tile-${tile.state} ${tile.x===0&&tile.y===0?'is-starter':''} ${selected?'is-selected':''} ${isFaceDown?'is-face-down':''} ${tile.revealAnimation?'is-batch-reveal':''} ${tile.completed?'is-completed':''} ${tile.x===0&&tile.y===0&&journeyStage==='animating'?'is-starting-drop':''}`} onAnimationStart={event=>{if(event.animationName==='zoologist-starting-tile-drop')playSfx('tileDrop')}} onAnimationEnd={event=>{if(event.animationName==='zoologist-starting-tile-drop'){playSfx('tileLand');onStartingAnimationEnd?.()}}} onClick={handleClick} aria-label={isFaceDown?'Unexplored starting tile':creature?`${creature.name}${tile.completed?', completed':', newly revealed'}`:'Fog of war'}>
       {creature&&<>
         <span className="map-card-face map-card-back" aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/ui/map_tile_back.png`} alt="" draggable="false"/></span>
         <span className="map-card-face map-card-front">
@@ -1587,7 +1587,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     setPanelOpen(false)
     onFocusCreatureHandled?.()
   },[focusCreatureId,tiles,onFocusCreatureHandled])
-  useEffect(()=>{if(journeyStage==='animating'){zoomRef.current=0.68;wheelTargetZoomRef.current=0.68;setZoom(0.68);setPan({x:0,y:0})}},[journeyStage])
+  useEffect(()=>{if(journeyStage==='animating'){zoomRef.current=0.35;wheelTargetZoomRef.current=0.35;setZoom(0.35);setPan({x:0,y:0})}},[journeyStage])
   useEffect(()=>{onTilesChange?.(tiles)},[tiles,onTilesChange])
   useEffect(()=>{
     if(rewardAssignments||!startCreature)return
@@ -2305,7 +2305,7 @@ function App(){
       </div>   </header>
     <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}{questView}{diaryView}</main>
     <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
-    {journeyStage==='intro'&&<div className="journey-intro-overlay" role="presentation"><div className="journey-intro-dialog" role="dialog" aria-modal="true" aria-labelledby="journey-intro-title"><div className="journey-intro-emblem"><img src={skillIconUrl('Hunter')} alt="" aria-hidden="true" draggable="false"/></div><h1 id="journey-intro-title">Are you ready to begin your Zoologist Journey?</h1><p>Your expedition begins with a single creature. Reveal your first tile to start your research.</p><button type="button" className="journey-intro-continue" onMouseEnter={()=>playSfx('click')} onFocus={()=>playSfx('click')} onClick={()=>{playSfx('complete');updateGameState({journeyStarted:true});setJourneyStage('animating')}}><img src={`${import.meta.env.BASE_URL}assets/ui/box/818_0%20Blue%20Button.png`} alt="" aria-hidden="true" draggable="false"/><span>CONTINUE</span></button></div></div>}
+    {journeyStage==='intro'&&<div className="journey-intro-overlay" role="presentation"><div className="journey-intro-dialog" role="dialog" aria-modal="true" aria-labelledby="journey-intro-title"><div className="journey-intro-emblem"><img src={skillIconUrl('Hunter')} alt="" aria-hidden="true" draggable="false"/></div><h1 id="journey-intro-title">Are you ready to begin your Zoologist Journey?</h1><p>Your expedition begins with a single creature. Reveal your first tile to start your research.</p><button type="button" className="journey-intro-continue" onMouseEnter={()=>playSfx('hover')} onFocus={()=>playSfx('hover')} onClick={()=>{playSfx('confirm');updateGameState({journeyStarted:true});setJourneyStage('animating')}}><img src={`${import.meta.env.BASE_URL}assets/ui/box/818_0%20Blue%20Button.png`} alt="" aria-hidden="true" draggable="false"/><span>CONTINUE</span></button></div></div>}
     {diaryReveal&&<div className={`diary-reveal-overlay diary-reveal-${String(diaryReveal.tier||'easy').toLowerCase()}`} role="presentation">
       <div className="diary-reveal-dialog" role="dialog" aria-modal="true" aria-labelledby="diary-reveal-title">
         <div className="diary-reveal-glow" aria-hidden="true"/>

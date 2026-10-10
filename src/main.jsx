@@ -538,7 +538,7 @@ function SkillsDropdown({open,onClose,skillProgress,anchorRef}) {
       </div>
   </ProgressionDropdown>
 }
-function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[],onCreatureClick}){
+function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[],onCreatureClick,questBossLinks={},onBossClick}){
   const [filter,setFilter]=useState('all')
   const [statuses,setStatuses]=useState(initialStatuses||{})
   const [search,setSearch]=useState('')
@@ -732,7 +732,8 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[
                   return [reward.questId,reward.label,reward.name,reward.id].some(value=>questKeys.has(String(value??'').trim().toLowerCase()))
                 })
                 const linkedCreature=linkedTile?creatures.find(creature=>String(creature.id)===String(linkedTile.creatureId)):null
-                const canNavigate=Boolean(linkedCreature&&['revealed','unlocked','completed'].includes(status))
+                const linkedBossId=questBossLinks?.[q.id]||questBossLinks?.[q.name]||null
+                const canNavigate=Boolean((linkedBossId||linkedCreature)&&['revealed','unlocked','completed'].includes(status))
                 const canToggle=['unlocked','completed'].includes(status)
                 return <div key={q.id} className={`quest-row quest-${status}`} role="group" aria-label={status==='unrevealed'?`${q.name}, quest locked`:`${q.name}, ${statusLabel[status]}`}>
                   <span className="quest-status-dot" aria-hidden="true"/>
@@ -740,7 +741,7 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[
                     <span className="quest-name">{q.name}</span>
                     <span className="quest-status-label">{statusLabel[status]}</span>
                   </button>
-                  {canNavigate&&<button type="button" className="quest-creature-shortcut" title={`Go to ${linkedCreature.name} tile`} aria-label={`Go to ${linkedCreature.name} tile for ${q.name}`} onClick={()=>onCreatureClick?.(linkedCreature.id)}><CreatureGlyph creature={linkedCreature} size="tile"/></button>}
+                  {canNavigate&&(linkedBossId?<button type="button" className="quest-creature-shortcut quest-boss-shortcut" title={`Go to ${bossSystem.tasks.find(boss=>boss.id===linkedBossId)?.name||'associated boss'}`} aria-label={`Go to associated boss for ${q.name}`} onClick={()=>onBossClick?.(linkedBossId)}><BossPixelImage boss={bossSystem.tasks.find(boss=>boss.id===linkedBossId)||{id:linkedBossId}}/></button>:linkedCreature&&<button type="button" className="quest-creature-shortcut" title={`Go to ${linkedCreature.name} tile`} aria-label={`Go to ${linkedCreature.name} tile for ${q.name}`} onClick={()=>onCreatureClick?.(linkedCreature.id)}><CreatureGlyph creature={linkedCreature} size="tile"/></button>)}
                 </div>
               })}
             </section>
@@ -1175,6 +1176,8 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
         const required=new Set((creature.requiredQuests??[]).map(q=>String(q).trim().toLowerCase()))
         const questKey=String(reward.questId??reward.label??reward.name??'').trim().toLowerCase()
         if(required.has(questKey))return false
+        const questRecord=quests.find(item=>[item.id,item.name].some(value=>String(value??'').trim().toLowerCase()===String(reward.questId??'').trim().toLowerCase()||String(value??'').trim().toLowerCase()===String(reward.label??'').trim().toLowerCase()))
+        if(questStatuses?.[String(reward.questId??'')]==='completed'||(questRecord&&questStatuses?.[String(questRecord.id)]==='completed'))return false
         return !Object.values(rewardAssignments||{}).some(value=>String(value?.type).toLowerCase()==='quest'&&String(value?.questId??value?.label??value?.name??'').trim().toLowerCase()===questKey)
       }
       if(String(reward.type).toLowerCase()==='diary')return false
@@ -2210,7 +2213,7 @@ function App(){
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText,ref:questsButtonRef},
     {id:'diaries',label:'Diaries',icon:BookOpen,ref:diariesButtonRef},{id:'bosses',label:'Bosses',icon:Skull}
   ]
-  const questView=<ProgressionDropdown open={tab==='quests'} onClose={()=>setTab('map')} anchorRef={questsButtonRef} ariaLabel="Quests" className="quest-header-dropdown"><QuestsView initialStatuses={questStatuses} mapTiles={gameState.mapTiles} creatures={creatures} onCreatureClick={creatureId=>{setFocusCreatureId(String(creatureId));setSkillsOpen(false);setTab('map')}} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/></ProgressionDropdown>
+  const questView=<ProgressionDropdown open={tab==='quests'} onClose={()=>setTab('map')} anchorRef={questsButtonRef} ariaLabel="Quests" className="quest-header-dropdown"><QuestsView initialStatuses={questStatuses} mapTiles={gameState.mapTiles} creatures={creatures} questBossLinks={gameState.questBossLinks||{}} onBossClick={bossId=>{setFocusBossId(bossId);setSkillsOpen(false);setTab('bosses')}} onCreatureClick={creatureId=>{setFocusCreatureId(String(creatureId));setSkillsOpen(false);setTab('map')}} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/></ProgressionDropdown>
   const diaryView=<ProgressionDropdown open={tab==='diaries'} onClose={()=>setTab('map')} anchorRef={diariesButtonRef} ariaLabel="Achievement Diaries" className="diary-header-dropdown"><DiariesView statuses={diaryStatuses} onStatusClick={handleDiaryStatusClick}/></ProgressionDropdown>
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>
@@ -2218,7 +2221,7 @@ function App(){
     :tab==='bosses'?<BossView focusBossId={focusBossId} onCreatureClick={creatureId=>{setFocusCreatureId(String(creatureId));setSkillsOpen(false);setTab('map')}} creatures={creatures} mapTiles={gameState.mapTiles} bossProgress={bossProgress} bossRewards={bossRewards} questStatuses={questStatuses} diaryStatuses={diaryStatuses} skillProgress={skillProgress} rewardAssignments={rewardAssignments||{}} onBossProgressChange={setBossProgress} onRewardAssignmentsChange={assignments=>{setRewardAssignments(current=>{const next=typeof assignments==='function'?assignments(current):assignments;updateGameState({rewardAssignments:next});return next})}} onMapTilesChange={resetInProgress?undefined:mapTiles=>{updateGameState({mapTiles:typeof mapTiles==='function'?mapTiles(gameState.mapTiles||{}):mapTiles})}} onBossRewardClaim={(boss,reward)=>{
       setBossRewards(current=>({...current,[boss.id]:reward}))
       if(String(reward?.type).toLowerCase()==='skill')handleSkillRewardComplete(reward)
-      if(String(reward?.type).toLowerCase()==='quest'&&reward.questId)setQuestStatuses(current=>({...current,[reward.questId]:'revealed'}))
+      if(String(reward?.type).toLowerCase()==='quest'&&reward.questId){setQuestStatuses(current=>({...current,[reward.questId]:'unlocked'}));const quest=quests.find(item=>String(item.id)===String(reward.questId)||String(item.name).trim().toLowerCase()===String(reward.label??reward.name??'').trim().toLowerCase());if(quest)updateGameState({questBossLinks:{...(gameState.questBossLinks||{}),[quest.id]:boss.id}})}
       if(String(reward?.type).toLowerCase()==='diary')handleDiaryRewardComplete(reward)
     }}/>
     :<MapView

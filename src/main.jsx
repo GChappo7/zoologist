@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
   BookOpen, ChevronLeft, ChevronRight, Compass, Eye, Flag, Gamepad2, Gem,
@@ -353,6 +353,8 @@ function MapTile({tile,selected,onSelect,onReveal,creatureById,skillProgress,dia
     </div>}
   </div>
 }
+const MemoizedMapTile = React.memo(MapTile)
+
 function getSkillRewardSequence(skill){
   return rewardCatalog.mandatory.filter(r=>String(r.type).toLowerCase()==='skill'&&r.skill===skill).sort((a,b)=>Number(a.band.split('-')[0])-Number(b.band.split('-')[0]))
 }
@@ -1653,15 +1655,34 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     }
   }
   const centreTileX=Math.round(-pan.x/(TILE_STEP*zoom)),centreTileY=Math.round(-pan.y/(TILE_STEP*zoom))
-  const knownTiles=Object.values(tiles)
-  const nearestKnownDistance=(x,y)=>knownTiles.reduce((best,t)=>Math.min(best,Math.abs(x-t.x)+Math.abs(y-t.y)),Infinity)
+  const knownTiles=useMemo(()=>Object.values(tiles),[tiles])
   const mapCells=useMemo(()=>{
     const startX=centreTileX-RENDER_RADIUS,startY=centreTileY-RENDER_RADIUS,cells=[]
-    for(let y=startY;y<=centreTileY+RENDER_RADIUS;y+=1)for(let x=startX;x<=centreTileX+RENDER_RADIUS;x+=1){
+    const endX=centreTileX+RENDER_RADIUS,endY=centreTileY+RENDER_RADIUS
+    // Fog is only visible up to six tiles from known territory. Expand from known
+    // tiles instead of scanning every known tile for every one of the 1,681 cells.
+    const fogDistances=new Map()
+    if(fogVisible){
+      for(const known of knownTiles){
+        for(let dy=-6;dy<=6;dy+=1){
+          const y=known.y+dy
+          if(y<startY||y>endY)continue
+          const maxDx=6-Math.abs(dy)
+          for(let dx=-maxDx;dx<=maxDx;dx+=1){
+            const x=known.x+dx
+            if(x<startX||x>endX||tiles[keyFor(x,y)])continue
+            const distance=Math.abs(dx)+Math.abs(dy)
+            const key=keyFor(x,y),previous=fogDistances.get(key)
+            if(previous===undefined||distance<previous)fogDistances.set(key,distance)
+          }
+        }
+      }
+    }
+    for(let y=startY;y<=endY;y+=1)for(let x=startX;x<=endX;x+=1){
       const known=tiles[keyFor(x,y)]
       if(known) cells.push({...known,gridColumn:x-startX+1,gridRow:y-startY+1})
       else if(fogVisible) {
-        const distance=nearestKnownDistance(x,y)
+        const distance=fogDistances.get(keyFor(x,y))??Infinity
         const fogState =
           distance === 1 ? 'locked' :
           distance === 2 ? 'dark-fog-1' :
@@ -1673,11 +1694,11 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
       }
     }
     const gridSize=RENDER_DIAMETER*TILE_SIZE+(RENDER_DIAMETER-1)*TILE_GAP
-    return{cells,gridSize,offsetX:pan.x+centreTileX*TILE_STEP*zoom,offsetY:pan.y+centreTileY*TILE_STEP*zoom}
-  },[centreTileX,centreTileY,pan.x,pan.y,tiles,zoom,fogVisible])
+    return{cells,gridSize}
+  },[centreTileX,centreTileY,tiles,knownTiles,fogVisible])
   const exploredCount=knownTiles.filter(t=>t.state==='explored').length,frontierCount=knownTiles.filter(t=>t.state==='frontier').length,creatureCount=creatures.length
   useEffect(()=>{onProgressChange?.({explored:exploredCount,revealed:frontierCount})},[exploredCount,frontierCount,onProgressChange])
-  const openTile=tile=>{
+  const openTile=useCallback(tile=>{
     if(!tile?.creatureId)return
     if(selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y){
       playSfx('reward')
@@ -1690,8 +1711,8 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     }
     setSelectedTile(tile)
     setPanelOpen(false)
-  }
-  const handleReveal=tile=>{
+  },[selectedTile])
+  const handleReveal=useCallback(tile=>{
     if(!tile?.faceDown)return
     // Trigger audio from the reveal action itself, avoiding map pointer-capture
     // and drag handling that can interfere with the tile's pointer event.
@@ -1702,8 +1723,8 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     setTiles(current=>({...current,[keyFor(tile.x,tile.y)]:revealed}))
     setFogVisible(true)
     openTile(revealed)
-  }
-  const handleComplete=tile=>{
+  },[creatureById,skillProgress,effectiveRewardAssignments,diaryStatuses,openTile])
+  const handleComplete=useCallback(tile=>{
     if(!tile||tile.state!=='frontier'||tile.completed||tile.faceDown)return
     const reward=getTileReward(tile,creatureById[tile.creatureId],skillProgress,effectiveRewardAssignments,diaryStatuses)
     const completed={...tile,state:'explored',completed:true,faceDown:false,revealAnimation:false,reward}
@@ -1725,10 +1746,10 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     setPanelOpen(false)
     window.setTimeout(()=>setDismissingTileKey(null),180)
     onProgressChange?.({explored:1, revealed:frontierCount})
-  }
+  },[tiles,creatures,skillProgress,effectiveRewardAssignments,diaryStatuses,creatureById,frontierCount,onSkillRewardComplete,onDiaryRewardComplete,onCreatureCompleted,onProgressChange])
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onClickCapture={handleStageClickCapture} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
-  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${mapCells.offsetX}px,${mapCells.offsetY}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`,transition:'transform 120ms ease-out',willChange:'transform'}}>{mapCells.cells.map(tile=><MapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} bossProgress={bossProgress} bossRewards={bossRewards} onBossClick={onBossClick}/>)}{selectedTile&&<TilePopup closing={closingPopupTileKey===keyFor(selectedTile.x,selectedTile.y)} selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+132,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-38}}/>}</div></div>
+  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${pan.x+centreTileX*TILE_STEP*zoom}px,${pan.y+centreTileY*TILE_STEP*zoom}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`,transition:'transform 120ms ease-out',willChange:'transform'}}>{mapCells.cells.map(tile=><MemoizedMapTile key={`${tile.x}:${tile.y}`} tile={tile} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} bossProgress={bossProgress} bossRewards={bossRewards} onBossClick={onBossClick}/>)}{selectedTile&&<TilePopup closing={closingPopupTileKey===keyFor(selectedTile.x,selectedTile.y)} selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+132,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-38}}/>}</div></div>
 
 
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>

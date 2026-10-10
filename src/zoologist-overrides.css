@@ -4410,3 +4410,43 @@
     animation-duration: .01ms !important;
   }
 }
+
+
+/* Boss List: use the existing OSRS scrollbar artwork instead of the browser's white bar. */
+.full-tab-page.boss-page {
+  position: relative;
+  height: calc(100vh - 76px);
+  max-height: calc(100vh - 76px);
+  min-height: 0;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin;
+  scrollbar-color: #8b806a #5d574c;
+}
+.full-tab-page.boss-page::-webkit-scrollbar {
+  width: 22px;
+}
+.full-tab-page.boss-page::-webkit-scrollbar-track {
+  background: #5d574c url("./assets/ui/scroll/792_0%20scrollBack.png") center top / 100% auto repeat-y;
+}
+.full-tab-page.boss-page::-webkit-scrollbar-thumb {
+  min-height: 28px;
+  border: 0;
+  border-radius: 0;
+  background: #8b806a url("./assets/ui/scroll/790_0%20scrollMiddle.png") center top / 100% auto repeat-y;
+}
+.full-tab-page.boss-page::-webkit-scrollbar-button:single-button {
+  display: block;
+  height: 22px;
+  width: 22px;
+  background-color: #5d574c;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 22px 22px;
+}
+.full-tab-page.boss-page::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("./assets/ui/scroll/773_0%20scrollUpArrow.png");
+}
+.full-tab-page.boss-page::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("./assets/ui/scroll/788_0%20scrollDownArrow.png");
+}

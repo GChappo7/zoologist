@@ -1215,9 +1215,9 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
             <div className="boss-progress-label"><span>{complete?'COMPLETE':readyToComplete?'READY TO COMPLETE':'KILL COUNT'}</span><strong>{current} / {target} KC</strong></div>
             <div className="boss-progress-track"><div className="boss-progress-fill" style={{width:`${percent}%`}}/></div>
             <div className="boss-kc-controls">
-              <button type="button" className="boss-kc-button" onClick={()=>changeBossKc(boss,-1)} disabled={current<=0||Boolean(reward)} aria-label={`Decrease ${boss.name} kill count`}><img src={uiAssetUrl('1116_0 Minus Button.png')} alt=""/></button>
+              <button type="button" className="boss-kc-button" onClick={()=>{playSfx('bossDown');changeBossKc(boss,-1)}} disabled={current<=0||Boolean(reward)} aria-label={`Decrease ${boss.name} kill count`}><img src={uiAssetUrl('1116_0 Minus Button.png')} alt=""/></button>
               <span className={`boss-kc-count${complete?' is-complete':''}`}>{current}</span>
-              <button type="button" className="boss-kc-button" onClick={()=>changeBossKc(boss,1)} disabled={current>=target||Boolean(reward)} aria-label={`Increase ${boss.name} kill count`}><img src={uiAssetUrl('1117_0 Plus Button.png')} alt=""/></button>
+              <button type="button" className="boss-kc-button" onClick={()=>{playSfx('bossPlus');changeBossKc(boss,1)}} disabled={current>=target||Boolean(reward)} aria-label={`Increase ${boss.name} kill count`}><img src={uiAssetUrl('1117_0 Plus Button.png')} alt=""/></button>
             </div>
           </div> : <div className="boss-locked-message"><img src={uiAssetUrl('lock_asset.png')} alt=""/> Complete the associated creature tile to unlock</div>}
         </div>

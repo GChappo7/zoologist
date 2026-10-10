@@ -677,7 +677,8 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[
     const isUnlocked=savedStatus==='unlocked'||completableQuestIds.has(String(id))
     // A merely revealed quest cannot be completed until its reward is unlocked.
     if(savedStatus!=='completed'&&!isUnlocked) return s
-    const nextStatus=savedStatus==='completed'?(isUnlocked?'unlocked':'revealed'):'completed'
+    // Clicking a completed quest should return it to Unlocked, never Revealed.
+    const nextStatus=savedStatus==='completed'?'unlocked':'completed'
     if(nextStatus==='completed')playSfx('complete')
     return {...s,[id]:nextStatus}
   })

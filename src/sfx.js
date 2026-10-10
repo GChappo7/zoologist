@@ -134,6 +134,20 @@ const melodies = {
     [784, 1047, 0.27, 0.32, 'sine', 0.045],
   ],
   click: [[620, 500, 0, 0.045, 'triangle', 0.02]],
+  // Quiet, airy UI hover cue for selectable reward rows and tabs.
+  hover: [[1046.5, 880, 0, 0.035, 'sine', 0.009]],
+  // Coin-like chime when opening the boss completion reward picker.
+  cash: [
+    [987.77, 1318.51, 0, 0.11, 'sine', 0.045],
+    [1318.51, 1760, 0.055, 0.15, 'triangle', 0.038],
+    [1760, 1567.98, 0.11, 0.18, 'sine', 0.03],
+  ],
+  // A distinct, brighter confirmation chime when a reward is chosen.
+  confirm: [
+    [783.99, 987.77, 0, 0.09, 'triangle', 0.04],
+    [1174.66, 1567.98, 0.065, 0.13, 'sine', 0.045],
+    [1567.98, 2093, 0.14, 0.17, 'sine', 0.035],
+  ],
 }
 
 export function playSfx(name, count = 1) {

@@ -1081,13 +1081,19 @@
   justify-self:start;
   display:flex;
   align-items:center;
-  gap:4px;
+  gap:6px;
   border:0;
   background:transparent;
   color:#8f9da4;
   cursor:pointer;
-  font:11px 'Space Mono',monospace;
+  font:700 16px var(--font-runescape);
   padding:8px 4px;
+}
+.collection-back-map-icon {
+  width:20px;
+  height:20px;
+  object-fit:contain;
+  image-rendering:pixelated;
 }
 .collection-back-button:hover { color:#e7d29d; }
 .collection-log-title {

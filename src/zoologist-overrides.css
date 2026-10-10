@@ -1100,15 +1100,16 @@
   height:40px;
   display:grid;
   place-items:center;
-  border:1px solid #5b492f;
-  border-radius:9px;
-  background:#1d1b15;
-  color:#d5aa63;
+  border:1px solid #776345;
+  border-radius:10px;
+  background:linear-gradient(145deg,#c9b894 0%,#b6a17a 52%,#a58c63 100%);
+  box-shadow:inset 0 1px rgba(255,244,220,.3),inset 0 -1px rgba(76,54,29,.14),0 1px 2px rgba(0,0,0,.2);
 }
 .collection-log-icon img {
   width:26px;
   height:26px;
   object-fit:contain;
+  transform:rotate(28deg);
   image-rendering:pixelated;
 }
 .collection-log-title > div:last-child {

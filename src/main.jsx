@@ -731,7 +731,7 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[
                   return [reward.questId,reward.label,reward.name,reward.id].some(value=>questKeys.has(String(value??'').trim().toLowerCase()))
                 })
                 const linkedCreature=linkedTile?creatures.find(creature=>String(creature.id)===String(linkedTile.creatureId)):null
-                const canNavigate=Boolean(linkedCreature&&['revealed','unlocked'].includes(status))
+                const canNavigate=Boolean(linkedCreature&&['revealed','unlocked','completed'].includes(status))
                 const canToggle=['unlocked','completed'].includes(status)
                 return <div key={q.id} className={`quest-row quest-${status}`} role="group" aria-label={status==='unrevealed'?`${q.name}, quest locked`:`${q.name}, ${statusLabel[status]}`}>
                   <span className="quest-status-dot" aria-hidden="true"/>

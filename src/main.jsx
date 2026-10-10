@@ -1587,6 +1587,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     setPanelOpen(false)
     onFocusCreatureHandled?.()
   },[focusCreatureId,tiles,onFocusCreatureHandled])
+  useEffect(()=>{if(journeyStage==='animating'){zoomRef.current=0.68;wheelTargetZoomRef.current=0.68;setZoom(0.68);setPan({x:0,y:0})}},[journeyStage])
   useEffect(()=>{onTilesChange?.(tiles)},[tiles,onTilesChange])
   useEffect(()=>{
     if(rewardAssignments||!startCreature)return

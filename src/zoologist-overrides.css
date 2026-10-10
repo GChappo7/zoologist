@@ -2661,10 +2661,12 @@
   }
 }
 
-/* Quest filter buttons: final OSRS box sprite override. */
-.quest-header-dropdown .quest-filters button {
+/* Shared OSRS section-box sprites for Quest and Bestiary filters. */
+.quest-header-dropdown .quest-filters button,
+.collection-log-page .collection-filters button {
   position: relative !important;
   height: 30px !important;
+  min-height: 30px !important;
   box-sizing: border-box !important;
   padding: 4px 9px !important;
   border: 0 !important;
@@ -2677,38 +2679,39 @@
   overflow: hidden !important;
 }
 .quest-header-dropdown .quest-filters button::before,
-.quest-header-dropdown .quest-filters button::after {
+.quest-header-dropdown .quest-filters button::after,
+.collection-log-page .collection-filters button::before,
+.collection-log-page .collection-filters button::after {
   content: "" !important;
   position: absolute !important;
   top: 0 !important;
   bottom: 0 !important;
   width: 6px !important;
+  background-color: #5d574c !important;
   background-repeat: no-repeat !important;
   background-size: 100% 100% !important;
   pointer-events: none !important;
   z-index: 3 !important;
 }
-.quest-header-dropdown .quest-filters button::before {
+.quest-header-dropdown .quest-filters button::before,
+.collection-log-page .collection-filters button::before {
   left: 0 !important;
   background-image: var(--box-left) !important;
   background-position: left top !important;
 }
-.quest-header-dropdown .quest-filters button::after {
+.quest-header-dropdown .quest-filters button::after,
+.collection-log-page .collection-filters button::after {
   right: 0 !important;
   background-image: var(--box-right) !important;
   background-position: right top !important;
 }
-/* Keep the sprite corners above the repeated middle texture so their alpha
-   pixels remain transparent at the top and bottom corners. */
-.quest-header-dropdown .quest-filters button > * {
+.quest-header-dropdown .quest-filters button > *,
+.collection-log-page .collection-filters button > * {
   position: relative !important;
   z-index: 4 !important;
 }
-.quest-header-dropdown .quest-filters button > * {
-  position: relative !important;
-  z-index: 2 !important;
-}
-.quest-header-dropdown .quest-filters button.active {
+.quest-header-dropdown .quest-filters button.active,
+.collection-log-page .collection-filters button.active {
   background: var(--box-mid) center / auto 100% repeat-x !important;
   filter: brightness(1.12) !important;
   color: #fff1c8 !important;

@@ -847,8 +847,8 @@ function CollectionLog({creatures,mapTiles,onBack}){
       <div className="collection-log-header">
         <button type="button" className="collection-back-button" onClick={onBack} aria-label="Back to map"><ChevronLeft size={18}/><span>Map</span></button>
         <div className="collection-log-title">
-          <div className="collection-log-icon"><PawPrint size={22}/></div>
-          <div><strong>Creature Collection</strong><span>{counts.recorded} / {counts.all} recorded</span></div>
+          <div className="collection-log-icon"><img src={skillIconUrl('Hunter')} alt="" aria-hidden="true" draggable="false"/></div>
+          <div><strong>Bestiary Compendium</strong><span>{counts.recorded} / {counts.all} recorded</span></div>
         </div>
         <div className="collection-log-stat"><b>{counts.complete}</b><span>COMPLETE</span></div>
       </div>
@@ -2256,8 +2256,8 @@ function App(){
   return <div className="app-shell">
     <header className="topbar">
       <div className="header-left">
-      <div className="brand-block"><div className="brand-mark"><img src={skillIconUrl('Hunter')} alt="" aria-hidden="true" /></div><div className="brand-copy"><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration <span className="deployment-indicator" title={`GitHub deployment ${DEPLOYMENT_SHA}`}>{DEPLOYMENT_LABEL}</span></div></div></div>
-        <button type="button" className={`header-collection ${tab==='collection'?'active':''}`} onClick={()=>{setSkillsOpen(false);setTab('collection')}} aria-label="Open creature collection" title="Open Creature Collection">
+      <div className="brand-block"><div className="brand-mark"><img src={skillIconUrl('Hunter')} alt="" aria-hidden="true" /></div><div className="brand-copy"><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS Bestiary Compendium <span className="deployment-indicator" title={`GitHub deployment ${DEPLOYMENT_SHA}`}>{DEPLOYMENT_LABEL}</span></div></div></div>
+        <button type="button" className={`header-collection ${tab==='collection'?'active':''}`} onClick={()=>{setSkillsOpen(false);setTab('collection')}} aria-label="Open Bestiary Compendium" title="Open Bestiary Compendium">
           <div className="header-collection-label"><span>CREATURES RESEARCHED</span></div>
           <div className="header-collection-progress-row"><strong>{researchedCreatureCount} / {creatureCount}</strong><div className="header-collection-track"><div className="header-collection-fill" style={{width:`${creatureCount?Math.min(100,researchedCreatureCount/creatureCount*100):0}%`}}/></div></div>
         </button>

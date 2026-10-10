@@ -134,6 +134,16 @@ const melodies = {
     [784, 1047, 0.27, 0.32, 'sine', 0.045],
   ],
   click: [[620, 500, 0, 0.045, 'triangle', 0.02]],
+  // Tactile, compact rising click for adding a boss kill.
+  bossPlus: [
+    [440, 620, 0, 0.035, 'triangle', 0.035],
+    [880, 1046.5, 0.018, 0.065, 'sine', 0.027],
+  ],
+  // Lower descending thump for removing a boss kill.
+  bossDown: [
+    [330, 220, 0, 0.075, 'triangle', 0.04],
+    [165, 110, 0.025, 0.095, 'sine', 0.026],
+  ],
   // Quiet, airy UI hover cue for selectable reward rows and tabs.
   hover: [[1046.5, 880, 0, 0.035, 'sine', 0.009]],
   // Coin-like chime when opening the boss completion reward picker.

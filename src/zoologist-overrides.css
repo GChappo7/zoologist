@@ -4234,3 +4234,161 @@
   border-bottom: 0 !important;
 }
 
+
+
+/* First-time Zoologist journey: keep the map empty until the player is ready. */
+.app-shell.journey-intro-active .map-tile {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.journey-intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background: radial-gradient(ellipse at center, rgba(28, 39, 35, .72), rgba(4, 7, 8, .92));
+  backdrop-filter: blur(3px);
+}
+.journey-intro-dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(490px, 100%);
+  box-sizing: border-box;
+  padding: 34px 30px 30px;
+  border: 3px solid #786344;
+  outline: 1px solid #17130e;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.035), transparent 36%),
+    linear-gradient(180deg, #302b22 0%, #211e19 48%, #171613 100%);
+  box-shadow: 0 0 0 2px #100e0b, 0 18px 65px rgba(0,0,0,.8), inset 0 0 0 2px rgba(218,188,123,.12);
+  color: #e8d7ad;
+  text-align: center;
+  font-family: var(--font-runescape) !important;
+}
+.journey-intro-emblem {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  margin: 0 0 17px;
+  filter: drop-shadow(0 4px 5px rgba(0,0,0,.6));
+}
+.journey-intro-emblem img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  image-rendering: pixelated;
+}
+.journey-intro-emblem svg {
+  position: relative;
+  z-index: 1;
+  color: #f1d27e;
+  filter: drop-shadow(2px 2px 0 #17120a);
+}
+.journey-intro-dialog h1 {
+  margin: 0 0 13px;
+  color: #ffe08a;
+  font-size: clamp(25px, 5vw, 34px);
+  line-height: 1.2;
+  font-weight: 400;
+  text-shadow: 2px 2px 0 #17120b, 0 0 12px rgba(239,190,74,.12);
+}
+.journey-intro-dialog p {
+  max-width: 360px;
+  margin: 0 0 25px;
+  color: #c8bda4;
+  font-size: 17px;
+  line-height: 1.45;
+}
+.journey-intro-continue {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 176px;
+  min-height: 49px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff0b0;
+  font: inherit;
+  font-size: 19px;
+  cursor: pointer;
+  text-shadow: 2px 2px 0 #24190a;
+  transition: filter .12s ease, transform .12s ease;
+}
+.journey-intro-continue img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  image-rendering: pixelated;
+}
+.journey-intro-continue span {
+  position: relative;
+  z-index: 1;
+}
+.journey-intro-continue:hover {
+  filter: brightness(1.2);
+  transform: translateY(-1px);
+}
+.journey-intro-continue:active {
+  transform: translateY(1px);
+}
+.journey-intro-continue:focus-visible {
+  outline: 2px solid #ffe08a;
+  outline-offset: 4px;
+}
+.app-shell.journey-animating .map-tile.is-starter.is-starting-drop {
+  z-index: 30 !important;
+  transform-origin: center center;
+  animation: zoologist-starting-tile-drop 1.85s cubic-bezier(.2,.72,.28,1) both !important;
+  will-change: transform, opacity;
+}
+@keyframes zoologist-starting-tile-drop {
+  0% {
+    opacity: 0;
+    transform: perspective(900px) translate3d(0,-115vh,0) rotateX(78deg) rotateZ(-7deg) scale(.82);
+  }
+  46% {
+    opacity: 1;
+    transform: perspective(900px) translate3d(0,0,0) rotateX(-13deg) rotateZ(5deg) scale(1.04);
+  }
+  58% {
+    transform: perspective(900px) translate3d(0,-13px,0) rotateX(9deg) rotateZ(-4deg) scale(1.01);
+  }
+  70% {
+    transform: perspective(900px) translate3d(0,0,0) rotateX(-6deg) rotateZ(2.5deg) scale(1);
+  }
+  81% {
+    transform: perspective(900px) translate3d(0,-4px,0) rotateX(3deg) rotateZ(-1.2deg) scale(1);
+  }
+  91% {
+    transform: perspective(900px) translate3d(0,0,0) rotateX(-1.2deg) rotateZ(.4deg) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(900px) translate3d(0,0,0) rotateX(0deg) rotateZ(0deg) scale(1);
+  }
+}
+@media (max-width: 600px) {
+  .journey-intro-dialog {
+    padding: 28px 20px 24px;
+  }
+  .journey-intro-dialog p {
+    font-size: 15px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell.journey-animating .map-tile.is-starter.is-starting-drop {
+    animation-duration: .01ms !important;
+  }
+}

@@ -614,20 +614,27 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={}}){
     return new Set(quests.filter(q=>keys.has(String(q.id??'').trim().toLowerCase())||keys.has(String(q.name??'').trim().toLowerCase())).map(q=>String(q.id)))
   },[mapTiles])
 
+  const getQuestStatus=q=>{
+    const savedStatus=statuses[q.id]||'unrevealed'
+    if(savedStatus==='completed')return 'completed'
+    if(completableQuestIds.has(String(q.id)))return 'unlocked'
+    return savedStatus
+  }
+
   const counts=useMemo(()=>({
     all:quests.length,
-    revealed:quests.filter(q=>(statuses[q.id]||'unrevealed')==='revealed').length,
-    completed:quests.filter(q=>statuses[q.id]==='completed').length,
-    completable:completableQuestIds.size,
+    revealed:quests.filter(q=>getQuestStatus(q)==='revealed').length,
+    completed:quests.filter(q=>getQuestStatus(q)==='completed').length,
+    unlocked:quests.filter(q=>getQuestStatus(q)==='unlocked').length,
   }),[statuses,completableQuestIds])
 
   const filtered=useMemo(()=>quests.filter(q=>{
-    const status=statuses[q.id]||'unrevealed'
+    const status=getQuestStatus(q)
     const matchesFilter=
       filter==='all' ||
       (filter==='revealed'&&status==='revealed') ||
       (filter==='completed'&&status==='completed') ||
-      (filter==='completable'&&completableQuestIds.has(String(q.id)))
+      (filter==='unlocked'&&status==='unlocked')
     return matchesFilter&&q.name.toLowerCase().includes(search.toLowerCase())
   }),[statuses,filter,search,completableQuestIds])
 
@@ -660,9 +667,9 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={}}){
   ]]
 
   const cycleStatus=id=>setStatuses(s=>{
-    const current=s[id]||'unrevealed'
+    const current=(s[id]||'unrevealed')==='completed'?'completed':completableQuestIds.has(String(id))?'unlocked':(s[id]||'unrevealed')
     if(current==='unrevealed') return s
-    const nextStatus=current==='revealed'?'completed':'revealed'
+    const nextStatus=current==='completed'?'revealed':'completed'
     if(nextStatus==='completed')playSfx('complete')
     return {...s,[id]:nextStatus}
   })
@@ -670,6 +677,7 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={}}){
   const statusLabel={
     unrevealed:'Not revealed',
     revealed:'Revealed',
+    unlocked:'Unlocked',
     completed:'Complete'
   }
 
@@ -689,7 +697,7 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={}}){
           {[
             ['all','All',counts.all],
             ['revealed','Revealed',counts.revealed],
-            ['completable','Completeable',counts.completable],
+            ['unlocked','Unlocked',counts.unlocked],
             ['completed','Completed',counts.completed],
           ].map(([id,label,count])=>
             <button type="button" key={id} className={filter===id?'active':''} onClick={()=>setFilter(id)}>
@@ -709,7 +717,7 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={}}){
             <section key={difficulty}>
               <h3><span>{difficulty}</span><i>{rows.length}</i></h3>
               {rows.map(q=>{
-                const status=statuses[q.id]||'unrevealed'
+                const status=getQuestStatus(q)
                 return <button
                   type="button"
                   key={q.id}

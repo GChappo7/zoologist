@@ -4427,13 +4427,13 @@
   width: 22px;
 }
 .full-tab-page.boss-page::-webkit-scrollbar-track {
-  background: #5d574c url("./assets/ui/scroll/792_0%20scrollBack.png") center top / 100% auto repeat-y;
+  background: #5d574c url("/zoologist/assets/ui/scroll/792_0%20scrollBack.png") center top / 100% auto repeat-y;
 }
 .full-tab-page.boss-page::-webkit-scrollbar-thumb {
   min-height: 28px;
   border: 0;
   border-radius: 0;
-  background: #8b806a url("./assets/ui/scroll/790_0%20scrollMiddle.png") center top / 100% auto repeat-y;
+  background: #8b806a url("/zoologist/assets/ui/scroll/790_0%20scrollMiddle.png") center top / 100% auto repeat-y;
 }
 .full-tab-page.boss-page::-webkit-scrollbar-button:single-button {
   display: block;
@@ -4445,8 +4445,8 @@
   background-size: 22px 22px;
 }
 .full-tab-page.boss-page::-webkit-scrollbar-button:single-button:vertical:decrement {
-  background-image: url("./assets/ui/scroll/773_0%20scrollUpArrow.png");
+  background-image: url("/zoologist/assets/ui/scroll/773_0%20scrollUpArrow.png");
 }
 .full-tab-page.boss-page::-webkit-scrollbar-button:single-button:vertical:increment {
-  background-image: url("./assets/ui/scroll/788_0%20scrollDownArrow.png");
+  background-image: url("/zoologist/assets/ui/scroll/788_0%20scrollDownArrow.png");
 }

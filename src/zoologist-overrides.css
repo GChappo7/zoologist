@@ -4347,6 +4347,24 @@
   outline: 2px solid #ffe08a;
   outline-offset: 4px;
 }
+/* Make the very first face-down card feel like a special, welcoming discovery. */
+.map-tile.is-starter.is-face-down .map-card-back > img {
+  filter: brightness(1.42) saturate(1.38) contrast(1.04);
+}
+.map-tile.is-starter.is-face-down .map-card-back {
+  box-shadow: inset 0 0 0 2px rgba(255, 220, 133, .9), inset 0 0 18px rgba(255, 197, 74, .42);
+}
+.map-tile.is-starter.is-face-down .map-card-back::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 35%, rgba(255, 228, 151, .22), rgba(255, 190, 65, .08) 54%, transparent 78%);
+  box-shadow: inset 0 0 0 1px rgba(255, 242, 190, .42);
+}
+.app-shell.journey-animating .map-tile.is-starter.is-starting-drop {
+  filter: drop-shadow(0 0 13px rgba(255, 201, 89, .65)) brightness(1.12);
+}
 .app-shell.journey-animating .map-tile.is-starter.is-starting-drop {
   z-index: 30 !important;
   transform-origin: center center;

@@ -537,7 +537,7 @@ function SkillsDropdown({open,onClose,skillProgress,anchorRef}) {
       </div>
   </ProgressionDropdown>
 }
-function QuestsView({initialStatuses={},onStatusesChange}){
+function QuestsView({initialStatuses={},onStatusesChange,mapTiles={}}){
   const [filter,setFilter]=useState('all')
   const [statuses,setStatuses]=useState(initialStatuses||{})
   const [search,setSearch]=useState('')
@@ -602,12 +602,24 @@ function QuestsView({initialStatuses={},onStatusesChange}){
 
   const endQuestScrollbarDrag=()=>{ questDragRef.current=null }
 
+  const completableQuestIds=useMemo(()=>{
+    const keys=new Set()
+    Object.values(mapTiles||{}).filter(tile=>tile?.completed&&String(tile?.reward?.type??'').toLowerCase()==='quest').forEach(tile=>{
+      const reward=tile.reward||{}
+      ;[reward.questId,reward.label,reward.name,reward.id].forEach(value=>{
+        const key=String(value??'').trim().toLowerCase()
+        if(key)keys.add(key)
+      })
+    })
+    return new Set(quests.filter(q=>keys.has(String(q.id??'').trim().toLowerCase())||keys.has(String(q.name??'').trim().toLowerCase())).map(q=>String(q.id)))
+  },[mapTiles])
+
   const counts=useMemo(()=>({
     all:quests.length,
     revealed:quests.filter(q=>(statuses[q.id]||'unrevealed')==='revealed').length,
     completed:quests.filter(q=>statuses[q.id]==='completed').length,
-    inProgress:0,
-  }),[statuses])
+    completable:completableQuestIds.size,
+  }),[statuses,completableQuestIds])
 
   const filtered=useMemo(()=>quests.filter(q=>{
     const status=statuses[q.id]||'unrevealed'
@@ -615,9 +627,9 @@ function QuestsView({initialStatuses={},onStatusesChange}){
       filter==='all' ||
       (filter==='revealed'&&status==='revealed') ||
       (filter==='completed'&&status==='completed') ||
-      (filter==='in_progress'&&status==='in_progress')
+      (filter==='completable'&&completableQuestIds.has(String(q.id)))
     return matchesFilter&&q.name.toLowerCase().includes(search.toLowerCase())
-  }),[statuses,filter,search])
+  }),[statuses,filter,search,completableQuestIds])
 
   useEffect(()=>{
     const list=questListRef.current
@@ -677,6 +689,7 @@ function QuestsView({initialStatuses={},onStatusesChange}){
           {[
             ['all','All',counts.all],
             ['revealed','Revealed',counts.revealed],
+            ['completable','Completeable',counts.completable],
             ['completed','Completed',counts.completed],
           ].map(([id,label,count])=>
             <button type="button" key={id} className={filter===id?'active':''} onClick={()=>setFilter(id)}>
@@ -2176,7 +2189,7 @@ function App(){
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText,ref:questsButtonRef},
     {id:'diaries',label:'Diaries',icon:BookOpen,ref:diariesButtonRef},{id:'bosses',label:'Bosses',icon:Skull}
   ]
-  const questView=<ProgressionDropdown open={tab==='quests'} onClose={()=>setTab('map')} anchorRef={questsButtonRef} ariaLabel="Quests" className="quest-header-dropdown"><QuestsView initialStatuses={questStatuses} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/></ProgressionDropdown>
+  const questView=<ProgressionDropdown open={tab==='quests'} onClose={()=>setTab('map')} anchorRef={questsButtonRef} ariaLabel="Quests" className="quest-header-dropdown"><QuestsView initialStatuses={questStatuses} mapTiles={gameState.mapTiles} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/></ProgressionDropdown>
   const diaryView=<ProgressionDropdown open={tab==='diaries'} onClose={()=>setTab('map')} anchorRef={diariesButtonRef} ariaLabel="Achievement Diaries" className="diary-header-dropdown"><DiariesView statuses={diaryStatuses} onStatusClick={handleDiaryStatusClick}/></ProgressionDropdown>
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>

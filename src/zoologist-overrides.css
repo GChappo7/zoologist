@@ -2163,7 +2163,8 @@
   padding: 6px !important;
   gap: 6px !important;
   background: #5d574c !important;
-  border-bottom: 2px solid #3d3831 !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
 }
 
 .quest-header-dropdown .quest-filters button {

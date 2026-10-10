@@ -1698,9 +1698,12 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   },[centreTileX,centreTileY,tiles,knownTiles,fogVisible])
   const exploredCount=knownTiles.filter(t=>t.state==='explored').length,frontierCount=knownTiles.filter(t=>t.state==='frontier').length,creatureCount=creatures.length
   useEffect(()=>{onProgressChange?.({explored:exploredCount,revealed:frontierCount})},[exploredCount,frontierCount,onProgressChange])
+  const selectedTileRef=useRef(selectedTile)
+  selectedTileRef.current=selectedTile
   const openTile=useCallback(tile=>{
     if(!tile?.creatureId)return
-    if(selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y){
+    const currentSelected=selectedTileRef.current
+    if(currentSelected&&currentSelected.x===tile.x&&currentSelected.y===tile.y){
       playSfx('reward')
       setClosingPopupTileKey(keyFor(tile.x,tile.y))
       window.setTimeout(()=>{
@@ -1711,7 +1714,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     }
     setSelectedTile(tile)
     setPanelOpen(false)
-  },[selectedTile])
+  },[])
   const handleReveal=useCallback(tile=>{
     if(!tile?.faceDown)return
     // Trigger audio from the reveal action itself, avoiding map pointer-capture

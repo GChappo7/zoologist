@@ -4533,3 +4533,36 @@ body::-webkit-scrollbar {
   width: 0 !important;
   height: 0 !important;
 }
+
+
+/* High-contrast cloud-save status, fixed in the top-right so it stays visible while playing. */
+.cloud-save-indicator {
+  position: fixed;
+  top: 76px;
+  right: 12px;
+  z-index: 12000;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100vw - 24px);
+  padding: 8px 12px;
+  border: 1px solid #a98a4b;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #29251d, #171612);
+  color: #f5e7bd;
+  box-shadow: 0 3px 12px rgba(0,0,0,.72), inset 0 1px rgba(255,255,255,.08);
+  font-family: var(--font-runescape, Georgia, serif);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .035em;
+  line-height: 1.2;
+  text-shadow: 1px 1px #000;
+  pointer-events: none;
+}
+.cloud-save-indicator-dot { display: block; width: 9px; height: 9px; flex: 0 0 9px; border-radius: 50%; background: #c6a24e; box-shadow: 0 0 5px currentColor; }
+.cloud-save-connected .cloud-save-indicator-dot { background: #55d477; color: #55d477; }
+.cloud-save-saving .cloud-save-indicator-dot, .cloud-save-loading .cloud-save-indicator-dot { background: #e9c65d; color: #e9c65d; }
+.cloud-save-error { border-color: #d05b50; color: #ffd2cc; background: linear-gradient(180deg, #421e1a, #24110f); }
+.cloud-save-error .cloud-save-indicator-dot { background: #ff5f50; color: #ff5f50; }
+.cloud-save-disconnected .cloud-save-indicator-dot { background: #a6a6a6; color: #a6a6a6; }
+@media (max-width: 600px) { .cloud-save-indicator { top: 66px; right: 7px; padding: 6px 8px; gap: 6px; font-size: 11px; } }

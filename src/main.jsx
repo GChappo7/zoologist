@@ -845,7 +845,7 @@ function CollectionLog({creatures,mapTiles,onBack}){
   return <div className="collection-log-page">
     <div className="collection-log-shell">
       <div className="collection-log-header">
-        <button type="button" className="collection-back-button" onClick={onBack} aria-label="Back to map"><ChevronLeft size={22}/><span>Map</span><img className="collection-back-map-icon" src="https://oldschool.runescape.wiki/images/World_map_icon.png" alt="" aria-hidden="true" draggable="false"/></button>
+        <button type="button" className="collection-back-button" onClick={onBack} aria-label="Back to map"><ChevronLeft size={22}/><img className="collection-back-map-icon" src="https://oldschool.runescape.wiki/images/World_map_icon.png" alt="" aria-hidden="true" draggable="false"/><span>Map</span></button>
         <div className="collection-log-title">
           <div className="collection-log-icon"><img src={skillIconUrl('Hunter')} alt="" aria-hidden="true" draggable="false"/></div>
           <div className="collection-log-title-copy"><div className="collection-log-title-line"><strong>Bestiary Compendium</strong><span className="collection-log-inline-stat"><b>{counts.complete}</b> complete</span></div><span>{counts.recorded} / {counts.all} recorded</span></div>

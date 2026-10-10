@@ -857,7 +857,7 @@ function CollectionLog({creatures,mapTiles,onBack}){
         <div className="collection-log-progress-track"><div className="collection-log-progress-fill" style={{width:`${counts.all?Math.min(100,counts.recorded/counts.all*100):0}%`}}/></div>
       </div>
       <div className="collection-log-controls">
-        <div className="collection-filters">{filters.map(([id,label,count])=><button type="button" key={id} className={filter===id?'active':''} onClick={()=>setFilter(id)}>{label} <span>{count}</span></button>)}</div>
+        <div className="collection-filters" style={{'--box-left': `url("${import.meta.env.BASE_URL}assets/ui/box/1229_0%20leftSectionBox.png")`, '--box-mid': `url("${import.meta.env.BASE_URL}assets/ui/box/1230_0%20midSectionBox.png")`, '--box-right': `url("${import.meta.env.BASE_URL}assets/ui/box/1231_0%20rightSectionBox.png")`}}>{filters.map(([id,label,count])=><button type="button" key={id} className={filter===id?'active':''} onClick={()=>setFilter(id)}>{label} <span>{count}</span></button>)}</div>
         <label className="collection-search"><Search size={14}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search creatures"/></label>
       </div>
       <div className="collection-scroll-body">

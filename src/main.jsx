@@ -1931,6 +1931,7 @@ function App(){
 
         if(active && loadGeneration===accountLoadGenerationRef.current){
           setGameState(next)
+          setJourneyStage(next.journeyStarted||Object.keys(next.mapTiles||{}).length?'started':'intro')
           setSkillProgress(normalizeSkillProgress(next.skillProgress||{}))
           setRewardAssignments(next.rewardAssignments||null)
           setQuestStatuses(next.questStatuses||{})
@@ -2088,6 +2089,7 @@ function App(){
 
       setResetStatus({step:6,status:'active',message:'Starting your new Zoologist world…'})
       setGameState(freshState)
+      setJourneyStage('intro')
       setSkillProgress(normalizeSkillProgress({}))
       setRewardAssignments(null)
       setQuestStatuses({})
@@ -2205,7 +2207,7 @@ function App(){
     }
   }
 
-  if(!creatures.length)return <div className={`app-shell ${journeyStage==='intro'?'journey-intro-active':''} ${journeyStage==='animating'?'journey-animating':''}`}><div className="full-tab-page"><h1>Creature data could not be loaded</h1><p>Check data/creatures.csv.</p></div></div>
+  if(!creatures.length)return <div className="app-shell"><div className="full-tab-page"><h1>Creature data could not be loaded</h1><p>Check data/creatures.csv.</p></div></div>
   if(!accountReady)return <div className="app-shell"><div className="account-loading"><div className="account-loading-spinner"/>Loading Zoologist…</div></div>
 
   // Authentication is a hard gate: logged-out users never receive the map,
@@ -2286,7 +2288,7 @@ function App(){
     setSkillsOpen(false)
     setTab(id)
   }
-  return <div className="app-shell">
+  return <div className={`app-shell ${journeyStage==='intro'?'journey-intro-active':''} ${journeyStage==='animating'?'journey-animating':''}`}>
     <header className="topbar">
       <div className="header-left">
       <div className="brand-block"><div className="brand-mark"><img src={skillIconUrl('Hunter')} alt="" aria-hidden="true" /></div><div className="brand-copy"><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS Bestiary Compendium <span className="deployment-indicator" title={`GitHub deployment ${DEPLOYMENT_SHA}`}>{DEPLOYMENT_LABEL}</span></div></div></div>
@@ -2302,7 +2304,7 @@ function App(){
       </div>   </header>
     <main className="app-main"><SkillsDropdown open={skillsOpen&&tab==='map'} onClose={()=>setSkillsOpen(false)} skillProgress={skillProgress} anchorRef={skillsButtonRef}/>{page}{questView}{diaryView}</main>
     <footer className="footer"><span>ZOOLOGIST • {cloudSaveStatus==='saving'?'SAVING…':cloudSaveStatus==='error'?'CLOUD SAVE ERROR':cloudSaveStatus==='connected'?'CLOUD SAVE CONNECTED':'CONNECTING…'}</span><span>{creatureCount} Active creatures • Graduated cloud fog • Progression framework</span></footer>
-    {journeyStage==='intro'&&<div className="journey-intro-overlay" role="presentation"><div className="journey-intro-dialog" role="dialog" aria-modal="true" aria-labelledby="journey-intro-title"><div className="journey-intro-emblem"><img src={`${import.meta.env.BASE_URL}assets/ui/skills/Blank%20skill.png`} alt="" aria-hidden="true" draggable="false"/><span>🐾</span></div><h1 id="journey-intro-title">Are you ready to begin your Zoologist Journey?</h1><p>Your expedition begins with a single creature. Reveal your first tile to start your research.</p><button type="button" className="journey-intro-continue" onMouseEnter={()=>playSfx('click')} onFocus={()=>playSfx('click')} onClick={()=>{playSfx('complete');updateGameState({journeyStarted:true});setJourneyStage('animating')}}><img src={`${import.meta.env.BASE_URL}assets/ui/box/818_0%20Blue%20Button.png`} alt="" aria-hidden="true" draggable="false"/><span>CONTINUE</span></button></div></div>}
+    {journeyStage==='intro'&&<div className="journey-intro-overlay" role="presentation"><div className="journey-intro-dialog" role="dialog" aria-modal="true" aria-labelledby="journey-intro-title"><div className="journey-intro-emblem"><img src={`${import.meta.env.BASE_URL}assets/ui/skills/Blank%20skill.png`} alt="" aria-hidden="true" draggable="false"/><PawPrint size={38}/></div><h1 id="journey-intro-title">Are you ready to begin your Zoologist Journey?</h1><p>Your expedition begins with a single creature. Reveal your first tile to start your research.</p><button type="button" className="journey-intro-continue" onMouseEnter={()=>playSfx('click')} onFocus={()=>playSfx('click')} onClick={()=>{playSfx('complete');updateGameState({journeyStarted:true});setJourneyStage('animating')}}><img src={`${import.meta.env.BASE_URL}assets/ui/box/818_0%20Blue%20Button.png`} alt="" aria-hidden="true" draggable="false"/><span>CONTINUE</span></button></div></div>}
     {diaryReveal&&<div className={`diary-reveal-overlay diary-reveal-${String(diaryReveal.tier||'easy').toLowerCase()}`} role="presentation">
       <div className="diary-reveal-dialog" role="dialog" aria-modal="true" aria-labelledby="diary-reveal-title">
         <div className="diary-reveal-glow" aria-hidden="true"/>

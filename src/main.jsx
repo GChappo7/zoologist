@@ -537,7 +537,7 @@ function SkillsDropdown({open,onClose,skillProgress,anchorRef}) {
       </div>
   </ProgressionDropdown>
 }
-function QuestsView({initialStatuses={},onStatusesChange,mapTiles={}}){
+function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[],onCreatureClick}){
   const [filter,setFilter]=useState('all')
   const [statuses,setStatuses]=useState(initialStatuses||{})
   const [search,setSearch]=useState('')
@@ -723,17 +723,24 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={}}){
               <h3><span>{difficulty}</span><i>{rows.length}</i></h3>
               {rows.map(q=>{
                 const status=getQuestStatus(q)
-                return <button
-                  type="button"
-                  key={q.id}
-                  className={`quest-row quest-${status}`}
-                  onClick={()=>['unlocked','completed'].includes(status)&&cycleStatus(q.id)}
-                  aria-label={status==='unrevealed'?`${q.name}, quest not revealed`:`${q.name}, ${statusLabel[status]}`}
-                >
+                const questKeys=new Set([q.id,q.name].map(value=>String(value??'').trim().toLowerCase()).filter(Boolean))
+                const linkedTile=Object.values(mapTiles||{}).find(tile=>{
+                  if(!tile?.creatureId)return false
+                  const reward=tile.reward||{}
+                  if(String(reward.type??'').toLowerCase()!=='quest')return false
+                  return [reward.questId,reward.label,reward.name,reward.id].some(value=>questKeys.has(String(value??'').trim().toLowerCase()))
+                })
+                const linkedCreature=linkedTile?creatures.find(creature=>String(creature.id)===String(linkedTile.creatureId)):null
+                const canNavigate=Boolean(linkedCreature&&['revealed','unlocked'].includes(status))
+                const canToggle=['unlocked','completed'].includes(status)
+                return <div key={q.id} className={`quest-row quest-${status}`} role="group" aria-label={status==='unrevealed'?`${q.name}, quest not revealed`:`${q.name}, ${statusLabel[status]}`}>
                   <span className="quest-status-dot" aria-hidden="true"/>
-                  <span className="quest-name">{q.name}</span>
-                  <span className="quest-status-label">{statusLabel[status]}</span>
-                </button>
+                  <button type="button" className="quest-row-main" disabled={!canToggle} onClick={()=>cycleStatus(q.id)} aria-label={`Update status for ${q.name}`}>
+                    <span className="quest-name">{q.name}</span>
+                    <span className="quest-status-label">{statusLabel[status]}</span>
+                  </button>
+                  {canNavigate&&<button type="button" className="quest-creature-shortcut" title={`Go to ${linkedCreature.name} tile`} aria-label={`Go to ${linkedCreature.name} tile for ${q.name}`} onClick={()=>onCreatureClick?.(linkedCreature.id)}><CreatureGlyph creature={linkedCreature} size="tile"/></button>}
+                </div>
               })}
             </section>
           )}
@@ -2203,7 +2210,7 @@ function App(){
     {id:'map',label:'Map',icon:LayoutGrid},{id:'skills',label:'Skills',icon:Gem},{id:'quests',label:'Quests',icon:ScrollText,ref:questsButtonRef},
     {id:'diaries',label:'Diaries',icon:BookOpen,ref:diariesButtonRef},{id:'bosses',label:'Bosses',icon:Skull}
   ]
-  const questView=<ProgressionDropdown open={tab==='quests'} onClose={()=>setTab('map')} anchorRef={questsButtonRef} ariaLabel="Quests" className="quest-header-dropdown"><QuestsView initialStatuses={questStatuses} mapTiles={gameState.mapTiles} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/></ProgressionDropdown>
+  const questView=<ProgressionDropdown open={tab==='quests'} onClose={()=>setTab('map')} anchorRef={questsButtonRef} ariaLabel="Quests" className="quest-header-dropdown"><QuestsView initialStatuses={questStatuses} mapTiles={gameState.mapTiles} creatures={creatures} onCreatureClick={creatureId=>{setFocusCreatureId(String(creatureId));setSkillsOpen(false);setTab('map')}} onStatusesChange={statuses=>{setQuestStatuses(statuses);updateGameState({questStatuses:statuses})}}/></ProgressionDropdown>
   const diaryView=<ProgressionDropdown open={tab==='diaries'} onClose={()=>setTab('map')} anchorRef={diariesButtonRef} ariaLabel="Achievement Diaries" className="diary-header-dropdown"><DiariesView statuses={diaryStatuses} onStatusClick={handleDiaryStatusClick}/></ProgressionDropdown>
   const page=tab==='collection'
     ?<CollectionLog creatures={creatures} mapTiles={gameState.mapTiles} onBack={()=>setTab('map')}/>

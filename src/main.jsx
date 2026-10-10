@@ -2186,7 +2186,7 @@ function App(){
   return <div className="app-shell">
     <header className="topbar">
       <div className="header-left">
-      <div className="brand-block"><div className="brand-mark"><img src={skillIconUrl('Hunter')} alt="" aria-hidden="true" /></div><div><div className="brand-name">Zoologist <span className="deployment-indicator" title={`GitHub deployment ${DEPLOYMENT_SHA}`}>{DEPLOYMENT_LABEL}</span></div><div className="brand-subtitle">OSRS creature exploration</div></div></div>
+      <div className="brand-block"><div className="brand-mark"><img src={skillIconUrl('Hunter')} alt="" aria-hidden="true" /></div><div className="brand-copy"><div className="brand-name">Zoologist</div><div className="brand-subtitle">OSRS creature exploration <span className="deployment-indicator" title={`GitHub deployment ${DEPLOYMENT_SHA}`}>{DEPLOYMENT_LABEL}</span></div></div></div>
         <button type="button" className={`header-collection ${tab==='collection'?'active':''}`} onClick={()=>{setSkillsOpen(false);setTab('collection')}} aria-label="Open creature collection" title="Open Creature Collection">
           <div className="header-collection-label"><span>CREATURES RESEARCHED</span></div>
           <div className="header-collection-progress-row"><strong>{researchedCreatureCount} / {creatureCount}</strong><div className="header-collection-track"><div className="header-collection-fill" style={{width:`${creatureCount?Math.min(100,researchedCreatureCount/creatureCount*100):0}%`}}/></div></div>

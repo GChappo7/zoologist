@@ -1812,6 +1812,17 @@
   cursor: pointer !important;
 }
 .quest-creature-shortcut:hover { border-color: #e1c56d !important; background: rgba(95,78,35,.65) !important; }
+.quest-boss-shortcut .quest-boss-pixel-art {
+  display: block !important;
+  width: 19px !important;
+  height: 19px !important;
+  max-width: 19px !important;
+  max-height: 19px !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  image-rendering: pixelated !important;
+  flex: 0 0 19px !important;
+}
 .quest-creature-shortcut .creature-glyph-tile {
   position: relative !important;
   inset: auto !important;

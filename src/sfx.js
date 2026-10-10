@@ -133,6 +133,17 @@ const melodies = {
     [659, 659, 0.18, 0.13, 'triangle', 0.04],
     [784, 1047, 0.27, 0.32, 'sine', 0.045],
   ],
+  // A descending airy/low tone as the starter card drops into view.
+  tileDrop: [
+    [260, 105, 0, 0.42, 'triangle', 0.045],
+    [130, 72, 0.08, 0.34, 'sine', 0.035],
+  ],
+  // A soft, weighty card-table thump with a tiny wooden tick on landing.
+  tileLand: [
+    [118, 48, 0, 0.17, 'triangle', 0.075],
+    [235, 105, 0.018, 0.12, 'sine', 0.045],
+    [520, 290, 0.035, 0.055, 'triangle', 0.018],
+  ],
   click: [[620, 500, 0, 0.045, 'triangle', 0.02]],
   // Tactile, compact rising click for adding a boss kill.
   bossPlus: [

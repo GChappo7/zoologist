@@ -1388,18 +1388,6 @@
 .map-tile.is-completed:hover { background: #0d151a !important; }
 
 
-/* Reward popups use absolutely positioned artwork/content, so give the frame an explicit aspect ratio.
-   Without a real height the popup can collapse in production and its completion circle is positioned off-screen. */
-.tile-popup {
-  aspect-ratio: 2 / 1 !important;
-  height: auto !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-  box-sizing: border-box !important;
-}
-
 /* Larger reward popups: overlap the selected tile more. Use a true alpha-shaped shadow, not a rectangular box shadow. */
 .tile-popup {
   width: min(600px, calc(100% - 20px)) !important;

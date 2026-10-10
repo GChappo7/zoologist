@@ -3993,3 +3993,26 @@
   image-rendering: pixelated;
   pointer-events: none;
 }
+
+
+/* Render the completion circle as a real image element rather than a CSS background,
+   so GitHub Pages resolves the space-containing PNG path consistently. */
+.tile-popup .tile-popup-complete {
+  background-image: none !important;
+}
+.tile-popup .tile-popup-complete .tile-popup-complete-circle {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: fill !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  image-rendering: auto;
+}

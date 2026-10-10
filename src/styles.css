@@ -870,4 +870,4 @@ h1 { margin: 7px 0 3px; font-size: 26px; letter-spacing: -.03em; line-height: 1.
 
 
 /* Use the OSRS Hunter skill icon in the existing Zoologist brand badge. */
-.brand-mark img { width: 23px; height: 23px; object-fit: contain; transform: rotate(15deg); image-rendering: pixelated; }
+.brand-mark img { width: 26px; height: 26px; object-fit: contain; transform: rotate(28deg); image-rendering: pixelated; }

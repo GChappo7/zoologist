@@ -1734,7 +1734,7 @@
   min-height: 27px !important;
   box-sizing: border-box !important;
   display: grid !important;
-  grid-template-columns: 9px minmax(0,1fr) auto !important;
+  grid-template-columns: 9px minmax(0,1fr) 23px !important;
   gap: 7px !important;
   align-items: center !important;
   padding: 3px 7px !important;
@@ -1749,6 +1749,39 @@
 .quest-row:hover {
   background: rgba(255,255,255,.055) !important;
 }
+.quest-row-main {
+  min-width: 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 7px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: inherit !important;
+  text-align: left !important;
+  font: inherit !important;
+  text-shadow: inherit !important;
+  cursor: pointer !important;
+}
+.quest-row-main:disabled { cursor: default !important; }
+.quest-creature-shortcut {
+  width: 23px !important;
+  height: 23px !important;
+  flex: 0 0 23px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1px !important;
+  border: 1px solid rgba(203,177,104,.55) !important;
+  border-radius: 3px !important;
+  background: rgba(14,18,18,.85) !important;
+  cursor: pointer !important;
+}
+.quest-creature-shortcut:hover { border-color: #e1c56d !important; background: rgba(95,78,35,.65) !important; }
+.quest-creature-shortcut .creature-glyph-tile { width: 19px !important; height: 19px !important; margin: 0 !important; }
+.quest-creature-shortcut .creature-image { max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; }
 .quest-status-dot {
   width: 6px !important;
   height: 6px !important;

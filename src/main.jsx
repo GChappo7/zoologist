@@ -1160,25 +1160,37 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
     const creature=creatures.find(item=>String(item.id)===String(tile?.creatureId))
     if(!tile||!creature)return null
 
-    const usedKeys=new Set(Object.values(rewardAssignments||{}).map(reward=>String(reward?.id??reward?.questId??reward?.label??reward?.name??'').toLowerCase()).filter(Boolean))
-    const selectedKey=String(selectedReward?.id??selectedReward?.questId??selectedReward?.label??selectedReward?.name??'').toLowerCase()
-    usedKeys.delete(selectedKey)
-
-    const isUsed=(reward)=>{
-      const key=String(reward?.id??reward?.questId??reward?.label??reward?.name??'').toLowerCase()
-      return !key||usedKeys.has(key)
+    const rewardKeys=(reward)=>{
+      const values=[reward?.id,reward?.questId,reward?.label,reward?.name]
+        .map(value=>String(value??'').trim().toLowerCase()).filter(Boolean)
+      if(String(reward?.type).toLowerCase()==='quest'){
+        const record=quests.find(item=>values.includes(String(item.id??'').trim().toLowerCase())||values.includes(String(item.name??'').trim().toLowerCase()))
+        if(record)values.push(String(record.id).trim().toLowerCase(),String(record.name).trim().toLowerCase())
+      }
+      return values
     }
+    // Consider both the assignment table and the rewards currently displayed on
+    // map tiles. These can temporarily differ while a boss reward is being claimed.
+    // Never free the selected quest: it has just been claimed and must not be recycled.
+    const usedKeys=new Set([
+      ...Object.values(rewardAssignments||{}),
+      ...Object.values(mapTiles||{}).map(tile=>tile?.reward).filter(Boolean)
+    ].flatMap(rewardKeys))
+    const isUsed=(reward)=>rewardKeys(reward).some(key=>usedKeys.has(key))
     const isEligible=(reward)=>{
       if(!reward||isUsed(reward))return false
       if(String(reward.type).toLowerCase()==='skill')return isValidSkillRewardAssignment(creature,reward)
       if(String(reward.type).toLowerCase()==='quest'){
         if(!isValidQuestRewardAssignment(creature,reward))return false
         const required=new Set((creature.requiredQuests??[]).map(q=>String(q).trim().toLowerCase()))
-        const questKey=String(reward.questId??reward.label??reward.name??'').trim().toLowerCase()
-        if(required.has(questKey))return false
-        const questRecord=quests.find(item=>[item.id,item.name].some(value=>String(value??'').trim().toLowerCase()===String(reward.questId??'').trim().toLowerCase()||String(value??'').trim().toLowerCase()===String(reward.label??'').trim().toLowerCase()))
-        if(questStatuses?.[String(reward.questId??'')]==='completed'||(questRecord&&questStatuses?.[String(questRecord.id)]==='completed'))return false
-        return !Object.values(rewardAssignments||{}).some(value=>String(value?.type).toLowerCase()==='quest'&&String(value?.questId??value?.label??value?.name??'').trim().toLowerCase()===questKey)
+        const questKeys=new Set(rewardKeys(reward))
+        if([...required].some(key=>questKeys.has(key)))return false
+        const questRecord=quests.find(item=>questKeys.has(String(item.id??'').trim().toLowerCase())||questKeys.has(String(item.name??'').trim().toLowerCase()))
+        const status=questRecord?questStatuses?.[String(questRecord.id)]:questStatuses?.[String(reward.questId??'')]
+        // Once a quest is revealed/unlocked or completed, it is no longer
+        // eligible to be assigned as a fresh reward.
+        if(['revealed','unlocked','completed'].includes(status))return false
+        return true
       }
       if(String(reward.type).toLowerCase()==='diary')return false
       return false

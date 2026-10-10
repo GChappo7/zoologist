@@ -1525,6 +1525,10 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     // any completed scorpion tile rather than a single named creature ID.
     const target=matchingTiles.find(tile=>tile?.completed)??matchingTiles[0]
     if(!target)return
+    // Reset both the rendered zoom and the wheel accumulator when jumping to a tile.
+    // Otherwise the next wheel event can use the pre-jump zoom value and feel offset.
+    zoomRef.current=1
+    wheelTargetZoomRef.current=1
     setZoom(1)
     setPan({x:-target.x*TILE_STEP,y:-target.y*TILE_STEP})
     setSelectedTile(target)

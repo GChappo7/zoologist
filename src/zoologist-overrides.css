@@ -1105,6 +1105,12 @@
   background:#1d1b15;
   color:#d5aa63;
 }
+.collection-log-icon img {
+  width:26px;
+  height:26px;
+  object-fit:contain;
+  image-rendering:pixelated;
+}
 .collection-log-title > div:last-child {
   display:flex;
   flex-direction:column;

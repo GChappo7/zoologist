@@ -2258,7 +2258,7 @@ function App(){
       onCreatureCompleted={handleCreatureCompleted}
       diaryStatuses={diaryStatuses}
       initialTiles={gameState.mapTiles}
-      onTilesChange={resetInProgress?undefined:mapTiles=>updateGameState({mapTiles})}
+      onTilesChange={resetInProgress||journeyStage==='intro'?undefined:mapTiles=>updateGameState({mapTiles})}
       rewardAssignments={rewardAssignments}
       bossProgress={bossProgress}
       bossRewards={bossRewards}

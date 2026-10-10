@@ -672,8 +672,10 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[
 
   const cycleStatus=id=>setStatuses(s=>{
     const savedStatus=s[id]||'unrevealed'
-    const isUnlocked=completableQuestIds.has(String(id))
-    // A revealed quest cannot be completed until its reward tile is completed.
+    // Quests unlocked by claiming a boss reward are completable even though
+    // they do not have a completed map tile reward associated with them.
+    const isUnlocked=savedStatus==='unlocked'||completableQuestIds.has(String(id))
+    // A merely revealed quest cannot be completed until its reward is unlocked.
     if(savedStatus!=='completed'&&!isUnlocked) return s
     const nextStatus=savedStatus==='completed'?(isUnlocked?'unlocked':'revealed'):'completed'
     if(nextStatus==='completed')playSfx('complete')
@@ -741,7 +743,7 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[
                     <span className="quest-name">{q.name}</span>
                     <span className="quest-status-label">{statusLabel[status]}</span>
                   </button>
-                  {canNavigate&&(linkedBossId?<button type="button" className="quest-creature-shortcut quest-boss-shortcut" title={`Go to ${bossSystem.tasks.find(boss=>boss.id===linkedBossId)?.name||'associated boss'}`} aria-label={`Go to associated boss for ${q.name}`} onClick={()=>onBossClick?.(linkedBossId)}><BossPixelImage boss={bossSystem.tasks.find(boss=>boss.id===linkedBossId)||{id:linkedBossId}}/></button>:linkedCreature&&<button type="button" className="quest-creature-shortcut" title={`Go to ${linkedCreature.name} tile`} aria-label={`Go to ${linkedCreature.name} tile for ${q.name}`} onClick={()=>onCreatureClick?.(linkedCreature.id)}><CreatureGlyph creature={linkedCreature} size="tile"/></button>)}
+                  {canNavigate&&(linkedBossId?<button type="button" className="quest-creature-shortcut quest-boss-shortcut" title={`Go to ${bossSystem.tasks.find(boss=>boss.id===linkedBossId)?.name||'associated boss'}`} aria-label={`Go to associated boss for ${q.name}`} onClick={()=>onBossClick?.(linkedBossId)}><BossPixelImage className="quest-boss-pixel-art" boss={bossSystem.tasks.find(boss=>boss.id===linkedBossId)||{id:linkedBossId}}/></button>:linkedCreature&&<button type="button" className="quest-creature-shortcut" title={`Go to ${linkedCreature.name} tile`} aria-label={`Go to ${linkedCreature.name} tile for ${q.name}`} onClick={()=>onCreatureClick?.(linkedCreature.id)}><CreatureGlyph creature={linkedCreature} size="tile"/></button>)}
                 </div>
               })}
             </section>
@@ -1029,12 +1031,12 @@ function bossImageCandidates(boss){
   
   return [...new Set(candidates)]
 }
-function BossPixelImage({boss}){
+function BossPixelImage({boss,className=''}){
   const candidates=bossImageCandidates(boss)
   const [index,setIndex]=useState(0)
   useEffect(()=>setIndex(0),[boss.id])
-  if(!candidates.length||index>=candidates.length)return <Skull size={46}/>
-  return <img src={candidates[index]} alt="" draggable="false" onError={()=>setIndex(current=>current+1)}/>
+  if(!candidates.length||index>=candidates.length)return <Skull size={className.includes('quest-boss-pixel-art')?16:46}/>
+  return <img className={className} src={candidates[index]} alt="" draggable="false" onError={()=>setIndex(current=>current+1)}/>
 }
 
 function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},questStatuses={},diaryStatuses={},skillProgress={},rewardAssignments={},onBossProgressChange,onRewardAssignmentsChange,onMapTilesChange,onBossRewardClaim,onCreatureClick,focusBossId=null}){

@@ -4017,7 +4017,6 @@
   z-index: 1 !important;
   pointer-events: none !important;
   user-select: none !important;
-  /* The source PNG is unusually dark; lift its tones so the circle is visible over the popup artwork. */
-  filter: brightness(1.9) contrast(1.2) drop-shadow(0 1px 2px rgba(0,0,0,.9)) !important;
+  filter: none !important;
   image-rendering: auto;
 }

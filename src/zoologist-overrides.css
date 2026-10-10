@@ -1829,32 +1829,32 @@
   box-shadow: 0 1px 2px rgba(0,0,0,.8) !important;
 }
 .quest-row.quest-unlocked {
-  color: #52d9e8 !important;
+  color: #ffff00 !important;
 }
 .quest-row.quest-unlocked .quest-status-dot {
-  background: #52d9e8 !important;
-  box-shadow: 0 0 4px rgba(82,217,232,.45) !important;
+  background: #ffff00 !important;
+  box-shadow: 0 0 4px rgba(255,255,0,.45) !important;
 }
 .quest-row.quest-unlocked .quest-status-label {
-  color: #52d9e8 !important;
+  color: #ffff00 !important;
 }
 .quest-row.quest-revealed {
-  color: #e1b84b !important;
+  color: #ff981f !important;
 }
 .quest-row.quest-revealed .quest-status-dot {
-  background: #e1b84b !important;
+  background: #ff981f !important;
 }
 .quest-row.quest-in_progress {
-  color: #e1b84b !important;
+  color: #ff981f !important;
 }
 .quest-row.quest-in_progress .quest-status-dot {
-  background: #e1b84b !important;
+  background: #ff981f !important;
 }
 .quest-row.quest-completed {
-  color: #63b96e !important;
+  color: #00ff00 !important;
 }
 .quest-row.quest-completed .quest-status-dot {
-  background: #63b96e !important;
+  background: #00ff00 !important;
 }
 .quest-row.quest-unrevealed {
   color: #ff0000 !important;
@@ -1864,7 +1864,7 @@
   background: #ff0000 !important;
 }
 .quest-row.quest-unrevealed .quest-status-label {
-  color: #b80000 !important;
+  color: #ff0000 !important;
 }
 .quest-name {
   min-width: 0 !important;
@@ -1879,10 +1879,10 @@
 }
 .quest-row.quest-revealed .quest-status-label,
 .quest-row.quest-in_progress .quest-status-label {
-  color: #a98d4b !important;
+  color: #ff981f !important;
 }
 .quest-row.quest-completed .quest-status-label {
-  color: #5c9e66 !important;
+  color: #00ff00 !important;
 }
 .quest-empty {
   padding: 35px 12px !important;

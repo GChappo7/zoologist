@@ -4425,7 +4425,7 @@
 }
 .boss-list-scroll-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 22px;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0;
   align-items: stretch;
   flex: 1 1 auto;
@@ -4443,6 +4443,7 @@
 }
 .boss-list-scroll-content::-webkit-scrollbar { display: none !important; width: 0 !important; }
 .boss-list-scroll-arrows {
+  display: none !important;
   position: relative;
   width: 22px;
   min-width: 22px;

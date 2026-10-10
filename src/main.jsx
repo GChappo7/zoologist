@@ -680,7 +680,7 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[
   })
 
   const statusLabel={
-    unrevealed:'Not revealed',
+    unrevealed:'Locked',
     revealed:'Revealed',
     unlocked:'Unlocked',
     completed:'Complete'
@@ -733,7 +733,7 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[
                 const linkedCreature=linkedTile?creatures.find(creature=>String(creature.id)===String(linkedTile.creatureId)):null
                 const canNavigate=Boolean(linkedCreature&&['revealed','unlocked'].includes(status))
                 const canToggle=['unlocked','completed'].includes(status)
-                return <div key={q.id} className={`quest-row quest-${status}`} role="group" aria-label={status==='unrevealed'?`${q.name}, quest not revealed`:`${q.name}, ${statusLabel[status]}`}>
+                return <div key={q.id} className={`quest-row quest-${status}`} role="group" aria-label={status==='unrevealed'?`${q.name}, quest locked`:`${q.name}, ${statusLabel[status]}`}>
                   <span className="quest-status-dot" aria-hidden="true"/>
                   <button type="button" className="quest-row-main" disabled={!canToggle} onClick={()=>cycleStatus(q.id)} aria-label={`Update status for ${q.name}`}>
                     <span className="quest-name">{q.name}</span>

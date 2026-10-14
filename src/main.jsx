@@ -146,6 +146,7 @@ const CREATURE_IMAGE_ALIASES={
   'Sea Snake (Young/Hatchling)':'sea_snake.png',
 }
 const CREATURE_IMAGE_URL_ALIASES={
+  'Large Mosquito':'https://oldschool.runescape.wiki/images/Large_mosquito.png',
   'Molossus':'https://oldschool.runescape.wiki/images/Molossus.png',
   'Stag':'https://oldschool.runescape.wiki/images/Stag.png',
   'Sunbeam Skink':'https://oldschool.runescape.wiki/images/Sunbeam_skink_(small).png',

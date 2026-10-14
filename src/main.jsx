@@ -146,6 +146,7 @@ const CREATURE_IMAGE_ALIASES={
   'Sea Snake (Young/Hatchling)':'sea_snake.png',
 }
 const CREATURE_IMAGE_URL_ALIASES={
+  'Stag':'https://oldschool.runescape.wiki/images/Stag.png',
   'Kharid Scorpion':'https://oldschool.runescape.wiki/images/Kharid_Scorpion.png',
   'Warped Tortoise':'https://oldschool.runescape.wiki/images/Warped_Tortoise.png',
   'Swamp toad':'https://oldschool.runescape.wiki/images/Swamp_toad_(item)_detail.png',

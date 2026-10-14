@@ -147,6 +147,7 @@ const CREATURE_IMAGE_ALIASES={
 }
 const CREATURE_IMAGE_URL_ALIASES={
   'Stag':'https://oldschool.runescape.wiki/images/Stag.png',
+  'Sunbeam Skink':'https://oldschool.runescape.wiki/images/Sunbeam_skink_(small).png',
   'Kharid Scorpion':'https://oldschool.runescape.wiki/images/Kharid_Scorpion.png',
   'Warped Tortoise':'https://oldschool.runescape.wiki/images/Warped_Tortoise.png',
   'Swamp toad':'https://oldschool.runescape.wiki/images/Swamp_toad_(item)_detail.png',

@@ -237,7 +237,7 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "236","Lobstrosity","4","Active","Find and kill","Bone Voyage;The Dig Site","Bone Voyage;The Dig Site","Slayer","40"
 "237","Spinolyp","4","Active","Find and kill","","","",""
 "238","Angel Fish","4","Active","Find and examine","Recipe for Disaster;Cook's Assistant","Recipe for Disaster;Cook's Assistant","",""
-"239","Black Moor Fantail","4","Active","Find and catch/hunt","Recipe for Disaster;Cook's Assistant","Recipe for Disaster;Cook's Assistant","",""
+"239","Black Moor Fantail","4","Active","Find and examine","Recipe for Disaster;Cook's Assistant","Recipe for Disaster;Cook's Assistant","",""
 "240","Discus","4","Active","Find and examine","Recipe for Disaster;Cook's Assistant","Recipe for Disaster;Cook's Assistant","",""
 "241","Harlequin","4","Active","Find and examine","Recipe for Disaster;Cook's Assistant","Recipe for Disaster;Cook's Assistant","",""
 "242","Paradise Fish","4","Active","Find and examine","Recipe for Disaster;Cook's Assistant","Recipe for Disaster;Cook's Assistant","",""
@@ -459,3 +459,6 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "460","Molossus","1","Active","Find and examine","","","",""
 
 "461","Large Mosquito","2","Active","Find and kill","","","",""
+"462","Stray Dog","1","Active","Find and examine","","","",""
+"463","Shepherd Dog","1","Active","Find and examine","","","",""
+"464","Chiribaya","1","Active","Find and examine","","","",""

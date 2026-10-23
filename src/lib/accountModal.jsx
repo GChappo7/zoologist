@@ -34,10 +34,21 @@ export default function AccountModal({ open, onClose, session, onAuthChange, onR
     setMessage('')
     try {
       if (mode === 'login') {
-        const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
-        if (error) throw error
-        onAuthChange?.(data.session)
-        onClose?.()
+        // Do not leave the login form permanently disabled if the client-side
+        // auth operation stalls after Supabase has responded.
+        let loginTimeoutId
+        try {
+          const loginRequest = supabase.auth.signInWithPassword({ email: email.trim(), password })
+          const loginTimeout = new Promise((_, reject) => {
+            loginTimeoutId = window.setTimeout(() => reject(new Error('Login is taking longer than expected. Supabase may have accepted the login, but the browser has not finished processing it. Please reload Zoologist and try again. If this repeats, tell support that the login request returned successfully but the page stayed on Please wait.')), 15000)
+          })
+          const { data, error } = await Promise.race([loginRequest, loginTimeout])
+          if (error) throw error
+          onAuthChange?.(data.session)
+          onClose?.()
+        } finally {
+          if (loginTimeoutId !== undefined) window.clearTimeout(loginTimeoutId)
+        }
       } else if (mode === 'signup') {
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),

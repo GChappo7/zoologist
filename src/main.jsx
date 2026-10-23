@@ -161,6 +161,7 @@ const CREATURE_IMAGE_URL_ALIASES={
   'Aberrant Spectre':'https://oldschool.runescape.wiki/images/Aberrant_spectre.png',
   'Ghoul':'https://oldschool.runescape.wiki/images/Ghoul.png',
   'Cave Slime':'https://oldschool.runescape.wiki/images/Cave_slime.png',
+  'Cave Kraken':'https://oldschool.runescape.wiki/images/Cave_kraken.png',
   'Otherworldly Being':'https://oldschool.runescape.wiki/images/Otherworldly_being.png',
   'Cute Creature':'https://oldschool.runescape.wiki/images/Cute_Creature.png',
   'Chiribaya':'https://oldschool.runescape.wiki/images/Chiribaya_(1).png',

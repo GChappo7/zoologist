@@ -1921,6 +1921,32 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments}/>
 </div>
 }
+class AppErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { error: null }
+  }
+  static getDerivedStateFromError(error) {
+    return { error }
+  }
+  componentDidCatch(error, info) {
+    console.error('Zoologist render failure:', error, info?.componentStack)
+  }
+  render() {
+    if (this.state.error) {
+      return <div style={{minHeight:'100vh',background:'#080b10',color:'#f4f6f8',display:'grid',placeItems:'center',padding:'24px',fontFamily:'system-ui,sans-serif'}}>
+        <div style={{width:'min(680px,100%)',background:'#151b24',border:'1px solid #394353',borderRadius:'12px',padding:'24px',boxSizing:'border-box'}}>
+          <h1 style={{marginTop:0}}>Zoologist hit an error</h1>
+          <p>The app encountered an error while opening your account or loading the world. Your cloud save has not been reset.</p>
+          <pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere',background:'#080b10',padding:'12px',borderRadius:'8px',color:'#ffcf8a'}}>{String(this.state.error?.message || this.state.error)}</pre>
+          <button type="button" onClick={() => window.location.reload()} style={{padding:'10px 16px',borderRadius:'7px',border:0,cursor:'pointer'}}>Reload Zoologist</button>
+        </div>
+      </div>
+    }
+    return this.props.children
+  }
+}
+
 function App(){
   const [tab,setTab]=useState('map'),[focusBossId,setFocusBossId]=useState(null),[focusCreatureId,setFocusCreatureId]=useState(null)
   const [skillsOpen,setSkillsOpen]=useState(false)
@@ -2479,4 +2505,4 @@ function App(){
     </div>}
   </div>
 }
-createRoot(document.getElementById('root')).render(<App />)
+createRoot(document.getElementById('root')).render(<AppErrorBoundary><App /></AppErrorBoundary>)

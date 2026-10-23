@@ -1956,6 +1956,14 @@ function App(){
   useEffect(()=>{
     if(!supabase){setAccountReady(true);return}
     let active=true
+    let sessionResolved=false
+    let sessionTimeoutId=null
+    const resolveSession=(nextSession)=>{
+      if(!active||sessionResolved)return
+      sessionResolved=true
+      if(sessionTimeoutId!==null)window.clearTimeout(sessionTimeoutId)
+      setSession(nextSession||null)
+    }
     const isRecoveryRedirect=()=>{
       const hash=new URLSearchParams(window.location.hash.replace(/^#/,'')).get('type')
       const query=new URLSearchParams(window.location.search).get('type')
@@ -1967,23 +1975,44 @@ function App(){
       setPasswordRecovery(true)
     }
 
-    supabase.auth.getSession().then(({data})=>{
-      if(!active)return
+    // Never leave the app on its startup loader if auth initialisation stalls.
+    // The auth listener remains active and can still provide a session later.
+    sessionTimeoutId=window.setTimeout(()=>{
+      if(active&&!sessionResolved){
+        console.warn('Supabase session initialisation timed out; continuing while auth recovers.')
+        resolveSession(null)
+      }
+    },8000)
+
+    supabase.auth.getSession().then(({data,error})=>{
+      if(!active||sessionResolved)return
+      if(error){
+        console.warn('Unable to initialise Supabase session:',error.message)
+        resolveSession(null)
+        return
+      }
       if(recoveryRedirect){
         setPasswordRecovery(true)
       }
-      setSession(data.session||null)
+      resolveSession(data?.session||null)
+    }).catch(error=>{
+      if(!active||sessionResolved)return
+      console.warn('Unable to initialise Supabase session:',error?.message||error)
+      resolveSession(null)
     })
     const {data:{subscription}}=supabase.auth.onAuthStateChange((event,nextSession)=>{
       if(!active)return
-      if(event==='PASSWORD_RECOVERY'){
-        setPasswordRecovery(true)
-        setSession(nextSession||null)
-      }else{
+      if(event==='INITIAL_SESSION')resolveSession(nextSession||null)
+      else{
+        if(event==='PASSWORD_RECOVERY')setPasswordRecovery(true)
         setSession(nextSession||null)
       }
     })
-    return()=>{active=false;subscription.unsubscribe()}
+    return()=>{
+      active=false
+      if(sessionTimeoutId!==null)window.clearTimeout(sessionTimeoutId)
+      subscription.unsubscribe()
+    }
   },[])
 
   useEffect(()=>{

@@ -240,26 +240,23 @@ function canAssignQuestReward(creature,reward){return isValidQuestRewardAssignme
 function weightedCreaturePick(available,preferredScore=null){
   if(!available.length)return null
   if(preferredScore==null)return available[Math.floor(Math.random()*available.length)]
-  const weighted=available.map(creature=>({creature,weight:1/(1+Math.abs(creature.score-preferredScore)*2)}))
+
+  // Accessibility must always outweigh distance preference: every lower-score
+  // animal has a higher per-animal weight than every higher-score animal.
+  // Distance still gently favours animals near the tile's preferred score,
+  // but that modifier is deliberately too small to reverse accessibility order.
+  const accessibilityWeights=[100,70,49,34,24,17,12,8,5]
+  const weighted=available.map(creature=>({
+    creature,
+    weight:(accessibilityWeights[Math.max(0,Math.min(8,creature.score))]??5) /
+      (1+Math.abs(creature.score-preferredScore)*0.03)
+  }))
   const total=weighted.reduce((s,i)=>s+i.weight,0);let roll=Math.random()*total
   for(const item of weighted){roll-=item.weight;if(roll<=0)return item.creature}
   return weighted[weighted.length-1].creature
 }
 function pickUnusedCreature(creatures,usedIds,preferredScore=null){
   const available=creatures.filter(c=>!usedIds.has(c.id))
-  if(preferredScore===1){
-    const weighted=available.map(creature=>({
-      creature,
-      weight:creature.score<=1?12:creature.score===2?2:0.5
-    }))
-    const total=weighted.reduce((s,i)=>s+i.weight,0)
-    let roll=Math.random()*total
-    for(const item of weighted){
-      roll-=item.weight
-      if(roll<=0)return item.creature
-    }
-    return weighted[weighted.length-1]?.creature??null
-  }
   return weightedCreaturePick(available,preferredScore)
 }
 function preferredScoreForDistance(x,y){return Math.min(8,Math.max(1,1+Math.floor((Math.abs(x)+Math.abs(y))/4)))}

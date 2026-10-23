@@ -147,8 +147,8 @@ const CREATURE_IMAGE_ALIASES={
 }
 const CREATURE_IMAGE_URL_ALIASES={
   'Chiribaya':'https://oldschool.runescape.wiki/images/Chiribaya_(1).png',
-  'Shepherd Dog':'https://oldschool.runescape.wiki/images/Shepherd_Dog_(Christmas_2024).png',
-  'Stray Dog':'https://oldschool.runescape.wiki/images/Stray_dog_(Meiyerditch,_brown).png',
+  'Shepherd Dog':'https://oldschool.runescape.wiki/images/Sadie.png',
+  'Stray Dog':'https://oldschool.runescape.wiki/images/Stray_dog_(Varrock,_grey).png',
   'Large Mosquito':'https://oldschool.runescape.wiki/images/Large_mosquito.png',
   'Molossus':'https://oldschool.runescape.wiki/images/Molossus.png',
   'Stag':'https://oldschool.runescape.wiki/images/Stag.png',

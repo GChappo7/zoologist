@@ -2002,11 +2002,9 @@ function App(){
     })
     const {data:{subscription}}=supabase.auth.onAuthStateChange((event,nextSession)=>{
       if(!active)return
-      if(event==='INITIAL_SESSION')resolveSession(nextSession||null)
-      else{
-        if(event==='PASSWORD_RECOVERY')setPasswordRecovery(true)
-        setSession(nextSession||null)
-      }
+      if(event==='PASSWORD_RECOVERY')setPasswordRecovery(true)
+      if(!sessionResolved)resolveSession(nextSession||null)
+      else setSession(nextSession||null)
     })
     return()=>{
       active=false

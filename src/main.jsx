@@ -22,8 +22,7 @@ import { EMPTY_GAME_STATE, createWorldId, deleteCloudGameState, ensureProfile, l
 const TILE_SIZE = 256
 const TILE_GAP = 0
 const TILE_STEP = TILE_SIZE + TILE_GAP
-const RENDER_RADIUS = 20
-const RENDER_DIAMETER = RENDER_RADIUS * 2 + 1
+const MAX_RENDER_RADIUS = 20
 const MIN_ZOOM = 0.2
 const MAX_ZOOM = 2.25
 const ZOOM_STEP = 0.1
@@ -1815,10 +1814,15 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     }
   }
   const centreTileX=Math.round(-pan.x/(TILE_STEP*zoom)),centreTileY=Math.round(-pan.y/(TILE_STEP*zoom))
+  // Render only enough map around the viewport to cover what can be seen plus a buffer.
+  // At normal zoom this avoids mounting 1,681 tile components on every visit, while
+  // zoomed-out views retain the wider grid needed to prevent empty edges.
+  const renderRadius=Math.min(MAX_RENDER_RADIUS,Math.max(6,Math.ceil(4.5/zoom)+2))
+  const renderDiameter=renderRadius*2+1
   const knownTiles=useMemo(()=>Object.values(tiles),[tiles])
   const mapCells=useMemo(()=>{
-    const startX=centreTileX-RENDER_RADIUS,startY=centreTileY-RENDER_RADIUS,cells=[]
-    const endX=centreTileX+RENDER_RADIUS,endY=centreTileY+RENDER_RADIUS
+    const startX=centreTileX-renderRadius,startY=centreTileY-renderRadius,cells=[]
+    const endX=centreTileX+renderRadius,endY=centreTileY+renderRadius
     // Fog is only visible up to six tiles from known territory. Expand from known
     // tiles instead of scanning every known tile for every one of the 1,681 cells.
     const fogDistances=new Map()
@@ -1853,9 +1857,9 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
         cells.push({x,y,state:fogState,completed:false,fogDistance:distance,gridColumn:x-startX+1,gridRow:y-startY+1})
       }
     }
-    const gridSize=RENDER_DIAMETER*TILE_SIZE+(RENDER_DIAMETER-1)*TILE_GAP
+    const gridSize=renderDiameter*TILE_SIZE+(renderDiameter-1)*TILE_GAP
     return{cells,gridSize}
-  },[centreTileX,centreTileY,tiles,knownTiles,fogVisible])
+  },[centreTileX,centreTileY,renderRadius,renderDiameter,tiles,knownTiles,fogVisible])
   const exploredCount=knownTiles.filter(t=>t.state==='explored').length,frontierCount=knownTiles.filter(t=>t.state==='frontier').length,creatureCount=creatures.length
   useEffect(()=>{onProgressChange?.({explored:exploredCount,revealed:frontierCount})},[exploredCount,frontierCount,onProgressChange])
   const selectedTileRef=useRef(selectedTile)
@@ -1912,7 +1916,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   },[tiles,creatures,skillProgress,effectiveRewardAssignments,diaryStatuses,creatureById,frontierCount,onSkillRewardComplete,onDiaryRewardComplete,onCreatureCompleted,onProgressChange])
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onClickCapture={handleStageClickCapture} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
-  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${pan.x+centreTileX*TILE_STEP*zoom}px,${pan.y+centreTileY*TILE_STEP*zoom}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`,transition:'transform 120ms ease-out',willChange:'transform'}}>{mapCells.cells.map(tile=><MemoizedMapTile key={`${tile.x}:${tile.y}`} tile={tile} journeyStage={journeyStage} onStartingAnimationEnd={onStartingAnimationEnd} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} bossProgress={bossProgress} bossRewards={bossRewards} onBossClick={onBossClick}/>)}{selectedTile&&<TilePopup closing={closingPopupTileKey===keyFor(selectedTile.x,selectedTile.y)} selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+132,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-38}}/>}</div></div>
+  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${pan.x+centreTileX*TILE_STEP*zoom}px,${pan.y+centreTileY*TILE_STEP*zoom}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${renderDiameter},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${renderDiameter},${TILE_SIZE}px)` ,transform:`scale(${zoom})`,transition:'transform 120ms ease-out',willChange:'transform'}}>{mapCells.cells.map(tile=><MemoizedMapTile key={`${tile.x}:${tile.y}`} tile={tile} journeyStage={journeyStage} onStartingAnimationEnd={onStartingAnimationEnd} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} bossProgress={bossProgress} bossRewards={bossRewards} onBossClick={onBossClick}/>)}{selectedTile&&<TilePopup closing={closingPopupTileKey===keyFor(selectedTile.x,selectedTile.y)} selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} position={{left:(selectedTile.x-(centreTileX-renderRadius))*TILE_STEP+132,top:(selectedTile.y-(centreTileY-renderRadius))*TILE_STEP-38}}/>}</div></div>
 
 
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>

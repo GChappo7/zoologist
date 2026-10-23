@@ -161,6 +161,7 @@ const CREATURE_IMAGE_URL_ALIASES={
   'Aberrant Spectre':'https://oldschool.runescape.wiki/images/Aberrant_spectre.png',
   'Ghoul':'https://oldschool.runescape.wiki/images/Ghoul.png',
   'Cave Slime':'https://oldschool.runescape.wiki/images/Cave_slime.png',
+  'Otherworldly Being':'https://oldschool.runescape.wiki/images/Otherworldly_being.png',
   'Chiribaya':'https://oldschool.runescape.wiki/images/Chiribaya_(1).png',
   'Shepherd Dog':'https://oldschool.runescape.wiki/images/Sadie.png',
   'Stray Dog':'https://oldschool.runescape.wiki/images/Stray_dog_(Varrock,_grey).png',

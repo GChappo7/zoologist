@@ -146,12 +146,6 @@
       "label": "Jungle Potion"
     },
     {
-      "id": "quest-novice-25",
-      "type": "quest",
-      "questId": "novice-25",
-      "label": "Learning the Ropes"
-    },
-    {
       "id": "quest-novice-26",
       "type": "quest",
       "questId": "novice-26",

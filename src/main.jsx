@@ -640,6 +640,8 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[
   },[mapTiles])
 
   const getQuestStatus=q=>{
+    // Learning the Ropes is completed before the Zoologist journey begins.
+    if(String(q.name??'').trim().toLowerCase()==='learning the ropes')return 'completed'
     const savedStatus=statuses[q.id]||'unrevealed'
     if(savedStatus==='completed')return 'completed'
     if(completableQuestIds.has(String(q.id)))return 'unlocked'

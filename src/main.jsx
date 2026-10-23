@@ -22,7 +22,8 @@ import { EMPTY_GAME_STATE, createWorldId, deleteCloudGameState, ensureProfile, l
 const TILE_SIZE = 256
 const TILE_GAP = 0
 const TILE_STEP = TILE_SIZE + TILE_GAP
-const MAX_RENDER_RADIUS = 20
+const RENDER_RADIUS = 20
+const RENDER_DIAMETER = RENDER_RADIUS * 2 + 1
 const MIN_ZOOM = 0.2
 const MAX_ZOOM = 2.25
 const ZOOM_STEP = 0.1
@@ -145,7 +146,6 @@ const CREATURE_IMAGE_ALIASES={
   'Sea Snake (Young/Hatchling)':'sea_snake.png',
 }
 const CREATURE_IMAGE_URL_ALIASES={
-  'Cave Kraken':'https://oldschool.runescape.wiki/images/Cave_kraken.png',
   'Banshee':'https://oldschool.runescape.wiki/images/Banshee.png',
   'Ankou':'https://oldschool.runescape.wiki/images/Ankou.png',
   'Zombie':'https://oldschool.runescape.wiki/images/Zombie_(Level_30,_3).png',
@@ -640,8 +640,6 @@ function QuestsView({initialStatuses={},onStatusesChange,mapTiles={},creatures=[
   },[mapTiles])
 
   const getQuestStatus=q=>{
-    // Tutorial Island is completed before the Zoologist journey begins.
-    if(String(q.name??'').trim().toLowerCase()==='learning the ropes')return 'completed'
     const savedStatus=statuses[q.id]||'unrevealed'
     if(savedStatus==='completed')return 'completed'
     if(completableQuestIds.has(String(q.id)))return 'unlocked'
@@ -1814,15 +1812,10 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
     }
   }
   const centreTileX=Math.round(-pan.x/(TILE_STEP*zoom)),centreTileY=Math.round(-pan.y/(TILE_STEP*zoom))
-  // Render only enough map around the viewport to cover what can be seen plus a buffer.
-  // At normal zoom this avoids mounting 1,681 tile components on every visit, while
-  // zoomed-out views retain the wider grid needed to prevent empty edges.
-  const renderRadius=Math.min(MAX_RENDER_RADIUS,Math.max(6,Math.ceil(4.5/zoom)+2))
-  const renderDiameter=renderRadius*2+1
   const knownTiles=useMemo(()=>Object.values(tiles),[tiles])
   const mapCells=useMemo(()=>{
-    const startX=centreTileX-renderRadius,startY=centreTileY-renderRadius,cells=[]
-    const endX=centreTileX+renderRadius,endY=centreTileY+renderRadius
+    const startX=centreTileX-RENDER_RADIUS,startY=centreTileY-RENDER_RADIUS,cells=[]
+    const endX=centreTileX+RENDER_RADIUS,endY=centreTileY+RENDER_RADIUS
     // Fog is only visible up to six tiles from known territory. Expand from known
     // tiles instead of scanning every known tile for every one of the 1,681 cells.
     const fogDistances=new Map()
@@ -1857,9 +1850,9 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
         cells.push({x,y,state:fogState,completed:false,fogDistance:distance,gridColumn:x-startX+1,gridRow:y-startY+1})
       }
     }
-    const gridSize=renderDiameter*TILE_SIZE+(renderDiameter-1)*TILE_GAP
+    const gridSize=RENDER_DIAMETER*TILE_SIZE+(RENDER_DIAMETER-1)*TILE_GAP
     return{cells,gridSize}
-  },[centreTileX,centreTileY,renderRadius,renderDiameter,tiles,knownTiles,fogVisible])
+  },[centreTileX,centreTileY,tiles,knownTiles,fogVisible])
   const exploredCount=knownTiles.filter(t=>t.state==='explored').length,frontierCount=knownTiles.filter(t=>t.state==='frontier').length,creatureCount=creatures.length
   useEffect(()=>{onProgressChange?.({explored:exploredCount,revealed:frontierCount})},[exploredCount,frontierCount,onProgressChange])
   const selectedTileRef=useRef(selectedTile)
@@ -1916,7 +1909,7 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   },[tiles,creatures,skillProgress,effectiveRewardAssignments,diaryStatuses,creatureById,frontierCount,onSkillRewardComplete,onDiaryRewardComplete,onCreatureCompleted,onProgressChange])
   return <div className={`map-layout ${panelOpen?'':'panel-collapsed-layout'}`}><section className="map-panel">
     <div className={`map-stage ${dragging?'is-dragging':''}`} ref={stageRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={stopDrag} onPointerCancel={stopDrag} onPointerLeave={handlePointerLeave} onWheel={handleWheel} onClickCapture={handleStageClickCapture} onContextMenu={e=>e.preventDefault()} tabIndex={0} aria-label="Zoologist map">
-  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${pan.x+centreTileX*TILE_STEP*zoom}px,${pan.y+centreTileY*TILE_STEP*zoom}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${renderDiameter},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${renderDiameter},${TILE_SIZE}px)` ,transform:`scale(${zoom})`,transition:'transform 120ms ease-out',willChange:'transform'}}>{mapCells.cells.map(tile=><MemoizedMapTile key={`${tile.x}:${tile.y}`} tile={tile} journeyStage={journeyStage} onStartingAnimationEnd={onStartingAnimationEnd} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} bossProgress={bossProgress} bossRewards={bossRewards} onBossClick={onBossClick}/>)}{selectedTile&&<TilePopup closing={closingPopupTileKey===keyFor(selectedTile.x,selectedTile.y)} selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} position={{left:(selectedTile.x-(centreTileX-renderRadius))*TILE_STEP+132,top:(selectedTile.y-(centreTileY-renderRadius))*TILE_STEP-38}}/>}</div></div>
+  <div className="map-grid-pan" style={{width:mapCells.gridSize,height:mapCells.gridSize,transform:`translate3d(-50%,-50%,0) translate3d(${pan.x+centreTileX*TILE_STEP*zoom}px,${pan.y+centreTileY*TILE_STEP*zoom}px,0)`}}><div className="map-grid" style={{width:mapCells.gridSize,height:mapCells.gridSize,gridTemplateColumns:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)`,gridTemplateRows:`repeat(${RENDER_DIAMETER},${TILE_SIZE}px)` ,transform:`scale(${zoom})`,transition:'transform 120ms ease-out',willChange:'transform'}}>{mapCells.cells.map(tile=><MemoizedMapTile key={`${tile.x}:${tile.y}`} tile={tile} journeyStage={journeyStage} onStartingAnimationEnd={onStartingAnimationEnd} selected={selectedTile&&selectedTile.x===tile.x&&selectedTile.y===tile.y&&dismissingTileKey!==keyFor(tile.x,tile.y)} onSelect={openTile} onReveal={handleReveal} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} bossProgress={bossProgress} bossRewards={bossRewards} onBossClick={onBossClick}/>)}{selectedTile&&<TilePopup closing={closingPopupTileKey===keyFor(selectedTile.x,selectedTile.y)} selectedTile={selectedTile} onShowMore={(open=true)=>open?setPanelOpen(true):setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments} position={{left:(selectedTile.x-(centreTileX-RENDER_RADIUS))*TILE_STEP+132,top:(selectedTile.y-(centreTileY-RENDER_RADIUS))*TILE_STEP-38}}/>}</div></div>
 
 
       <div className="map-key"><div><span className="key-dot key-complete"/> Completed</div><div><span className="key-dot key-frontier"/> Revealed</div><div><span className="key-dot key-fog"/> Clouded</div></div><div className="map-position">WORLD {centreTileX}, {centreTileY}</div>
@@ -1925,32 +1918,6 @@ function MapView({creatures,onProgressChange,skillProgress,diaryStatuses,onSkill
   <SidePanel open={panelOpen} setOpen={setPanelOpen} selectedTile={selectedTile} onClear={()=>setSelectedTile(null)} onComplete={handleComplete} creatureById={creatureById} skillProgress={skillProgress} diaryStatuses={diaryStatuses} rewardAssignments={effectiveRewardAssignments}/>
 </div>
 }
-class AppErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = { error: null }
-  }
-  static getDerivedStateFromError(error) {
-    return { error }
-  }
-  componentDidCatch(error, info) {
-    console.error('Zoologist render failure:', error, info?.componentStack)
-  }
-  render() {
-    if (this.state.error) {
-      return <div style={{minHeight:'100vh',background:'#080b10',color:'#f4f6f8',display:'grid',placeItems:'center',padding:'24px',fontFamily:'system-ui,sans-serif'}}>
-        <div style={{width:'min(680px,100%)',background:'#151b24',border:'1px solid #394353',borderRadius:'12px',padding:'24px',boxSizing:'border-box'}}>
-          <h1 style={{marginTop:0}}>Zoologist hit an error</h1>
-          <p>The app encountered an error while opening your account or loading the world. Your cloud save has not been reset.</p>
-          <pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere',background:'#080b10',padding:'12px',borderRadius:'8px',color:'#ffcf8a'}}>{String(this.state.error?.message || this.state.error)}</pre>
-          <button type="button" onClick={() => window.location.reload()} style={{padding:'10px 16px',borderRadius:'7px',border:0,cursor:'pointer'}}>Reload Zoologist</button>
-        </div>
-      </div>
-    }
-    return this.props.children
-  }
-}
-
 function App(){
   const [tab,setTab]=useState('map'),[focusBossId,setFocusBossId]=useState(null),[focusCreatureId,setFocusCreatureId]=useState(null)
   const [skillsOpen,setSkillsOpen]=useState(false)
@@ -1986,14 +1953,6 @@ function App(){
   useEffect(()=>{
     if(!supabase){setAccountReady(true);return}
     let active=true
-    let sessionResolved=false
-    let sessionTimeoutId=null
-    const resolveSession=(nextSession)=>{
-      if(!active||sessionResolved)return
-      sessionResolved=true
-      if(sessionTimeoutId!==null)window.clearTimeout(sessionTimeoutId)
-      setSession(nextSession||null)
-    }
     const isRecoveryRedirect=()=>{
       const hash=new URLSearchParams(window.location.hash.replace(/^#/,'')).get('type')
       const query=new URLSearchParams(window.location.search).get('type')
@@ -2005,42 +1964,23 @@ function App(){
       setPasswordRecovery(true)
     }
 
-    // Never leave the app on its startup loader if auth initialisation stalls.
-    // The auth listener remains active and can still provide a session later.
-    sessionTimeoutId=window.setTimeout(()=>{
-      if(active&&!sessionResolved){
-        console.warn('Supabase session initialisation timed out; continuing while auth recovers.')
-        resolveSession(null)
-      }
-    },8000)
-
-    supabase.auth.getSession().then(({data,error})=>{
-      if(!active||sessionResolved)return
-      if(error){
-        console.warn('Unable to initialise Supabase session:',error.message)
-        resolveSession(null)
-        return
-      }
+    supabase.auth.getSession().then(({data})=>{
+      if(!active)return
       if(recoveryRedirect){
         setPasswordRecovery(true)
       }
-      resolveSession(data?.session||null)
-    }).catch(error=>{
-      if(!active||sessionResolved)return
-      console.warn('Unable to initialise Supabase session:',error?.message||error)
-      resolveSession(null)
+      setSession(data.session||null)
     })
     const {data:{subscription}}=supabase.auth.onAuthStateChange((event,nextSession)=>{
       if(!active)return
-      if(event==='PASSWORD_RECOVERY')setPasswordRecovery(true)
-      if(!sessionResolved)resolveSession(nextSession||null)
-      else setSession(nextSession||null)
+      if(event==='PASSWORD_RECOVERY'){
+        setPasswordRecovery(true)
+        setSession(nextSession||null)
+      }else{
+        setSession(nextSession||null)
+      }
     })
-    return()=>{
-      active=false
-      if(sessionTimeoutId!==null)window.clearTimeout(sessionTimeoutId)
-      subscription.unsubscribe()
-    }
+    return()=>{active=false;subscription.unsubscribe()}
   },[])
 
   useEffect(()=>{
@@ -2509,4 +2449,4 @@ function App(){
     </div>}
   </div>
 }
-createRoot(document.getElementById('root')).render(<AppErrorBoundary><App /></AppErrorBoundary>)
+createRoot(document.getElementById('root')).render(<App />)

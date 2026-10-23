@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
-
 @font-face {
   font-family: 'RuneScape';
   src: url('./assets/fonts/RuneScape-Chat-Bold-07.ttf') format('truetype');
@@ -7,6 +5,8 @@
   font-style: normal;
   font-display: swap;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 :root {
   font-family: 'DM Sans', system-ui, sans-serif;

@@ -129,9 +129,6 @@ export function isValidQuestRewardAssignment(creature, reward) {
   if (!creature || !reward || String(reward.type ?? '').toLowerCase() !== 'quest') return true
 
   const rewardKeys = questRewardKeys(reward)
-  // Tutorial Island is automatically completed on every Zoologist account,
-  // so Learning the Ropes must never be assigned as an animal tile reward.
-  if (rewardKeys.has('learning the ropes') || rewardKeys.has('novice-25')) return false
   if (!rewardKeys.size) return true
 
   // A quest cannot be awarded by a creature whose own access requires that

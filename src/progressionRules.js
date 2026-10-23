@@ -129,8 +129,6 @@ export function isValidQuestRewardAssignment(creature, reward) {
   if (!creature || !reward || String(reward.type ?? '').toLowerCase() !== 'quest') return true
 
   const rewardKeys = questRewardKeys(reward)
-  // Tutorial Island's Learning the Ropes quest is never an animal-tile reward.
-  if (rewardKeys.has('learning the ropes') || rewardKeys.has('novice-25')) return false
   if (!rewardKeys.size) return true
 
   // A quest cannot be awarded by a creature whose own access requires that

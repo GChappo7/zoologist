@@ -114,9 +114,9 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 "113","Black Warlock","3","Active","Find and catch/hunt","","","Hunter","45"
 "114","Sunlight Moth","3","Active","Find and catch/hunt","Children of the Sun","Children of the Sun","Hunter","65"
 "115","Moonlight Moth","3","Active","Find and catch/hunt","Children of the Sun","Children of the Sun","Hunter","75"
-"116","Polar Kebbit","3","Active","Find and catch/hunt","","","Hunter","1"
-"117","Common Kebbit","2","Active","Find and catch/hunt","","","Hunter","3"
-"118","Feldip Weasel","3","Active","Find and catch/hunt","","","Hunter","27"
+"116","Polar Kebbit","1","Active","Find and catch/hunt","","","Hunter","1"
+"117","Common Kebbit","1","Active","Find and catch/hunt","","","Hunter","3"
+"118","Feldip Weasel","1","Active","Find and catch/hunt","","","Hunter","27"
 "119","Desert Devil","3","Active","Find and catch/hunt","","","",""
 "120","Razor-backed Kebbit","3","Active","Find and catch/hunt","","","Hunter","49"
 "121","Wild Kebbit","3","Active","Find and catch/hunt","","","Hunter","23"
@@ -393,10 +393,10 @@ ID,Candidate,Accessibility Score,Status,How to Complete?,Required Quest(s),Hard 
 394,Tern,4,Active,Find and kill,Pandemonium,Pandemonium,,
 395,Osprey,4,Active,Find and kill,Pandemonium,Pandemonium,,
 396,Frigatebird,4,Active,Find and kill,Pandemonium,Pandemonium,,
-"397","Crimson Swift","4","Active","Find and catch/hunt","","","Hunter","1"
-"398","Golden Warbler","4","Active","Find and catch/hunt","","","Hunter","5"
-"399","Copper Longtail","4","Active","Find and catch/hunt","","","Hunter","9"
-"400","Cerulean Twitch","4","Active","Find and catch/hunt","","","",""
+"397","Crimson Swift","1","Active","Find and catch/hunt","","","Hunter","1"
+"398","Golden Warbler","1","Active","Find and catch/hunt","","","Hunter","5"
+"399","Copper Longtail","1","Active","Find and catch/hunt","","","Hunter","9"
+"400","Cerulean Twitch","1","Active","Find and catch/hunt","","","",""
 "401","Tropical Wagtail","4","Active","Find and catch/hunt","","","Hunter","19"
 "402","Spined Larupia","5","Active","Find and catch/hunt","","","Hunter","31"
 "403","Horned Graahk","5","Active","Find and catch/hunt","","","Hunter","41"

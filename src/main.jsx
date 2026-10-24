@@ -186,6 +186,16 @@ const CREATURE_IMAGE_URL_ALIASES={
   'Greyhound':'https://oldschool.runescape.wiki/images/Greyhound_(tan)_follower.png',
   'Yorkie':'https://oldschool.runescape.wiki/images/Yorkie_(brown)_follower.png',
   'Pug':'https://oldschool.runescape.wiki/images/Pug_(fawn)_follower.png',
+  'TzHaar-Hur':'https://oldschool.runescape.wiki/images/TzHaar-Hur.png',
+  'TzHaar-Mej':'https://oldschool.runescape.wiki/images/TzHaar-Mej.png',
+  'TzHaar-Xil':'https://oldschool.runescape.wiki/images/TzHaar-Xil.png',
+  'TzHaar-Ket':'https://oldschool.runescape.wiki/images/TzHaar-Ket.png',
+  'Tz-Kih':'https://oldschool.runescape.wiki/images/Tz-Kih.png',
+  'Tz-Kek':'https://oldschool.runescape.wiki/images/Tz-Kek.png',
+  'Tok-Xil':'https://oldschool.runescape.wiki/images/Tok-Xil_(2).png',
+  'Yt-MejKot':'https://oldschool.runescape.wiki/images/Yt-MejKot_(2).png',
+  'Ket-Zek':'https://oldschool.runescape.wiki/images/Ket-Zek.png',
+  'Fairy':'https://oldschool.runescape.wiki/images/Fairy.png',
 }
 const RAW_FISH_WIKI_IMAGES={
   Shrimp:'Raw_shrimps_detail.png',

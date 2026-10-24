@@ -197,6 +197,12 @@ const CREATURE_IMAGE_URL_ALIASES={
   'Ket-Zek':'https://oldschool.runescape.wiki/images/Ket-Zek.png',
   'Fairy':'https://oldschool.runescape.wiki/images/Fairy.png',
   'Manticore':'https://oldschool.runescape.wiki/images/Manticore.png',
+  'Jal-Nib':'https://oldschool.runescape.wiki/images/Jal-Nib.png',
+  'Jal-MejRah':'https://oldschool.runescape.wiki/images/Jal-MejRah.png',
+  'Jal-Ak':'https://oldschool.runescape.wiki/images/Jal-Ak.png',
+  'Jal-ImKot':'https://oldschool.runescape.wiki/images/Jal-ImKot.png',
+  'Jal-Xil':'https://oldschool.runescape.wiki/images/Jal-Xil.png',
+  'Jal-Zek':'https://oldschool.runescape.wiki/images/Jal-Zek.png',
 }
 const RAW_FISH_WIKI_IMAGES={
   Shrimp:'Raw_shrimps_detail.png',

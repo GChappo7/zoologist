@@ -191,7 +191,7 @@ const CREATURE_IMAGE_URL_ALIASES={
   'TzHaar-Xil':'https://oldschool.runescape.wiki/images/TzHaar-Xil_(sword).png',
   'TzHaar-Ket':'https://oldschool.runescape.wiki/images/TzHaar-Ket_(2).png',
   'Tz-Kih':'https://oldschool.runescape.wiki/images/Tz-Kih.png',
-  'Tz-Kek':'https://oldschool.runescape.wiki/images/Tz-Kek_(level_45_-_2).png',
+  'Tz-Kek':'https://oldschool.runescape.wiki/images/Tz-Kek_(level_45).png',
   'Tok-Xil':'https://oldschool.runescape.wiki/images/Tok-Xil_(2).png',
   'Yt-MejKot':'https://oldschool.runescape.wiki/images/Yt-MejKot_(2).png',
   'Ket-Zek':'https://oldschool.runescape.wiki/images/Ket-Zek_(2).png',

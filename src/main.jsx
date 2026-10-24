@@ -146,6 +146,7 @@ const CREATURE_IMAGE_ALIASES={
   'Sea Snake (Young/Hatchling)':'sea_snake.png',
 }
 const CREATURE_IMAGE_URL_ALIASES={
+  'Black unicorn':'https://oldschool.runescape.wiki/images/Black_unicorn.png',
   'Banshee':'https://oldschool.runescape.wiki/images/Banshee.png',
   'Ankou':'https://oldschool.runescape.wiki/images/Ankou.png',
   'Zombie':'https://oldschool.runescape.wiki/images/Zombie_(Level_30,_3).png',

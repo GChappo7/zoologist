@@ -1016,6 +1016,8 @@ const BOSS_IMAGE_FILENAMES = {
   'great-olm':'Great_Olm.png',
   'kephri':'Kephri.png',
   'ba-ba':'Ba-Ba.png',
+  'tz-tok-jad':'TzTok-Jad.png',
+  'tzkal-zuk':'TzKal-Zuk.png',
   'zebak':'Zebak.png',
 }
 const BOSS_MOBILE_IMAGE_FILENAMES = {

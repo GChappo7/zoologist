@@ -1156,9 +1156,14 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
     const current=Math.max(0,Math.min(target,Number(bossProgress?.[boss.id])||0))
     const associationNames=Array.isArray(boss.creatures)?boss.creatures:(boss.creature?[boss.creature]:[])
     const associatedCreatures=associationNames.map(name=>creatureByName.get(String(name).trim().toLowerCase())).filter(Boolean)
-    const unlocked=associatedCreatures.length>0&&(boss.unlockMode==='all'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))
+    const requiredQuest=boss.requiredQuest
+      ? quests.find(quest=>String(quest.id)===String(boss.requiredQuest)||String(quest.name||'').trim().toLowerCase()===String(boss.requiredQuest).trim().toLowerCase())??null
+      : null
+    const unlocked=requiredQuest
+      ? questStatuses?.[String(requiredQuest.id)]==='completed'
+      : associatedCreatures.length>0&&(boss.unlockMode==='all'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))
     const reward=bossRewards?.[boss.id]??null
-    return {target,current,associatedCreatures,unlocked,reward}
+    return {target,current,associatedCreatures,requiredQuest,unlocked,reward}
   }
 
   const changeBossKc=(boss,delta)=>{
@@ -1310,11 +1315,11 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
       <div className="boss-list-scroll-content" ref={bossListRef}>
     <div className="tab-page-heading">
       <h1>Boss Tasks</h1>
-      <p>Complete the associated creature tile to unlock each boss, then track the required kill count.</p>
+      <p>Meet each boss&#39;s unlock requirement, then track the required kill count.</p>
     </div>
     <div className="boss-grid">
       {bossTasks.map(boss=>{
-        const {target,current,associatedCreatures,unlocked,reward}=getBossState(boss)
+        const {target,current,associatedCreatures,requiredQuest,unlocked,reward}=getBossState(boss)
         const linkedCreature=boss.id==='scorpia'
           ? (associatedCreatures.find(creature=>String(creature.name||'').trim().toLowerCase()==='scorpion'&&completedCreatureIds.has(String(creature.id)))
             ||associatedCreatures.find(creature=>String(creature.name||'').trim().toLowerCase()==='scorpion')
@@ -1331,8 +1336,10 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
             {imageAvailable ? <BossPixelImage boss={boss}/> : <Skull size={46}/>}
           </div>
           <div className="boss-association">
-            <span className="boss-association-label">Associated creature</span>
-            {associatedCreatures.length
+            <span className="boss-association-label">{requiredQuest?'Required quest':'Associated creature'}</span>
+            {requiredQuest
+              ? <span className="boss-creature-name">{requiredQuest.name}</span>
+              : associatedCreatures.length
               ? (['callisto','scorpia','king-black-dragon','vorkath','venenatis','hueycoatl','royal-titans'].includes(boss.id))
                 ? <button type="button" className={`boss-creature-name boss-creature-name-inline boss-creature-link${(boss.id==='royal-titans'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))?' is-completed':''}`} onClick={()=>{if(unlocked&&linkedCreature)onCreatureClick?.(boss.id==='scorpia'?'__scorpia_scorpion__':linkedCreature.id)}} disabled={!unlocked||!linkedCreature} title={unlocked?'View associated creature on map':'Unlock this boss first'}><span>{{callisto:'Bear(s)',scorpia:'Scorpion(s)','king-black-dragon':'Black Dragon(s)',vorkath:'Blue Dragon(s)',venenatis:'Spider(s) (Except Temple Spider)',hueycoatl:'Green Dragon(s)','royal-titans':'Fire Giant & Ice Giant'}[boss.id]}</span></button>
                 : associatedCreatures.map(creature=><button type="button" className={`boss-creature-name boss-creature-link${completedCreatureIds.has(String(creature.id))?' is-completed':''}`} key={creature.id} onClick={()=>unlocked&&onCreatureClick?.(creature.id)} disabled={!unlocked} title={unlocked?'View this creature on map':'Unlock this boss first'}>{creature.name}</button>)
@@ -1349,7 +1356,7 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
               <span className={`boss-kc-count${complete?' is-complete':''}`}>{current}</span>
               <button type="button" className="boss-kc-button" onClick={()=>{playSfx('bossPlus');changeBossKc(boss,1)}} disabled={current>=target||Boolean(reward)} aria-label={`Increase ${boss.name} kill count`}><img src={uiAssetUrl('1117_0 Plus Button.png')} alt=""/></button>
             </div>
-          </div> : <div className="boss-locked-message"><img src={uiAssetUrl('lock_asset.png')} alt=""/> Complete the associated creature tile to unlock</div>}
+          </div> : <div className="boss-locked-message"><img src={uiAssetUrl('lock_asset.png')} alt=""/> {requiredQuest?`Complete ${requiredQuest.name} to unlock`:'Complete the associated creature tile to unlock'}</div>}
         </div>
       })}
       </div>

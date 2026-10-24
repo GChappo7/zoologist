@@ -205,6 +205,14 @@
       "kcRequired": 25
     },
     {
+      "id": "corrupted-hunllef",
+      "name": "Corrupted Hunllef",
+      "category": "The Gauntlet",
+      "requiredQuest": "grandmaster-4",
+      "status": "not_slain",
+      "kcRequired": 25
+    },
+    {
       "id": "royal-titans",
       "name": "The Royal Titans",
       "category": "Boss",

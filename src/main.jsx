@@ -910,7 +910,8 @@ function CollectionLog({creatures,mapTiles,onBack}){
         {filtered.map(creature=>{
           const status=statusByCreature[String(creature.id)]||'unknown'
           return <div className={'collection-card collection-card-'+status} key={creature.id}>
-            <div className="collection-card-art">{status==='unknown'?<span style={{fontFamily:'var(--font-runescape)',fontSize:'32px',color:'#d5aa63',textShadow:'2px 2px #000'}}>???</span>:<CreatureGlyph creature={creature} size="collection"/>}</div>
+            {/* TEMPORARY ART REVIEW: reveal unknown animal images only; names remain hidden. Restore after review. */}
+            <div className="collection-card-art"><CreatureGlyph creature={creature} size="collection"/></div>
             <div className="collection-card-name">{status==='unknown'?'???':creature.name}</div>
             <div className="collection-card-status">{status==='completed'?'Recorded':status==='revealed'?'Revealed':'Unknown'}</div>
           </div>

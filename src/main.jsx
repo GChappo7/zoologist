@@ -1162,12 +1162,9 @@ function BossView({creatures=[],mapTiles={},bossProgress={},bossRewards={},quest
     const requiredQuest=boss.requiredQuest
       ? quests.find(quest=>String(quest.id)===String(boss.requiredQuest)||String(quest.name||'').trim().toLowerCase()===String(boss.requiredQuest).trim().toLowerCase())??null
       : null
-    // TEMPORARY ART REVIEW: show these quest-locked bosses in the Bosses tab.
-    // Remove this override after the user has reviewed their images.
-    const artReviewUnlocked=['doom-of-mokhaiotl','corrupted-hunllef','phantom-muspah','tz-tok-jad','tzkal-zuk'].includes(boss.id)
-    const unlocked=artReviewUnlocked||(requiredQuest
+    const unlocked=requiredQuest
       ? questStatuses?.[String(requiredQuest.id)]==='completed'
-      : associatedCreatures.length>0&&(boss.unlockMode==='all'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id)))))
+      : associatedCreatures.length>0&&(boss.unlockMode==='all'?associatedCreatures.every(creature=>completedCreatureIds.has(String(creature.id))):associatedCreatures.some(creature=>completedCreatureIds.has(String(creature.id))))
     const reward=bossRewards?.[boss.id]??null
     return {target,current,associatedCreatures,requiredQuest,unlocked,reward}
   }

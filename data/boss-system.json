@@ -74,7 +74,7 @@
       "id": "corporeal-beast",
       "name": "Corporeal Beast",
       "category": "Wilderness",
-      "creature": null,
+      "creature": "Dark beast",
       "status": "not_slain",
       "kcRequired": 100
     },

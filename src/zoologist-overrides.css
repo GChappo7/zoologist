@@ -4566,3 +4566,35 @@ body::-webkit-scrollbar {
 .cloud-save-error .cloud-save-indicator-dot { background: #ff5f50; color: #ff5f50; }
 .cloud-save-disconnected .cloud-save-indicator-dot { background: #a6a6a6; color: #a6a6a6; }
 @media (max-width: 600px) { .cloud-save-indicator { top: 66px; right: 7px; padding: 6px 8px; gap: 6px; font-size: 11px; } }
+
+/* Unknown Bestiary entries should feel deliberately obscured and mysterious. */
+.collection-card-unknown {
+  background:
+    radial-gradient(ellipse at 50% 38%, rgba(47,58,64,.34) 0%, rgba(17,23,27,.18) 48%, transparent 76%),
+    linear-gradient(155deg, #0b1014 0%, #10171c 48%, #080c10 100%);
+  border-color:#202a30;
+  box-shadow:inset 0 0 22px rgba(0,0,0,.72), inset 0 1px rgba(255,255,255,.018), 0 2px 5px rgba(0,0,0,.2);
+}
+.collection-card-unknown .collection-card-art {
+  inset:0 0 30px;
+  color:#566168;
+  font:700 25px var(--font-runescape);
+  letter-spacing:.16em;
+  text-shadow:0 0 12px rgba(100,117,126,.16), 2px 2px 0 #05080a;
+  background:radial-gradient(ellipse at center, rgba(69,82,89,.13) 0%, rgba(18,25,29,.08) 42%, transparent 72%);
+}
+.collection-card-unknown .collection-card-name,
+.collection-card-unknown .collection-card-status {
+  color:#424d53;
+  text-shadow:1px 1px 0 #05080a;
+}
+.collection-card-unknown .collection-card-status {
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:10px;
+}
+.collection-card-unknown:hover {
+  border-color:#303b42;
+  filter:brightness(1.08);
+}
+

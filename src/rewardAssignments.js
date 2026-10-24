@@ -92,6 +92,9 @@ function makeAssignment(creatures, startCreature) {
     const skillName = String(unit.skill ?? '')
     const unitType = String(unit.type ?? '').toLowerCase()
     const candidates = creatures.map((creature, creatureIndex) => {
+      // Manticore is deliberately reserved for a bonus skill tile, not a mandatory skill or quest reward.
+      if (String(creature?.name ?? '').toLowerCase() === 'manticore' && unit?.bonus !== true) return null
+
       if (!isCompatible(creature, unit)) return null
 
       if (

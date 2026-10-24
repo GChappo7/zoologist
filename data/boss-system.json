@@ -138,14 +138,6 @@
       "kcRequired": 100
     },
     {
-      "id": "kril-tsutsaroth",
-      "name": "K'ril Tsutsaroth",
-      "category": "God Wars Dungeon",
-      "creature": "Greater Demon",
-      "status": "not_slain",
-      "kcRequired": 50
-    },
-    {
       "id": "kalphite-queen",
       "name": "Kalphite Queen",
       "category": "Boss",
@@ -189,12 +181,32 @@
       "kcRequired": 50
     },
     {
+      "id": "kril-tsutsaroth",
+      "name": "K'ril Tsutsaroth",
+      "category": "God Wars Dungeon",
+      "creature": "Greater Demon",
+      "status": "not_slain",
+      "kcRequired": 50
+    },
+    {
       "id": "obor",
       "name": "Obor",
       "category": "Free-to-play",
       "creature": "Hill Giant",
       "status": "not_slain",
       "kcRequired": 25
+    },
+    {
+      "id": "royal-titans",
+      "name": "The Royal Titans",
+      "category": "Boss",
+      "creatures": [
+        "Fire Giant",
+        "Ice Giant"
+      ],
+      "unlockMode": "all",
+      "status": "not_slain",
+      "kcRequired": 100
     },
     {
       "id": "sarachnis",
@@ -205,14 +217,6 @@
       "creatures": [
         "Temple Spider"
       ]
-    },
-    {
-      "id": "skotizo",
-      "name": "Skotizo",
-      "category": "Slayer",
-      "creature": "Skotizo",
-      "status": "not_slain",
-      "kcRequired": 25
     },
     {
       "id": "scorpia",
@@ -245,6 +249,14 @@
       "kcRequired": 100
     },
     {
+      "id": "skotizo",
+      "name": "Skotizo",
+      "category": "Slayer",
+      "creature": "Skotizo",
+      "status": "not_slain",
+      "kcRequired": 25
+    },
+    {
       "id": "the-leviathan",
       "name": "The Leviathan",
       "category": "Desert Treasure II",
@@ -253,24 +265,28 @@
       "kcRequired": 50
     },
     {
-      "id": "royal-titans",
-      "name": "The Royal Titans",
-      "category": "Boss",
-      "creatures": [
-        "Fire Giant",
-        "Ice Giant"
-      ],
-      "unlockMode": "all",
-      "status": "not_slain",
-      "kcRequired": 100
-    },
-    {
       "id": "thermonuclear-smoke-devil",
       "name": "Thermonuclear Smoke Devil",
       "category": "Slayer",
       "creature": "Smoke Devil",
       "status": "not_slain",
       "kcRequired": 100
+    },
+    {
+      "id": "tz-tok-jad",
+      "name": "TzTok-Jad",
+      "category": "Fight Caves",
+      "creature": "Ket-Zek",
+      "status": "not_slain",
+      "kcRequired": 1
+    },
+    {
+      "id": "tzkal-zuk",
+      "name": "TzKal-Zuk",
+      "category": "Inferno",
+      "creature": "TzKal-Zuk",
+      "status": "not_slain",
+      "kcRequired": 1
     },
     {
       "id": "venenatis",

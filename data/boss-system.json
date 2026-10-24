@@ -197,6 +197,14 @@
       "kcRequired": 25
     },
     {
+      "id": "phantom-muspah",
+      "name": "Phantom Muspah",
+      "category": "Desert Treasure II",
+      "requiredQuest": "master-12",
+      "status": "not_slain",
+      "kcRequired": 25
+    },
+    {
       "id": "royal-titans",
       "name": "The Royal Titans",
       "category": "Boss",

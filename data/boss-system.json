@@ -353,6 +353,14 @@
       "creature": "Swamp Snake",
       "status": "not_slain",
       "kcRequired": 100
+    },
+    {
+      "id": "doom-of-mokhaiotl",
+      "name": "Doom of Mokhaiotl",
+      "category": "The Final Dawn",
+      "requiredQuest": "master-16",
+      "status": "not_slain",
+      "kcRequired": 25
     }
   ],
   "notes": [

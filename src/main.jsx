@@ -987,6 +987,7 @@ function ShopView(){
 const BOSS_IMAGE_FILENAMES = {
   'bryophyta':'Bryophyta.png',
   'obor':'Obor.png',
+  'corrupted-hunllef':'Corrupted_Hunllef.png',
   'phantom-muspah':'Phantom_Muspah.png',
   'giant-mole':'Giant_Mole.png',
   'scurrius':'Scurrius.png',

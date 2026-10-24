@@ -95,6 +95,13 @@ function makeAssignment(creatures, startCreature) {
       // Manticore is deliberately reserved for a bonus skill tile, not a mandatory skill or quest reward.
       if (String(creature?.name ?? '').toLowerCase() === 'manticore' && unit?.bonus !== true) return null
 
+      // Inferno monsters are also reserved for bonus skill tiles only; never assign them mandatory skills or quests.
+      const creatureName = String(creature?.name ?? '').toLowerCase()
+      if (
+        ['jal-nib', 'jal-mejrah', 'jal-ak', 'jal-imkot', 'jal-xil', 'jal-zek'].includes(creatureName) &&
+        (unitType !== 'skill' || unit?.bonus !== true)
+      ) return null
+
       if (!isCompatible(creature, unit)) return null
 
       if (

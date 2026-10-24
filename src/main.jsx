@@ -912,7 +912,7 @@ function CollectionLog({creatures,mapTiles,onBack}){
           return <div className={'collection-card collection-card-'+status} key={creature.id}>
             {/* TEMPORARY ART REVIEW: reveal unknown animal images only; names remain hidden. Restore after review. */}
             <div className="collection-card-art"><CreatureGlyph creature={creature} size="collection"/></div>
-            <div className="collection-card-name">{status==='unknown'?'???':creature.name}</div>
+            <div className="collection-card-name">{creature.name}</div>
             <div className="collection-card-status">{status==='completed'?'Recorded':status==='revealed'?'Revealed':'Unknown'}</div>
           </div>
         })}

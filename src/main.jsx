@@ -196,6 +196,7 @@ const CREATURE_IMAGE_URL_ALIASES={
   'Yt-MejKot':'https://oldschool.runescape.wiki/images/Yt-MejKot_(2).png',
   'Ket-Zek':'https://oldschool.runescape.wiki/images/Ket-Zek.png',
   'Fairy':'https://oldschool.runescape.wiki/images/Fairy.png',
+  'Manticore':'https://oldschool.runescape.wiki/images/Manticore.png',
 }
 const RAW_FISH_WIKI_IMAGES={
   Shrimp:'Raw_shrimps_detail.png',
